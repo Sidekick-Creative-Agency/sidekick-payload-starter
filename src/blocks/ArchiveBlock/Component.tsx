@@ -5,14 +5,24 @@ import { getPayloadHMR } from '@payloadcms/next/utilities'
 import React from 'react'
 import RichText from '@/components/RichText'
 
-import { CollectionArchive } from '@/components/CollectionArchive'
+import { CollectionArchiveGrid } from '@/components/CollectionArchive/GridArchive'
+import { CollectionArchiveCarousel } from '@/components/CollectionArchive/CarouselArchive'
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
     id?: string
   }
 > = async (props) => {
-  const { id, categories, introContent, limit: limitFromProps, populateBy, selectedDocs } = props
+  const {
+    id,
+    categories,
+    introContent,
+    limit: limitFromProps,
+    populateBy,
+    selectedDocs,
+    layout,
+    navigationType,
+  } = props
 
   const limit = limitFromProps || 3
 
@@ -59,7 +69,10 @@ export const ArchiveBlock: React.FC<
           <RichText className="ml-0 max-w-[48rem]" content={introContent} enableGutter={false} />
         </div>
       )}
-      <CollectionArchive posts={posts} />
+      {layout && layout === 'grid' && <CollectionArchiveGrid posts={posts} />}
+      {layout && layout === 'carousel' && (
+        <CollectionArchiveCarousel posts={posts} navigationType={navigationType || 'none'} />
+      )}
     </div>
   )
 }

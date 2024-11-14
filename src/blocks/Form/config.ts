@@ -1,4 +1,4 @@
-import type { Block } from 'payload'
+import type { Block, PaginatedDocs } from 'payload'
 
 import {
   FixedToolbarFeature,
@@ -16,6 +16,11 @@ export const FormBlock: Block = {
       type: 'relationship',
       relationTo: 'forms',
       required: true,
+      defaultValue: async () => {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/forms`)
+        const data: PaginatedDocs<{ id: string }> = await response.json()
+        return data?.docs?.at(0)?.id
+      },
     },
     {
       name: 'enableIntro',

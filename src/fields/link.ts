@@ -19,9 +19,15 @@ type LinkType = (options?: {
   appearances?: LinkAppearances[] | false
   disableLabel?: boolean
   overrides?: Record<string, unknown>
+  appearanceEnumName?: string
 }) => Field
 
-export const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = {}) => {
+export const link: LinkType = ({
+  appearances,
+  disableLabel = false,
+  overrides = {},
+  appearanceEnumName,
+} = {}) => {
   const linkResult: Field = {
     name: 'link',
     type: 'group',
@@ -124,16 +130,26 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
     if (appearances) {
       appearanceOptionsToUse = appearances.map((appearance) => appearanceOptions[appearance])
     }
-
-    linkResult.fields.push({
-      name: 'appearance',
-      type: 'select',
-      admin: {
-        description: 'Choose how the link should be rendered.',
-      },
-      defaultValue: 'default',
-      options: appearanceOptionsToUse,
-    })
+    appearanceEnumName
+      ? linkResult.fields.push({
+          name: 'appearance',
+          type: 'select',
+          enumName: appearanceEnumName,
+          admin: {
+            description: 'Choose how the link should be rendered.',
+          },
+          defaultValue: 'default',
+          options: appearanceOptionsToUse,
+        })
+      : linkResult.fields.push({
+          name: 'appearance',
+          type: 'select',
+          admin: {
+            description: 'Choose how the link should be rendered.',
+          },
+          defaultValue: 'default',
+          options: appearanceOptionsToUse,
+        })
   }
 
   return deepMerge(linkResult, overrides)

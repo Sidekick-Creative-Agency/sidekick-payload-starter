@@ -38,9 +38,17 @@ export const FormBlock: React.FC<
   const {
     enableIntro,
     form: formFromProps,
-    form: { id: formID, confirmationMessage, confirmationType, redirect, submitButtonLabel } = {},
+    // form: { id: formID, confirmationMessage, confirmationType, redirect, submitButtonLabel } = {},
     introContent,
   } = props
+
+  const {
+    id: formID = '',
+    confirmationMessage = '',
+    confirmationType = '',
+    redirect = undefined,
+    submitButtonLabel = '',
+  } = formFromProps
 
   const formMethods = useForm({
     defaultValues: buildInitialFormState(formFromProps.fields),
@@ -137,23 +145,26 @@ export const FormBlock: React.FC<
         {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
         {!hasSubmitted && (
           <form id={formID} onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-4 last:mb-0">
+            <div className="mb-4 last:mb-0 ">
               {formFromProps &&
                 formFromProps.fields &&
                 formFromProps.fields?.map((field, index) => {
+                  console.log(field)
                   const Field: React.FC<any> = fields?.[field.blockType]
                   if (Field) {
                     return (
-                      <div className="mb-6 last:mb-0" key={index}>
-                        <Field
-                          form={formFromProps}
-                          {...field}
-                          {...formMethods}
-                          control={control}
-                          errors={errors}
-                          register={register}
-                        />
-                      </div>
+                      // <div className="mb-6 last:mb-0" key={index}>
+                      <Field
+                        form={formFromProps}
+                        {...field}
+                        {...formMethods}
+                        control={control}
+                        errors={errors}
+                        register={register}
+                        className="inline-block w-full mb-6 last:mb-0"
+                        key={index}
+                      />
+                      // </div>
                     )
                   }
                   return null

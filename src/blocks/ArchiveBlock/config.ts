@@ -86,6 +86,41 @@ export const Archive: Block = {
       label: 'Selection',
       relationTo: ['posts'],
     },
+    {
+      name: 'layout',
+      type: 'select',
+      defaultValue: 'grid',
+      options: [
+        { value: 'grid', label: 'Grid' },
+        {
+          value: 'carousel',
+          label: 'Carousel',
+        },
+      ],
+    },
+    {
+      name: 'navigationType',
+      type: 'radio',
+      defaultValue: 'arrows',
+      options: [
+        { value: 'arrows', label: 'Arrows' },
+        {
+          value: 'dots',
+          label: 'Dots',
+        },
+        {
+          value: 'both',
+          label: 'Both',
+        },
+        {
+          value: 'none',
+          label: 'None',
+        },
+      ],
+      admin: {
+        condition: (_, siblingData) => siblingData.layout === 'carousel',
+      },
+    },
   ],
   labels: {
     plural: 'Archives',

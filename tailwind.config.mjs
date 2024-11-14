@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -27,19 +28,19 @@ export default {
     container: {
       center: true,
       padding: {
-        '2xl': '2rem',
-        DEFAULT: '1rem',
-        lg: '2rem',
-        md: '2rem',
-        sm: '1rem',
-        xl: '2rem',
+        DEFAULT: '1.25rem',
+        '2xl': '5rem',
+        xl: '2.5rem',
+        lg: '2.5rem',
+        md: '2.5rem',
+        sm: '2.5rem',
       },
       screens: {
         '2xl': '86rem',
+        xl: '80rem',
         lg: '64rem',
         md: '48rem',
         sm: '40rem',
-        xl: '80rem',
       },
     },
     extend: {
@@ -48,9 +49,14 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        // lg: 'var(--radius)',
+        // md: 'calc(var(--radius) - 2px)',
+        // sm: 'calc(var(--radius) - 4px)',
+        mediaSm: 'var(--radius)',
+        mediaMd: 'calc(var(--radius) + 4px)',
+        mediaLg: 'calc(var(--radius) + 12px)',
+        mediaXl: 'calc(var(--radius) + 20px)',
+        media2Xl: 'calc(var(--radius) + 36px)',
       },
       colors: {
         accent: {
@@ -111,8 +117,27 @@ export default {
             '--tw-prose-headings': 'var(--text)',
             h1: {
               fontSize: '4rem',
-              fontWeight: 'normal',
-              marginBottom: '0.25em',
+              fontWeight: '500',
+              marginBottom: 0,
+              marginTop: 0,
+            },
+            h2: {
+              fontSize: '2.5rem',
+              fontWeight: '500',
+              marginBottom: 0,
+              marginTop: 0,
+            },
+            h3: {
+              fontWeight: '500',
+              lineHeight: 1.25,
+              marginBottom: 0,
+              marginTop: 0,
+            },
+            h4: {
+              fontWeight: '500',
+              lineHeight: 1.25,
+              marginBottom: 0,
+              marginTop: 0,
             },
           },
         },

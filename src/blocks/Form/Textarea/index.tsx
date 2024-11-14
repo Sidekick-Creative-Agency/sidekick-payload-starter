@@ -17,6 +17,7 @@ export const Textarea: React.FC<
     >
     register: UseFormRegister<FieldValues>
     rows?: number
+    className?: string
   }
 > = ({
   name,
@@ -27,9 +28,10 @@ export const Textarea: React.FC<
   required: requiredFromProps,
   rows = 3,
   width,
+  className,
 }) => {
   return (
-    <Width width={width}>
+    <Width width={width} className={className}>
       <Label htmlFor={name}>{label}</Label>
 
       <TextAreaComponent

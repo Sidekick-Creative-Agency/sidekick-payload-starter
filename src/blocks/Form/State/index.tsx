@@ -24,10 +24,11 @@ export const State: React.FC<
         [x: string]: any
       }>
     >
+    className?: string
   }
-> = ({ name, control, errors, label, required, width }) => {
+> = ({ name, control, errors, label, required, width, className }) => {
   return (
-    <Width width={width}>
+    <Width width={width} className={className}>
       <Label htmlFor={name}>{label}</Label>
       <Controller
         control={control}

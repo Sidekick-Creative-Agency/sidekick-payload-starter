@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 
 import { contactForm as contactFormData } from './contact-form'
 import { contact as contactPageData } from './contact-page'
-import { home } from './home'
+
 import { image1 } from './image-1'
 import { image2 } from './image-2'
 import { post1 } from './post-1'
@@ -83,8 +83,6 @@ export const seed = async ({
     req,
   })
 
-  console.log({ pages })
-
   payload.logger.info(`— Seeding demo author and user...`)
 
   await payload.delete({
@@ -126,12 +124,6 @@ export const seed = async ({
     collection: 'media',
     data: image2,
     filePath: path.resolve(dirname, 'image-post3.webp'),
-    req,
-  })
-  const imageHomeDoc = await payload.create({
-    collection: 'media',
-    data: image2,
-    filePath: path.resolve(dirname, 'image-hero1.webp'),
     req,
   })
 
@@ -187,13 +179,11 @@ export const seed = async ({
   let image1ID: number | string = image1Doc.id
   let image2ID: number | string = image2Doc.id
   let image3ID: number | string = image3Doc.id
-  let imageHomeID: number | string = imageHomeDoc.id
 
   if (payload.db.defaultIDType === 'text') {
     image1ID = `"${image1Doc.id}"`
     image2ID = `"${image2Doc.id}"`
     image3ID = `"${image3Doc.id}"`
-    imageHomeID = `"${imageHomeDoc.id}"`
     demoAuthorID = `"${demoAuthorID}"`
   }
 
@@ -257,18 +247,6 @@ export const seed = async ({
     data: {
       relatedPosts: [post1Doc.id, post2Doc.id],
     },
-    req,
-  })
-
-  payload.logger.info(`— Seeding home page...`)
-
-  await payload.create({
-    collection: 'pages',
-    data: JSON.parse(
-      JSON.stringify(home)
-        .replace(/"\{\{IMAGE_1\}\}"/g, String(imageHomeID))
-        .replace(/"\{\{IMAGE_2\}\}"/g, String(image2ID)),
-    ),
     req,
   })
 

@@ -1,11 +1,9 @@
-import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import React, { Fragment, JSX } from 'react'
 import { CMSLink } from '@/components/Link'
 import { DefaultNodeTypes, SerializedBlockNode } from '@payloadcms/richtext-lexical'
-import type { BannerBlock as BannerBlockProps } from '@/payload-types'
 
 import {
   IS_BOLD,
@@ -16,20 +14,34 @@ import {
   IS_SUPERSCRIPT,
   IS_UNDERLINE,
 } from './nodeFormat'
-import type {
-  CallToActionBlock as CTABlockProps,
-  MediaBlock as MediaBlockProps,
-} from '@/payload-types'
+import type { Page } from '@/payload-types'
 
 export type NodeTypes =
   | DefaultNodeTypes
-  | SerializedBlockNode<CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps>
+  | SerializedBlockNode<
+      // @ts-ignore // TODO: Fix this
+      | Extract<Page['layout'][0], { blockType: 'cta' }>
+      | Extract<Page['layout'][0], { blockType: 'mediaBlock' }>
+      | CodeBlockProps
+    >
 
 type Props = {
   nodes: NodeTypes[]
 }
 
 export function serializeLexical({ nodes }: Props): JSX.Element {
+  const formatClasses = {
+    center: 'text-center',
+    left: 'text-left',
+    right: 'text-right',
+    justify: 'text-justify',
+  }
+  const headingSizeClasses = {
+    h1: 'text-[2.5rem] md:text-[3.5rem] lg:text-[4rem]',
+    h2: 'text-[2rem] md:text-[2.5rem]',
+    h3: 'text-[1.5rem] md:text-[2rem]',
+    h4: 'text-[1rem] md:text-[1.5rem]',
+  }
   return (
     <Fragment>
       {nodes?.map((node, index): JSX.Element | null => {
@@ -118,8 +130,6 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
                   disableInnerContainer={true}
                 />
               )
-            case 'banner':
-              return <BannerBlock className="col-start-2 mb-4" key={index} {...block} />
             case 'code':
               return <CodeBlock className="col-start-2" key={index} {...block} />
             default:
@@ -132,7 +142,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             }
             case 'paragraph': {
               return (
-                <p className="col-start-2" key={index}>
+                <p className={`col-start-2 ${formatClasses[node.format]} `} key={index}>
                   {serializedChildren}
                 </p>
               )
@@ -140,7 +150,10 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             case 'heading': {
               const Tag = node?.tag
               return (
-                <Tag className="col-start-2" key={index}>
+                <Tag
+                  className={`col-start-2 ${headingSizeClasses[Tag]} ${node.format && `${formatClasses[node.format]}`} `}
+                  key={index}
+                >
                   {serializedChildren}
                 </Tag>
               )
@@ -158,7 +171,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
                 return (
                   <li
                     aria-checked={node.checked ? 'true' : 'false'}
-                    className={` ${node.checked ? '' : ''}`}
+                    className={` ${node.checked ? '' : ''} ${formatClasses[node.format]} `}
                     key={index}
                     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
                     role="checkbox"
@@ -178,7 +191,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             }
             case 'quote': {
               return (
-                <blockquote className="col-start-2" key={index}>
+                <blockquote className={`col-start-2 ${formatClasses[node.format]} `} key={index}>
                   {serializedChildren}
                 </blockquote>
               )
