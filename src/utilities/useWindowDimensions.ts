@@ -4,8 +4,8 @@ import canUseDOM from './canUseDOM'
 function getWindowDimensions() {
   if (!canUseDOM) {
     return {
-      width: 0,
-      height: 0,
+      width: undefined,
+      height: undefined,
     }
   }
   const { innerWidth: width, innerHeight: height } = window
@@ -16,13 +16,16 @@ function getWindowDimensions() {
 }
 
 export default function useWindowDimensions() {
-  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+  const [windowDimensions, setWindowDimensions] = useState<{
+    width: number | undefined
+    height: number | undefined
+  }>({ width: undefined, height: undefined })
 
   useEffect(() => {
     function handleResize() {
       setWindowDimensions(getWindowDimensions())
     }
-
+    handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])

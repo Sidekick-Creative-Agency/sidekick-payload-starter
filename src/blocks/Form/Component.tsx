@@ -1,8 +1,8 @@
 'use client'
-import type { Form as FormType } from '@payloadcms/plugin-form-builder/types'
+import type { FormFieldBlock, Form as FormType } from '@payloadcms/plugin-form-builder/types'
 
 import { useRouter } from 'next/navigation'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import RichText from '@/components/RichText'
 import { Button } from '@/components/ui/button'
@@ -24,7 +24,7 @@ export type FormBlockType = {
   blockName?: string
   blockType?: 'formBlock'
   enableIntro: boolean
-  form: FormType
+  form: FormType & { fields: FormFieldBlock[] }
   introContent?: {
     [k: string]: unknown
   }[]
@@ -35,12 +35,7 @@ export const FormBlock: React.FC<
     id?: string
   } & FormBlockType
 > = (props) => {
-  const {
-    enableIntro,
-    form: formFromProps,
-    // form: { id: formID, confirmationMessage, confirmationType, redirect, submitButtonLabel } = {},
-    introContent,
-  } = props
+  const { enableIntro, form: formFromProps, introContent } = props
 
   const {
     id: formID = '',
@@ -64,6 +59,10 @@ export const FormBlock: React.FC<
   const [hasSubmitted, setHasSubmitted] = useState<boolean>()
   const [error, setError] = useState<{ message: string; status?: string } | undefined>()
   const router = useRouter()
+
+  useEffect(() => {
+    console.log(formFromProps.fields)
+  }, [formFromProps.fields])
 
   const onSubmit = useCallback(
     (data: Data) => {
@@ -149,7 +148,6 @@ export const FormBlock: React.FC<
               {formFromProps &&
                 formFromProps.fields &&
                 formFromProps.fields?.map((field, index) => {
-                  console.log(field)
                   const Field: React.FC<any> = fields?.[field.blockType]
                   if (Field) {
                     return (
@@ -161,7 +159,7 @@ export const FormBlock: React.FC<
                         control={control}
                         errors={errors}
                         register={register}
-                        className="inline-block w-full mb-6 last:mb-0"
+                        className={`inline-block w-full ${field.blockName && !errors[field.blockName] && 'mb-6 last:mb-0'} relative transition-[margin] duration-300 ${field.blockName && errors[field.blockName] && 'mb-10 last:mb-4'}`}
                         key={index}
                       />
                       // </div>

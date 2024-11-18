@@ -26,7 +26,6 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
 
   useEffect(() => {
     setHeaderTheme(null)
-    console.log(parseInt(defaultTheme.screens.md))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
@@ -45,6 +44,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
           <Media resource={header.logo} imgClassName="max-w-[9.375rem] invert dark:invert-0" />
         </Link>
       )}
+
       {width && width > parseInt(defaultTheme.screens.md) && <HeaderNav header={header} />}
       {width && width <= parseInt(defaultTheme.screens.md) && <HeaderMobileNav header={header} />}
     </header>

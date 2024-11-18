@@ -196,7 +196,8 @@ const CarouselDots = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & DotProps
 >(({ className, dotClassName, ...props }, ref) => {
-  const { selectedIndex, scrollTo, api } = useCarousel()
+  const { selectedIndex, scrollTo, api, canScrollPrev, canScrollNext } = useCarousel()
+  if (!canScrollPrev && !canScrollNext) return null
   return (
     <div
       className={cn(
@@ -226,8 +227,8 @@ CarouselDots.displayName = 'CarouselDots'
 
 const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
   ({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
-    const { orientation, scrollPrev, canScrollPrev } = useCarousel()
-
+    const { orientation, scrollPrev, canScrollPrev, canScrollNext } = useCarousel()
+    if (!canScrollPrev && !canScrollNext) return null
     return (
       <Button
         ref={ref}
@@ -254,8 +255,8 @@ CarouselPrevious.displayName = 'CarouselPrevious'
 
 const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
   ({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
-    const { orientation, scrollNext, canScrollNext } = useCarousel()
-
+    const { orientation, scrollNext, canScrollPrev, canScrollNext } = useCarousel()
+    if (!canScrollPrev && !canScrollNext) return null
     return (
       <Button
         ref={ref}

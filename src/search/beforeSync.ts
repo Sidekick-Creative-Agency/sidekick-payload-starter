@@ -4,8 +4,7 @@ export const beforeSyncWithSearch: BeforeSync = async ({ originalDoc, searchDoc,
   const {
     doc: { relationTo: collection },
   } = searchDoc
-
-  const { slug, id, categories, title, meta, excerpt } = originalDoc
+  const { slug, id, categories: categoryIds, title, meta, excerpt } = originalDoc
 
   const modifiedDoc: DocToSync = {
     ...searchDoc,
@@ -18,6 +17,15 @@ export const beforeSyncWithSearch: BeforeSync = async ({ originalDoc, searchDoc,
     },
     categories: [],
   }
+  const categoryDocs = await payload.find({
+    collection: 'categories',
+    where: {
+      id: {
+        in: categoryIds,
+      },
+    },
+  })
+  const categories = categoryDocs.docs
 
   if (categories && Array.isArray(categories) && categories.length > 0) {
     // get full categories and keep a flattened copy of their most important properties

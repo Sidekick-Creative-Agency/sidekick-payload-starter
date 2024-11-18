@@ -16,10 +16,20 @@ export const Email: React.FC<
       }>
     >
     register: UseFormRegister<FieldValues>
+    className?: string
   }
-> = ({ name, defaultValue, errors, label, register, required: requiredFromProps, width }) => {
+> = ({
+  name,
+  defaultValue,
+  errors,
+  label,
+  register,
+  required: requiredFromProps,
+  width,
+  className,
+}) => {
   return (
-    <Width width={width}>
+    <Width width={width} className={className}>
       <Label htmlFor={name}>{label}</Label>
       <Input
         defaultValue={defaultValue}

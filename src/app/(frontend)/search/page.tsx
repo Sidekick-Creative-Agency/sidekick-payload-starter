@@ -16,10 +16,9 @@ type Args = {
 export default async function Page({ searchParams: searchParamsPromise }: Args) {
   const { q: query } = await searchParamsPromise
   const payload = await getPayloadHMR({ config: configPromise })
-
   const posts = await payload.find({
     collection: 'search',
-    depth: 1,
+    depth: 2,
     limit: 12,
     ...(query
       ? {
@@ -42,6 +41,11 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
               },
               {
                 slug: {
+                  like: query,
+                },
+              },
+              {
+                'categories.title': {
                   like: query,
                 },
               },

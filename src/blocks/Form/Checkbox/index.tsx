@@ -20,13 +20,23 @@ export const Checkbox: React.FC<
     getValues: any
     register: UseFormRegister<FieldValues>
     setValue: any
+    className?: string
   }
-> = ({ name, defaultValue, errors, label, register, required: requiredFromProps, width }) => {
+> = ({
+  name,
+  defaultValue,
+  errors,
+  label,
+  register,
+  required: requiredFromProps,
+  width,
+  className,
+}) => {
   const props = register(name, { required: requiredFromProps })
   const { setValue } = useFormContext()
 
   return (
-    <Width width={width}>
+    <Width width={width} className={className}>
       <div className="flex items-center gap-2">
         <CheckboxUi
           defaultChecked={defaultValue}

@@ -36,12 +36,12 @@ export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
             return (
               <NavigationMenuItem key={i}>
                 <NavigationMenuTrigger>{navItem?.label}</NavigationMenuTrigger>
-                <NavigationMenuContent className="p-2">
+                <NavigationMenuContent className="p-2 bg-primary">
                   {navItem?.childrenLinks?.map((childLink, i) => {
                     return (
                       <Button
                         variant="ghost"
-                        className="text-primary px-4 py-2 w-full"
+                        className="text-primary-foreground px-4 py-2 w-full"
                         key={childLink.id}
                       >
                         <Link href={childLink.link.url || ''}>{childLink.link.label}</Link>

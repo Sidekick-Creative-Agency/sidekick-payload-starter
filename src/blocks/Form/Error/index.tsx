@@ -1,5 +1,9 @@
 import * as React from 'react'
 
 export const Error: React.FC = () => {
-  return <div className="mt-2 text-red-500 text-sm">This field is required</div>
+  return (
+    <div className="text-red-500 text-sm absolute left-0 top-[calc(100%+.25rem)]">
+      This field is required
+    </div>
+  )
 }
