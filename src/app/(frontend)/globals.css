@@ -67,6 +67,11 @@
 
     --radius: 0.2rem;
 
+    --brand-red: 3 75% 53%;
+    --brand-blue: 207 54% 51%;
+    --brand-grey: 240 2% 86%;
+    --brand-lightGrey: 210 4% 95%;
+
     --success: 196 52% 74%;
     --warning: 34 89% 85%;
     --error: 10 100% 86%;

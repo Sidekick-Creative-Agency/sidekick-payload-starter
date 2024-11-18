@@ -92,6 +92,12 @@ export default {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
         },
+        brand: {
+          red: 'hsl(var(--brand-red))',
+          blue: 'hsl(var(--brand-blue))',
+          grey: 'hsl(var(--brand-grey))',
+          lightGrey: 'hsl(var(--brand-light-grey))',
+        },
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
         warning: 'hsl(var(--warning))',

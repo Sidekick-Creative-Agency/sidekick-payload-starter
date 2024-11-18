@@ -20,6 +20,7 @@ type LinkType = (options?: {
   disableLabel?: boolean
   overrides?: Record<string, unknown>
   appearanceEnumName?: string
+  enableNestedLinks?: boolean
 }) => Field
 
 export const link: LinkType = ({
@@ -27,6 +28,7 @@ export const link: LinkType = ({
   disableLabel = false,
   overrides = {},
   appearanceEnumName,
+  enableNestedLinks = false,
 } = {}) => {
   const linkResult: Field = {
     name: 'link',
@@ -70,6 +72,14 @@ export const link: LinkType = ({
           },
         ],
       },
+      // {
+      //   name: 'nestedLinks',
+      //   type: 'array',
+      //   fields: [link],
+      //   admin: {
+      //     condition: () => enableNestedLinks,
+      //   },
+      // },
     ],
   }
 

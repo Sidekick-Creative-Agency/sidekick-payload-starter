@@ -45,8 +45,8 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
           <Media resource={header.logo} imgClassName="max-w-[9.375rem] invert dark:invert-0" />
         </Link>
       )}
-      {width > parseInt(defaultTheme.screens.md) && <HeaderNav header={header} />}
-      {width <= parseInt(defaultTheme.screens.md) && <HeaderMobileNav header={header} />}
+      {width && width > parseInt(defaultTheme.screens.md) && <HeaderNav header={header} />}
+      {width && width <= parseInt(defaultTheme.screens.md) && <HeaderMobileNav header={header} />}
     </header>
   )
 }

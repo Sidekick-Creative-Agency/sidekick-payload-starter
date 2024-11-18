@@ -1,2 +1,15 @@
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --brand-red: 3 75% 53%;
+  --brand-blue: 207 54% 51%;
+  --brand-grey: 240 2% 86%;
+  --brand-lightGrey: 210 4% 95%;
+}
+
+[data-theme='dark'] {
+  --border: 240 4% 16%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+}
