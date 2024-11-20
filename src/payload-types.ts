@@ -54,9 +54,9 @@ export interface Config {
   user: User & {
     collection: 'users';
   };
-  jobs?: {
+  jobs: {
     tasks: unknown;
-    workflows?: unknown;
+    workflows: unknown;
   };
 }
 export interface UserAuthOperations {
@@ -463,9 +463,9 @@ export interface Form {
         | {
             name: string;
             label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
+            width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             defaultValue?: boolean | null;
+            required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'checkbox';
@@ -473,7 +473,7 @@ export interface Form {
         | {
             name: string;
             label?: string | null;
-            width?: number | null;
+            width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
@@ -482,7 +482,7 @@ export interface Form {
         | {
             name: string;
             label?: string | null;
-            width?: number | null;
+            width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
@@ -511,8 +511,8 @@ export interface Form {
         | {
             name: string;
             label?: string | null;
-            width?: number | null;
-            defaultValue?: number | null;
+            width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+            defaultValue?: string | null;
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
@@ -538,7 +538,7 @@ export interface Form {
         | {
             name: string;
             label?: string | null;
-            width?: number | null;
+            width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
@@ -547,7 +547,7 @@ export interface Form {
         | {
             name: string;
             label?: string | null;
-            width?: number | null;
+            width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             defaultValue?: string | null;
             required?: boolean | null;
             id?: string | null;
@@ -557,12 +557,22 @@ export interface Form {
         | {
             name: string;
             label?: string | null;
-            width?: number | null;
+            width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             defaultValue?: string | null;
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'textarea';
+          }
+        | {
+            name?: string | null;
+            label?: string | null;
+            width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+            defaultValue?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'phoneNumber';
           }
       )[]
     | null;
@@ -1226,8 +1236,8 @@ export interface FormsSelect<T extends boolean = true> {
               name?: T;
               label?: T;
               width?: T;
-              required?: T;
               defaultValue?: T;
+              required?: T;
               id?: T;
               blockName?: T;
             };
@@ -1309,6 +1319,17 @@ export interface FormsSelect<T extends boolean = true> {
               blockName?: T;
             };
         textarea?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        phoneNumber?:
           | T
           | {
               name?: T;

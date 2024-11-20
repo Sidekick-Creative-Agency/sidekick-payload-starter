@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import type { Header as HeaderType } from '@/payload-types'
 
@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button'
 
 export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
   const navItems = header?.navItems || []
+
   return (
     <nav className="flex gap-3 items-center">
       <NavigationMenu>

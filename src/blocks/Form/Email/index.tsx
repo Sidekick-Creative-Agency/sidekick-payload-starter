@@ -29,7 +29,7 @@ export const Email: React.FC<
   className,
 }) => {
   return (
-    <Width width={width} className={className}>
+    <div className={className}>
       <Label htmlFor={name}>{label}</Label>
       <Input
         defaultValue={defaultValue}
@@ -39,6 +39,6 @@ export const Email: React.FC<
       />
 
       {requiredFromProps && errors[name] && <Error />}
-    </Width>
+    </div>
   )
 }

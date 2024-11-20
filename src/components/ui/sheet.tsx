@@ -59,11 +59,10 @@ const SheetContent = React.forwardRef<
     closeButton?: React.ForwardRefExoticComponent<any & React.RefAttributes<SVGSVGElement>>
   }
 >(({ side = 'right', className, closeButton: CloseButton, children, ...props }, ref) => {
-  console.log(children)
   const hasCloseButton = (children as [any])?.filter(
     (child) => child?.type?.render?.displayName === 'DialogClose',
   )
-  console.log(hasCloseButton)
+
   return (
     <SheetPortal>
       <SheetOverlay />

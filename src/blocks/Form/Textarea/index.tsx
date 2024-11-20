@@ -31,7 +31,7 @@ export const Textarea: React.FC<
   className,
 }) => {
   return (
-    <Width width={width} className={className}>
+    <div className={className}>
       <Label htmlFor={name}>{label}</Label>
 
       <TextAreaComponent
@@ -42,6 +42,6 @@ export const Textarea: React.FC<
       />
 
       {requiredFromProps && errors[name] && <Error />}
-    </Width>
+    </div>
   )
 }

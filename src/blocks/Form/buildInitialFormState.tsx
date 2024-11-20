@@ -1,6 +1,7 @@
 import type { FormFieldBlock } from '@payloadcms/plugin-form-builder/types'
+import { PhoneNumberField } from './PhoneNumber/Field'
 
-export const buildInitialFormState = (fields: FormFieldBlock[]) => {
+export const buildInitialFormState = (fields: (FormFieldBlock | PhoneNumberField)[]) => {
   return fields?.reduce((initialSchema, field) => {
     if (field.blockType === 'checkbox') {
       return {
@@ -33,6 +34,12 @@ export const buildInitialFormState = (fields: FormFieldBlock[]) => {
       }
     }
     if (field.blockType === 'state') {
+      return {
+        ...initialSchema,
+        [field.name]: '',
+      }
+    }
+    if (field.blockType === 'phoneNumber') {
       return {
         ...initialSchema,
         [field.name]: '',

@@ -19,7 +19,7 @@ import {
 import sharp from 'sharp' // editor-import
 import { UnderlineFeature } from '@payloadcms/richtext-lexical'
 import path from 'path'
-import { buildConfig } from 'payload'
+import { Block, buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
 import Categories from './collections/Categories'
@@ -27,7 +27,6 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import Users from './collections/Users'
-import { seedHandler } from './endpoints/seedHandler'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { revalidateRedirects } from './hooks/revalidateRedirects'
@@ -36,6 +35,14 @@ import { Page, Post } from 'src/payload-types'
 
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
+import { PhoneNumber, PhoneNumberField } from './blocks/Form/PhoneNumber/Field'
+import { TextField } from './blocks/Form/Text/Field/input'
+import { CheckboxField } from './blocks/Form/Checkbox/Field/input'
+import { CountryField } from './blocks/Form/Country/Field/input'
+import { EmailField } from './blocks/Form/Email/Field/input'
+import { NumberField } from './blocks/Form/Number/Field/input'
+import { StateField } from './blocks/Form/State/Field/input'
+import { TextAreaField } from './blocks/Form/Textarea/Field/input'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -125,15 +132,6 @@ export default buildConfig({
   }),
   collections: [Pages, Posts, Media, Categories, Users],
   cors: [process.env.NEXT_PUBLIC_SERVER_URL || ''].filter(Boolean),
-  endpoints: [
-    // The seed endpoint is used to populate the database with some example data
-    // You should delete this endpoint before deploying your site to production
-    {
-      handler: seedHandler,
-      method: 'get',
-      path: '/seed',
-    },
-  ],
   globals: [Header, Footer],
   plugins: [
     redirectsPlugin({
@@ -168,26 +166,36 @@ export default buildConfig({
     formBuilderPlugin({
       fields: {
         payment: false,
+        phoneNumber: PhoneNumber,
+        text: TextField,
+        checkbox: CheckboxField,
+        country: CountryField,
+        email: EmailField,
+        number: NumberField,
+        state: StateField,
+        textarea: TextAreaField,
       },
       formOverrides: {
         fields: ({ defaultFields }) => {
-          return defaultFields.map((field) => {
-            if ('name' in field && field.name === 'confirmationMessage') {
-              return {
-                ...field,
-                editor: lexicalEditor({
-                  features: ({ rootFeatures }) => {
-                    return [
-                      ...rootFeatures,
-                      FixedToolbarFeature(),
-                      HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    ]
-                  },
-                }),
+          return [
+            ...defaultFields.map((field) => {
+              if ('name' in field && field.name === 'confirmationMessage') {
+                return {
+                  ...field,
+                  editor: lexicalEditor({
+                    features: ({ rootFeatures }) => {
+                      return [
+                        ...rootFeatures,
+                        FixedToolbarFeature(),
+                        HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+                      ]
+                    },
+                  }),
+                }
               }
-            }
-            return field
-          })
+              return field
+            }),
+          ]
         },
       },
     }),

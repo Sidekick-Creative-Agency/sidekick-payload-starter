@@ -23,10 +23,11 @@ export const Select: React.FC<
         [x: string]: any
       }>
     >
+    className?: string
   }
-> = ({ name, control, errors, label, options, required, width }) => {
+> = ({ name, control, errors, label, options, required, width, className }) => {
   return (
-    <Width width={width}>
+    <div className={className}>
       <Label htmlFor={name}>{label}</Label>
       <Controller
         control={control}
@@ -55,6 +56,6 @@ export const Select: React.FC<
         rules={{ required }}
       />
       {required && errors[name] && <Error />}
-    </Width>
+    </div>
   )
 }

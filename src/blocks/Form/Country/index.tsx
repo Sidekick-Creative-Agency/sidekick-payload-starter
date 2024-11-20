@@ -25,10 +25,11 @@ export const Country: React.FC<
       }>
     >
     className?: string
+    width?: string
   }
 > = ({ name, control, errors, label, required, width, className }) => {
   return (
-    <Width width={width} className={className}>
+    <div className={className}>
       <Label className="" htmlFor={name}>
         {label}
       </Label>
@@ -59,6 +60,6 @@ export const Country: React.FC<
         rules={{ required }}
       />
       {required && errors[name] && <Error />}
-    </Width>
+    </div>
   )
 }

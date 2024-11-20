@@ -16,6 +16,7 @@ export const Number: React.FC<
     >
     register: UseFormRegister<FieldValues>
     className?: string
+    width?: string
   }
 > = ({
   name,
@@ -28,7 +29,7 @@ export const Number: React.FC<
   className,
 }) => {
   return (
-    <Width width={width} className={className}>
+    <div className={className}>
       <Label htmlFor={name}>{label}</Label>
       <Input
         defaultValue={defaultValue}
@@ -37,6 +38,6 @@ export const Number: React.FC<
         {...register(name, { required: requiredFromProps })}
       />
       {requiredFromProps && errors[name] && <Error />}
-    </Width>
+    </div>
   )
 }

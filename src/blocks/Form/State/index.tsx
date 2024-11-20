@@ -28,7 +28,7 @@ export const State: React.FC<
   }
 > = ({ name, control, errors, label, required, width, className }) => {
   return (
-    <Width width={width} className={className}>
+    <div className={className}>
       <Label htmlFor={name}>{label}</Label>
       <Controller
         control={control}
@@ -57,6 +57,6 @@ export const State: React.FC<
         rules={{ required }}
       />
       {required && errors[name] && <Error />}
-    </Width>
+    </div>
   )
 }

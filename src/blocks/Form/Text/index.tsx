@@ -7,6 +7,7 @@ import React from 'react'
 
 import { Error } from '../Error'
 import { Width } from '../Width'
+import { fieldWidthClasses } from '../Component'
 
 export const Text: React.FC<
   TextField & {
@@ -17,6 +18,7 @@ export const Text: React.FC<
     >
     register: UseFormRegister<FieldValues>
     className?: string
+    width?: string
   }
 > = ({
   name,
@@ -29,7 +31,7 @@ export const Text: React.FC<
   className,
 }) => {
   return (
-    <Width width={width} className={className}>
+    <div className={className}>
       <Label htmlFor={name}>{label}</Label>
       <Input
         defaultValue={defaultValue}
@@ -38,6 +40,6 @@ export const Text: React.FC<
         {...register(name, { required: requiredFromProps })}
       />
       {requiredFromProps && errors[name] && <Error />}
-    </Width>
+    </div>
   )
 }

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 
 import { buildInitialFormState } from './buildInitialFormState'
 import { fields } from './fields'
-
+import { PhoneNumberField } from './PhoneNumber/Field'
 export type Value = unknown
 
 export interface Property {
@@ -24,10 +24,17 @@ export type FormBlockType = {
   blockName?: string
   blockType?: 'formBlock'
   enableIntro: boolean
-  form: FormType & { fields: FormFieldBlock[] }
+  form: FormType & { fields: (FormFieldBlock | PhoneNumberField)[] }
   introContent?: {
     [k: string]: unknown
   }[]
+}
+
+export const fieldWidthClasses = {
+  oneThird: 'col-span-12 sm:col-span-4',
+  half: 'col-span-12 sm:col-span-6',
+  twoThirds: 'col-span-12 sm:col-span-8',
+  full: 'col-span-12',
 }
 
 export const FormBlock: React.FC<
@@ -53,16 +60,13 @@ export const FormBlock: React.FC<
     formState: { errors },
     handleSubmit,
     register,
+    setValue,
   } = formMethods
 
   const [isLoading, setIsLoading] = useState(false)
   const [hasSubmitted, setHasSubmitted] = useState<boolean>()
   const [error, setError] = useState<{ message: string; status?: string } | undefined>()
   const router = useRouter()
-
-  useEffect(() => {
-    console.log(formFromProps.fields)
-  }, [formFromProps.fields])
 
   const onSubmit = useCallback(
     (data: Data) => {
@@ -131,6 +135,10 @@ export const FormBlock: React.FC<
     [router, formID, redirect, confirmationType],
   )
 
+  useEffect(() => {
+    console.log(errors)
+  }, [errors])
+
   return (
     <div className="container lg:max-w-[48rem] pb-20">
       <FormProvider {...formMethods}>
@@ -144,14 +152,14 @@ export const FormBlock: React.FC<
         {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
         {!hasSubmitted && (
           <form id={formID} onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-4 last:mb-0 ">
+            <div className="mb-4 grid grid-cols-12 gap-2">
               {formFromProps &&
                 formFromProps.fields &&
                 formFromProps.fields?.map((field, index) => {
                   const Field: React.FC<any> = fields?.[field.blockType]
+
                   if (Field) {
                     return (
-                      // <div className="mb-6 last:mb-0" key={index}>
                       <Field
                         form={formFromProps}
                         {...field}
@@ -159,10 +167,10 @@ export const FormBlock: React.FC<
                         control={control}
                         errors={errors}
                         register={register}
-                        className={`inline-block w-full ${field.blockName && !errors[field.blockName] && 'mb-6 last:mb-0'} relative transition-[margin] duration-300 ${field.blockName && errors[field.blockName] && 'mb-10 last:mb-4'}`}
+                        className={`inline-block ${'width' in field ? fieldWidthClasses[field.width || 'full'] : ''} ${'name' in field && field.name && !errors[field.name] && 'mb-0'} relative transition-[margin] duration-300 ${'name' in field && field.name && errors[field.name] && 'mb-8'}`}
+                        setValue={setValue}
                         key={index}
                       />
-                      // </div>
                     )
                   }
                   return null
