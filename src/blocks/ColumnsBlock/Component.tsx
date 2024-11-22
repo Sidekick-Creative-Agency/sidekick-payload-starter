@@ -15,17 +15,32 @@ export const ColumnsBlock: React.FC<
     id?: string
   } & Props
 > = (props) => {
+  const { id, columns, styles } = props
   const {
-    id,
-    columns,
-    reverseWrap,
-    paddingVerticalDesktopValue: pyDesktopVal,
-    paddingVerticalDesktopUnit: pyDesktopUnit,
-    paddingVerticalTabletValue: pyTabletVal,
-    paddingVerticalTabletUnit: pyTabletUnit,
-    paddingVerticalMobileValue: pyMobileVal,
-    paddingVerticalMobileUnit: pyMobileUnit,
-  } = props
+    // @ts-ignore error type checking Styles Field
+    global: { width },
+    // @ts-ignore error type checking Styles Field
+    responsive: {
+      paddingVerticalDesktopValue: pyDesktopVal,
+      paddingVerticalDesktopUnit: pyDesktopUnit,
+      paddingHorizontalDesktopValue: pxDesktopVal,
+      paddingHorizontalDesktopUnit: pxDesktopUnit,
+      paddingVerticalTabletValue: pyTabletVal,
+      paddingVerticalTabletUnit: pyTabletUnit,
+      paddingHorizontalTabletValue: pxTabletVal,
+      paddingHorizontalTabletUnit: pxTabletUnit,
+      paddingVerticalMobileValue: pyMobileVal,
+      paddingVerticalMobileUnit: pyMobileUnit,
+      paddingHorizontalMobileValue: pxMobileVal,
+      paddingHorizontalMobileUnit: pxMobileUnit,
+      reverseWrap,
+    },
+  } = styles
+
+  const widthClasses = {
+    full: 'max-w-full',
+    boxed: '',
+  }
   const flexDirection = reverseWrap ? 'columnReverse' : 'column'
   const colsSpanClasses = {
     full: '12',
@@ -46,31 +61,31 @@ export const ColumnsBlock: React.FC<
     xxl: 'rounded-media2Xl',
     full: 'rounded-full',
   }
-  const pyDesktop = pyDesktopVal && pyDesktopUnit ? `${pyDesktopVal}${pyDesktopUnit}` : ''
-  const pyTablet = pyTabletVal && pyTabletUnit ? `${pyTabletVal}${pyTabletUnit}` : ''
-  const pyMobile = pyMobileVal && pyMobileUnit ? `${pyMobileVal}${pyMobileUnit}` : ''
+  const pyDesktop = pyDesktopVal && pyDesktopUnit ? `${pyDesktopVal}${pyDesktopUnit}` : '0'
+  const pxDesktop = pxDesktopVal && pxDesktopUnit ? `${pxDesktopVal}${pxDesktopUnit}` : '0'
+  const pyTablet = pyTabletVal && pyTabletUnit ? `${pyTabletVal}${pyTabletUnit}` : '0'
+  const pxTablet = pxTabletVal && pxTabletUnit ? `${pxTabletVal}${pxTabletUnit}` : '0'
+  const pyMobile = pyMobileVal && pyMobileUnit ? `${pyMobileVal}${pyMobileUnit}` : '0'
+  const pxMobile = pxMobileVal && pxMobileUnit ? `${pxMobileVal}${pxMobileUnit}` : '0'
 
   return (
     <>
       <style>
         {`.columns-block-${id} {
-       padding-top: ${pyMobile};
-       padding-bottom: ${pyMobile};
+        padding: ${pyMobile} ${pxMobile};
+       
 
        @media screen and (min-width: ${defaultTheme.screens.md}) {
-          padding-top: ${pyTablet};
-          padding-bottom: ${pyTablet};
-       }
+       padding: ${pyTablet} ${pxTablet};
           @media screen and (min-width: ${defaultTheme.screens.lg}) {
-          padding-top: ${pyDesktop};
-          padding-bottom: ${pyDesktop};
+          padding: ${pyDesktop} ${pxDesktop};
        }
       }`}
       </style>
-      <div className={`container columns-block-${id}`}>
+      <div className={`container columns-block-${id} ${widthClasses[width]}`}>
         <div
           className={cn(
-            `flex ${flexDirectionClasses[flexDirection]} sm:grid sm:grid-cols-4 lg:grid-cols-12 gap-y-8 gap-x-16`,
+            `flex ${flexDirectionClasses[flexDirection]} sm:grid sm:grid-cols-4 lg:grid-cols-12  ${width !== 'full' && 'gap-y-8 gap-x-16'}`,
           )}
         >
           {columns &&
@@ -81,10 +96,11 @@ export const ColumnsBlock: React.FC<
               return (
                 <div
                   className={cn(
-                    `lg:col-span-${colsSpanClasses[size || 'full']} flex flex-col justify-center items-stretch sm:items-start gap-4`,
+                    `lg:col-span-${colsSpanClasses[size || 'full']} ${type === 'text' && width === 'full' && 'px-5 py-10 sm:px-10 sm:py-20 md:px-20 md:py-20'} flex flex-col justify-center items-stretch sm:items-start gap-4`,
                     {
                       'sm:col-span-2': size !== 'full',
                     },
+                    {},
                   )}
                   key={index}
                 >

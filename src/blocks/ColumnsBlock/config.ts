@@ -1,13 +1,23 @@
 import type { Block, Field } from 'payload'
 
 import {
+  BlocksFeature,
   FixedToolbarFeature,
   HeadingFeature,
+  HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
 import { link } from '@/fields/link'
+import { StylesField } from '@/fields/Styles'
+import { DesktopVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Desktop'
+import { TabletVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Tablet'
+import { MobileVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Mobile'
+import { TabletHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Tablet'
+import { DesktopHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Desktop'
+import { MobileHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Mobile'
+import { FormBlock } from '../Form/config'
 
 const columnFields: Field[] = [
   {
@@ -54,6 +64,7 @@ const columnFields: Field[] = [
   {
     name: 'richText',
     type: 'richText',
+
     editor: lexicalEditor({
       features: ({ rootFeatures }) => {
         return [
@@ -61,6 +72,8 @@ const columnFields: Field[] = [
           HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
           FixedToolbarFeature(),
           InlineToolbarFeature(),
+          BlocksFeature({ blocks: [FormBlock] }),
+          HorizontalRuleFeature(),
         ]
       },
     }),
@@ -157,139 +170,29 @@ export const ColumnsBlock: Block = {
       fields: columnFields,
     },
 
-    {
-      type: 'collapsible',
-      label: 'Styles',
-      admin: {
-        initCollapsed: true,
-      },
-      fields: [
+    StylesField({
+      globalOverrides: [
         {
-          label: 'Desktop',
-          type: 'collapsible',
-          admin: {
-            initCollapsed: true,
-          },
-          fields: [
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'paddingVerticalDesktopValue', // required
-                  label: 'Vertical Padding',
-                  type: 'number', // required
-                },
-                {
-                  name: 'paddingVerticalDesktopUnit',
-                  enumName: 'pb_columns_block_style_group_pad_vert_desktop_unit',
-                  label: 'Unit',
-                  type: 'select',
-                  defaultValue: 'rem',
-                  options: [
-                    {
-                      value: 'rem',
-                      label: 'rem',
-                    },
-                    {
-                      value: 'px',
-                      label: 'px',
-                    },
-                    {
-                      value: '%',
-                      label: '%',
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'Tablet',
-          type: 'collapsible',
-          admin: {
-            initCollapsed: true,
-          },
-          fields: [
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'paddingVerticalTabletValue', // required
-                  label: 'Vertical Padding',
-                  type: 'number', // required
-                },
-                {
-                  name: 'paddingVerticalTabletUnit',
-                  enumName: 'pb_columns_block_style_group_pad_vert_tablet_unit',
-                  label: 'Unit',
-                  type: 'select',
-                  defaultValue: 'rem',
-                  options: [
-                    {
-                      value: 'rem',
-                      label: 'rem',
-                    },
-                    {
-                      value: 'px',
-                      label: 'px',
-                    },
-                    {
-                      value: '%',
-                      label: '%',
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'Mobile',
-          type: 'collapsible',
-          admin: {
-            initCollapsed: true,
-          },
-          fields: [
-            {
-              name: 'reverseWrap', // required
-              label: 'Reverse Wrap',
-              type: 'checkbox', // required
-            },
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'paddingVerticalMobileValue', // required
-                  label: 'Vertical Padding',
-                  type: 'number', // required
-                },
-                {
-                  name: 'paddingVerticalMobileUnit',
-                  enumName: 'pb_columns_block_style_group_pad_vert_mobile_unit',
-                  label: 'Unit',
-                  type: 'select',
-                  defaultValue: 'rem',
-                  options: [
-                    {
-                      value: 'rem',
-                      label: 'rem',
-                    },
-                    {
-                      value: 'px',
-                      label: 'px',
-                    },
-                    {
-                      value: '%',
-                      label: '%',
-                    },
-                  ],
-                },
-              ],
-            },
+          name: 'width',
+          type: 'select',
+          defaultValue: 'boxed',
+          options: [
+            { label: 'Full Width', value: 'full' },
+            { label: 'Boxed', value: 'boxed' },
           ],
         },
       ],
-    },
+      desktopOverrides: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
+      tabletOverrides: [TabletHorizontalPaddingField, TabletVerticalPaddingField],
+      mobileOverrides: [
+        MobileHorizontalPaddingField,
+        MobileVerticalPaddingField,
+        {
+          name: 'reverseWrap',
+          label: 'Reverse Wrap',
+          type: 'checkbox',
+        },
+      ],
+    }),
   ],
 }

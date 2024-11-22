@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import type { Header as HeaderType } from '@/payload-types'
 
@@ -18,19 +18,27 @@ import {
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu'
 import { Button } from '@/components/ui/button'
+import { useMotionValueEvent, useScroll } from 'framer-motion'
 
-export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
+export const HeaderNav: React.FC<{ header: HeaderType; isScrolled: boolean }> = ({
+  header,
+  isScrolled,
+}) => {
   const navItems = header?.navItems || []
-
   return (
-    <nav className="flex gap-3 items-center">
+    <nav className="flex gap-4 items-center">
       <NavigationMenu>
-        <NavigationMenuList>
+        <NavigationMenuList className="flex gap-4">
           {navItems.map(({ navItem }, i) => {
             if (navItem?.type === 'link') {
               return (
                 <NavigationMenuItem key={i}>
-                  <CMSLink key={i} {...navItem.link} appearance="link" />
+                  <CMSLink
+                    key={i}
+                    {...navItem.link}
+                    appearance="link"
+                    className={`${isScrolled ? 'text-primary' : 'text-primary-foreground'}`}
+                  />
                 </NavigationMenuItem>
               )
             }
@@ -58,7 +66,9 @@ export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
 
       <Link href="/search">
         <span className="sr-only">Search</span>
-        <SearchIcon className="w-5 text-primary" />
+        <SearchIcon
+          className={`w-5 transition-colors duration-200 ${isScrolled ? 'text-primary' : 'text-primary-foreground'}`}
+        />
       </Link>
     </nav>
   )

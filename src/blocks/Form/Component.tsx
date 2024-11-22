@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { buildInitialFormState } from './buildInitialFormState'
 import { fields } from './fields'
 import { PhoneNumberField } from './PhoneNumber/Field'
+import defaultTheme from 'tailwindcss/defaultTheme'
 export type Value = unknown
 
 export interface Property {
@@ -28,6 +29,9 @@ export type FormBlockType = {
   introContent?: {
     [k: string]: unknown
   }[]
+  styles?: {
+    [k: string]: unknown
+  }
 }
 
 export const fieldWidthClasses = {
@@ -42,8 +46,7 @@ export const FormBlock: React.FC<
     id?: string
   } & FormBlockType
 > = (props) => {
-  const { enableIntro, form: formFromProps, introContent } = props
-
+  const { enableIntro, form: formFromProps, introContent, styles } = props
   const {
     id: formID = '',
     confirmationMessage = '',
@@ -51,6 +54,38 @@ export const FormBlock: React.FC<
     redirect = undefined,
     submitButtonLabel = '',
   } = formFromProps
+
+  const {
+    // @ts-ignore error type checking Styles Field
+    global: { width },
+    // @ts-ignore error type checking Styles Field
+    responsive: {
+      paddingVerticalDesktopValue: pyDesktopVal,
+      paddingVerticalDesktopUnit: pyDesktopUnit,
+      paddingHorizontalDesktopValue: pxDesktopVal,
+      paddingHorizontalDesktopUnit: pxDesktopUnit,
+      paddingVerticalTabletValue: pyTabletVal,
+      paddingVerticalTabletUnit: pyTabletUnit,
+      paddingHorizontalTabletValue: pxTabletVal,
+      paddingHorizontalTabletUnit: pxTabletUnit,
+      paddingVerticalMobileValue: pyMobileVal,
+      paddingVerticalMobileUnit: pyMobileUnit,
+      paddingHorizontalMobileValue: pxMobileVal,
+      paddingHorizontalMobileUnit: pxMobileUnit,
+    },
+  } = styles
+  const pyDesktop = pyDesktopVal && pyDesktopUnit ? `${pyDesktopVal}${pyDesktopUnit}` : '0'
+  const pxDesktop = pxDesktopVal && pxDesktopUnit ? `${pxDesktopVal}${pxDesktopUnit}` : '0'
+  const pyTablet = pyTabletVal && pyTabletUnit ? `${pyTabletVal}${pyTabletUnit}` : '0'
+  const pxTablet = pxTabletVal && pxTabletUnit ? `${pxTabletVal}${pxTabletUnit}` : '0'
+  const pyMobile = pyMobileVal && pyMobileUnit ? `${pyMobileVal}${pyMobileUnit}` : '0'
+  const pxMobile = pxMobileVal && pxMobileUnit ? `${pxMobileVal}${pxMobileUnit}` : '0'
+
+  const widthClasses = {
+    full: 'max-w-full',
+    boxed: '',
+    narrow: 'max-w-48',
+  }
 
   const formMethods = useForm({
     defaultValues: buildInitialFormState(formFromProps.fields),
@@ -140,49 +175,63 @@ export const FormBlock: React.FC<
   }, [errors])
 
   return (
-    <div className="container lg:max-w-[48rem] pb-20">
-      <FormProvider {...formMethods}>
-        {enableIntro && introContent && !hasSubmitted && (
-          <RichText className="mb-8" content={introContent} enableGutter={false} />
-        )}
-        {!isLoading && hasSubmitted && confirmationType === 'message' && (
-          <RichText content={confirmationMessage} />
-        )}
-        {isLoading && !hasSubmitted && <p>Loading, please wait...</p>}
-        {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
-        {!hasSubmitted && (
-          <form id={formID} onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-4 grid grid-cols-12 gap-2">
-              {formFromProps &&
-                formFromProps.fields &&
-                formFromProps.fields?.map((field, index) => {
-                  const Field: React.FC<any> = fields?.[field.blockType]
+    <>
+      <style>
+        {`.form-block-${formID} {
+        padding: ${pyMobile} ${pxMobile};
+       
 
-                  if (Field) {
-                    return (
-                      <Field
-                        form={formFromProps}
-                        {...field}
-                        {...formMethods}
-                        control={control}
-                        errors={errors}
-                        register={register}
-                        className={`inline-block ${'width' in field ? fieldWidthClasses[field.width || 'full'] : ''} ${'name' in field && field.name && !errors[field.name] && 'mb-0'} relative transition-[margin] duration-300 ${'name' in field && field.name && errors[field.name] && 'mb-8'}`}
-                        setValue={setValue}
-                        key={index}
-                      />
-                    )
-                  }
-                  return null
-                })}
-            </div>
+       @media screen and (min-width: ${defaultTheme.screens.md}) {
+       padding: ${pyTablet} ${pxTablet};
+          @media screen and (min-width: ${defaultTheme.screens.lg}) {
+          padding: ${pyDesktop} ${pxDesktop};
+       }
+      }`}
+      </style>
+      <div className={`container ${widthClasses[width]} form-block-${formID}`}>
+        <FormProvider {...formMethods}>
+          {enableIntro && introContent && !hasSubmitted && (
+            <RichText className="mb-8" content={introContent} enableGutter={false} />
+          )}
+          {!isLoading && hasSubmitted && confirmationType === 'message' && (
+            <RichText content={confirmationMessage} />
+          )}
+          {isLoading && !hasSubmitted && <p>Loading, please wait...</p>}
+          {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
+          {!hasSubmitted && (
+            <form id={formID} onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-4 grid grid-cols-12 gap-2">
+                {formFromProps &&
+                  formFromProps.fields &&
+                  formFromProps.fields?.map((field, index) => {
+                    const Field: React.FC<any> = fields?.[field.blockType]
 
-            <Button form={formID} type="submit" variant="default">
-              {submitButtonLabel}
-            </Button>
-          </form>
-        )}
-      </FormProvider>
-    </div>
+                    if (Field) {
+                      return (
+                        <Field
+                          form={formFromProps}
+                          {...field}
+                          {...formMethods}
+                          control={control}
+                          errors={errors}
+                          register={register}
+                          className={`inline-block ${'width' in field ? fieldWidthClasses[field.width || 'full'] : ''} ${'name' in field && field.name && !errors[field.name] && 'mb-0'} relative transition-[margin] duration-300 ${'name' in field && field.name && errors[field.name] && 'mb-8'}`}
+                          setValue={setValue}
+                          key={index}
+                        />
+                      )
+                    }
+                    return null
+                  })}
+              </div>
+
+              <Button form={formID} type="submit" variant="default">
+                {submitButtonLabel}
+              </Button>
+            </form>
+          )}
+        </FormProvider>
+      </div>
+    </>
   )
 }

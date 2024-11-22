@@ -43,6 +43,7 @@ import { EmailField } from './blocks/Form/Email/Field/input'
 import { NumberField } from './blocks/Form/Number/Field/input'
 import { StateField } from './blocks/Form/State/Field/input'
 import { TextAreaField } from './blocks/Form/Textarea/Field/input'
+import { Listings } from './collections/Listings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -130,12 +131,12 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [Pages, Posts, Media, Categories, Users, Listings],
   cors: [process.env.NEXT_PUBLIC_SERVER_URL || ''].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
     redirectsPlugin({
-      collections: ['pages', 'posts'],
+      collections: ['pages', 'posts', 'listings'],
       overrides: {
         // @ts-expect-error
         fields: ({ defaultFields }) => {
@@ -200,7 +201,7 @@ export default buildConfig({
       },
     }),
     searchPlugin({
-      collections: ['posts'],
+      collections: ['posts', 'listings'],
       beforeSync: beforeSyncWithSearch,
       searchOverrides: {
         fields: ({ defaultFields }) => {

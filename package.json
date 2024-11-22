@@ -15,7 +15,7 @@
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation next lint --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm package-lock.json && npm --ignore-workspace install",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start -p 3003"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "latest",
@@ -41,6 +41,7 @@
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
     "embla-carousel-react": "^8.3.1",
+    "framer-motion": "^12.0.0-alpha.1",
     "geist": "^1.3.0",
     "graphql": "^16.8.2",
     "jsonwebtoken": "9.0.2",

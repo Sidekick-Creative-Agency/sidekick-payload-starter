@@ -16,6 +16,7 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    listings: Listing;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -31,6 +32,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    listings: ListingsSelect<false> | ListingsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -447,6 +449,25 @@ export interface FormBlock {
     };
     [k: string]: unknown;
   } | null;
+  styles?: {
+    global?: {
+      width?: ('full' | 'boxed' | 'narrow') | null;
+    };
+    responsive?: {
+      paddingHorizontalDesktopValue?: number | null;
+      paddingHorizontalDesktopUnit?: ('rem' | 'px' | '%') | null;
+      paddingVerticalDesktopValue?: number | null;
+      paddingVerticalDesktopUnit?: ('rem' | 'px' | '%') | null;
+      paddingHorizontalTabletValue?: number | null;
+      paddingHorizontalTabletUnit?: ('rem' | 'px' | '%') | null;
+      paddingVerticalTabletValue?: number | null;
+      paddingVerticalTabletUnit?: ('rem' | 'px' | '%') | null;
+      paddingHorizontalMobileValue?: number | null;
+      paddingHorizontalMobileUnit?: ('rem' | 'px' | '%') | null;
+      paddingVerticalMobileValue?: number | null;
+      paddingVerticalMobileUnit?: ('rem' | 'px' | '%') | null;
+    };
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'formBlock';
@@ -666,13 +687,26 @@ export interface ColumnsBlock {
         id?: string | null;
       }[]
     | null;
-  paddingVerticalDesktopValue?: number | null;
-  paddingVerticalDesktopUnit?: ('rem' | 'px' | '%') | null;
-  paddingVerticalTabletValue?: number | null;
-  paddingVerticalTabletUnit?: ('rem' | 'px' | '%') | null;
-  reverseWrap?: boolean | null;
-  paddingVerticalMobileValue?: number | null;
-  paddingVerticalMobileUnit?: ('rem' | 'px' | '%') | null;
+  styles?: {
+    global?: {
+      width?: ('full' | 'boxed') | null;
+    };
+    responsive?: {
+      paddingHorizontalDesktopValue?: number | null;
+      paddingHorizontalDesktopUnit?: ('rem' | 'px' | '%') | null;
+      paddingVerticalDesktopValue?: number | null;
+      paddingVerticalDesktopUnit?: ('rem' | 'px' | '%') | null;
+      paddingHorizontalTabletValue?: number | null;
+      paddingHorizontalTabletUnit?: ('rem' | 'px' | '%') | null;
+      paddingVerticalTabletValue?: number | null;
+      paddingVerticalTabletUnit?: ('rem' | 'px' | '%') | null;
+      paddingHorizontalMobileValue?: number | null;
+      paddingHorizontalMobileUnit?: ('rem' | 'px' | '%') | null;
+      paddingVerticalMobileValue?: number | null;
+      paddingVerticalMobileUnit?: ('rem' | 'px' | '%') | null;
+      reverseWrap?: boolean | null;
+    };
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'columnsBlock';
@@ -721,6 +755,40 @@ export interface FAQBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "listings".
+ */
+export interface Listing {
+  id: number;
+  title: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  meta?: {
+    title?: string | null;
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -736,6 +804,10 @@ export interface Redirect {
       | ({
           relationTo: 'posts';
           value: number | Post;
+        } | null)
+      | ({
+          relationTo: 'listings';
+          value: number | Listing;
         } | null);
     url?: string | null;
   };
@@ -767,10 +839,15 @@ export interface Search {
   id: number;
   title?: string | null;
   priority?: number | null;
-  doc: {
-    relationTo: 'posts';
-    value: number | Post;
-  };
+  doc:
+    | {
+        relationTo: 'posts';
+        value: number | Post;
+      }
+    | {
+        relationTo: 'listings';
+        value: number | Listing;
+      };
   slug?: string | null;
   meta?: {
     title?: string | null;
@@ -813,6 +890,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'listings';
+        value: number | Listing;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -977,6 +1058,31 @@ export interface PagesSelect<T extends boolean = true> {
               form?: T;
               enableIntro?: T;
               introContent?: T;
+              styles?:
+                | T
+                | {
+                    global?:
+                      | T
+                      | {
+                          width?: T;
+                        };
+                    responsive?:
+                      | T
+                      | {
+                          paddingHorizontalDesktopValue?: T;
+                          paddingHorizontalDesktopUnit?: T;
+                          paddingVerticalDesktopValue?: T;
+                          paddingVerticalDesktopUnit?: T;
+                          paddingHorizontalTabletValue?: T;
+                          paddingHorizontalTabletUnit?: T;
+                          paddingVerticalTabletValue?: T;
+                          paddingVerticalTabletUnit?: T;
+                          paddingHorizontalMobileValue?: T;
+                          paddingHorizontalMobileUnit?: T;
+                          paddingVerticalMobileValue?: T;
+                          paddingVerticalMobileUnit?: T;
+                        };
+                  };
               id?: T;
               blockName?: T;
             };
@@ -1004,13 +1110,32 @@ export interface PagesSelect<T extends boolean = true> {
                     mediaBorderRadius?: T;
                     id?: T;
                   };
-              paddingVerticalDesktopValue?: T;
-              paddingVerticalDesktopUnit?: T;
-              paddingVerticalTabletValue?: T;
-              paddingVerticalTabletUnit?: T;
-              reverseWrap?: T;
-              paddingVerticalMobileValue?: T;
-              paddingVerticalMobileUnit?: T;
+              styles?:
+                | T
+                | {
+                    global?:
+                      | T
+                      | {
+                          width?: T;
+                        };
+                    responsive?:
+                      | T
+                      | {
+                          paddingHorizontalDesktopValue?: T;
+                          paddingHorizontalDesktopUnit?: T;
+                          paddingVerticalDesktopValue?: T;
+                          paddingVerticalDesktopUnit?: T;
+                          paddingHorizontalTabletValue?: T;
+                          paddingHorizontalTabletUnit?: T;
+                          paddingVerticalTabletValue?: T;
+                          paddingVerticalTabletUnit?: T;
+                          paddingHorizontalMobileValue?: T;
+                          paddingHorizontalMobileUnit?: T;
+                          paddingVerticalMobileValue?: T;
+                          paddingVerticalMobileUnit?: T;
+                          reverseWrap?: T;
+                        };
+                  };
               id?: T;
               blockName?: T;
             };
@@ -1204,6 +1329,29 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "listings_select".
+ */
+export interface ListingsSelect<T extends boolean = true> {
+  title?: T;
+  content?: T;
+  meta?:
+    | T
+    | {
+        overview?: T;
+        title?: T;
+        image?: T;
+        description?: T;
+        preview?: T;
+      };
+  publishedAt?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -15,6 +15,7 @@ import {
   IS_UNDERLINE,
 } from './nodeFormat'
 import type { Page } from '@/payload-types'
+import { FormBlock } from '@/blocks/Form/Component'
 
 export type NodeTypes =
   | DefaultNodeTypes
@@ -23,6 +24,7 @@ export type NodeTypes =
       | Extract<Page['layout'][0], { blockType: 'cta' }>
       | Extract<Page['layout'][0], { blockType: 'mediaBlock' }>
       | CodeBlockProps
+      | Extract<Page['layout'][0], { blockType: 'formBlock' }>
     >
 
 type Props = {
@@ -132,6 +134,8 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
               )
             case 'code':
               return <CodeBlock className="col-start-2" key={index} {...block} />
+            case 'formBlock':
+              return <FormBlock key={index} {...block} enableIntro={block.enableIntro || false} />
             default:
               return null
           }

@@ -6,6 +6,13 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import { DesktopHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Desktop'
+import { DesktopVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Desktop'
+import { TabletHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Tablet'
+import { TabletVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Tablet'
+import { MobileHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Mobile'
+import { MobileVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Mobile'
+import { StylesField } from '@/fields/Styles'
 
 export const FormBlock: Block = {
   slug: 'formBlock',
@@ -45,6 +52,23 @@ export const FormBlock: Block = {
       }),
       label: 'Intro Content',
     },
+    StylesField({
+      globalOverrides: [
+        {
+          name: 'width',
+          type: 'select',
+          defaultValue: 'boxed',
+          options: [
+            { label: 'Full Width', value: 'full' },
+            { label: 'Boxed', value: 'boxed' },
+            { label: 'Narrow', value: 'narrow' },
+          ],
+        },
+      ],
+      desktopOverrides: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
+      tabletOverrides: [TabletHorizontalPaddingField, TabletVerticalPaddingField],
+      mobileOverrides: [MobileHorizontalPaddingField, MobileVerticalPaddingField],
+    }),
   ],
   graphQL: {
     singularName: 'FormBlock',

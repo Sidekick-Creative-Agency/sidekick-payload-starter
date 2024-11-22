@@ -15,8 +15,8 @@ import { Banner } from '../../blocks/Banner/config'
 import { Code } from '../../blocks/Code/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
-import { populateAuthors } from './hooks/populateAuthors'
-import { revalidatePost } from './hooks/revalidatePost'
+
+import { revalidateListing } from './hooks/revalidateListing'
 
 import {
   MetaDescriptionField,
@@ -27,8 +27,8 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/Slug'
 
-export const Posts: CollectionConfig = {
-  slug: 'posts',
+export const Listings: CollectionConfig = {
+  slug: 'listings',
   access: {
     create: authenticated,
     delete: authenticated,
@@ -41,7 +41,7 @@ export const Posts: CollectionConfig = {
       url: ({ data }) => {
         const path = generatePreviewPath({
           slug: typeof data?.slug === 'string' ? data.slug : '',
-          collection: 'posts',
+          collection: 'listings',
         })
 
         return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`
@@ -50,7 +50,7 @@ export const Posts: CollectionConfig = {
     preview: (data) => {
       const path = generatePreviewPath({
         slug: typeof data?.slug === 'string' ? data.slug : '',
-        collection: 'posts',
+        collection: 'listings',
       })
 
       return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`
@@ -91,31 +91,31 @@ export const Posts: CollectionConfig = {
         },
         {
           fields: [
-            {
-              name: 'relatedPosts',
-              type: 'relationship',
-              admin: {
-                position: 'sidebar',
-              },
-              filterOptions: ({ id }) => {
-                return {
-                  id: {
-                    not_in: [id],
-                  },
-                }
-              },
-              hasMany: true,
-              relationTo: 'posts',
-            },
-            {
-              name: 'categories',
-              type: 'relationship',
-              admin: {
-                position: 'sidebar',
-              },
-              hasMany: true,
-              relationTo: 'categories',
-            },
+            // {
+            //   name: 'related',
+            //   type: 'relationship',
+            //   admin: {
+            //     position: 'sidebar',
+            //   },
+            //   filterOptions: ({ id }) => {
+            //     return {
+            //       id: {
+            //         not_in: [id],
+            //       },
+            //     }
+            //   },
+            //   hasMany: true,
+            //   relationTo: 'posts',
+            // },
+            // {
+            //   name: 'categories',
+            //   type: 'relationship',
+            //   admin: {
+            //     position: 'sidebar',
+            //   },
+            //   hasMany: true,
+            //   relationTo: 'categories',
+            // },
           ],
           label: 'Meta',
         },
@@ -168,44 +168,13 @@ export const Posts: CollectionConfig = {
         ],
       },
     },
-    {
-      name: 'authors',
-      type: 'relationship',
-      admin: {
-        position: 'sidebar',
-      },
-      hasMany: true,
-      relationTo: 'users',
-    },
     // This field is only used to populate the user data via the `populateAuthors` hook
     // This is because the `user` collection has access control locked to protect user privacy
     // GraphQL will also not return mutated user data that differs from the underlying schema
-    {
-      name: 'populatedAuthors',
-      type: 'array',
-      access: {
-        update: () => false,
-      },
-      admin: {
-        disabled: true,
-        readOnly: true,
-      },
-      fields: [
-        {
-          name: 'id',
-          type: 'text',
-        },
-        {
-          name: 'name',
-          type: 'text',
-        },
-      ],
-    },
     ...slugField(),
   ],
   hooks: {
-    afterChange: [revalidatePost],
-    afterRead: [populateAuthors],
+    afterChange: [revalidateListing],
   },
   versions: {
     drafts: {
