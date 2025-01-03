@@ -28,6 +28,7 @@ const RichText: React.FC<Props> = ({
           'max-w-none': !enableGutter,
           'prose dark:prose-invert ': enableProse,
         },
+        'w-full',
         className,
       )}
     >

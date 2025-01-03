@@ -16,6 +16,9 @@ import {
 } from './nodeFormat'
 import type { Page } from '@/payload-types'
 import { FormBlock } from '@/blocks/Form/Component'
+import { ColumnsBlock } from '@/blocks/ColumnsBlock/Component'
+import { SubtitleBlockProps, SubtitleLexicalBlock } from '@/blocks/Lexical/Subtitle/Component'
+import { CarouselBlockProps, CarouselLexicalBlock } from '@/blocks/Lexical/Carousel/Component'
 
 export type NodeTypes =
   | DefaultNodeTypes
@@ -25,6 +28,9 @@ export type NodeTypes =
       | Extract<Page['layout'][0], { blockType: 'mediaBlock' }>
       | CodeBlockProps
       | Extract<Page['layout'][0], { blockType: 'formBlock' }>
+      | Extract<Page['layout'][0], { blockType: 'columnsBlock' }>
+      | SubtitleBlockProps
+      | CarouselBlockProps
     >
 
 type Props = {
@@ -40,7 +46,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
   }
   const headingSizeClasses = {
     h1: 'text-[2.5rem] md:text-[3.5rem] lg:text-[4rem]',
-    h2: 'text-[2rem] md:text-[2.5rem]',
+    h2: 'text-[2rem] md:text-[2.5rem] mb-6',
     h3: 'text-[1.5rem] md:text-[2rem]',
     h4: 'text-[1rem] md:text-[1.5rem]',
   }
@@ -116,7 +122,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
           if (!block || !blockType) {
             return null
           }
-
+          console.log(blockType)
           switch (blockType) {
             case 'cta':
               return <CallToActionBlock key={index} {...block} />
@@ -135,7 +141,14 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             case 'code':
               return <CodeBlock className="col-start-2" key={index} {...block} />
             case 'formBlock':
+              // @ts-ignore
               return <FormBlock key={index} {...block} enableIntro={block.enableIntro || false} />
+            case 'columnsBlock':
+              return <ColumnsBlock key={index} {...block} />
+            case 'subtitle':
+              return <SubtitleLexicalBlock key={index} {...block} />
+            case 'carousel':
+              return <CarouselLexicalBlock key={index} {...block} />
             default:
               return null
           }
@@ -146,7 +159,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             }
             case 'paragraph': {
               return (
-                <p className={`col-start-2 ${formatClasses[node.format]} `} key={index}>
+                <p className={`col-start-2 ${formatClasses[node.format]} mb-3`} key={index}>
                   {serializedChildren}
                 </p>
               )

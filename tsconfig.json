@@ -36,6 +36,9 @@
       "@/*": [
         "./src/*"
       ],
+      "@fontawesome-kit/*": [
+        "@awesome.me/kit-a7a0dd333d/*"
+      ]
     }
   },
   "include": [

@@ -93,10 +93,12 @@ export default {
           foreground: 'hsl(var(--secondary-foreground))',
         },
         brand: {
-          red: 'hsl(var(--brand-red))',
-          blue: 'hsl(var(--brand-blue))',
-          grey: 'hsl(var(--brand-grey))',
-          lightGrey: 'hsl(var(--brand-light-grey))',
+          navy: 'var(--brand-navy)',
+          offWhite: 'var(--brand-off-white)',
+          tan: 'var(--brand-tan)',
+          blue: 'var(--brand-blue)',
+          brown: 'var(--brand-brown)',
+          green: 'var(--brand-green)',
         },
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
@@ -105,6 +107,7 @@ export default {
       fontFamily: {
         mono: ['var(--font-geist-mono)'],
         sans: ['var(--font-geist-sans)'],
+        'basic-sans': ['basic-sans', 'sans-serif'],
       },
       keyframes: {
         'accordion-down': {
@@ -123,27 +126,32 @@ export default {
             '--tw-prose-headings': 'var(--text)',
             h1: {
               fontSize: '4rem',
-              fontWeight: '500',
+              fontWeight: '700',
               marginBottom: 0,
               marginTop: 0,
             },
             h2: {
               fontSize: '2.5rem',
-              fontWeight: '500',
+              fontWeight: '700',
               marginBottom: 0,
               marginTop: 0,
             },
             h3: {
-              fontWeight: '500',
+              fontSize: '2rem',
+              fontWeight: '700',
               lineHeight: 1.25,
               marginBottom: 0,
               marginTop: 0,
             },
             h4: {
-              fontWeight: '500',
+              fontWeight: '700',
               lineHeight: 1.25,
               marginBottom: 0,
               marginTop: 0,
+            },
+            p: {
+              fontWeight: '300',
+              lineHeight: 1.8,
             },
           },
         },

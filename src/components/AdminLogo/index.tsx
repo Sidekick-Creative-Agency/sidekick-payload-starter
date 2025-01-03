@@ -5,10 +5,10 @@ const AdminLogo: React.FC = () => {
   return (
     <div>
       <img
-        src="/sidekick-logo-admin.png"
+        src="/onward-logoicon-color-light.webp"
         alt="custom logo"
         width={256}
-        height={128}
+        height={144}
         className="w-full object-contain"
       />
     </div>

@@ -2,10 +2,19 @@
 @tailwind utilities;
 
 :root {
-  --brand-red: 3 75% 53%;
-  --brand-blue: 207 54% 51%;
-  --brand-grey: 240 2% 86%;
-  --brand-lightGrey: 210 4% 95%;
+  --brand-navy: #0b2a35;
+  --brand-off-white: #f7f3ed;
+  --brand-tan: #ccb6a6;
+  --brand-blue: #a9c1c9;
+  --brand-brown: #7f6c60;
+  --brand-green: #878e61;
+  --tw-ring-inset: 0px;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
 }
 
 [data-theme='dark'] {

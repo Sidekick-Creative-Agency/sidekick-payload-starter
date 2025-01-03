@@ -3,16 +3,14 @@ import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-
 import type { Header } from '@/payload-types'
-
-import { Logo } from '@/components/Logo/Logo'
-import { HeaderNav } from './Nav/Desktop'
+import { RightHeaderNav } from './Nav/Desktop/Right'
 import { Media } from '@/components/Media'
 import useWindowDimensions from '@/utilities/useWindowDimensions'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import { HeaderMobileNav } from './Nav/Mobile'
 import { useMotionValueEvent, useScroll } from 'framer-motion'
+import { LeftHeaderNav } from './Nav/Desktop/Left'
 
 interface HeaderClientProps {
   header: Header
@@ -43,24 +41,34 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
 
   return (
     <header
-      className={`px-[1.25rem] md:px-[2.5rem] z-20 flex justify-between sticky top-0 transition-all duration-200 ${
-        isScrolled ? ' bg-primary-foreground py-4' : 'bg-transparent py-8'
+      className={`px-[1.25rem] md:px-[2.5rem] z-20 flex md:grid md:grid-cols-3 justify-between sticky top-0 transition-all duration-200 ${
+        isScrolled ? ' bg-white py-4' : 'bg-transparent py-8'
       }`}
       {...(theme ? { 'data-theme': theme } : {})}
     >
+      {width && width > parseInt(defaultTheme.screens.md) && (
+        <LeftHeaderNav
+          navItems={header?.navItems?.filter((item) => item.navItem?.side === 'left') || []}
+          isScrolled={isScrolled}
+        />
+      )}
       {header.logo && (
-        <Link href="/">
-          <Media
-            resource={header.logo}
-            imgClassName={`max-w-[9.375rem] ${
-              isScrolled ? 'invert-0 dark:invert' : 'invert dark:invert-0'
-            }`}
-          />
+        <Link href="/" className=" md:col-start-2 md:justify-self-center">
+          {!header.logoAlt && <Media resource={header.logo} imgClassName={`max-w-[9.375rem]`} />}
+          {!isScrolled && header.logoAlt && (
+            <Media resource={header.logo} imgClassName={`max-w-[9.375rem]`} />
+          )}
+          {isScrolled && header.logoAlt && (
+            <Media resource={header.logoAlt} imgClassName={`max-w-[9.375rem]`} />
+          )}
         </Link>
       )}
 
       {width && width > parseInt(defaultTheme.screens.md) && (
-        <HeaderNav header={header} isScrolled={isScrolled} />
+        <RightHeaderNav
+          navItems={header?.navItems?.filter((item) => item.navItem?.side === 'right') || []}
+          isScrolled={isScrolled}
+        />
       )}
       {width && width <= parseInt(defaultTheme.screens.md) && <HeaderMobileNav header={header} />}
     </header>

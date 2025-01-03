@@ -1,17 +1,20 @@
 import { Field } from 'payload'
 
+type StyleFieldType = (options?: { enumName?: string }) => Field
+
 export const DesktopHorizontalPaddingField: Field = {
   type: 'row',
   fields: [
     {
-      name: 'paddingHorizontalDesktopValue', // required
+      name: 'padHorDeskVal', // required
       label: 'Horizontal Padding',
       type: 'number', // required
       defaultValue: 2.5,
     },
     {
-      name: 'paddingHorizontalDesktopUnit',
-      enumName: 'pb_columns_block_style_group_pad_horiz_desktop_unit',
+      name: 'padHorDeskUnit',
+      // enumName: enumName,
+
       label: 'Unit',
       type: 'select',
       defaultValue: 'rem',

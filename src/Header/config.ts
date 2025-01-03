@@ -8,6 +8,24 @@ const NavItemField: Field = {
   type: 'group',
   fields: [
     {
+      name: 'side',
+      type: 'radio',
+      defaultValue: 'right',
+      options: [
+        {
+          label: 'Left',
+          value: 'left',
+        },
+        {
+          label: 'Right',
+          value: 'right',
+        },
+      ],
+      admin: {
+        description: 'Where the nav item should be displayed on desktop',
+      },
+    },
+    {
       name: 'type',
       type: 'radio',
       options: [
@@ -79,6 +97,11 @@ export const Header: GlobalConfig = {
   fields: [
     {
       name: 'logo',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
+      name: 'logoAlt',
       type: 'upload',
       relationTo: 'media',
     },

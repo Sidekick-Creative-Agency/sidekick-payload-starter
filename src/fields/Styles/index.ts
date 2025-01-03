@@ -30,7 +30,8 @@ export const StylesField: StylesFieldType = ({
         },
         {
           type: 'group',
-          name: 'responsive',
+          name: 'resp',
+          label: 'Responsive',
           fields: [
             {
               label: 'Desktop',

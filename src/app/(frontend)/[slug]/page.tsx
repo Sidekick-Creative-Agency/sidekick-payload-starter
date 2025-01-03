@@ -45,7 +45,6 @@ export default async function Page({ params: paramsPromise }: Args) {
   const url = '/' + slug
 
   let page: PageType | null
-  console.log(url)
   page = await queryPageBySlug({
     slug,
   })

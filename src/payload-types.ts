@@ -453,19 +453,19 @@ export interface FormBlock {
     global?: {
       width?: ('full' | 'boxed' | 'narrow') | null;
     };
-    responsive?: {
-      paddingHorizontalDesktopValue?: number | null;
-      paddingHorizontalDesktopUnit?: ('rem' | 'px' | '%') | null;
-      paddingVerticalDesktopValue?: number | null;
-      paddingVerticalDesktopUnit?: ('rem' | 'px' | '%') | null;
-      paddingHorizontalTabletValue?: number | null;
-      paddingHorizontalTabletUnit?: ('rem' | 'px' | '%') | null;
-      paddingVerticalTabletValue?: number | null;
-      paddingVerticalTabletUnit?: ('rem' | 'px' | '%') | null;
-      paddingHorizontalMobileValue?: number | null;
-      paddingHorizontalMobileUnit?: ('rem' | 'px' | '%') | null;
-      paddingVerticalMobileValue?: number | null;
-      paddingVerticalMobileUnit?: ('rem' | 'px' | '%') | null;
+    resp?: {
+      padHorDeskVal?: number | null;
+      padHorDeskUnit?: ('rem' | 'px' | '%') | null;
+      padVertDeskVal?: number | null;
+      padVertDeskUnit?: ('rem' | 'px' | '%') | null;
+      padHorTabVal?: number | null;
+      padHorTabUnit?: ('rem' | 'px' | '%') | null;
+      padVertTabVal?: number | null;
+      padVertTabUnit?: ('rem' | 'px' | '%') | null;
+      padHorMbVal?: number | null;
+      padHorMbUnit?: ('rem' | 'px' | '%') | null;
+      padVertMbVal?: number | null;
+      padVertMbUnit?: ('rem' | 'px' | '%') | null;
     };
   };
   id?: string | null;
@@ -655,6 +655,10 @@ export interface ColumnsBlock {
     | {
         type?: ('text' | 'media') | null;
         size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+        backgroundColor?: string | null;
+        backgroundImage?: (number | null) | Media;
+        enableSubtitle?: boolean | null;
+        subtitle?: string | null;
         richText?: {
           root: {
             type: string;
@@ -684,26 +688,19 @@ export interface ColumnsBlock {
         };
         media?: (number | null) | Media;
         mediaBorderRadius?: ('none' | 'small' | 'medium' | 'large' | 'xl' | 'xxl' | 'full') | null;
+        styles?: {
+          enableTopBorder?: boolean | null;
+          borderColor?: string | null;
+        };
         id?: string | null;
       }[]
     | null;
   styles?: {
     global?: {
       width?: ('full' | 'boxed') | null;
+      backgroundColor?: string | null;
     };
-    responsive?: {
-      paddingHorizontalDesktopValue?: number | null;
-      paddingHorizontalDesktopUnit?: ('rem' | 'px' | '%') | null;
-      paddingVerticalDesktopValue?: number | null;
-      paddingVerticalDesktopUnit?: ('rem' | 'px' | '%') | null;
-      paddingHorizontalTabletValue?: number | null;
-      paddingHorizontalTabletUnit?: ('rem' | 'px' | '%') | null;
-      paddingVerticalTabletValue?: number | null;
-      paddingVerticalTabletUnit?: ('rem' | 'px' | '%') | null;
-      paddingHorizontalMobileValue?: number | null;
-      paddingHorizontalMobileUnit?: ('rem' | 'px' | '%') | null;
-      paddingVerticalMobileValue?: number | null;
-      paddingVerticalMobileUnit?: ('rem' | 'px' | '%') | null;
+    resp?: {
       reverseWrap?: boolean | null;
     };
   };
@@ -1066,21 +1063,21 @@ export interface PagesSelect<T extends boolean = true> {
                       | {
                           width?: T;
                         };
-                    responsive?:
+                    resp?:
                       | T
                       | {
-                          paddingHorizontalDesktopValue?: T;
-                          paddingHorizontalDesktopUnit?: T;
-                          paddingVerticalDesktopValue?: T;
-                          paddingVerticalDesktopUnit?: T;
-                          paddingHorizontalTabletValue?: T;
-                          paddingHorizontalTabletUnit?: T;
-                          paddingVerticalTabletValue?: T;
-                          paddingVerticalTabletUnit?: T;
-                          paddingHorizontalMobileValue?: T;
-                          paddingHorizontalMobileUnit?: T;
-                          paddingVerticalMobileValue?: T;
-                          paddingVerticalMobileUnit?: T;
+                          padHorDeskVal?: T;
+                          padHorDeskUnit?: T;
+                          padVertDeskVal?: T;
+                          padVertDeskUnit?: T;
+                          padHorTabVal?: T;
+                          padHorTabUnit?: T;
+                          padVertTabVal?: T;
+                          padVertTabUnit?: T;
+                          padHorMbVal?: T;
+                          padHorMbUnit?: T;
+                          padVertMbVal?: T;
+                          padVertMbUnit?: T;
                         };
                   };
               id?: T;
@@ -1094,6 +1091,10 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     type?: T;
                     size?: T;
+                    backgroundColor?: T;
+                    backgroundImage?: T;
+                    enableSubtitle?: T;
+                    subtitle?: T;
                     richText?: T;
                     enableLink?: T;
                     link?:
@@ -1108,6 +1109,12 @@ export interface PagesSelect<T extends boolean = true> {
                         };
                     media?: T;
                     mediaBorderRadius?: T;
+                    styles?:
+                      | T
+                      | {
+                          enableTopBorder?: T;
+                          borderColor?: T;
+                        };
                     id?: T;
                   };
               styles?:
@@ -1117,22 +1124,11 @@ export interface PagesSelect<T extends boolean = true> {
                       | T
                       | {
                           width?: T;
+                          backgroundColor?: T;
                         };
-                    responsive?:
+                    resp?:
                       | T
                       | {
-                          paddingHorizontalDesktopValue?: T;
-                          paddingHorizontalDesktopUnit?: T;
-                          paddingVerticalDesktopValue?: T;
-                          paddingVerticalDesktopUnit?: T;
-                          paddingHorizontalTabletValue?: T;
-                          paddingHorizontalTabletUnit?: T;
-                          paddingVerticalTabletValue?: T;
-                          paddingVerticalTabletUnit?: T;
-                          paddingHorizontalMobileValue?: T;
-                          paddingHorizontalMobileUnit?: T;
-                          paddingVerticalMobileValue?: T;
-                          paddingVerticalMobileUnit?: T;
                           reverseWrap?: T;
                         };
                   };
@@ -1594,9 +1590,11 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Header {
   id: number;
   logo?: (number | null) | Media;
+  logoAlt?: (number | null) | Media;
   navItems?:
     | {
         navItem?: {
+          side?: ('left' | 'right') | null;
           type?: ('link' | 'parent') | null;
           link?: {
             type?: ('reference' | 'custom') | null;
@@ -1673,12 +1671,14 @@ export interface Footer {
  */
 export interface HeaderSelect<T extends boolean = true> {
   logo?: T;
+  logoAlt?: T;
   navItems?:
     | T
     | {
         navItem?:
           | T
           | {
+              side?: T;
               type?: T;
               link?:
                 | T
@@ -1744,6 +1744,34 @@ export interface FooterSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subtitleLexicalBlock".
+ */
+export interface SubtitleLexicalBlock {
+  subtitle?: string | null;
+  textColor?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'subtitle';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carouselLexicalBlock".
+ */
+export interface CarouselLexicalBlock {
+  items?:
+    | {
+        icon?: (number | null) | Media;
+        heading?: string | null;
+        content?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'carousel';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

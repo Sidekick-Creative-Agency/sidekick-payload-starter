@@ -1,6 +1,7 @@
 import type { Block, Field } from 'payload'
 
 import {
+  AlignFeature,
   BlocksFeature,
   FixedToolbarFeature,
   HeadingFeature,
@@ -18,6 +19,11 @@ import { TabletHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal
 import { DesktopHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Desktop'
 import { MobileHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Mobile'
 import { FormBlock } from '../Form/config'
+import { BackgroundColorField } from '@/fields/Color/Background'
+import { SubtitleLexicalBlock } from '../Lexical/Subtitle/config'
+import { CarouselLexicalBlock } from '../Lexical/Carousel/config'
+import { TextColorField } from '@/fields/Color/Text'
+import { ColorField } from '@/fields/Color'
 
 const columnFields: Field[] = [
   {
@@ -41,7 +47,7 @@ const columnFields: Field[] = [
   {
     name: 'size',
     type: 'select',
-    defaultValue: 'oneThird',
+    defaultValue: 'half',
     options: [
       {
         label: 'One Third',
@@ -61,6 +67,41 @@ const columnFields: Field[] = [
       },
     ],
   },
+  BackgroundColorField({
+    adminOverrides: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'media' ? false : true
+      },
+    },
+  }),
+  {
+    name: 'backgroundImage',
+    type: 'upload',
+    relationTo: 'media',
+    admin: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'media' ? false : true
+      },
+    },
+  },
+  {
+    name: 'enableSubtitle',
+    type: 'checkbox',
+    admin: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'media' ? false : true
+      },
+    },
+  },
+  {
+    name: 'subtitle',
+    type: 'text',
+    admin: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'text' && siblingData.enableSubtitle === true ? true : false
+      },
+    },
+  },
   {
     name: 'richText',
     type: 'richText',
@@ -72,8 +113,8 @@ const columnFields: Field[] = [
           HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
           FixedToolbarFeature(),
           InlineToolbarFeature(),
-          BlocksFeature({ blocks: [FormBlock] }),
-          HorizontalRuleFeature(),
+          AlignFeature(),
+          BlocksFeature({ blocks: [FormBlock, SubtitleLexicalBlock, CarouselLexicalBlock] }),
         ]
       },
     }),
@@ -158,6 +199,26 @@ const columnFields: Field[] = [
       },
     },
   },
+  {
+    type: 'group',
+    name: 'styles',
+    fields: [
+      {
+        type: 'checkbox',
+        name: 'enableTopBorder',
+        label: 'Enable Top Border',
+        defaultValue: false,
+      },
+      ColorField({
+        name: 'borderColor',
+        adminOverrides: {
+          condition: (_, siblingData) => {
+            return siblingData.enableTopBorder
+          },
+        },
+      }),
+    ],
+  },
 ]
 
 export const ColumnsBlock: Block = {
@@ -168,6 +229,7 @@ export const ColumnsBlock: Block = {
       name: 'columns',
       type: 'array',
       fields: columnFields,
+      maxRows: 2,
     },
 
     StylesField({
@@ -181,12 +243,13 @@ export const ColumnsBlock: Block = {
             { label: 'Boxed', value: 'boxed' },
           ],
         },
+        BackgroundColorField(),
       ],
-      desktopOverrides: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
-      tabletOverrides: [TabletHorizontalPaddingField, TabletVerticalPaddingField],
+      // desktopOverrides: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
+      // tabletOverrides: [TabletHorizontalPaddingField, TabletVerticalPaddingField],
       mobileOverrides: [
-        MobileHorizontalPaddingField,
-        MobileVerticalPaddingField,
+        // MobileHorizontalPaddingField,
+        // MobileVerticalPaddingField,
         {
           name: 'reverseWrap',
           label: 'Reverse Wrap',
