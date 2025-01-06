@@ -1,52 +1,20 @@
 import type { Block } from 'payload'
 
-import {
-  FixedToolbarFeature,
-  HeadingFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-} from '@payloadcms/richtext-lexical'
-
 export const Archive: Block = {
   slug: 'archive',
   interfaceName: 'ArchiveBlock',
   fields: [
     {
-      name: 'introContent',
-      type: 'richText',
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [
-            ...rootFeatures,
-            HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-            FixedToolbarFeature(),
-            InlineToolbarFeature(),
-          ]
-        },
-      }),
-      label: 'Intro Content',
+      name: 'heading',
+      type: 'text',
     },
     {
-      name: 'populateBy',
-      type: 'select',
-      defaultValue: 'collection',
-      options: [
-        {
-          label: 'Collection',
-          value: 'collection',
-        },
-        {
-          label: 'Individual Selection',
-          value: 'selection',
-        },
-      ],
+      name: 'subtitle',
+      type: 'textarea',
     },
     {
       name: 'relationTo',
       type: 'select',
-      admin: {
-        condition: (_, siblingData) => siblingData.populateBy === 'collection',
-      },
       defaultValue: 'posts',
       label: 'Collections To Show',
       options: [
@@ -54,37 +22,41 @@ export const Archive: Block = {
           label: 'Posts',
           value: 'posts',
         },
+        {
+          label: 'Team Members',
+          value: 'team-members',
+        },
+        {
+          label: 'Listings',
+          value: 'listings',
+        },
       ],
     },
     {
       name: 'categories',
       type: 'relationship',
       admin: {
-        condition: (_, siblingData) => siblingData.populateBy === 'collection',
+        condition: (_, siblingData) => siblingData.relationTo === 'posts',
       },
       hasMany: true,
       label: 'Categories To Show',
       relationTo: 'categories',
     },
     {
-      name: 'limit',
-      type: 'number',
-      admin: {
-        condition: (_, siblingData) => siblingData.populateBy === 'collection',
-        step: 1,
-      },
-      defaultValue: 10,
-      label: 'Limit',
-    },
-    {
-      name: 'selectedDocs',
+      name: 'propertyTypes',
       type: 'relationship',
       admin: {
-        condition: (_, siblingData) => siblingData.populateBy === 'selection',
+        condition: (_, siblingData) => siblingData.relationTo === 'listings',
       },
       hasMany: true,
-      label: 'Selection',
-      relationTo: ['posts'],
+      label: 'Property Types To Show',
+      relationTo: 'propertyTypes',
+    },
+    {
+      name: 'limit',
+      type: 'number',
+      defaultValue: 10,
+      label: 'Limit',
     },
     {
       name: 'layout',

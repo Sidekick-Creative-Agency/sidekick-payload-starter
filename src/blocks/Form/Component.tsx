@@ -54,24 +54,22 @@ export const FormBlock: React.FC<
     redirect = undefined,
     submitButtonLabel = '',
   } = formFromProps
-
   const {
-    // @ts-ignore error type checking Styles Field
     global: { width },
-    // @ts-ignore error type checking Styles Field
-    responsive: {
-      paddingVerticalDesktopValue: pyDesktopVal,
-      paddingVerticalDesktopUnit: pyDesktopUnit,
-      paddingHorizontalDesktopValue: pxDesktopVal,
-      paddingHorizontalDesktopUnit: pxDesktopUnit,
-      paddingVerticalTabletValue: pyTabletVal,
-      paddingVerticalTabletUnit: pyTabletUnit,
-      paddingHorizontalTabletValue: pxTabletVal,
-      paddingHorizontalTabletUnit: pxTabletUnit,
-      paddingVerticalMobileValue: pyMobileVal,
-      paddingVerticalMobileUnit: pyMobileUnit,
-      paddingHorizontalMobileValue: pxMobileVal,
-      paddingHorizontalMobileUnit: pxMobileUnit,
+
+    resp: {
+      padVertDeskVal: pyDesktopVal,
+      padVertDeskUnit: pyDesktopUnit,
+      padHorDeskVal: pxDesktopVal,
+      padHorDeskUnit: pxDesktopUnit,
+      padVertTabVal: pyTabletVal,
+      padVertTabUnit: pyTabletUnit,
+      padHorTabVal: pxTabletVal,
+      padHorTabUnit: pxTabletUnit,
+      padVertMbVal: pyMobileVal,
+      padVertMbUnit: pyMobileUnit,
+      padHorMbVal: pxMobileVal,
+      padHorMbUnit: pxMobileUnit,
     },
   } = styles
   const pyDesktop = pyDesktopVal && pyDesktopUnit ? `${pyDesktopVal}${pyDesktopUnit}` : '0'

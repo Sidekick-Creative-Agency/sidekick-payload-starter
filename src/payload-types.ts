@@ -17,6 +17,10 @@ export interface Config {
     categories: Category;
     users: User;
     listings: Listing;
+    attachments: Attachment;
+    propertyTypes: PropertyType;
+    reviews: Review;
+    'team-members': TeamMember;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -25,7 +29,17 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    attachments: {
+      relatedListings: 'listings';
+    };
+    propertyTypes: {
+      relatedListings: 'listings';
+    };
+    'team-members': {
+      relatedListings: 'listings';
+    };
+  };
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
@@ -33,6 +47,10 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     listings: ListingsSelect<false> | ListingsSelect<true>;
+    attachments: AttachmentsSelect<false> | AttachmentsSelect<true>;
+    propertyTypes: PropertyTypesSelect<false> | PropertyTypesSelect<true>;
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
+    'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -88,21 +106,10 @@ export interface Page {
   title: string;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
-    richText?: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    enableOverrideTitle?: boolean | null;
+    overrideTitle?: string | null;
+    subtitle?: string | null;
+    enableLinks?: boolean | null;
     links?:
       | {
           link: {
@@ -121,7 +128,17 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | ColumnsBlock | FAQBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | ColumnsBlock
+    | FAQBlock
+    | NumberCountersBlock
+    | ExpertiseBlock
+  )[];
   meta?: {
     title?: string | null;
     image?: (number | null) | Media;
@@ -316,31 +333,12 @@ export interface MediaBlock {
  * via the `definition` "ArchiveBlock".
  */
 export interface ArchiveBlock {
-  introContent?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
+  heading?: string | null;
+  subtitle?: string | null;
+  relationTo?: ('posts' | 'team-members' | 'listings') | null;
   categories?: (number | Category)[] | null;
+  propertyTypes?: (number | PropertyType)[] | null;
   limit?: number | null;
-  selectedDocs?:
-    | {
-        relationTo: 'posts';
-        value: number | Post;
-      }[]
-    | null;
   layout?: ('grid' | 'carousel') | null;
   navigationType?: ('arrows' | 'dots' | 'both' | 'none') | null;
   id?: string | null;
@@ -368,12 +366,33 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
+ * via the `definition` "propertyTypes".
  */
-export interface Post {
+export interface PropertyType {
   id: number;
   title: string;
-  content: {
+  relatedListings?: {
+    docs?: (number | Listing)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "listings".
+ */
+export interface Listing {
+  id: number;
+  title: string;
+  featuredImage: number | Media;
+  imageGallery?:
+    | {
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  description?: {
     root: {
       type: string;
       children: {
@@ -387,22 +406,27 @@ export interface Post {
       version: number;
     };
     [k: string]: unknown;
-  };
-  relatedPosts?: (number | Post)[] | null;
-  categories?: (number | Category)[] | null;
+  } | null;
+  price?: number | null;
+  type?: (number | PropertyType)[] | null;
+  availability?: ('for-sale' | 'for-lease') | null;
+  status?: ('available' | 'unavailable') | null;
+  area?: number | null;
+  acreage?: number | null;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  latitude: number;
+  longitude: number;
+  attachments?: (number | null) | Attachment;
+  agents?: (number | TeamMember)[] | null;
   meta?: {
     title?: string | null;
     image?: (number | null) | Media;
     description?: string | null;
   };
   publishedAt?: string | null;
-  authors?: (number | User)[] | null;
-  populatedAuthors?:
-    | {
-        id?: string | null;
-        name?: string | null;
-      }[]
-    | null;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -411,21 +435,85 @@ export interface Post {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "attachments".
  */
-export interface User {
+export interface Attachment {
   id: number;
-  name?: string | null;
+  label?: string | null;
+  relatedListings?: {
+    docs?: (number | Listing)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-members".
+ */
+export interface TeamMember {
+  id: number;
+  title: string;
+  jobTitle: string;
+  bio: string;
+  featuredImage: number | Media;
+  designations?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  socials?:
+    | {
+        platform?: ('facebook' | 'instagram' | 'linkedin' | 'twitter' | 'youtube') | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  eductationAndCertifications?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  notableTransactions?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  relatedListings?: {
+    docs?: (number | Listing)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -715,9 +803,6 @@ export interface ColumnsBlock {
 export interface FAQBlock {
   enableHeading?: boolean | null;
   heading?: string | null;
-  headingAlign?: ('left' | 'center' | 'right' | 'justify') | null;
-  headingSpacingValue?: number | null;
-  headingSpacingUnit?: ('rem' | 'px' | '%') | null;
   faqs?:
     | {
         question?: string | null;
@@ -740,21 +825,53 @@ export interface FAQBlock {
       }[]
     | null;
   size?: ('sm' | 'md' | 'lg' | 'full') | null;
-  paddingVerticalDesktopValue?: number | null;
-  paddingVerticalDesktopUnit?: ('rem' | 'px' | '%') | null;
-  paddingVerticalTabletValue?: number | null;
-  paddingVerticalTabletUnit?: ('rem' | 'px' | '%') | null;
-  paddingVerticalMobileValue?: number | null;
-  paddingVerticalMobileUnit?: ('rem' | 'px' | '%') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'faqBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "listings".
+ * via the `definition` "NumberCountersBlock".
  */
-export interface Listing {
+export interface NumberCountersBlock {
+  numberCounters?:
+    | {
+        prefix?: string | null;
+        number: number;
+        label: string;
+        suffix?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'numberCountersBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ExpertiseBlock".
+ */
+export interface ExpertiseBlock {
+  heading?: string | null;
+  description?: string | null;
+  expertiseAreas?:
+    | {
+        title?: string | null;
+        image?: (number | null) | Media;
+        accentColor?: string | null;
+        link?: (number | null) | Page;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'expertiseBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
   id: number;
   title: string;
   content: {
@@ -772,17 +889,58 @@ export interface Listing {
     };
     [k: string]: unknown;
   };
+  featuredImage?: (number | null) | Media;
+  excerpt?: string | null;
+  categories?: (number | Category)[] | null;
   meta?: {
     title?: string | null;
     image?: (number | null) | Media;
     description?: string | null;
   };
   publishedAt?: string | null;
+  authors?: (number | User)[] | null;
+  populatedAuthors?:
+    | {
+        id?: string | null;
+        name?: string | null;
+      }[]
+    | null;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  name?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number;
+  name: string;
+  jobTitle: string;
+  review: string;
+  image: number | Media;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -844,6 +1002,10 @@ export interface Search {
     | {
         relationTo: 'listings';
         value: number | Listing;
+      }
+    | {
+        relationTo: 'team-members';
+        value: number | TeamMember;
       };
   slug?: string | null;
   meta?: {
@@ -891,6 +1053,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'listings';
         value: number | Listing;
+      } | null)
+    | ({
+        relationTo: 'attachments';
+        value: number | Attachment;
+      } | null)
+    | ({
+        relationTo: 'propertyTypes';
+        value: number | PropertyType;
+      } | null)
+    | ({
+        relationTo: 'reviews';
+        value: number | Review;
+      } | null)
+    | ({
+        relationTo: 'team-members';
+        value: number | TeamMember;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -960,7 +1138,10 @@ export interface PagesSelect<T extends boolean = true> {
     | T
     | {
         type?: T;
-        richText?: T;
+        enableOverrideTitle?: T;
+        overrideTitle?: T;
+        subtitle?: T;
+        enableLinks?: T;
         links?:
           | T
           | {
@@ -1038,12 +1219,12 @@ export interface PagesSelect<T extends boolean = true> {
         archive?:
           | T
           | {
-              introContent?: T;
-              populateBy?: T;
+              heading?: T;
+              subtitle?: T;
               relationTo?: T;
               categories?: T;
+              propertyTypes?: T;
               limit?: T;
-              selectedDocs?: T;
               layout?: T;
               navigationType?: T;
               id?: T;
@@ -1140,9 +1321,6 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               enableHeading?: T;
               heading?: T;
-              headingAlign?: T;
-              headingSpacingValue?: T;
-              headingSpacingUnit?: T;
               faqs?:
                 | T
                 | {
@@ -1151,12 +1329,38 @@ export interface PagesSelect<T extends boolean = true> {
                     id?: T;
                   };
               size?: T;
-              paddingVerticalDesktopValue?: T;
-              paddingVerticalDesktopUnit?: T;
-              paddingVerticalTabletValue?: T;
-              paddingVerticalTabletUnit?: T;
-              paddingVerticalMobileValue?: T;
-              paddingVerticalMobileUnit?: T;
+              id?: T;
+              blockName?: T;
+            };
+        numberCountersBlock?:
+          | T
+          | {
+              numberCounters?:
+                | T
+                | {
+                    prefix?: T;
+                    number?: T;
+                    label?: T;
+                    suffix?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        expertiseBlock?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              expertiseAreas?:
+                | T
+                | {
+                    title?: T;
+                    image?: T;
+                    accentColor?: T;
+                    link?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };
@@ -1184,7 +1388,8 @@ export interface PagesSelect<T extends boolean = true> {
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
   content?: T;
-  relatedPosts?: T;
+  featuredImage?: T;
+  excerpt?: T;
   categories?: T;
   meta?:
     | T
@@ -1332,7 +1537,28 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface ListingsSelect<T extends boolean = true> {
   title?: T;
-  content?: T;
+  featuredImage?: T;
+  imageGallery?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  description?: T;
+  price?: T;
+  type?: T;
+  availability?: T;
+  status?: T;
+  area?: T;
+  acreage?: T;
+  streetAddress?: T;
+  city?: T;
+  state?: T;
+  zipCode?: T;
+  latitude?: T;
+  longitude?: T;
+  attachments?: T;
+  agents?: T;
   meta?:
     | T
     | {
@@ -1348,6 +1574,74 @@ export interface ListingsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "attachments_select".
+ */
+export interface AttachmentsSelect<T extends boolean = true> {
+  label?: T;
+  relatedListings?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "propertyTypes_select".
+ */
+export interface PropertyTypesSelect<T extends boolean = true> {
+  title?: T;
+  relatedListings?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  name?: T;
+  jobTitle?: T;
+  review?: T;
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-members_select".
+ */
+export interface TeamMembersSelect<T extends boolean = true> {
+  title?: T;
+  jobTitle?: T;
+  bio?: T;
+  featuredImage?: T;
+  designations?: T;
+  email?: T;
+  phone?: T;
+  socials?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  eductationAndCertifications?: T;
+  notableTransactions?: T;
+  relatedListings?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -10,6 +10,8 @@ import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { FAQBlock } from './FAQBlock/Component'
 import { ColumnsBlock } from './ColumnsBlock/Component'
+import { NumberCountersBlock } from './NumberCounterBlock/Component'
+import { ExpertiseBlock } from './ExpertiseBlock/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -19,6 +21,8 @@ const blockComponents = {
   mediaBlock: MediaBlock,
   faqBlock: FAQBlock,
   columnsBlock: ColumnsBlock,
+  numberCountersBlock: NumberCountersBlock,
+  expertiseBlock: ExpertiseBlock,
 }
 
 export const RenderBlocks: React.FC<{

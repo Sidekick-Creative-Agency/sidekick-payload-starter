@@ -7,6 +7,9 @@ import {
   HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
+  LinkFeature,
+  OrderedListFeature,
+  UnorderedListFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { authenticated } from '../../access/authenticated'
@@ -69,55 +72,162 @@ export const Listings: CollectionConfig = {
         {
           fields: [
             {
-              name: 'content',
+              name: 'featuredImage',
+              type: 'upload',
+              relationTo: 'media',
+              required: true,
+            },
+            {
+              name: 'imageGallery',
+              type: 'array',
+              labels: {
+                singular: 'Image',
+                plural: 'Images',
+              },
+              fields: [
+                {
+                  name: 'image',
+                  type: 'upload',
+                  relationTo: 'media',
+                },
+              ],
+            },
+            {
+              name: 'description',
               type: 'richText',
               editor: lexicalEditor({
                 features: ({ rootFeatures }) => {
                   return [
                     ...rootFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
-                    HorizontalRuleFeature(),
+                    OrderedListFeature(),
+                    UnorderedListFeature(),
+                    LinkFeature(),
                   ]
                 },
               }),
-              label: false,
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'price',
+                  type: 'number',
+                },
+                {
+                  name: 'type',
+                  type: 'relationship',
+                  relationTo: 'propertyTypes',
+                  hasMany: true,
+                },
+              ],
+            },
+
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'availability',
+                  type: 'select',
+                  options: [
+                    {
+                      label: 'For Sale',
+                      value: 'for-sale',
+                    },
+                    {
+                      label: 'For Lease',
+                      value: 'for-lease',
+                    },
+                  ],
+                },
+                {
+                  name: 'status',
+                  type: 'select',
+                  options: [
+                    {
+                      label: 'Available',
+                      value: 'available',
+                    },
+                    {
+                      label: 'Unavailable',
+                      value: 'unavailable',
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'area',
+                  type: 'number',
+                  admin: {
+                    description: 'Square footage of the property',
+                  },
+                },
+                {
+                  name: 'acreage',
+                  type: 'number',
+                },
+              ],
+            },
+
+            {
+              name: 'streetAddress',
+              type: 'text',
               required: true,
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'city',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'state',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'zipCode',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'latitude',
+                  type: 'number',
+                  required: true,
+                },
+                {
+                  name: 'longitude',
+                  type: 'number',
+                  required: true,
+                },
+              ],
+            },
+            {
+              name: 'attachments',
+              type: 'upload',
+              relationTo: 'attachments',
+            },
+            {
+              name: 'agents',
+              type: 'relationship',
+              relationTo: 'team-members',
+              hasMany: true,
             },
           ],
           label: 'Content',
-        },
-        {
-          fields: [
-            // {
-            //   name: 'related',
-            //   type: 'relationship',
-            //   admin: {
-            //     position: 'sidebar',
-            //   },
-            //   filterOptions: ({ id }) => {
-            //     return {
-            //       id: {
-            //         not_in: [id],
-            //       },
-            //     }
-            //   },
-            //   hasMany: true,
-            //   relationTo: 'posts',
-            // },
-            // {
-            //   name: 'categories',
-            //   type: 'relationship',
-            //   admin: {
-            //     position: 'sidebar',
-            //   },
-            //   hasMany: true,
-            //   relationTo: 'categories',
-            // },
-          ],
-          label: 'Meta',
         },
         {
           name: 'meta',
@@ -134,8 +244,9 @@ export const Listings: CollectionConfig = {
             MetaImageField({
               relationTo: 'media',
             }),
-
-            MetaDescriptionField({}),
+            MetaDescriptionField({
+              hasGenerateFn: true,
+            }),
             PreviewField({
               // if the `generateUrl` function is configured
               hasGenerateFn: true,
@@ -168,9 +279,7 @@ export const Listings: CollectionConfig = {
         ],
       },
     },
-    // This field is only used to populate the user data via the `populateAuthors` hook
-    // This is because the `user` collection has access control locked to protect user privacy
-    // GraphQL will also not return mutated user data that differs from the underlying schema
+
     ...slugField(),
   ],
   hooks: {

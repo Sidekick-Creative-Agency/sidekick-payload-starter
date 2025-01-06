@@ -7,7 +7,7 @@ import type { Page } from '@/payload-types'
 
 import { CMSLink } from '../../components/Link'
 import { Media } from '@/components/Media'
-import { brandBorderColorClasses, brandColorClasses } from '@/utilities/constants'
+import { brandBorderColorClasses, brandBgColorClasses } from '@/utilities/constants'
 
 type Props = Extract<Page['layout'][0], { blockType: 'columnsBlock' }>
 
@@ -51,7 +51,7 @@ export const ColumnsBlock: React.FC<
   // const pxTablet = pxTabletVal && pxTabletUnit ? `${pxTabletVal}${pxTabletUnit}` : '0'
   // const pyMobile = pyMobileVal && pyMobileUnit ? `${pyMobileVal}${pyMobileUnit}` : '0'
   // const pxMobile = pxMobileVal && pxMobileUnit ? `${pxMobileVal}${pxMobileUnit}` : '0'
-  const blockTwBackgroundColor = brandColorClasses[blockBgColor || 'transparent']
+  const blockTwBackgroundColor = brandBgColorClasses[blockBgColor || 'transparent']
   return (
     <>
       <style>
@@ -92,7 +92,7 @@ export const ColumnsBlock: React.FC<
                   backgroundImage,
                   styles,
                 } = col
-                const colTwBackgroundColor = brandColorClasses[colBgColor || 'transparent']
+                const colTwBackgroundColor = brandBgColorClasses[colBgColor || 'transparent']
 
                 return (
                   <div
@@ -105,24 +105,28 @@ export const ColumnsBlock: React.FC<
                     key={index}
                   >
                     {type === 'text' && (
-                      <>
+                      <div className={`${width === 'full' && 'w-[40rem] max-w-full mx-auto'}`}>
                         {enableSubtitle && subtitle && (
-                          <span className="uppercase tracking-widest leading-none text-base font-basic-sans text-brand-tan font-bold mb-2">
+                          <span className="uppercase tracking-widest leading-none text-base font-basic-sans text-brand-tan font-bold mb-2 z-10 relative">
                             {subtitle}
                           </span>
                         )}
                         {richText && (
-                          <RichText content={richText} enableGutter={false} className="z-10" />
+                          <RichText
+                            content={richText}
+                            enableGutter={false}
+                            className="z-10 relative"
+                          />
                         )}
-                        {enableLink && <CMSLink {...link} className="mt-10 z-10" />}
+                        {enableLink && <CMSLink {...link} className="mt-10 z-10 relative" />}
                         {backgroundImage && (
                           <Media
                             resource={backgroundImage}
-                            className="absolute top-0 left-0 w-full h-full pointer-events-none"
+                            className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
                             imgClassName="w-full h-full object-cover"
                           />
                         )}
-                      </>
+                      </div>
                     )}
                     {type === 'media' && media && (
                       <Media

@@ -5,6 +5,8 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion'
 import { ChevronDown } from 'lucide-react'
 
 import { cn } from 'src/utilities/cn'
+import { faMinus, faPlus } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Accordion = AccordionPrimitive.Root
 
@@ -24,13 +26,14 @@ const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        'flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180',
+        'flex flex-1 items-center justify-between py-6 font-medium transition-all hover:underline [&[data-state=open]>.open-icon]:hidden [&[data-state=open]>.close-icon]:block',
         className,
       )}
       {...props}
     >
       {children}
-      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+      <FontAwesomeIcon icon={faPlus} className="w-6 h-6 text-brand-tan open-icon" />
+      <FontAwesomeIcon icon={faMinus} className="w-6 h-6 text-brand-tan close-icon hidden" />
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ))

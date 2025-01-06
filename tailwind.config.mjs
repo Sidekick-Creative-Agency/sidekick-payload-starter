@@ -99,6 +99,8 @@ export default {
           blue: 'var(--brand-blue)',
           brown: 'var(--brand-brown)',
           green: 'var(--brand-green)',
+          'gray-04': 'var(--brand-gray-04)',
+          'gray-06': 'var(--brand-gray-06)',
         },
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',

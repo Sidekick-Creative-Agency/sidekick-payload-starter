@@ -122,7 +122,6 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
           if (!block || !blockType) {
             return null
           }
-          console.log(blockType)
           switch (blockType) {
             case 'cta':
               return <CallToActionBlock key={index} {...block} />
@@ -141,8 +140,9 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             case 'code':
               return <CodeBlock className="col-start-2" key={index} {...block} />
             case 'formBlock':
-              // @ts-ignore
-              return <FormBlock key={index} {...block} enableIntro={block.enableIntro || false} />
+              return typeof block.form !== 'number' ? (
+                <FormBlock key={index} {...block} enableIntro={block.enableIntro || false} />
+              ) : null
             case 'columnsBlock':
               return <ColumnsBlock key={index} {...block} />
             case 'subtitle':

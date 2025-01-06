@@ -22,6 +22,8 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { FAQBlock } from '@/blocks/FAQBlock/config'
 import { ColumnsBlock } from '@/blocks/ColumnsBlock/config'
+import { NumberCountersBlock } from '@/blocks/NumberCounterBlock/config'
+import { ExpertiseBlock } from '@/blocks/ExpertiseBlock/config'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
@@ -78,6 +80,8 @@ export const Pages: CollectionConfig = {
                 FormBlock,
                 ColumnsBlock,
                 FAQBlock,
+                NumberCountersBlock,
+                ExpertiseBlock,
               ],
               required: true,
             },

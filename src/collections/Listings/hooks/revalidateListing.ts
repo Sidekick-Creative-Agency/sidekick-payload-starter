@@ -2,9 +2,9 @@ import type { CollectionAfterChangeHook } from 'payload'
 
 import { revalidatePath } from 'next/cache'
 
-import type { Post } from '../../../payload-types'
+import type { Listing } from '../../../payload-types'
 
-export const revalidateListing: CollectionAfterChangeHook<Post> = ({
+export const revalidateListing: CollectionAfterChangeHook<Listing> = ({
   doc,
   previousDoc,
   req: { payload },

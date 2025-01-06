@@ -8,27 +8,29 @@ import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 
-export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
-  const { setHeaderTheme } = useHeaderTheme()
-
-  useEffect(() => {
-    setHeaderTheme('dark')
-  })
-
+export const HighImpactHero: React.FC<Page['hero'] & { title: string }> = ({
+  links,
+  media,
+  enableOverrideTitle,
+  overrideTitle,
+  title,
+}) => {
   return (
-    <div
-      className="relative -mt-[8.4rem] pb-10 md:pb-20 flex items-end text-white"
-      data-theme="dark"
-    >
-      <div className="container z-10 relative">
-        <div className="flex flex-col gap-6 w-full items-start">
-          {richText && <RichText content={richText} enableGutter={false} className="w-full" />}
+    <div className="relative flex items-center -mt-[113px] max-h-screen pt-40 pb-32 md:pt-48 md:pb-40">
+      <div className="container z-10 relative flex flex-col items-center justify-center gap-16">
+        <h1 className="text-white text-center text-[2.5rem] sm:text-5xl md:text-[4rem] leading-tight font-bold">
+          {enableOverrideTitle ? overrideTitle : title}
+        </h1>
+        <div className="flex flex-col gap-6 w-full items-center justify-center">
           {Array.isArray(links) && links.length > 0 && (
-            <ul className="flex gap-2">
+            <ul className="flex justify-stretch flex-wrap gap-4 md:gap-6">
               {links.map(({ link }, i) => {
                 return (
-                  <li key={i}>
-                    <CMSLink {...link} />
+                  <li key={i} className="flex-1">
+                    <CMSLink
+                      {...link}
+                      className={`w-full border ${link.appearance === 'default' && 'bg-white text-brand-navy hover:bg-brand-navy focus-visible:bg-brand-navy hover:text-white focus-visible:text-white border-white hover:border-brand-navy focus-visible:border-brand-navy'} ${link.appearance === 'outline' && 'bg-transparent border-white text-white'}`}
+                    />
                   </li>
                 )
               })}

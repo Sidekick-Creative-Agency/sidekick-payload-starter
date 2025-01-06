@@ -13,7 +13,7 @@ export async function Footer() {
 
   const navItems = footer?.navItems || []
   return (
-    <footer className="border-t border-border bg-black dark:bg-card text-white">
+    <footer className="bg-black dark:bg-card text-white">
       <div className="px-[1.25rem] md:px-[2.5rem] py-8 gap-8 flex flex-col items-center md:flex-row md:justify-between">
         {footer.logo && (
           <Link href="/">
@@ -32,7 +32,7 @@ export async function Footer() {
       </div>
       <div className="w-full flex px-[1.25rem] md:px-[2.5rem] py-4">
         <p className="text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} Sidekick Creative Agency
+          &copy; {new Date().getFullYear()} Onward Real Estate Team
         </p>
       </div>
     </footer>

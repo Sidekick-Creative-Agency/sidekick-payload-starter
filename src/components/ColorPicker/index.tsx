@@ -1,6 +1,6 @@
 'use client'
 
-import { BRAND_COLORS, brandColorClasses } from '@/utilities/constants'
+import { BRAND_COLORS, brandBgColorClasses } from '@/utilities/constants'
 import { Button, useField } from '@payloadcms/ui'
 import './styles.scss'
 import { useConfig } from '@payloadcms/ui'
@@ -26,7 +26,7 @@ const ColorPicker = ({ path }: { path: string }) => {
         return (
           <Button
             key={color.label}
-            className={`color-picker-swatch ${brandColorClasses[color.label]} ${value === color.label ? 'active' : ''} border border-solid border-transparent border-spacing-1 p-0 w-8 h-8 rounded-full relative overflow-hidden`}
+            className={`color-picker-swatch ${brandBgColorClasses[color.label]} ${value === color.label ? 'active' : ''} border border-solid border-transparent border-spacing-1 p-0 w-8 h-8 rounded-full relative overflow-hidden`}
             onClick={() => setValue(color.label)}
           ></Button>
         )

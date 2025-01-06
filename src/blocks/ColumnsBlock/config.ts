@@ -24,6 +24,8 @@ import { SubtitleLexicalBlock } from '../Lexical/Subtitle/config'
 import { CarouselLexicalBlock } from '../Lexical/Carousel/config'
 import { TextColorField } from '@/fields/Color/Text'
 import { ColorField } from '@/fields/Color'
+import { BRAND_COLORS } from '@/utilities/constants'
+import { color } from 'framer-motion'
 
 const columnFields: Field[] = [
   {

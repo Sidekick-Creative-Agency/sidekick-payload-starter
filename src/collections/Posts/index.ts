@@ -86,27 +86,20 @@ export const Posts: CollectionConfig = {
               label: false,
               required: true,
             },
+            {
+              name: 'featuredImage',
+              type: 'upload',
+              relationTo: 'media',
+            },
+            {
+              name: 'excerpt',
+              type: 'textarea',
+            },
           ],
           label: 'Content',
         },
         {
           fields: [
-            {
-              name: 'relatedPosts',
-              type: 'relationship',
-              admin: {
-                position: 'sidebar',
-              },
-              filterOptions: ({ id }) => {
-                return {
-                  id: {
-                    not_in: [id],
-                  },
-                }
-              },
-              hasMany: true,
-              relationTo: 'posts',
-            },
             {
               name: 'categories',
               type: 'relationship',

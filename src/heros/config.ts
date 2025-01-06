@@ -41,24 +41,53 @@ export const hero: Field = {
       required: true,
     },
     {
-      name: 'richText',
-      type: 'richText',
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [
-            ...rootFeatures,
-            HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-            FixedToolbarFeature(),
-            InlineToolbarFeature(),
-            BlocksFeature({ blocks: [ColumnsBlock] }),
-          ]
+      name: 'enableOverrideTitle',
+      type: 'checkbox',
+      label: 'Override Title',
+    },
+    {
+      name: 'overrideTitle',
+      type: 'text',
+      admin: {
+        condition: (_, { enableOverrideTitle }) => enableOverrideTitle,
+      },
+    },
+    {
+      name: 'subtitle',
+      type: 'textarea',
+      admin: {
+        condition: (_, { type } = {}) => {
+          if (type === 'mediumImpact') {
+            return true
+          }
+          return false
         },
-      }),
-      label: false,
+      },
+    },
+    {
+      name: 'enableLinks',
+      type: 'checkbox',
+      label: 'Enable Links',
+      admin: {
+        condition: (_, { type } = {}) => {
+          if (type === 'highImpact') {
+            return true
+          }
+          return false
+        },
+      },
     },
     linkGroup({
       overrides: {
         maxRows: 2,
+        admin: {
+          condition: (_, { type, enableLinks }) => {
+            if (type === 'highImpact' && enableLinks) {
+              return true
+            }
+            return false
+          },
+        },
       },
     }),
     {
