@@ -53,6 +53,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
   return (
     <Fragment>
       {nodes?.map((node, index): JSX.Element | null => {
+        console.log(node)
         if (node == null) {
           return null
         }
@@ -87,6 +88,21 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
           }
           if (node.format & IS_SUPERSCRIPT) {
             text = <sup key={index}>{text}</sup>
+          }
+          if (node.style) {
+            const style: React.CSSProperties = {}
+
+            let match = node.style.match(/background-color: ([^;]+)/)
+            match && (style.backgroundColor = match[1])
+
+            match = node.style.match(/color: ([^;]+)/)
+            match && (style.color = match[1])
+
+            text = (
+              <span style={style} key={index}>
+                {text}
+              </span>
+            )
           }
 
           return text

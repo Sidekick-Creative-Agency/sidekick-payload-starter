@@ -26,6 +26,7 @@ import { TextColorField } from '@/fields/Color/Text'
 import { ColorField } from '@/fields/Color'
 import { BRAND_COLORS } from '@/utilities/constants'
 import { color } from 'framer-motion'
+import { TextColorFeature } from '@/components/RichText/Color/features/textColor/feature.server'
 
 const columnFields: Field[] = [
   {
@@ -117,6 +118,15 @@ const columnFields: Field[] = [
           InlineToolbarFeature(),
           AlignFeature(),
           BlocksFeature({ blocks: [FormBlock, SubtitleLexicalBlock, CarouselLexicalBlock] }),
+          TextColorFeature({
+            colors: BRAND_COLORS.map((color) => {
+              return {
+                type: 'button',
+                label: color.label,
+                color: color.value,
+              }
+            }),
+          }),
         ]
       },
     }),
