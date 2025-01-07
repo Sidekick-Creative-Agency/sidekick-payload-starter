@@ -12,6 +12,7 @@ import { FAQBlock } from './FAQBlock/Component'
 import { ColumnsBlock } from './ColumnsBlock/Component'
 import { NumberCountersBlock } from './NumberCounterBlock/Component'
 import { ExpertiseBlock } from './ExpertiseBlock/Component'
+import { TimelineBlock } from './TimelineBlock/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -23,6 +24,7 @@ const blockComponents = {
   columnsBlock: ColumnsBlock,
   numberCountersBlock: NumberCountersBlock,
   expertiseBlock: ExpertiseBlock,
+  timelineBlock: TimelineBlock,
 }
 
 export const RenderBlocks: React.FC<{

@@ -55,8 +55,9 @@ export const FormBlock: React.FC<
     submitButtonLabel = '',
   } = formFromProps
   const {
+    // @ts-ignore
     global: { width },
-
+    // @ts-ignore
     resp: {
       padVertDeskVal: pyDesktopVal,
       padVertDeskUnit: pyDesktopUnit,

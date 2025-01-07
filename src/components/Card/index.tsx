@@ -18,19 +18,23 @@ export const Card: React.FC<{
   title?: string
 }> = (props) => {
   const { card, link } = useClickableCard({})
-  const { className, doc, relationTo, showTaxonomy, title: titleFromProps } = props
-
-  const { slug, categories, propertyTypes, meta, title, featuredImage } = doc || {}
+  const { className, doc, relationTo, showTaxonomy = true, title: titleFromProps } = props
+  // @ts-ignore
+  const { slug, category, propertyTypes, meta, title, featuredImage } = doc || {}
   const { description, image: metaImage } = meta || {}
 
-  const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const hasPropertyTypes = propertyTypes && Array.isArray(propertyTypes) && propertyTypes.length > 0
   const titleToUse = titleFromProps || title
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/${relationTo}/${slug}`
 
   return (
-    <article className={cn('overflow-hidden', className)} ref={card.ref}>
+    <article className={cn('relative', className)} ref={card.ref}>
+      {showTaxonomy && category && (
+        <div className="absolute z-10 top-4 -left-4 px-4 py-1 bg-brand-navy text-white after:content-[''] after:absolute after:top-full after:left-0  after:opacity-50 after:w-0 after:h-0 after:border-l-brand-navy after:border-t-transparent after:border-r-transparent after:border-b-transparent after:border-[.725rem] after:z-[-1] after:-rotate-45 after:origin-top-left">
+          <span>{category.title}</span>
+        </div>
+      )}
       <div className="relative w-full ">
         {!featuredImage && !metaImage && <div className="">No image</div>}
         {featuredImage && typeof featuredImage !== 'string' && (
@@ -41,30 +45,6 @@ export const Card: React.FC<{
         )}
       </div>
       <div className="p-4">
-        {showTaxonomy && hasCategories && (
-          <div className="uppercase text-sm mb-4">
-            <div>
-              {categories?.map((category, index) => {
-                if (typeof category === 'object') {
-                  const { title: titleFromCategory } = category
-
-                  const categoryTitle = titleFromCategory || 'Untitled category'
-
-                  const isLast = index === categories.length - 1
-
-                  return (
-                    <Fragment key={index}>
-                      {categoryTitle}
-                      {!isLast && <Fragment>, &nbsp;</Fragment>}
-                    </Fragment>
-                  )
-                }
-
-                return null
-              })}
-            </div>
-          </div>
-        )}
         {showTaxonomy && hasPropertyTypes && (
           <div className="uppercase text-sm mb-4">
             <div>

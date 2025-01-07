@@ -29,7 +29,7 @@ export const CollectionArchiveCarousel: React.FC<Props> = (props) => {
               if (typeof result === 'object' && result !== null) {
                 return (
                   <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                    <Card className="h-full" doc={result} relationTo="posts" showCategories />
+                    <Card className="h-full" doc={result} relationTo="posts" />
                   </CarouselItem>
                 )
               }

@@ -39,7 +39,7 @@ export default async function Page() {
         />
       </div>
 
-      <CollectionArchiveGrid posts={posts.docs} />
+      {/* <CollectionArchiveGrid posts={posts.docs} /> */}
 
       <div className="container">
         {posts.totalPages > 1 && posts.page && (

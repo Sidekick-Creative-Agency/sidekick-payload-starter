@@ -15,14 +15,45 @@ export const Footer: GlobalConfig = {
       relationTo: 'media',
     },
     {
-      name: 'navItems',
+      name: 'navMenus',
       type: 'array',
       fields: [
-        link({
-          appearances: false,
-        }),
+        {
+          name: 'title',
+          type: 'text',
+        },
+        {
+          name: 'navItems',
+          type: 'array',
+          fields: [
+            link({
+              appearances: false,
+            }),
+          ],
+        },
       ],
-      maxRows: 6,
+    },
+    {
+      name: 'socials',
+      type: 'array',
+      fields: [
+        {
+          name: 'platform',
+          type: 'select',
+          options: [
+            { label: 'Facebook', value: 'facebook' },
+            { label: 'Instagram', value: 'instagram' },
+            { label: 'LinkedIn', value: 'linkedin' },
+            { label: 'Twitter', value: 'twitter' },
+            { label: 'YouTube', value: 'youtube' },
+            { label: 'Pinterest', value: 'pinterest' },
+          ],
+        },
+        {
+          name: 'url',
+          type: 'text',
+        },
+      ],
     },
   ],
   hooks: {

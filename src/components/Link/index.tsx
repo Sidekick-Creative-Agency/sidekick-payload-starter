@@ -39,7 +39,6 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
           reference.value.slug
         }`
       : url
-
   if (!href) return null
 
   const size = appearance === 'link' ? 'clear' : sizeFromProps

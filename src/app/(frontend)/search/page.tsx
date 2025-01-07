@@ -65,11 +65,11 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
         </div>
       </div>
 
-      {posts.totalDocs > 0 ? (
+      {/* {posts.totalDocs > 0 ? (
         <CollectionArchiveGrid posts={posts.docs as unknown as Post[]} />
       ) : (
         <div className="container">No results found.</div>
-      )}
+      )} */}
     </div>
   )
 }

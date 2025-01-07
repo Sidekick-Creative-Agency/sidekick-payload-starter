@@ -21,6 +21,8 @@ export const ArchiveBlock: React.FC<
     layout,
     navigationType,
     relationTo,
+    heading,
+    subtitle,
   } = props
 
   const limit = limitFromProps || 3
@@ -59,13 +61,17 @@ export const ArchiveBlock: React.FC<
 
   return (
     <div className={`archive-block-${id}`}>
-      <div className="container py-20 md:py-32">
+      <div className="container py-20 md:py-32 flex flex-col gap-16 md:gap-20">
+        <div className="flex flex-col gap-4 md:flex-row md:gap-10 md:justify-between md:items-center">
+          <h2 className="text-[2.5rem] font-bold text-brand-gray-06">{heading}</h2>
+          <p className="max-w-[30rem] text-brand-gray-04 font-light">{subtitle}</p>
+        </div>
         {layout && layout === 'grid' && (
           <CollectionArchiveGrid archive={archive} relationTo={relationTo} />
         )}
-        {layout && layout === 'carousel' && (
-          <CollectionArchiveCarousel posts={posts} navigationType={navigationType || 'none'} />
-        )}
+        {/* {layout && layout === 'carousel' && (
+          // <CollectionArchiveCarousel posts={posts} navigationType={navigationType || 'none'} />
+        )} */}
       </div>
     </div>
   )

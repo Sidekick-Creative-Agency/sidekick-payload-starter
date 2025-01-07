@@ -61,12 +61,12 @@ export default async function Post({ params: paramsPromise }: Args) {
           />
         </div>
 
-        {post.relatedPosts && post.relatedPosts.length > 0 && (
+        {/* {post.relatedPosts && post.relatedPosts.length > 0 && (
           <RelatedPosts
             className="mt-12"
             docs={post.relatedPosts.filter((post) => typeof post === 'object')}
           />
-        )}
+        )} */}
       </div>
     </article>
   )

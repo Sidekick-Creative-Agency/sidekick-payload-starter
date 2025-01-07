@@ -138,6 +138,7 @@ export interface Page {
     | FAQBlock
     | NumberCountersBlock
     | ExpertiseBlock
+    | TimelineBlock
   )[];
   meta?: {
     title?: string | null;
@@ -410,7 +411,6 @@ export interface Listing {
   price?: number | null;
   type?: (number | PropertyType)[] | null;
   availability?: ('for-sale' | 'for-lease') | null;
-  status?: ('available' | 'unavailable') | null;
   area?: number | null;
   acreage?: number | null;
   streetAddress: string;
@@ -869,6 +869,43 @@ export interface ExpertiseBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock".
+ */
+export interface TimelineBlock {
+  heading?: string | null;
+  timelineItems?:
+    | {
+        tab: {
+          icon?: (number | null) | Media;
+          title: string;
+        };
+        content?: {
+          image?: (number | null) | Media;
+          richText?: {
+            root: {
+              type: string;
+              children: {
+                type: string;
+                version: number;
+                [k: string]: unknown;
+              }[];
+              direction: ('ltr' | 'rtl') | null;
+              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+              indent: number;
+              version: number;
+            };
+            [k: string]: unknown;
+          } | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'timelineBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
 export interface Post {
@@ -891,7 +928,7 @@ export interface Post {
   };
   featuredImage?: (number | null) | Media;
   excerpt?: string | null;
-  categories?: (number | Category)[] | null;
+  category?: (number | null) | Category;
   meta?: {
     title?: string | null;
     image?: (number | null) | Media;
@@ -1364,6 +1401,30 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        timelineBlock?:
+          | T
+          | {
+              heading?: T;
+              timelineItems?:
+                | T
+                | {
+                    tab?:
+                      | T
+                      | {
+                          icon?: T;
+                          title?: T;
+                        };
+                    content?:
+                      | T
+                      | {
+                          image?: T;
+                          richText?: T;
+                        };
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -1390,7 +1451,7 @@ export interface PostsSelect<T extends boolean = true> {
   content?: T;
   featuredImage?: T;
   excerpt?: T;
-  categories?: T;
+  category?: T;
   meta?:
     | T
     | {
@@ -1548,7 +1609,6 @@ export interface ListingsSelect<T extends boolean = true> {
   price?: T;
   type?: T;
   availability?: T;
-  status?: T;
   area?: T;
   acreage?: T;
   streetAddress?: T;
@@ -1941,18 +2001,31 @@ export interface Header {
 export interface Footer {
   id: number;
   logo?: (number | null) | Media;
-  navItems?:
+  navMenus?:
     | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?: {
-            relationTo: 'pages';
-            value: number | Page;
-          } | null;
-          url?: string | null;
-          label: string;
-        };
+        title?: string | null;
+        navItems?:
+          | {
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  socials?:
+    | {
+        platform?: ('facebook' | 'instagram' | 'linkedin' | 'twitter' | 'youtube' | 'pinterest') | null;
+        url?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -2021,18 +2094,31 @@ export interface HeaderSelect<T extends boolean = true> {
  */
 export interface FooterSelect<T extends boolean = true> {
   logo?: T;
-  navItems?:
+  navMenus?:
     | T
     | {
-        link?:
+        title?: T;
+        navItems?:
           | T
           | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                  };
+              id?: T;
             };
+        id?: T;
+      };
+  socials?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
         id?: T;
       };
   updatedAt?: T;

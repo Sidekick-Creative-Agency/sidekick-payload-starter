@@ -14,10 +14,9 @@ import {
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { Banner } from '../../blocks/Banner/config'
-import { Code } from '../../blocks/Code/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
+
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
+import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 
 import { revalidateListing } from './hooks/revalidateListing'
 
@@ -35,7 +34,7 @@ export const Listings: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: authenticatedOrPublished,
+    read: () => true,
     update: authenticated,
   },
   admin: {
@@ -142,20 +141,21 @@ export const Listings: CollectionConfig = {
                     },
                   ],
                 },
-                {
-                  name: 'status',
-                  type: 'select',
-                  options: [
-                    {
-                      label: 'Available',
-                      value: 'available',
-                    },
-                    {
-                      label: 'Unavailable',
-                      value: 'unavailable',
-                    },
-                  ],
-                },
+                // {
+                //   name: 'propertyStatus',
+                //   label: 'Status',
+                //   type: 'select',
+                //   options: [
+                //     {
+                //       label: 'Available',
+                //       value: 'available',
+                //     },
+                //     {
+                //       label: 'Unavailable',
+                //       value: 'unavailable',
+                //     },
+                //   ],
+                // },
               ],
             },
             {
@@ -263,34 +263,23 @@ export const Listings: CollectionConfig = {
       name: 'publishedAt',
       type: 'date',
       admin: {
-        date: {
-          pickerAppearance: 'dayAndTime',
-        },
         position: 'sidebar',
       },
-      hooks: {
-        beforeChange: [
-          ({ siblingData, value }) => {
-            if (siblingData._status === 'published' && !value) {
-              return new Date()
-            }
-            return value
-          },
-        ],
-      },
     },
-
     ...slugField(),
   ],
   hooks: {
     afterChange: [revalidateListing],
+    beforeChange: [populatePublishedAt],
   },
   versions: {
-    drafts: {
-      autosave: {
-        interval: 100, // We set this interval for optimal live preview
-      },
-    },
+    drafts: true,
+    // {
+
+    // autosave: {
+    //   interval: 100, // We set this interval for optimal live preview
+    // },
+    // },
     maxPerDoc: 50,
   },
 }

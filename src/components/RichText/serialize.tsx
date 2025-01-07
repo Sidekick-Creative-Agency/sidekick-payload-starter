@@ -141,6 +141,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
               return <CodeBlock className="col-start-2" key={index} {...block} />
             case 'formBlock':
               return typeof block.form !== 'number' ? (
+                // @ts-ignore
                 <FormBlock key={index} {...block} enableIntro={block.enableIntro || false} />
               ) : null
             case 'columnsBlock':
