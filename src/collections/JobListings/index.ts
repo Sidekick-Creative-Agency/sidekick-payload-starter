@@ -1,0 +1,62 @@
+import type { CollectionConfig } from 'payload'
+
+import { authenticated } from '../../access/authenticated'
+import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
+import {
+  lexicalEditor,
+  HeadingFeature,
+  FixedToolbarFeature,
+  InlineToolbarFeature,
+  OrderedListFeature,
+  UnorderedListFeature,
+  LinkFeature,
+} from '@payloadcms/richtext-lexical'
+import { TextColorFeature } from '@/components/RichText/Color/features/textColor/feature.server'
+
+export const JobListings: CollectionConfig = {
+  slug: 'job-listings',
+  access: {
+    create: authenticated,
+    delete: authenticated,
+    read: authenticatedOrPublished,
+    update: authenticated,
+  },
+  admin: {
+    defaultColumns: ['title', 'slug', 'updatedAt'],
+    useAsTitle: 'title',
+  },
+  fields: [
+    {
+      name: 'title',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'description',
+      type: 'richText',
+      editor: lexicalEditor({
+        features: ({ rootFeatures }) => {
+          return [
+            ...rootFeatures,
+            HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3'] }),
+            FixedToolbarFeature(),
+            InlineToolbarFeature(),
+            OrderedListFeature(),
+            UnorderedListFeature(),
+            LinkFeature(),
+            TextColorFeature(),
+          ]
+        },
+      }),
+      required: true,
+    },
+    {
+      name: 'active',
+      type: 'checkbox',
+      admin: {
+        description:
+          'If unchecked, this Job Listing will not show up on the front end of the website.',
+      },
+    },
+  ],
+}

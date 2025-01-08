@@ -48,6 +48,7 @@ import { Attachments } from './collections/Attachments'
 import { PropertyTypes } from './collections/PropertyTypes'
 import { Reviews } from './collections/Reviews'
 import { TeamMembers } from './collections/TeamMembers'
+import { JobListings } from './collections/JobListings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -146,6 +147,7 @@ export default buildConfig({
     PropertyTypes,
     Reviews,
     TeamMembers,
+    JobListings,
   ],
   cors: [process.env.NEXT_PUBLIC_SERVER_URL || ''].filter(Boolean),
   globals: [Header, Footer],

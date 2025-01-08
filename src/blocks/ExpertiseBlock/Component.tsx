@@ -29,7 +29,7 @@ export const ExpertiseBlock: React.FC<
             <h2 className="text-[2.5rem] font-bold text-brand-gray-06">{heading}</h2>
             <p className="max-w-[30rem] text-brand-gray-04 font-light">{description}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-6">
             {expertiseAreas &&
               expertiseAreas.map((area, index) => {
                 const { title, accentColor, image, link } = area

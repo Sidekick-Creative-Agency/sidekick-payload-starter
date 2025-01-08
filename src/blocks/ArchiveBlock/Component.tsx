@@ -63,8 +63,8 @@ export const ArchiveBlock: React.FC<
     <div className={`archive-block-${id}`}>
       <div className="container py-20 md:py-32 flex flex-col gap-16 md:gap-20">
         <div className="flex flex-col gap-4 md:flex-row md:gap-10 md:justify-between md:items-center">
-          <h2 className="text-[2.5rem] font-bold text-brand-gray-06">{heading}</h2>
-          <p className="max-w-[30rem] text-brand-gray-04 font-light">{subtitle}</p>
+          <h2 className="text-[2.5rem] font-bold text-brand-gray-06 flex-1">{heading}</h2>
+          <p className="max-w-[30rem] text-brand-gray-04 font-light flex-1">{subtitle}</p>
         </div>
         {layout && layout === 'grid' && (
           <CollectionArchiveGrid archive={archive} relationTo={relationTo} />

@@ -25,6 +25,8 @@ import { ColumnsBlock } from '@/blocks/ColumnsBlock/config'
 import { NumberCountersBlock } from '@/blocks/NumberCounterBlock/config'
 import { ExpertiseBlock } from '@/blocks/ExpertiseBlock/config'
 import { TimelineBlock } from '@/blocks/TimelineBlock/config'
+import { ReviewsBlock } from '@/blocks/ReviewsBlock/config'
+import { JobListingsBlock } from '@/blocks/JobListingsBlock/config'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
@@ -84,6 +86,8 @@ export const Pages: CollectionConfig = {
                 NumberCountersBlock,
                 ExpertiseBlock,
                 TimelineBlock,
+                ReviewsBlock,
+                JobListingsBlock,
               ],
               required: true,
             },

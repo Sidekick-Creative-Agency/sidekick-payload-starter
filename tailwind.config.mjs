@@ -36,7 +36,7 @@ export default {
         sm: '2.5rem',
       },
       screens: {
-        '2xl': '86rem',
+        '2xl': '92rem',
         xl: '80rem',
         lg: '64rem',
         md: '48rem',

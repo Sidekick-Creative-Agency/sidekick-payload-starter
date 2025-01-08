@@ -21,6 +21,7 @@ export interface Config {
     propertyTypes: PropertyType;
     reviews: Review;
     'team-members': TeamMember;
+    'job-listings': JobListing;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -51,6 +52,7 @@ export interface Config {
     propertyTypes: PropertyTypesSelect<false> | PropertyTypesSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
+    'job-listings': JobListingsSelect<false> | JobListingsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -139,6 +141,8 @@ export interface Page {
     | NumberCountersBlock
     | ExpertiseBlock
     | TimelineBlock
+    | ReviewsBlock
+    | JobListingsBlock
   )[];
   meta?: {
     title?: string | null;
@@ -906,6 +910,51 @@ export interface TimelineBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ReviewsBlock".
+ */
+export interface ReviewsBlock {
+  heading?: string | null;
+  subtitle?: string | null;
+  reviews?:
+    | {
+        reviewerName: string;
+        reviewerTitle: string;
+        image: number | Media;
+        review: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'reviewsBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "JobListingsBlock".
+ */
+export interface JobListingsBlock {
+  heading?: string | null;
+  subtitle?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'jobListingsBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
 export interface Post {
@@ -976,6 +1025,32 @@ export interface Review {
   jobTitle: string;
   review: string;
   image: number | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "job-listings".
+ */
+export interface JobListing {
+  id: number;
+  title: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  active?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1106,6 +1181,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'team-members';
         value: number | TeamMember;
+      } | null)
+    | ({
+        relationTo: 'job-listings';
+        value: number | JobListing;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1425,6 +1504,31 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        reviewsBlock?:
+          | T
+          | {
+              heading?: T;
+              subtitle?: T;
+              reviews?:
+                | T
+                | {
+                    reviewerName?: T;
+                    reviewerTitle?: T;
+                    image?: T;
+                    review?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        jobListingsBlock?:
+          | T
+          | {
+              heading?: T;
+              subtitle?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -1700,6 +1804,17 @@ export interface TeamMembersSelect<T extends boolean = true> {
   relatedListings?: T;
   slug?: T;
   slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "job-listings_select".
+ */
+export interface JobListingsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  active?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -53,7 +53,6 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
   return (
     <Fragment>
       {nodes?.map((node, index): JSX.Element | null => {
-        console.log(node)
         if (node == null) {
           return null
         }
