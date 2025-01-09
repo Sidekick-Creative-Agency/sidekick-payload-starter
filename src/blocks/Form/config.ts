@@ -13,6 +13,8 @@ import { TabletVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Tab
 import { MobileHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Mobile'
 import { MobileVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Mobile'
 import { StylesField } from '@/fields/Styles'
+import { TextColorFeature } from '@/components/RichText/Color/features/textColor/feature.server'
+import { BRAND_COLORS } from '@/utilities/constants'
 
 export const FormBlock: Block = {
   slug: 'formBlock',
@@ -23,11 +25,6 @@ export const FormBlock: Block = {
       type: 'relationship',
       relationTo: 'forms',
       required: true,
-      defaultValue: async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/forms`)
-        const data: PaginatedDocs<{ id: string }> = await response.json()
-        return data?.docs?.at(0)?.id
-      },
     },
     {
       name: 'enableIntro',
@@ -47,6 +44,15 @@ export const FormBlock: Block = {
             HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
             FixedToolbarFeature(),
             InlineToolbarFeature(),
+            TextColorFeature({
+              colors: BRAND_COLORS.map((color) => {
+                return {
+                  type: 'button',
+                  label: color.label,
+                  color: color.value,
+                }
+              }),
+            }),
           ]
         },
       }),

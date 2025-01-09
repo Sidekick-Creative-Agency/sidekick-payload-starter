@@ -20,12 +20,12 @@ export const Attachments: CollectionConfig = {
       name: 'label',
       type: 'text',
     },
-    {
-      name: 'relatedListings',
-      type: 'join',
-      collection: 'listings',
-      on: 'attachments',
-    },
+    // {
+    //   name: 'relatedListings',
+    //   type: 'join',
+    //   collection: 'listings',
+    //   on: 'attachments',
+    // },
   ],
   upload: {
     // Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload

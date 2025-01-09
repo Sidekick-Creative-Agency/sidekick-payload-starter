@@ -217,9 +217,16 @@ export const Listings: CollectionConfig = {
             },
             {
               name: 'attachments',
-              type: 'upload',
-              relationTo: 'attachments',
+              type: 'array',
+              fields: [
+                {
+                  name: 'attachment',
+                  type: 'upload',
+                  relationTo: 'attachments',
+                },
+              ],
             },
+
             {
               name: 'agents',
               type: 'relationship',

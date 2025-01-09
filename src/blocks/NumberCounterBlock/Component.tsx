@@ -23,7 +23,7 @@ export const NumberCountersBlock: React.FC<
   return (
     <>
       <div className={`number-counters-block-${id} bg-brand-navy`}>
-        <div className="py-20 container max-w-[90rem]">
+        <div className="py-20 container">
           <div className="flex flex-col md:flex-row justify-around gap-10 flex-wrap">
             {numberCounters &&
               numberCounters.length > 0 &&

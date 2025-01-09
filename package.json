@@ -18,7 +18,7 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
-    "@awesome.me/kit-a7a0dd333d": "^1.0.4",
+    "@awesome.me/kit-a7a0dd333d": "^1.0.14",
     "@fortawesome/fontawesome-svg-core": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@payloadcms/db-postgres": "latest",
@@ -50,6 +50,7 @@
     "jsonwebtoken": "9.0.2",
     "lexical": "^0.20.0",
     "lucide-react": "^0.378.0",
+    "mapbox-gl": "^3.9.2",
     "next": "15.0.0",
     "payload": "latest",
     "payload-admin-bar": "^1.0.6",
@@ -58,6 +59,7 @@
     "react": "19.0.0-rc-65a56d0e-20241020",
     "react-dom": "19.0.0-rc-65a56d0e-20241020",
     "react-hook-form": "7.45.4",
+    "react-mapbox-gl": "^5.1.1",
     "react-slot-counter": "^3.0.4",
     "sharp": "0.32.6",
     "tailwind-merge": "^2.3.0",

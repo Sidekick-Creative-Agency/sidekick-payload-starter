@@ -31,9 +31,6 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
-    attachments: {
-      relatedListings: 'listings';
-    };
     propertyTypes: {
       relatedListings: 'listings';
     };
@@ -423,7 +420,12 @@ export interface Listing {
   zipCode: string;
   latitude: number;
   longitude: number;
-  attachments?: (number | null) | Attachment;
+  attachments?:
+    | {
+        attachment?: (number | null) | Attachment;
+        id?: string | null;
+      }[]
+    | null;
   agents?: (number | TeamMember)[] | null;
   meta?: {
     title?: string | null;
@@ -444,10 +446,6 @@ export interface Listing {
 export interface Attachment {
   id: number;
   label?: string | null;
-  relatedListings?: {
-    docs?: (number | Listing)[] | null;
-    hasNextPage?: boolean | null;
-  } | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -1721,7 +1719,12 @@ export interface ListingsSelect<T extends boolean = true> {
   zipCode?: T;
   latitude?: T;
   longitude?: T;
-  attachments?: T;
+  attachments?:
+    | T
+    | {
+        attachment?: T;
+        id?: T;
+      };
   agents?: T;
   meta?:
     | T
@@ -1745,7 +1748,6 @@ export interface ListingsSelect<T extends boolean = true> {
  */
 export interface AttachmentsSelect<T extends boolean = true> {
   label?: T;
-  relatedListings?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
