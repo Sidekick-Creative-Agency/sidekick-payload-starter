@@ -57,6 +57,9 @@ export const Listings: CollectionConfig = {
 
       return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`
     },
+    components: {
+      beforeList: ['/components/Admin/LinkToImportView#LinkToImportView'],
+    },
     useAsTitle: 'title',
   },
   fields: [

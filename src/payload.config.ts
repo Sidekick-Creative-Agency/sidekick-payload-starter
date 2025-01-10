@@ -70,6 +70,12 @@ export default buildConfig({
         Logo: '@/components/LoginLogo',
         Icon: '@/components/AdminLogo',
       },
+      views: {
+        importListingsView: {
+          Component: '/views/Listings/Import#ImportView',
+          path: '/import/listings',
+        },
+      },
     },
     importMap: {
       baseDir: path.resolve(dirname),
