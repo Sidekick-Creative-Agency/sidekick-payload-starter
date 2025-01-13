@@ -18,7 +18,7 @@ interface HeaderClientProps {
 
 export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
   /* Storing the value in a useState to avoid hydration errors */
-  const [theme, setTheme] = useState<string | null>(null)
+  // const [theme, setTheme] = useState<string | null>(null)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
   const { width } = useWindowDimensions()
@@ -30,10 +30,6 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
-  useEffect(() => {
-    if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerTheme])
   useMotionValueEvent(scrollY, 'change', (latest) => {
     if (latest > 1) setIsScrolled(true)
     else setIsScrolled(false)
@@ -41,10 +37,13 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
 
   return (
     <header
-      className={`px-[1.25rem] md:px-[2.5rem] z-20 flex md:grid md:grid-cols-3 justify-between sticky top-0 transition-all duration-200 ${
-        isScrolled ? ' bg-white py-4' : 'bg-transparent py-8'
+      className={`px-[1.25rem] md:px-[2.5rem] z-20 flex md:grid md:grid-cols-3 justify-between sticky top-0 border-b transition-all duration-200 ${
+        isScrolled
+          ? 'bg-white border-brand-gray-00 py-4'
+          : headerTheme !== 'filled'
+            ? 'bg-transparent py-8 border-transparent'
+            : 'bg-white border-brand-gray-00 py-8'
       }`}
-      {...(theme ? { 'data-theme': theme } : {})}
     >
       {width && width > parseInt(defaultTheme.screens.md) && (
         <LeftHeaderNav
@@ -55,10 +54,10 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
       {header.logo && (
         <Link href="/" className=" md:col-start-2 md:justify-self-center">
           {!header.logoAlt && <Media resource={header.logo} imgClassName={`max-w-[9.375rem]`} />}
-          {!isScrolled && header.logoAlt && (
+          {!isScrolled && headerTheme === 'transparent' && header.logoAlt && (
             <Media resource={header.logo} imgClassName={`max-w-[9.375rem]`} />
           )}
-          {isScrolled && header.logoAlt && (
+          {(isScrolled || headerTheme === 'filled') && header.logoAlt && (
             <Media resource={header.logoAlt} imgClassName={`max-w-[9.375rem]`} />
           )}
         </Link>

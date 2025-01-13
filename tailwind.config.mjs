@@ -99,7 +99,7 @@ export default {
           blue: 'var(--brand-blue)',
           brown: 'var(--brand-brown)',
           green: 'var(--brand-green)',
-          'gray-01': 'var(--brand-gray-00)',
+          'gray-00': 'var(--brand-gray-00)',
           'gray-01': 'var(--brand-gray-01)',
           'gray-02': 'var(--brand-gray-02)',
           'gray-03': 'var(--brand-gray-03)',

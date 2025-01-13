@@ -244,7 +244,7 @@ function calcBoundsFromCoordinates(coordinatesCollection: number[][]) {
   return [getSWCoordinates(coordinatesCollection), getNECoordinates(coordinatesCollection)]
 }
 
-const FloorPlanIcon = (props) => {
+export const FloorPlanIcon = (props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -257,8 +257,8 @@ const FloorPlanIcon = (props) => {
     >
       <rect opacity="0.4" x="2" y="2" width="16" height="16" fill="#0B2A35" />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M7 2H18V7V7.5V18H15.5V17.5H17.5V7.5H12V7H17.5V2.5H7V7H6.5V2.5H2.5V13H12V13.5H2.5V17.5H12V18H2V13.5V13V2H6.5H7Z"
         fill="#0B2A35"
       />

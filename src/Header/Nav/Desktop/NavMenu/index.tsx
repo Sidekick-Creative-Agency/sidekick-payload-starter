@@ -20,11 +20,13 @@ import {
 } from '@/components/ui/navigation-menu'
 import { Button } from '@/components/ui/button'
 import { useMotionValueEvent, useScroll } from 'framer-motion'
+import { useHeaderTheme } from '@/providers/HeaderTheme'
 
 export const NavMenu: React.FC<{ navItems: Header['navItems']; isScrolled: boolean }> = ({
   navItems,
   isScrolled,
 }) => {
+  const { headerTheme } = useHeaderTheme()
   if (!navItems) return null
   return (
     <NavigationMenu delayDuration={100}>
@@ -37,7 +39,7 @@ export const NavMenu: React.FC<{ navItems: Header['navItems']; isScrolled: boole
                   key={i}
                   {...navItem.link}
                   appearance="link"
-                  className={`${isScrolled ? 'text-black' : 'text-white'} uppercase font-bold text-base tracking-[1.6px] py-2`}
+                  className={`${isScrolled || headerTheme === 'filled' ? 'text-black' : 'text-white'} uppercase font-bold text-base tracking-[1.6px] py-2`}
                 />
               </NavigationMenuItem>
             )
@@ -45,7 +47,7 @@ export const NavMenu: React.FC<{ navItems: Header['navItems']; isScrolled: boole
           return (
             <NavigationMenuItem key={i}>
               <NavigationMenuTrigger
-                className={`bg-transparent px-0 uppercase font-bold text-base tracking-[1.6px] hover:bg-transparent focus-visible:bg-transparent data-[state=open]:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${isScrolled ? 'text-black hover:text-black focus-visible:text-black' : 'text-white hover:text-white focus-visible:text-white'} transition`}
+                className={`bg-transparent px-0 uppercase font-bold text-base tracking-[1.6px] hover:bg-transparent focus-visible:bg-transparent data-[state=open]:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${isScrolled || headerTheme === 'filled' ? 'text-black hover:text-black focus-visible:text-black' : 'text-white hover:text-white focus-visible:text-white'} transition`}
               >
                 {navItem?.label}
               </NavigationMenuTrigger>

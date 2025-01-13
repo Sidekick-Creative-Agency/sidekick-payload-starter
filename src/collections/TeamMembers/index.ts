@@ -17,7 +17,7 @@ export const TeamMembers: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: authenticatedOrPublished,
+    read: () => true,
     update: authenticated,
   },
   admin: {
