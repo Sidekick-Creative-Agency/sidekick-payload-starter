@@ -17,10 +17,10 @@ export const ImportView: React.FC<AdminViewProps> = ({ initPageResult, params, s
       visibleEntities={initPageResult.visibleEntities}
     >
       <Gutter>
-        <h1>Import View</h1>
+        <h1>Import Listings</h1>
       </Gutter>
       <Gutter className="mt-8">
-        <AdminDropzone />
+        <AdminDropzone collectionName={initPageResult.collectionConfig?.slug || ''} />
       </Gutter>
     </DefaultTemplate>
   )

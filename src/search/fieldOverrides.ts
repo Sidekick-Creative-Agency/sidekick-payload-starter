@@ -42,6 +42,34 @@ export const searchFields: Field[] = [
     type: 'array',
     admin: {
       readOnly: true,
+      condition: (props) => {
+        return props.doc.relationTo === 'posts'
+      },
+    },
+    fields: [
+      {
+        name: 'relationTo',
+        type: 'text',
+      },
+      {
+        name: 'id',
+        type: 'text',
+      },
+      {
+        name: 'title',
+        type: 'text',
+      },
+    ],
+  },
+  {
+    label: 'Property Types',
+    name: 'propertyTypes',
+    type: 'array',
+    admin: {
+      readOnly: true,
+      condition: (props) => {
+        return props.doc.relationTo === 'propertyTypes'
+      },
     },
     fields: [
       {

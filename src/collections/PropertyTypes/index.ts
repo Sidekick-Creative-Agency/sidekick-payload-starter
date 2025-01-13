@@ -8,7 +8,7 @@ export const PropertyTypes: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: authenticatedOrPublished,
+    read: () => true,
     update: authenticated,
   },
   admin: {

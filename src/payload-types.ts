@@ -412,6 +412,7 @@ export interface Listing {
   price?: number | null;
   type?: (number | PropertyType)[] | null;
   availability?: ('for-sale' | 'for-lease') | null;
+  propertyStatus?: ('available' | 'unavailable') | null;
   area?: number | null;
   acreage?: number | null;
   streetAddress: string;
@@ -1104,19 +1105,10 @@ export interface Search {
   id: number;
   title?: string | null;
   priority?: number | null;
-  doc:
-    | {
-        relationTo: 'posts';
-        value: number | Post;
-      }
-    | {
-        relationTo: 'listings';
-        value: number | Listing;
-      }
-    | {
-        relationTo: 'team-members';
-        value: number | TeamMember;
-      };
+  doc: {
+    relationTo: 'posts';
+    value: number | Post;
+  };
   slug?: string | null;
   meta?: {
     title?: string | null;
@@ -1124,6 +1116,13 @@ export interface Search {
     image?: (number | null) | Media;
   };
   categories?:
+    | {
+        relationTo?: string | null;
+        id?: string | null;
+        title?: string | null;
+      }[]
+    | null;
+  propertyTypes?:
     | {
         relationTo?: string | null;
         id?: string | null;
@@ -1711,6 +1710,7 @@ export interface ListingsSelect<T extends boolean = true> {
   price?: T;
   type?: T;
   availability?: T;
+  propertyStatus?: T;
   area?: T;
   acreage?: T;
   streetAddress?: T;
@@ -2013,6 +2013,13 @@ export interface SearchSelect<T extends boolean = true> {
         image?: T;
       };
   categories?:
+    | T
+    | {
+        relationTo?: T;
+        id?: T;
+        title?: T;
+      };
+  propertyTypes?:
     | T
     | {
         relationTo?: T;

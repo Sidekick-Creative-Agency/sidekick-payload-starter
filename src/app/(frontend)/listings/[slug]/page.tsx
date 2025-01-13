@@ -7,7 +7,7 @@ import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 
-import type { Post } from '@/payload-types'
+import type { Post, PropertyType } from '@/payload-types'
 
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
@@ -38,6 +38,7 @@ export default async function Post({ params: paramsPromise }: Args) {
   const { slug = '' } = await paramsPromise
   const url = '/listings/' + slug
   const listing = await queryListingBySlug({ slug })
+  const payload = await getPayload({ config: configPromise })
 
   if (!listing) return <PayloadRedirects url={url} />
 
@@ -48,8 +49,52 @@ export default async function Post({ params: paramsPromise }: Args) {
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
 
-      <div className="flex flex-col items-center gap-4 pt-8">
-        <div className="container lg:mx-0 lg:grid lg:grid-cols-[1fr_48rem_1fr] grid-rows-[1fr]"></div>
+      <div className="flex flex-col items-center gap-4">
+        <div className="container">
+          <div className="flex justify-between gap-10">
+            <div className="flex flex-col gap-6">
+              <div className="flex gap-4 text-base text-brand-gray-03 uppercase tracking-wider font-bold">
+                <span>{listing.availability}</span>|
+                <span>
+                  {listing.type &&
+                    typeof listing.type === 'object' &&
+                    listing.type.map((listingType, index) => {
+                      if (listing.type) {
+                        return index !== listing.type.length - 1
+                          ? `${(listingType as PropertyType).title}, `
+                          : (listingType as PropertyType).title
+                      }
+                      return ''
+                    })}
+                </span>
+              </div>
+              <div className="flex gap-4 items-center">
+                <h1 className="text-[2.5rem] font-bold text-brand-navy">{listing.streetAddress}</h1>
+                {listing.propertyStatus && (
+                  <div className="py-2 px-3 rounded-lg bg-brand-blue bg-opacity-50">
+                    <span className="text-xs font-bold text-brand-navy tracking-wider uppercase">
+                      {listing.propertyStatus}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <span className="text-lg font-light text-brand-gray-03">
+                {listing.city}, {listing.state} {listing.zipCode}
+              </span>
+            </div>
+            <div className="flex flex-col justify-between gap-4">
+              {listing.price && (
+                <span className="text-[2.5rem] font-bold text-brand-navy">
+                  {listing.price.toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* {listing.relatedPosts && listing.relatedPosts.length > 0 && (
           <RelatedPosts

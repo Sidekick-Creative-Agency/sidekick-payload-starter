@@ -123,6 +123,7 @@ export const Listings: CollectionConfig = {
                   type: 'relationship',
                   relationTo: 'propertyTypes',
                   hasMany: true,
+                  unique: false,
                 },
               ],
             },
@@ -144,21 +145,21 @@ export const Listings: CollectionConfig = {
                     },
                   ],
                 },
-                // {
-                //   name: 'propertyStatus',
-                //   label: 'Status',
-                //   type: 'select',
-                //   options: [
-                //     {
-                //       label: 'Available',
-                //       value: 'available',
-                //     },
-                //     {
-                //       label: 'Unavailable',
-                //       value: 'unavailable',
-                //     },
-                //   ],
-                // },
+                {
+                  name: 'propertyStatus',
+                  label: 'Status',
+                  type: 'select',
+                  options: [
+                    {
+                      label: 'Available',
+                      value: 'available',
+                    },
+                    {
+                      label: 'Unavailable',
+                      value: 'unavailable',
+                    },
+                  ],
+                },
               ],
             },
             {
@@ -283,13 +284,11 @@ export const Listings: CollectionConfig = {
     beforeChange: [populatePublishedAt],
   },
   versions: {
-    drafts: true,
-    // {
-
-    // autosave: {
-    //   interval: 100, // We set this interval for optimal live preview
-    // },
-    // },
+    drafts: {
+      autosave: {
+        interval: 100, // We set this interval for optimal live preview
+      },
+    },
     maxPerDoc: 50,
   },
 }

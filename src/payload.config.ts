@@ -224,7 +224,7 @@ export default buildConfig({
       },
     }),
     searchPlugin({
-      collections: ['posts', 'listings', 'team-members'],
+      collections: ['posts'],
       beforeSync: beforeSyncWithSearch,
       searchOverrides: {
         fields: ({ defaultFields }) => {
