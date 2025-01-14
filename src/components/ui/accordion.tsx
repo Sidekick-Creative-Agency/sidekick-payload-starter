@@ -7,6 +7,8 @@ import { ChevronDown } from 'lucide-react'
 import { cn } from 'src/utilities/cn'
 import { faMinus, faPlus } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { JSX } from 'react'
+import { IconDefinition } from '@awesome.me/kit-a7a0dd333d/icons'
 
 const Accordion = AccordionPrimitive.Root
 
@@ -20,7 +22,9 @@ AccordionItem.displayName = 'AccordionItem'
 
 const AccordionTrigger = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> & {
+    closedIcon?: JSX.Element
+  } & { openIcon?: JSX.Element }
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Header className="flex">
     <AccordionPrimitive.Trigger
@@ -32,8 +36,19 @@ const AccordionTrigger = React.forwardRef<
       {...props}
     >
       {children}
-      <FontAwesomeIcon icon={faPlus} className="w-6 h-6 text-brand-tan open-icon" />
-      <FontAwesomeIcon icon={faMinus} className="w-6 h-6 text-brand-tan close-icon hidden" />
+      {props.closedIcon && props.openIcon && (
+        <React.Fragment>
+          {props.closedIcon}
+          {props.openIcon}
+        </React.Fragment>
+      )}
+      {!props.closedIcon ||
+        (!props.openIcon && (
+          <React.Fragment>
+            <FontAwesomeIcon icon={faPlus} className="w-6 h-6 text-brand-tan open-icon" />
+            <FontAwesomeIcon icon={faMinus} className="w-6 h-6 text-brand-tan close-icon hidden" />
+          </React.Fragment>
+        ))}
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ))

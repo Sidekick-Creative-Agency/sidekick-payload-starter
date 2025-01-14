@@ -13,6 +13,8 @@ import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFarm } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
 import { faEnvelope } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
+import { formatNumber } from '@/utilities/formatNumber'
+import { formatPrice } from '@/utilities/formatPrice'
 
 interface ListingsMapProps {
   listings: Listing[]
@@ -32,7 +34,7 @@ export const ListingsMap: React.FC<ListingsMapProps> = ({ listings }) => {
         properties: {
           title: listing.title,
           address: listing.streetAddress,
-          price: listing.price,
+          price: listing.price ? formatPrice(listing.price) : '',
           image: listing.featuredImage,
           lat: listing.latitude,
           lon: listing.longitude,
@@ -114,7 +116,7 @@ export const ListingsMap: React.FC<ListingsMapProps> = ({ listings }) => {
                   </div>
                   <div class="p-6 bg-white flex flex-col-reverse">
                     <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${feature.properties.address}</h3>
-                    <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${feature.properties.price ? `$${feature.properties.price}` : 'Contact for price'}</span>
+                    <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${feature.properties.price ? `${feature.properties.price}` : 'Contact for price'}</span>
                   </div>
                 </div>
 
@@ -176,7 +178,7 @@ export const ListingsMap: React.FC<ListingsMapProps> = ({ listings }) => {
                       <div className="flex flex-col gap-2 flex-1">
                         <h3 className="sr-only">{listing.title}</h3>
                         <span className="text-2xl text-brand-gray-06 font-bold font-basic-sans leading-none">
-                          {listing.price ? `$${listing.price}` : 'Contact for price'}
+                          {listing.price ? `${formatPrice(listing.price)}` : 'Contact for price'}
                         </span>
                         <span className="text-xl font-light text-brand-gray-06">
                           {listing.city}, {listing.state}
@@ -199,7 +201,7 @@ export const ListingsMap: React.FC<ListingsMapProps> = ({ listings }) => {
                         <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                           <FloorPlanIcon className="w-6" />
                           <span className="text-base text-brand-gray-06 font-light">
-                            {listing.area} sqft
+                            {formatNumber(listing.area)} sqft
                           </span>
                         </div>
                       )}
@@ -207,7 +209,7 @@ export const ListingsMap: React.FC<ListingsMapProps> = ({ listings }) => {
                         <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                           <FontAwesomeIcon icon={faFarm} className="w-6 text-brand-navy" />
                           <span className="text-base text-brand-gray-06 font-light fill-brand-navy">
-                            {listing.acreage} acres
+                            {formatNumber(listing.acreage)} acres
                           </span>
                         </div>
                       )}

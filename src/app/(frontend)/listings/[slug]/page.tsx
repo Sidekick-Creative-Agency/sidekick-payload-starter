@@ -7,13 +7,13 @@ import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 
-import type { Post, PropertyType, TeamMember } from '@/payload-types'
+import type { Attachment, Post, PropertyType, TeamMember } from '@/payload-types'
 
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { CopyButton } from '@/components/CopyButton'
 import { FloorPlanIcon } from '@/components/Map'
-import { faFarm } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
+import { faFarm, faFilePdf } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   Accordion,
@@ -23,6 +23,18 @@ import {
 } from '@/components/ui/accordion'
 import RichText from '@/components/RichText'
 import { TeamMemberCard } from '@/components/TeamMembers/TeamMemberCard'
+import { formatPrice } from '@/utilities/formatPrice'
+import { formatNumber } from '@/utilities/formatNumber'
+import {
+  faChevronSquareUp,
+  faChevronSquareDown,
+  faChevronDown,
+  faChevronUp,
+} from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
+import { ListingMap } from '@/components/Map/Individual'
+import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
+import { ColumnsBlock } from '@/blocks/ColumnsBlock/Component'
+import { BRAND_COLORS } from '@/utilities/constants'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -51,7 +63,14 @@ export default async function Listing({ params: paramsPromise }: Args) {
   const url = '/listings/' + slug
   const listing = await queryListingBySlug({ slug })
   const payload = await getPayload({ config: configPromise })
-
+  const contactMedia = await payload.findByID({
+    collection: 'media',
+    id: 18,
+  })
+  const contactBgMedia = await payload.findByID({
+    collection: 'media',
+    id: 10,
+  })
   if (!listing) return <PayloadRedirects url={url} />
 
   return (
@@ -99,11 +118,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
             <div className="flex flex-col justify-between gap-4">
               {listing.price && (
                 <span className="text-[2.5rem] font-bold text-brand-navy">
-                  {listing.price.toLocaleString('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                    minimumFractionDigits: 0,
-                  })}
+                  {formatPrice(listing.price)}
                 </span>
               )}
               <CopyButton value={`${process.env.NEXT_PUBLIC_SERVER_URL}${url}`} />
@@ -119,11 +134,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 <div className="flex flex-col gap-2">
                   {listing.price && (
                     <h2 className="text-[2.5rem] font-bold text-brand-navy">
-                      {listing.price.toLocaleString('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                        minimumFractionDigits: 0,
-                      })}
+                      {formatPrice(listing.price)}
                     </h2>
                   )}
                   <span className="text-base font-light text-brand-gray-03">
@@ -135,7 +146,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                       <FloorPlanIcon className="w-6" />
                       <span className="text-base text-brand-gray-06 font-light">
-                        {listing.area} sqft
+                        {formatNumber(listing.area)} sqft
                       </span>
                     </div>
                   )}
@@ -143,23 +154,83 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                       <FontAwesomeIcon icon={faFarm} className="w-6 text-brand-navy" />
                       <span className="text-base text-brand-gray-06 font-light fill-brand-navy">
-                        {listing.acreage} acres
+                        {formatNumber(listing.acreage)} acres
                       </span>
                     </div>
                   )}
                 </div>
               </div>
-              <Accordion type="multiple" defaultValue={['Overview']}>
+              <Accordion type="multiple" defaultValue={['Overview', 'Resources']}>
                 <AccordionItem value="Overview">
-                  <AccordionTrigger className="text-2xl font-bold text-brand-navy">
+                  <AccordionTrigger
+                    className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
+                    closedIcon={
+                      <FontAwesomeIcon
+                        icon={faChevronDown}
+                        className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 close-icon hidden"
+                      />
+                    }
+                    openIcon={
+                      <FontAwesomeIcon
+                        icon={faChevronUp}
+                        className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 open-icon"
+                      />
+                    }
+                  >
                     Property Overview
                   </AccordionTrigger>
 
-                  <AccordionContent>
+                  <AccordionContent className="pb-10">
                     <RichText
                       content={listing.description || {}}
                       className="p-0 text-brand-gray-03 max-w-none"
                     />
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="Resources">
+                  <AccordionTrigger
+                    className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
+                    closedIcon={
+                      <FontAwesomeIcon
+                        icon={faChevronDown}
+                        className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 close-icon hidden"
+                      />
+                    }
+                    openIcon={
+                      <FontAwesomeIcon
+                        icon={faChevronUp}
+                        className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 open-icon"
+                      />
+                    }
+                  >
+                    Resources
+                  </AccordionTrigger>
+
+                  <AccordionContent className="pb-10">
+                    <div className="flex gap-10">
+                      {listing.attachments &&
+                        listing.attachments.map((attachment, index) => {
+                          if (typeof attachment.attachment === 'object') {
+                            return (
+                              <a
+                                key={attachment.id}
+                                className="flex items-center gap-2"
+                                href={(attachment.attachment as Attachment).url || ''}
+                                target="_blank"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faFilePdf}
+                                  className="w-6 h-auto text-brand-navy"
+                                />
+                                <span className="text-base font-bold text-brand-gray-04">
+                                  {(attachment.attachment as Attachment).label}
+                                </span>
+                              </a>
+                            )
+                          }
+                          return ''
+                        })}
+                    </div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -180,6 +251,56 @@ export default async function Listing({ params: paramsPromise }: Args) {
           </div>
         </div>
       </div>
+      <ListingMap listing={listing} />
+      <div className="bg-white py-20">
+        <div className="container">
+          <div className="flex flex-col gap-10">
+            <ArchiveBlock
+              heading="Similar Listings in Your Area"
+              blockType="archive"
+              relationTo={'listings'}
+              propertyTypes={listing.type}
+            />
+          </div>
+        </div>
+      </div>
+      <ColumnsBlock
+        blockType="columnsBlock"
+        columns={[
+          {
+            type: 'media',
+            media: contactMedia,
+            size: 'half',
+          },
+          {
+            type: 'text',
+            richText: {
+              root: {
+                type: '',
+                direction: 'ltr',
+                format: 'left',
+                indent: 0,
+                version: 1,
+
+                children: [],
+              },
+            },
+            size: 'half',
+            styles: {
+              enableTopBorder: true,
+              borderColor: BRAND_COLORS.find((color) => color.label === 'blue')?.label,
+            },
+            backgroundColor: BRAND_COLORS.find((color) => color.label === 'offWhite')?.label,
+            backgroundImage: contactBgMedia,
+          },
+        ]}
+        styles={{
+          global: {
+            width: 'full',
+          },
+          resp: {},
+        }}
+      />
     </article>
   )
 }

@@ -20,7 +20,7 @@ export const ImportView: React.FC<AdminViewProps> = ({ initPageResult, params, s
         <h1>Import Listings</h1>
       </Gutter>
       <Gutter className="mt-8">
-        <AdminDropzone collectionName={initPageResult.collectionConfig?.slug || ''} />
+        <AdminDropzone collectionSlug={initPageResult.collectionConfig?.slug || ''} />
       </Gutter>
     </DefaultTemplate>
   )

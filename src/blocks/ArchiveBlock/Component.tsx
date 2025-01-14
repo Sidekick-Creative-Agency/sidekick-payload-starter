@@ -7,6 +7,7 @@ import RichText from '@/components/RichText'
 
 import { CollectionArchiveGrid } from '@/components/CollectionArchive/GridArchive'
 import { CollectionArchiveCarousel } from '@/components/CollectionArchive/CarouselArchive'
+import { PropertyTypes } from '../../collections/PropertyTypes/index'
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
@@ -29,27 +30,36 @@ export const ArchiveBlock: React.FC<
 
   let archive: DataFromCollectionSlug<'posts' | 'team-members' | 'listings'>[] = []
 
+  const taxonomySlug =
+    relationTo === 'posts'
+      ? 'categories'
+      : relationTo === 'listings'
+        ? 'propertyTypes'
+        : 'undefined'
+
   const payload = await getPayload({ config: configPromise })
 
   const flattenedTaxonomies =
-    relationTo === 'posts'
+    taxonomySlug === 'categories'
       ? categories?.map((category) => {
           if (typeof category === 'object') return category.id
           else return category
         })
-      : propertyTypes?.map((propertyType) => {
-          if (typeof propertyType === 'object') return propertyType.id
-          else return propertyType
-        })
+      : taxonomySlug === 'propertyTypes'
+        ? propertyTypes?.map((propertyType) => {
+            if (typeof propertyType === 'object') return propertyType.id
+            else return propertyType
+          })
+        : undefined
 
   const fetchedDocs = await payload.find({
     collection: relationTo || 'posts',
     depth: 1,
-    limit,
+    limit: limit || 10,
     ...(flattenedTaxonomies && flattenedTaxonomies.length > 0
       ? {
           where: {
-            categories: {
+            type: {
               in: flattenedTaxonomies,
             },
           },
@@ -66,7 +76,7 @@ export const ArchiveBlock: React.FC<
           <h2 className="text-[2.5rem] font-bold text-brand-gray-06 flex-1">{heading}</h2>
           <p className="max-w-[30rem] text-brand-gray-04 font-light flex-1">{subtitle}</p>
         </div>
-        {layout && layout === 'grid' && (
+        {layout !== 'carousel' && (
           <CollectionArchiveGrid archive={archive} relationTo={relationTo} />
         )}
         {/* {layout && layout === 'carousel' && (
