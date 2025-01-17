@@ -46,7 +46,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
   }
   const headingSizeClasses = {
     h1: 'text-[2.5rem] md:text-[3.5rem] lg:text-[4rem]',
-    h2: 'text-[2rem] md:text-[2.5rem] mb-6',
+    h2: 'text-[2rem] md:text-[2.5rem] mb-4',
     h3: 'text-[1.5rem] md:text-[2rem]',
     h4: 'text-[1rem] md:text-[1.5rem]',
   }
@@ -175,7 +175,10 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             }
             case 'paragraph': {
               return (
-                <p className={`col-start-2 ${formatClasses[node.format]} mb-3`} key={index}>
+                <p
+                  className={`col-start-2 ${node.format && formatClasses[node.format]} mb-3`}
+                  key={index}
+                >
                   {serializedChildren}
                 </p>
               )

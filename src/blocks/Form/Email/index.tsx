@@ -17,6 +17,7 @@ export const Email: React.FC<
     >
     register: UseFormRegister<FieldValues>
     className?: string
+    placeholder?: string
   }
 > = ({
   name,
@@ -25,16 +26,17 @@ export const Email: React.FC<
   label,
   register,
   required: requiredFromProps,
-  width,
+  placeholder,
   className,
 }) => {
   return (
     <div className={className}>
-      <Label htmlFor={name}>{label}</Label>
+      {label && <Label htmlFor={name}>{label}</Label>}
       <Input
         defaultValue={defaultValue}
         id={name}
-        type="text"
+        type="email"
+        placeholder={placeholder}
         {...register(name, { pattern: /^\S[^\s@]*@\S+$/, required: requiredFromProps })}
       />
 

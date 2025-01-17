@@ -6,6 +6,14 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 
 import type { Attachment, Post, PropertyType, TeamMember } from '@/payload-types'
 
@@ -30,11 +38,21 @@ import {
   faChevronSquareDown,
   faChevronDown,
   faChevronUp,
+  faImage,
 } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
 import { ListingMap } from '@/components/Map/Individual'
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { ColumnsBlock } from '@/blocks/ColumnsBlock/Component'
 import { BRAND_COLORS } from '@/utilities/constants'
+import { Media } from '@/components/Media'
+import { Button } from '@/components/ui/button'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -71,6 +89,10 @@ export default async function Listing({ params: paramsPromise }: Args) {
     collection: 'media',
     id: 10,
   })
+  const listingContactForm = await payload.findByID({
+    collection: 'forms',
+    id: 2,
+  })
   if (!listing) return <PayloadRedirects url={url} />
 
   return (
@@ -80,7 +102,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
       <div className="bg-white pt-10 pb-20">
-        <div className="container">
+        <div className="container flex flex-col gap-10">
           <h1 className="sr-only">{listing.title}</h1>
           <div className="flex justify-between gap-10">
             <div className="flex flex-col gap-6">
@@ -123,6 +145,64 @@ export default async function Listing({ params: paramsPromise }: Args) {
               )}
               <CopyButton value={`${process.env.NEXT_PUBLIC_SERVER_URL}${url}`} />
             </div>
+          </div>
+          <div className="grid grid-cols-4 grid-rows-2 gap-4">
+            <Media
+              resource={listing.featuredImage}
+              className="col-span-3 row-span-2 relative aspect-video"
+              imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+            />
+            {listing.imageGallery && listing.imageGallery[0] && listing.imageGallery[1] && (
+              <>
+                <Media
+                  resource={listing.imageGallery[0].image}
+                  className="col-span-1 row-span-1 relative"
+                  imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+                />
+                <div className="col-span-1 row-span-1 relative">
+                  <Media
+                    resource={listing.imageGallery[1].image}
+                    className="w-full h-full relative"
+                    imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+                  />
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        size={'icon'}
+                        className="absolute bottom-2 right-2 z-10 w-12 h-12 p-2 rounded-md bg-white bg-opacity-50 hover:bg-white hover:bg-opacity-50 focus-visible:bg-white focus-visible:bg-opacity-50 backdrop-blur-sm"
+                      >
+                        <FontAwesomeIcon icon={faImage} className="w-full h-auto" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="w-auto max-w-[calc(100vw - 5rem)] p-0 rounded-none bg-transparent">
+                      <Carousel className="w-[50rem] max-w-full rounded-none bg-transparent">
+                        <CarouselContent className="bg-transparent">
+                          <CarouselItem className="basis-full pl-0 bg-transparent">
+                            <Media resource={listing.featuredImage} className="w-full" />
+                          </CarouselItem>
+                          {listing.imageGallery.map((image, index) => {
+                            return (
+                              <CarouselItem key={image.id} className="basis-full pl-0">
+                                <Media resource={image.image} className="w-full" />
+                              </CarouselItem>
+                            )
+                          })}
+                        </CarouselContent>
+                        <CarouselPrevious className="left-2 p-2" />
+                        <CarouselNext className="right-2 p-2" />
+                      </Carousel>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </>
+            )}
+            {listing.imageGallery && listing.imageGallery[0] && !listing.imageGallery[1] && (
+              <Media
+                resource={listing.imageGallery[0].image}
+                className="col-span-1 row-span-2 relative"
+                imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -280,9 +360,76 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 direction: 'ltr',
                 format: 'left',
                 indent: 0,
-                version: 1,
+                version: 2,
 
-                children: [],
+                children: [
+                  {
+                    type: 'heading',
+                    tag: 'h2',
+                    indent: 0,
+                    format: '',
+                    version: 1,
+                    direction: 'ltr',
+                    children: [
+                      {
+                        detail: 0,
+                        format: 0,
+                        mode: 'normal',
+                        style: '',
+                        text: 'Contact Us',
+                        type: 'text',
+                        version: 1,
+                      },
+                    ],
+                  },
+                  {
+                    type: 'paragraph',
+                    textFormat: 0,
+                    indent: 0,
+                    format: '',
+                    version: 1,
+                    direction: 'ltr',
+                    children: [
+                      {
+                        detail: 0,
+                        format: 0,
+                        mode: 'normal',
+                        style: 'color: #757575',
+                        text: 'Get in touch today and let us help you find your perfect property!',
+                        type: 'text',
+                        version: 1,
+                      },
+                    ],
+                  },
+                  {
+                    fields: {
+                      blockName: 'formBlock',
+                      blockType: 'formBlock',
+                      form: listingContactForm,
+                      styles: {
+                        global: {
+                          width: 'full',
+                        },
+                        resp: {
+                          padHorDeskUnit: 'rem',
+                          padHorDeskVal: null,
+                          padHorTabUnit: 'rem',
+                          padHorTabVal: null,
+                          padHorMbUnit: 'rem',
+                          padHorMbVal: null,
+                          padVertDeskUnit: 'rem',
+                          padVertDeskVal: null,
+                          padVertTabUnit: 'rem',
+                          padVertTabVal: null,
+                          padVertMbUnit: 'rem',
+                          padVertMbVal: null,
+                        },
+                      },
+                    },
+                    type: 'block',
+                    version: 2,
+                  },
+                ],
               },
             },
             size: 'half',

@@ -93,7 +93,7 @@ export const ColumnsBlock: React.FC<
                   styles,
                 } = col
                 const colTwBackgroundColor = brandBgColorClasses[colBgColor || 'transparent']
-
+                console.log(richText)
                 return (
                   <div
                     className={cn(

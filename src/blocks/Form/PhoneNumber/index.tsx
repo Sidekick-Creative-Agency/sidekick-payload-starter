@@ -25,6 +25,7 @@ export const PhoneNumber: React.FC<
     register: UseFormRegister<FieldValues>
     setValue: UseFormSetValue<FieldValues>
     className?: string
+    placeholder?: string
   }
 > = ({
   name,
@@ -35,6 +36,7 @@ export const PhoneNumber: React.FC<
   required: requiredFromProps,
   setValue,
   className,
+  placeholder,
 }) => {
   const [error, setError] = useState<
     FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined
@@ -53,12 +55,13 @@ export const PhoneNumber: React.FC<
   }, [errors, name])
   return (
     <div className={className}>
-      <Label htmlFor={name}>{label}</Label>
+      {label && <Label htmlFor={name}>{label}</Label>}
       <Input
         defaultValue={defaultValue}
         id={name}
         maxLength={14}
         type="tel"
+        placeholder={placeholder}
         {...register(name, {
           required: requiredFromProps,
           minLength: 14,

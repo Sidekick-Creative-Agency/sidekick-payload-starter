@@ -112,7 +112,7 @@ export const ListingsMap: React.FC<ListingsMapProps> = ({ listings }) => {
             `
                 <div class="marker-popup rounded-lg overflow-hidden">
                   <div class="marker-popup_image-container relative aspect-video">
-                    <img src="${(feature.properties.image as MediaType)?.sizes?.small?.url}" alt="${(feature.properties.image as MediaType).alt}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
+                    <img src="${(feature.properties.image as MediaType)?.sizes?.small?.url || null}" alt="${(feature?.properties?.image as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
                   </div>
                   <div class="p-6 bg-white flex flex-col-reverse">
                     <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${feature.properties.address}</h3>

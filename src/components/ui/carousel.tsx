@@ -237,7 +237,7 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         variant={variant}
         size={size}
         className={cn(
-          'absolute  h-8 w-8 ',
+          'absolute h-8 w-8 ',
           orientation === 'horizontal'
             ? '-left-12 top-1/2 -translate-y-1/2'
             : '-top-12 left-1/2 -translate-x-1/2 rotate-90',
@@ -247,7 +247,7 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         onClick={scrollPrev}
         {...props}
       >
-        <FontAwesomeIcon icon={faChevronLeft} className="w-8 h-8" />
+        <FontAwesomeIcon icon={faChevronLeft} className="w-full h-auto" />
         <span className="sr-only">Previous slide</span>
       </Button>
     )
@@ -275,7 +275,7 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
         onClick={scrollNext}
         {...props}
       >
-        <FontAwesomeIcon icon={faChevronRight} className="w-8 h-8" />
+        <FontAwesomeIcon icon={faChevronRight} className="w-full h-auto" />
         <span className="sr-only">Next slide</span>
       </Button>
     )

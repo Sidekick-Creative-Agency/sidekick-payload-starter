@@ -120,6 +120,9 @@ export interface Page {
             } | null;
             url?: string | null;
             label: string;
+            /**
+             * Choose how the link should be rendered.
+             */
             appearance?: ('default' | 'outline') | null;
           };
           id?: string | null;
@@ -143,6 +146,9 @@ export interface Page {
   )[];
   meta?: {
     title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
     image?: (number | null) | Media;
     description?: string | null;
   };
@@ -175,6 +181,7 @@ export interface Media {
     };
     [k: string]: unknown;
   } | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -268,6 +275,9 @@ export interface CallToActionBlock {
           } | null;
           url?: string | null;
           label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
           appearance?: ('default' | 'outline') | null;
         };
         id?: string | null;
@@ -310,6 +320,9 @@ export interface ContentBlock {
           } | null;
           url?: string | null;
           label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
           appearance?: ('default' | 'outline') | null;
         };
         id?: string | null;
@@ -413,6 +426,9 @@ export interface Listing {
   type?: (number | PropertyType)[] | null;
   availability?: ('for-sale' | 'for-lease') | null;
   propertyStatus?: ('available' | 'unavailable') | null;
+  /**
+   * Square footage of the property
+   */
   area?: number | null;
   acreage?: number | null;
   streetAddress: string;
@@ -430,6 +446,9 @@ export interface Listing {
   agents?: (number | TeamMember)[] | null;
   meta?: {
     title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
     image?: (number | null) | Media;
     description?: string | null;
   };
@@ -447,6 +466,7 @@ export interface Listing {
 export interface Attachment {
   id: number;
   label?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -595,6 +615,7 @@ export interface Form {
             name: string;
             label?: string | null;
             width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+            placeholder?: string | null;
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
@@ -661,6 +682,7 @@ export interface Form {
             label?: string | null;
             width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             defaultValue?: string | null;
+            placeholder?: string | null;
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
@@ -671,6 +693,7 @@ export interface Form {
             label?: string | null;
             width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             defaultValue?: string | null;
+            placeholder?: string | null;
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
@@ -681,6 +704,7 @@ export interface Form {
             label?: string | null;
             width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             defaultValue?: string | null;
+            placeholder?: string | null;
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
@@ -689,6 +713,9 @@ export interface Form {
       )[]
     | null;
   submitButtonLabel?: string | null;
+  /**
+   * Choose whether to display an on-page message or redirect to a different page after they submit the form.
+   */
   confirmationType?: ('message' | 'redirect') | null;
   confirmationMessage?: {
     root: {
@@ -708,6 +735,9 @@ export interface Form {
   redirect?: {
     url: string;
   };
+  /**
+   * Send custom emails when the form submits. Use comma separated lists to send the same email to multiple recipients. To reference a value from this form, wrap that field's name with double curly brackets, i.e. {{firstName}}. You can use a wildcard {{*}} to output all data and {{*:table}} to format it as an HTML table in the email.
+   */
   emails?:
     | {
         emailTo?: string | null;
@@ -716,6 +746,9 @@ export interface Form {
         replyTo?: string | null;
         emailFrom?: string | null;
         subject: string;
+        /**
+         * Enter the message that should be sent in this email.
+         */
         message?: {
           root: {
             type: string;
@@ -775,6 +808,9 @@ export interface ColumnsBlock {
           } | null;
           url?: string | null;
           label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
           appearance?: ('default' | 'outline') | null;
         };
         media?: (number | null) | Media;
@@ -979,6 +1015,9 @@ export interface Post {
   category?: (number | null) | Category;
   meta?: {
     title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
     image?: (number | null) | Media;
     description?: string | null;
   };
@@ -1049,6 +1088,9 @@ export interface JobListing {
     };
     [k: string]: unknown;
   };
+  /**
+   * If unchecked, this Job Listing will not show up on the front end of the website.
+   */
   active?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -1059,6 +1101,9 @@ export interface JobListing {
  */
 export interface Redirect {
   id: number;
+  /**
+   * You will need to rebuild the website when changing this field.
+   */
   from: string;
   to?: {
     type?: ('reference' | 'custom') | null;
@@ -1098,6 +1143,8 @@ export interface FormSubmission {
   createdAt: string;
 }
 /**
+ * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "search".
  */
@@ -1275,266 +1322,25 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
-        cta?:
-          | T
-          | {
-              richText?: T;
-              links?:
-                | T
-                | {
-                    link?:
-                      | T
-                      | {
-                          type?: T;
-                          newTab?: T;
-                          reference?: T;
-                          url?: T;
-                          label?: T;
-                          appearance?: T;
-                        };
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        content?:
-          | T
-          | {
-              columns?:
-                | T
-                | {
-                    size?: T;
-                    richText?: T;
-                    enableLink?: T;
-                    link?:
-                      | T
-                      | {
-                          type?: T;
-                          newTab?: T;
-                          reference?: T;
-                          url?: T;
-                          label?: T;
-                          appearance?: T;
-                        };
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        mediaBlock?:
-          | T
-          | {
-              position?: T;
-              media?: T;
-              id?: T;
-              blockName?: T;
-            };
-        archive?:
-          | T
-          | {
-              heading?: T;
-              subtitle?: T;
-              relationTo?: T;
-              categories?: T;
-              propertyTypes?: T;
-              limit?: T;
-              layout?: T;
-              navigationType?: T;
-              id?: T;
-              blockName?: T;
-            };
-        formBlock?:
-          | T
-          | {
-              form?: T;
-              enableIntro?: T;
-              introContent?: T;
-              styles?:
-                | T
-                | {
-                    global?:
-                      | T
-                      | {
-                          width?: T;
-                        };
-                    resp?:
-                      | T
-                      | {
-                          padHorDeskVal?: T;
-                          padHorDeskUnit?: T;
-                          padVertDeskVal?: T;
-                          padVertDeskUnit?: T;
-                          padHorTabVal?: T;
-                          padHorTabUnit?: T;
-                          padVertTabVal?: T;
-                          padVertTabUnit?: T;
-                          padHorMbVal?: T;
-                          padHorMbUnit?: T;
-                          padVertMbVal?: T;
-                          padVertMbUnit?: T;
-                        };
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        columnsBlock?:
-          | T
-          | {
-              columns?:
-                | T
-                | {
-                    type?: T;
-                    size?: T;
-                    backgroundColor?: T;
-                    backgroundImage?: T;
-                    enableSubtitle?: T;
-                    subtitle?: T;
-                    richText?: T;
-                    enableLink?: T;
-                    link?:
-                      | T
-                      | {
-                          type?: T;
-                          newTab?: T;
-                          reference?: T;
-                          url?: T;
-                          label?: T;
-                          appearance?: T;
-                        };
-                    media?: T;
-                    mediaBorderRadius?: T;
-                    styles?:
-                      | T
-                      | {
-                          enableTopBorder?: T;
-                          borderColor?: T;
-                        };
-                    id?: T;
-                  };
-              styles?:
-                | T
-                | {
-                    global?:
-                      | T
-                      | {
-                          width?: T;
-                          backgroundColor?: T;
-                        };
-                    resp?:
-                      | T
-                      | {
-                          reverseWrap?: T;
-                        };
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        faqBlock?:
-          | T
-          | {
-              enableHeading?: T;
-              heading?: T;
-              faqs?:
-                | T
-                | {
-                    question?: T;
-                    content?: T;
-                    id?: T;
-                  };
-              size?: T;
-              id?: T;
-              blockName?: T;
-            };
-        numberCountersBlock?:
-          | T
-          | {
-              numberCounters?:
-                | T
-                | {
-                    prefix?: T;
-                    number?: T;
-                    label?: T;
-                    suffix?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        expertiseBlock?:
-          | T
-          | {
-              heading?: T;
-              description?: T;
-              expertiseAreas?:
-                | T
-                | {
-                    title?: T;
-                    image?: T;
-                    accentColor?: T;
-                    link?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        timelineBlock?:
-          | T
-          | {
-              heading?: T;
-              timelineItems?:
-                | T
-                | {
-                    tab?:
-                      | T
-                      | {
-                          icon?: T;
-                          title?: T;
-                        };
-                    content?:
-                      | T
-                      | {
-                          image?: T;
-                          richText?: T;
-                        };
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        reviewsBlock?:
-          | T
-          | {
-              heading?: T;
-              subtitle?: T;
-              reviews?:
-                | T
-                | {
-                    reviewerName?: T;
-                    reviewerTitle?: T;
-                    image?: T;
-                    review?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        jobListingsBlock?:
-          | T
-          | {
-              heading?: T;
-              subtitle?: T;
-              id?: T;
-              blockName?: T;
-            };
+        cta?: T | CallToActionBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        archive?: T | ArchiveBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        columnsBlock?: T | ColumnsBlockSelect<T>;
+        faqBlock?: T | FAQBlockSelect<T>;
+        numberCountersBlock?: T | NumberCountersBlockSelect<T>;
+        expertiseBlock?: T | ExpertiseBlockSelect<T>;
+        timelineBlock?: T | TimelineBlockSelect<T>;
+        reviewsBlock?: T | ReviewsBlockSelect<T>;
+        jobListingsBlock?: T | JobListingsBlockSelect<T>;
       };
   meta?:
     | T
     | {
-        overview?: T;
         title?: T;
         image?: T;
         description?: T;
-        preview?: T;
       };
   publishedAt?: T;
   slug?: T;
@@ -1542,6 +1348,281 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CallToActionBlock_select".
+ */
+export interface CallToActionBlockSelect<T extends boolean = true> {
+  richText?: T;
+  links?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentBlock_select".
+ */
+export interface ContentBlockSelect<T extends boolean = true> {
+  columns?:
+    | T
+    | {
+        size?: T;
+        richText?: T;
+        enableLink?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaBlock_select".
+ */
+export interface MediaBlockSelect<T extends boolean = true> {
+  position?: T;
+  media?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArchiveBlock_select".
+ */
+export interface ArchiveBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subtitle?: T;
+  relationTo?: T;
+  categories?: T;
+  propertyTypes?: T;
+  limit?: T;
+  layout?: T;
+  navigationType?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBlock_select".
+ */
+export interface FormBlockSelect<T extends boolean = true> {
+  form?: T;
+  enableIntro?: T;
+  introContent?: T;
+  styles?:
+    | T
+    | {
+        global?:
+          | T
+          | {
+              width?: T;
+            };
+        resp?:
+          | T
+          | {
+              padHorDeskVal?: T;
+              padHorDeskUnit?: T;
+              padVertDeskVal?: T;
+              padVertDeskUnit?: T;
+              padHorTabVal?: T;
+              padHorTabUnit?: T;
+              padVertTabVal?: T;
+              padVertTabUnit?: T;
+              padHorMbVal?: T;
+              padHorMbUnit?: T;
+              padVertMbVal?: T;
+              padVertMbUnit?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ColumnsBlock_select".
+ */
+export interface ColumnsBlockSelect<T extends boolean = true> {
+  columns?:
+    | T
+    | {
+        type?: T;
+        size?: T;
+        backgroundColor?: T;
+        backgroundImage?: T;
+        enableSubtitle?: T;
+        subtitle?: T;
+        richText?: T;
+        enableLink?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+        media?: T;
+        mediaBorderRadius?: T;
+        styles?:
+          | T
+          | {
+              enableTopBorder?: T;
+              borderColor?: T;
+            };
+        id?: T;
+      };
+  styles?:
+    | T
+    | {
+        global?:
+          | T
+          | {
+              width?: T;
+              backgroundColor?: T;
+            };
+        resp?:
+          | T
+          | {
+              reverseWrap?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock_select".
+ */
+export interface FAQBlockSelect<T extends boolean = true> {
+  enableHeading?: T;
+  heading?: T;
+  faqs?:
+    | T
+    | {
+        question?: T;
+        content?: T;
+        id?: T;
+      };
+  size?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NumberCountersBlock_select".
+ */
+export interface NumberCountersBlockSelect<T extends boolean = true> {
+  numberCounters?:
+    | T
+    | {
+        prefix?: T;
+        number?: T;
+        label?: T;
+        suffix?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ExpertiseBlock_select".
+ */
+export interface ExpertiseBlockSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
+  expertiseAreas?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        accentColor?: T;
+        link?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock_select".
+ */
+export interface TimelineBlockSelect<T extends boolean = true> {
+  heading?: T;
+  timelineItems?:
+    | T
+    | {
+        tab?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+            };
+        content?:
+          | T
+          | {
+              image?: T;
+              richText?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ReviewsBlock_select".
+ */
+export interface ReviewsBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subtitle?: T;
+  reviews?:
+    | T
+    | {
+        reviewerName?: T;
+        reviewerTitle?: T;
+        image?: T;
+        review?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "JobListingsBlock_select".
+ */
+export interface JobListingsBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subtitle?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1556,11 +1637,9 @@ export interface PostsSelect<T extends boolean = true> {
   meta?:
     | T
     | {
-        overview?: T;
         title?: T;
         image?: T;
         description?: T;
-        preview?: T;
       };
   publishedAt?: T;
   authors?: T;
@@ -1583,6 +1662,7 @@ export interface PostsSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1729,11 +1809,9 @@ export interface ListingsSelect<T extends boolean = true> {
   meta?:
     | T
     | {
-        overview?: T;
         title?: T;
         image?: T;
         description?: T;
-        preview?: T;
       };
   publishedAt?: T;
   slug?: T;
@@ -1748,6 +1826,7 @@ export interface ListingsSelect<T extends boolean = true> {
  */
 export interface AttachmentsSelect<T extends boolean = true> {
   label?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1872,6 +1951,7 @@ export interface FormsSelect<T extends boolean = true> {
               name?: T;
               label?: T;
               width?: T;
+              placeholder?: T;
               required?: T;
               id?: T;
               blockName?: T;
@@ -1929,6 +2009,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               defaultValue?: T;
+              placeholder?: T;
               required?: T;
               id?: T;
               blockName?: T;
@@ -1940,6 +2021,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               defaultValue?: T;
+              placeholder?: T;
               required?: T;
               id?: T;
               blockName?: T;
@@ -1951,6 +2033,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               defaultValue?: T;
+              placeholder?: T;
               required?: T;
               id?: T;
               blockName?: T;
@@ -2003,7 +2086,6 @@ export interface SearchSelect<T extends boolean = true> {
   title?: T;
   priority?: T;
   doc?: T;
-  docUrl?: T;
   slug?: T;
   meta?:
     | T
@@ -2072,6 +2154,9 @@ export interface Header {
   navItems?:
     | {
         navItem?: {
+          /**
+           * Where the nav item should be displayed on desktop
+           */
           side?: ('left' | 'right') | null;
           type?: ('link' | 'parent') | null;
           link?: {

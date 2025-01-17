@@ -18,6 +18,7 @@ export const Textarea: React.FC<
     register: UseFormRegister<FieldValues>
     rows?: number
     className?: string
+    placeholder?: string
   }
 > = ({
   name,
@@ -27,17 +28,18 @@ export const Textarea: React.FC<
   register,
   required: requiredFromProps,
   rows = 3,
-  width,
+  placeholder,
   className,
 }) => {
   return (
     <div className={className}>
-      <Label htmlFor={name}>{label}</Label>
+      {label && <Label htmlFor={name}>{label}</Label>}
 
       <TextAreaComponent
         defaultValue={defaultValue}
         id={name}
         rows={rows}
+        placeholder={placeholder}
         {...register(name, { required: requiredFromProps })}
       />
 
