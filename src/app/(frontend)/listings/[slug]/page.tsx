@@ -46,6 +46,7 @@ import { ColumnsBlock } from '@/blocks/ColumnsBlock/Component'
 import { BRAND_COLORS } from '@/utilities/constants'
 import { Media } from '@/components/Media'
 import { Button } from '@/components/ui/button'
+import { Media as MediaType } from '@/payload-types'
 import {
   Carousel,
   CarouselContent,
@@ -155,13 +156,13 @@ export default async function Listing({ params: paramsPromise }: Args) {
             {listing.imageGallery && listing.imageGallery[0] && listing.imageGallery[1] && (
               <>
                 <Media
-                  resource={listing.imageGallery[0].image}
+                  resource={listing?.imageGallery[0]?.image as MediaType | number | undefined}
                   className="col-span-1 row-span-1 relative"
                   imgClassName="absolute top-0 left-0 w-full h-full object-cover"
                 />
                 <div className="col-span-1 row-span-1 relative">
                   <Media
-                    resource={listing.imageGallery[1].image}
+                    resource={listing.imageGallery[1].image as MediaType | number | undefined}
                     className="w-full h-full relative"
                     imgClassName="absolute top-0 left-0 w-full h-full object-cover"
                   />
@@ -183,7 +184,10 @@ export default async function Listing({ params: paramsPromise }: Args) {
                           {listing.imageGallery.map((image, index) => {
                             return (
                               <CarouselItem key={image.id} className="basis-full pl-0">
-                                <Media resource={image.image} className="w-full" />
+                                <Media
+                                  resource={image.image as MediaType | number | undefined}
+                                  className="w-full"
+                                />
                               </CarouselItem>
                             )
                           })}
@@ -198,7 +202,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
             )}
             {listing.imageGallery && listing.imageGallery[0] && !listing.imageGallery[1] && (
               <Media
-                resource={listing.imageGallery[0].image}
+                resource={listing.imageGallery[0].image as MediaType | number | undefined}
                 className="col-span-1 row-span-2 relative"
                 imgClassName="absolute top-0 left-0 w-full h-full object-cover"
               />
