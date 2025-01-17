@@ -1,4 +1,3 @@
-import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { ListingsMap } from '@/components/Map'
 import { getPayload } from 'payload'
