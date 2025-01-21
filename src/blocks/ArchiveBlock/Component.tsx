@@ -34,7 +34,7 @@ export const ArchiveBlock: React.FC<
     relationTo === 'posts'
       ? 'categories'
       : relationTo === 'listings'
-        ? 'propertyTypes'
+        ? 'property-types'
         : 'undefined'
 
   const payload = await getPayload({ config: configPromise })
@@ -45,7 +45,7 @@ export const ArchiveBlock: React.FC<
           if (typeof category === 'object') return category.id
           else return category
         })
-      : taxonomySlug === 'propertyTypes'
+      : taxonomySlug === 'property-types'
         ? propertyTypes?.map((propertyType) => {
             if (typeof propertyType === 'object') return propertyType.id
             else return propertyType

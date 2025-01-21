@@ -18,7 +18,7 @@ export interface Config {
     users: User;
     listings: Listing;
     attachments: Attachment;
-    propertyTypes: PropertyType;
+    'property-types': PropertyType;
     reviews: Review;
     'team-members': TeamMember;
     'job-listings': JobListing;
@@ -31,7 +31,7 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
-    propertyTypes: {
+    'property-types': {
       relatedListings: 'listings';
     };
     'team-members': {
@@ -46,7 +46,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     listings: ListingsSelect<false> | ListingsSelect<true>;
     attachments: AttachmentsSelect<false> | AttachmentsSelect<true>;
-    propertyTypes: PropertyTypesSelect<false> | PropertyTypesSelect<true>;
+    'property-types': PropertyTypesSelect<false> | PropertyTypesSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
     'job-listings': JobListingsSelect<false> | JobListingsSelect<true>;
@@ -381,7 +381,7 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "propertyTypes".
+ * via the `definition` "property-types".
  */
 export interface PropertyType {
   id: number;
@@ -1215,7 +1215,7 @@ export interface PayloadLockedDocument {
         value: number | Attachment;
       } | null)
     | ({
-        relationTo: 'propertyTypes';
+        relationTo: 'property-types';
         value: number | PropertyType;
       } | null)
     | ({
@@ -1841,7 +1841,7 @@ export interface AttachmentsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "propertyTypes_select".
+ * via the `definition` "property-types_select".
  */
 export interface PropertyTypesSelect<T extends boolean = true> {
   title?: T;
@@ -2361,6 +2361,23 @@ export interface CarouselLexicalBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'carousel';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "checkmarkListLexicalBlock".
+ */
+export interface CheckmarkListLexicalBlock {
+  items?:
+    | {
+        iconColor?: string | null;
+        text?: string | null;
+        textColor?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'checkmarkList';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

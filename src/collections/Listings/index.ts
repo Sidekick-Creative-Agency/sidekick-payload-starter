@@ -121,7 +121,7 @@ export const Listings: CollectionConfig = {
                 {
                   name: 'type',
                   type: 'relationship',
-                  relationTo: 'propertyTypes',
+                  relationTo: 'property-types',
                   hasMany: true,
                   unique: false,
                 },

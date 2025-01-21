@@ -1,26 +1,27 @@
 'use client'
 import ReactMapboxGl, { Layer, Feature, GeoJSONLayer, Image } from 'react-mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import './styles.scss'
+
 import { Listing, Media as MediaType } from '@/payload-types'
 
 import { useEffect, useRef, useState } from 'react'
 import mapboxgl, { LngLatBoundsLike, LngLatLike, Map, Marker } from 'mapbox-gl'
-import { Card } from '../ui/card'
-import { Media } from '../Media'
-import { Button } from '../ui/button'
+import { Card } from '../../../../components/ui/card'
+import { Media } from '../../../../components/Media'
+import { Button } from '../../../../components/ui/button'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFarm } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
 import { faEnvelope } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
 import { formatNumber } from '@/utilities/formatNumber'
 import { formatPrice } from '@/utilities/formatPrice'
+import { FilterBar } from '@/components/Map/filterBar'
 
-interface ListingsMapProps {
+interface MapPageClientProps {
   listings: Listing[]
 }
 
-export const ListingsMap: React.FC<ListingsMapProps> = ({ listings }) => {
+export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
   const mapContainerRef = useRef<any>(null)
   const mapRef = useRef<Map>(null)
   const [boundingBox, setBoundingBox] = useState<number[][]>([])
@@ -79,11 +80,6 @@ export const ListingsMap: React.FC<ListingsMapProps> = ({ listings }) => {
       if (matchingMarker && !matchingMarker.getPopup()?.isOpen()) {
         matchingMarker.togglePopup()
       }
-      // mapRef.current.fire('click', {
-      //   lngLat: new mapboxgl.LngLat(coords[0], coords[1]),
-      //   point: mapRef.current.project(coords as LngLatLike),
-      //   originalEvent: {},
-      // })
     }
   }
 
@@ -144,81 +140,84 @@ export const ListingsMap: React.FC<ListingsMapProps> = ({ listings }) => {
   }, [boundingBox])
 
   return (
-    <div className="w-full border-t border-gray-100 grid grid-cols-5">
-      <div className="col-span-3 relative">
-        <div
-          id="map"
-          ref={mapContainerRef}
-          style={{ height: '100%', minHeight: 'calc(100vh - 5rem)' }}
-        ></div>
-      </div>
+    <div>
+      <FilterBar />
+      <div className="w-full border-t border-gray-100 grid grid-cols-5">
+        <div className="col-span-3 relative">
+          <div
+            id="map"
+            ref={mapContainerRef}
+            style={{ height: '100%', minHeight: 'calc(100vh - 5rem)' }}
+          ></div>
+        </div>
 
-      <div className="col-span-2 grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] xl:grid-cols-2  gap-x-4 gap-y-6 p-6 content-start bg-white">
-        {listings &&
-          listings.length > 0 &&
-          listings.map((listing) => {
-            return (
-              <Card
-                key={listing.id}
-                className="rounded-none bg-white border-none shadow-md"
-                onMouseEnter={() => {
-                  handleCardMouseEnter(listing)
-                }}
-              >
-                <Link href={`/listings/${listing.slug}`}>
-                  <div className="relative pb-[66.66%] overflow-hidden w-full">
-                    <Media
-                      resource={listing.featuredImage}
-                      className="absolute top-0 left-0 w-full h-full"
-                      imgClassName="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex justify-between gap-4">
-                      <div className="flex flex-col gap-2 flex-1">
-                        <h3 className="sr-only">{listing.title}</h3>
-                        <span className="text-2xl text-brand-gray-06 font-bold font-basic-sans leading-none">
-                          {listing.price ? `${formatPrice(listing.price)}` : 'Contact for price'}
-                        </span>
-                        <span className="text-xl font-light text-brand-gray-06">
-                          {listing.city}, {listing.state}
-                        </span>
-                        <span className="text-base font-light font-basic-sans text-brand-gray-03">
-                          {listing.streetAddress}
-                        </span>
-                      </div>
-                      <div>
-                        <Button
-                          className="flex justify-center items-center w-12 h-12 p-0 rounded-full border border-brand-gray-00 bg-white text-brand-gray-06"
-                          style={{ boxShadow: '0px 3px 10px rgba(0,0,0,.1)' }}
-                        >
-                          <FontAwesomeIcon icon={faEnvelope} fontWeight={300} size="lg" />
-                        </Button>
-                      </div>
+        <div className="col-span-2 grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] xl:grid-cols-2  gap-x-4 gap-y-6 p-6 content-start bg-white">
+          {listings &&
+            listings.length > 0 &&
+            listings.map((listing) => {
+              return (
+                <Card
+                  key={listing.id}
+                  className="rounded-none bg-white border-none shadow-md"
+                  onMouseEnter={() => {
+                    handleCardMouseEnter(listing)
+                  }}
+                >
+                  <Link href={`/listings/${listing.slug}`}>
+                    <div className="relative pb-[66.66%] overflow-hidden w-full">
+                      <Media
+                        resource={listing.featuredImage}
+                        className="absolute top-0 left-0 w-full h-full"
+                        imgClassName="w-full h-full object-cover"
+                      />
                     </div>
-                    <div className="flex gap-2 justify-start">
-                      {listing.area && (
-                        <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
-                          <FloorPlanIcon className="w-6" />
-                          <span className="text-base text-brand-gray-06 font-light">
-                            {formatNumber(listing.area)} sqft
+                    <div className="p-6 flex flex-col gap-4">
+                      <div className="flex justify-between gap-4">
+                        <div className="flex flex-col gap-2 flex-1">
+                          <h3 className="sr-only">{listing.title}</h3>
+                          <span className="text-2xl text-brand-gray-06 font-bold font-basic-sans leading-none">
+                            {listing.price ? `${formatPrice(listing.price)}` : 'Contact for price'}
+                          </span>
+                          <span className="text-xl font-light text-brand-gray-06">
+                            {listing.city}, {listing.state}
+                          </span>
+                          <span className="text-base font-light font-basic-sans text-brand-gray-03">
+                            {listing.streetAddress}
                           </span>
                         </div>
-                      )}
-                      {listing.acreage && (
-                        <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
-                          <FontAwesomeIcon icon={faFarm} className="w-6 text-brand-navy" />
-                          <span className="text-base text-brand-gray-06 font-light fill-brand-navy">
-                            {formatNumber(listing.acreage)} acres
-                          </span>
+                        <div>
+                          <Button
+                            className="flex justify-center items-center w-12 h-12 p-0 rounded-full border border-brand-gray-00 bg-white text-brand-gray-06 hover:bg-brand-gray-00"
+                            style={{ boxShadow: '0px 3px 10px rgba(0,0,0,.1)' }}
+                          >
+                            <FontAwesomeIcon icon={faEnvelope} fontWeight={300} size="lg" />
+                          </Button>
                         </div>
-                      )}
+                      </div>
+                      <div className="flex gap-2 justify-start flex-wrap">
+                        {listing.area && (
+                          <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
+                            <FloorPlanIcon className="w-6" />
+                            <span className="text-base text-brand-gray-06 font-light">
+                              {formatNumber(listing.area)} sqft
+                            </span>
+                          </div>
+                        )}
+                        {listing.acreage && (
+                          <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
+                            <FontAwesomeIcon icon={faFarm} className="w-6 text-brand-navy" />
+                            <span className="text-base text-brand-gray-06 font-light fill-brand-navy">
+                              {formatNumber(listing.acreage)} acres
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              </Card>
-            )
-          })}
+                  </Link>
+                </Card>
+              )
+            })}
+        </div>
       </div>
     </div>
   )

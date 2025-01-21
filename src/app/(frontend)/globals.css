@@ -120,13 +120,11 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+* {
+  @apply border-border;
+}
+body {
+  @apply bg-background text-foreground;
 }
 
 html {
@@ -142,4 +140,17 @@ html[data-theme='light'] {
 html,
 body {
   font-family: 'basic-sans', sans-serif;
+}
+
+.mapboxgl-popup-content {
+  padding: 0 !important;
+  background-color: transparent !important;
+  border-radius: 0.5rem !important;
+  min-width: 15rem !important;
+}
+.mapboxgl-popup-close-button {
+  top: 0.5rem !important;
+  right: 0.5rem !important;
+  font-size: 1.5em !important;
+  color: #ffffff !important;
 }

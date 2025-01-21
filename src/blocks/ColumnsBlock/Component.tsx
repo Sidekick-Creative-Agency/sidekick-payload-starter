@@ -7,7 +7,7 @@ import type { Page } from '@/payload-types'
 
 import { CMSLink } from '../../components/Link'
 import { Media } from '@/components/Media'
-import { brandBorderColorClasses, brandBgColorClasses } from '@/utilities/constants'
+import { BRAND_BORDER_COLOR_CLASSES, BRAND_BACKGROUND_COLOR_CLASSES } from '@/utilities/constants'
 
 type Props = Extract<Page['layout'][0], { blockType: 'columnsBlock' }>
 
@@ -51,7 +51,7 @@ export const ColumnsBlock: React.FC<
   // const pxTablet = pxTabletVal && pxTabletUnit ? `${pxTabletVal}${pxTabletUnit}` : '0'
   // const pyMobile = pyMobileVal && pyMobileUnit ? `${pyMobileVal}${pyMobileUnit}` : '0'
   // const pxMobile = pxMobileVal && pxMobileUnit ? `${pxMobileVal}${pxMobileUnit}` : '0'
-  const blockTwBackgroundColor = brandBgColorClasses[blockBgColor || 'transparent']
+  const blockTwBackgroundColor = BRAND_BACKGROUND_COLOR_CLASSES[blockBgColor || 'transparent']
   return (
     <>
       <style>
@@ -92,12 +92,13 @@ export const ColumnsBlock: React.FC<
                   backgroundImage,
                   styles,
                 } = col
-                const colTwBackgroundColor = brandBgColorClasses[colBgColor || 'transparent']
-                console.log(richText)
+                const colTwBackgroundColor =
+                  BRAND_BACKGROUND_COLOR_CLASSES[colBgColor || 'transparent']
+
                 return (
                   <div
                     className={cn(
-                      `relative lg:col-span-${colsSpanClasses[size || 'full']} ${type === 'text' && width === 'full' && 'px-5 py-20 sm:px-10 sm:py-32 lg:px-20'} flex flex-col justify-center items-stretch sm:items-start ${colTwBackgroundColor} ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem] ${brandBorderColorClasses[styles.borderColor]}`}`,
+                      `relative lg:col-span-${colsSpanClasses[size || 'full']} ${type === 'text' && width === 'full' && 'px-5 py-20 sm:px-10 sm:py-32 lg:px-20'} flex flex-col justify-center items-stretch sm:items-start ${colTwBackgroundColor} ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem] ${BRAND_BORDER_COLOR_CLASSES[styles.borderColor]}`}`,
                       {
                         'sm:col-span-2': size !== 'full',
                       },

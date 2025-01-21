@@ -5,11 +5,11 @@ import { Media } from '@/components/Media'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import {
-  brandBorderColorClasses,
-  brandBgColorClasses,
-  brandTextColorClasses,
-  brandTextHoverColorClasses,
-  brandTextFocusVisibleColorClasses,
+  BRAND_BORDER_COLOR_CLASSES,
+  BRAND_BACKGROUND_COLOR_CLASSES,
+  BRAND_TEXT_COLOR_CLASSES,
+  BRAND_TEXT_COLOR_HOVER_CLASSES,
+  BRAND_TEXT_COLOR_FOCUS_VISIBLE_CLASSES,
 } from '@/utilities/constants'
 
 type Props = Extract<Page['layout'][0], { blockType: 'expertiseBlock' }>
@@ -36,7 +36,7 @@ export const ExpertiseBlock: React.FC<
                 return (
                   <div
                     key={index}
-                    className={`w-full h-[25rem] md:h-[35rem] flex flex-col justify-end gap-4 p-6 md:p-10 relative border-t-[12px] ${brandBorderColorClasses[accentColor || 'transparent']}`}
+                    className={`w-full h-[25rem] md:h-[35rem] flex flex-col justify-end gap-4 p-6 md:p-10 relative border-t-[12px] ${BRAND_BORDER_COLOR_CLASSES[accentColor || 'transparent']}`}
                   >
                     <div className="flex flex-col gap-4 relative z-10">
                       <h3 className="text-white uppercase tracking-[.075rem] font-bold text-2xl">
@@ -44,7 +44,7 @@ export const ExpertiseBlock: React.FC<
                       </h3>
                       <Link href="/">
                         <Button
-                          className={`w-full ${brandBgColorClasses[accentColor || 'transparent']} hover:bg-white ${brandTextHoverColorClasses[accentColor || 'white']} focus-visible:bg-white ${brandTextFocusVisibleColorClasses[accentColor || 'white']}`}
+                          className={`w-full ${BRAND_BACKGROUND_COLOR_CLASSES[accentColor || 'transparent']} hover:bg-white ${BRAND_TEXT_COLOR_HOVER_CLASSES[accentColor || 'white']} focus-visible:bg-white ${BRAND_TEXT_COLOR_FOCUS_VISIBLE_CLASSES[accentColor || 'white']}`}
                         >
                           Learn More
                         </Button>

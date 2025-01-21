@@ -4,6 +4,8 @@ import { cn } from 'src/utilities/cn'
 import * as SelectPrimitive from '@radix-ui/react-select'
 import { Check, ChevronDown, ChevronUp } from 'lucide-react'
 import * as React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 
 const Select = SelectPrimitive.Root
 
@@ -25,7 +27,7 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
+      <FontAwesomeIcon icon={faChevronDown} className="text-sm text-brand-gray-04" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))

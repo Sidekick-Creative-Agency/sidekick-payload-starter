@@ -1,13 +1,5 @@
-import { cn } from 'src/utilities/cn'
 import React from 'react'
-import RichText from '@/components/RichText'
-import defaultTheme from 'tailwindcss/defaultTheme'
-
 import type { Page } from '@/payload-types'
-
-import { CMSLink } from '../../components/Link'
-import { Media } from '@/components/Media'
-import { brandBorderColorClasses, brandBgColorClasses } from '@/utilities/constants'
 import { formatNumber } from '@/utilities/formatNumber'
 import SlotCounter from 'react-slot-counter'
 

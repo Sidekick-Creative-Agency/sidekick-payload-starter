@@ -5,7 +5,7 @@ import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { anyone } from '@/access/anyone'
 
 export const PropertyTypes: CollectionConfig = {
-  slug: 'propertyTypes',
+  slug: 'property-types',
   access: {
     create: authenticated,
     delete: authenticated,

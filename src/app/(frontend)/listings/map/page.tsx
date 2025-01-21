@@ -1,7 +1,8 @@
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { ListingsMap } from '@/components/Map'
+
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { PageClient } from './page.client'
 
 export default async function Page() {
   const payload = await getPayload({
@@ -11,5 +12,5 @@ export default async function Page() {
     collection: 'listings',
   })
   const listings = listingsDocs.docs
-  return <ListingsMap listings={listings} />
+  return <PageClient listings={listings} />
 }

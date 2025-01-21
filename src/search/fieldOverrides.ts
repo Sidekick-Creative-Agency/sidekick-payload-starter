@@ -68,7 +68,7 @@ export const searchFields: Field[] = [
     admin: {
       readOnly: true,
       condition: (props) => {
-        return props.doc.relationTo === 'propertyTypes'
+        return props.doc.relationTo === 'property-types'
       },
     },
     fields: [

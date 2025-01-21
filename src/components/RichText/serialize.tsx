@@ -19,6 +19,10 @@ import { FormBlock } from '@/blocks/Form/Component'
 import { ColumnsBlock } from '@/blocks/ColumnsBlock/Component'
 import { SubtitleBlockProps, SubtitleLexicalBlock } from '@/blocks/Lexical/Subtitle/Component'
 import { CarouselBlockProps, CarouselLexicalBlock } from '@/blocks/Lexical/Carousel/Component'
+import {
+  CheckmarkListBlockProps,
+  CheckmarkListLexicalBlock,
+} from '@/blocks/Lexical/CheckmarkList/Component'
 
 export type NodeTypes =
   | DefaultNodeTypes
@@ -31,6 +35,7 @@ export type NodeTypes =
       | Extract<Page['layout'][0], { blockType: 'columnsBlock' }>
       | SubtitleBlockProps
       | CarouselBlockProps
+      | CheckmarkListBlockProps
     >
 
 type Props = {
@@ -165,6 +170,8 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
               return <SubtitleLexicalBlock key={index} {...block} />
             case 'carousel':
               return <CarouselLexicalBlock key={index} {...block} />
+            case 'checkmarkList':
+              return <CheckmarkListLexicalBlock key={index} {...block} />
             default:
               return null
           }

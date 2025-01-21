@@ -27,6 +27,7 @@ import { ColorField } from '@/fields/Color'
 import { BRAND_COLORS } from '@/utilities/constants'
 import { color } from 'framer-motion'
 import { TextColorFeature } from '@/components/RichText/Color/features/textColor/feature.server'
+import { CheckmarkListLexicalBlock } from '../Lexical/CheckmarkList/config'
 
 const columnFields: Field[] = [
   {
@@ -117,7 +118,14 @@ const columnFields: Field[] = [
           FixedToolbarFeature(),
           InlineToolbarFeature(),
           AlignFeature(),
-          BlocksFeature({ blocks: [FormBlock, SubtitleLexicalBlock, CarouselLexicalBlock] }),
+          BlocksFeature({
+            blocks: [
+              FormBlock,
+              SubtitleLexicalBlock,
+              CarouselLexicalBlock,
+              CheckmarkListLexicalBlock,
+            ],
+          }),
           TextColorFeature({
             colors: BRAND_COLORS.map((color) => {
               return {

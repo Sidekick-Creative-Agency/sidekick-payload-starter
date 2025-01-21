@@ -20,7 +20,7 @@ import type { Attachment, Post, PropertyType, TeamMember } from '@/payload-types
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { CopyButton } from '@/components/CopyButton'
-import { FloorPlanIcon } from '@/components/Map'
+import { FloorPlanIcon } from '@/app/(frontend)/listings/map/page.client'
 import { faFarm, faFilePdf } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -82,17 +82,10 @@ export default async function Listing({ params: paramsPromise }: Args) {
   const url = '/listings/' + slug
   const listing = await queryListingBySlug({ slug })
   const payload = await getPayload({ config: configPromise })
-  const contactMedia = await payload.findByID({
-    collection: 'media',
-    id: 18,
-  })
-  const contactBgMedia = await payload.findByID({
-    collection: 'media',
-    id: 10,
-  })
+
   const listingContactForm = await payload.findByID({
     collection: 'forms',
-    id: 2,
+    id: 1,
   })
   if (!listing) return <PayloadRedirects url={url} />
 
@@ -176,7 +169,8 @@ export default async function Listing({ params: paramsPromise }: Args) {
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="w-auto max-w-[calc(100vw - 5rem)] p-0 rounded-none bg-transparent">
-                      <Carousel className="w-[50rem] max-w-full rounded-none bg-transparent">
+                      <DialogTitle hidden>Image Gallery</DialogTitle>
+                      <Carousel className="max-w-[80rem] w-full rounded-none bg-transparent">
                         <CarouselContent className="bg-transparent">
                           <CarouselItem className="basis-full pl-0 bg-transparent">
                             <Media resource={listing.featuredImage} className="w-full" />
@@ -192,8 +186,8 @@ export default async function Listing({ params: paramsPromise }: Args) {
                             )
                           })}
                         </CarouselContent>
-                        <CarouselPrevious className="left-2 p-2" />
-                        <CarouselNext className="right-2 p-2" />
+                        <CarouselPrevious className="left-2 p-2 bg-brand-navy text-white border-none hover:bg-brand-navy hover:text-white hover:opacity-80 focus-visible:bg-brand-navy focus-visible:text-white focus-visible:opacity-80" />
+                        <CarouselNext className="right-2 p-2 bg-brand-navy text-white border-none hover:bg-brand-navy hover:text-white hover:opacity-80 focus-visible:bg-brand-navy focus-visible:text-white focus-visible:opacity-80" />
                       </Carousel>
                     </DialogContent>
                   </Dialog>
@@ -248,18 +242,18 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 <AccordionItem value="Overview">
                   <AccordionTrigger
                     className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
-                    closedIcon={
-                      <FontAwesomeIcon
-                        icon={faChevronDown}
-                        className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 close-icon hidden"
-                      />
-                    }
-                    openIcon={
-                      <FontAwesomeIcon
-                        icon={faChevronUp}
-                        className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 open-icon"
-                      />
-                    }
+                    // closedIcon={
+                    //   <FontAwesomeIcon
+                    //     icon={faChevronDown}
+                    //     className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 close-icon hidden"
+                    //   />
+                    // }
+                    // openIcon={
+                    //   <FontAwesomeIcon
+                    //     icon={faChevronUp}
+                    //     className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 open-icon"
+                    //   />
+                    // }
                   >
                     Property Overview
                   </AccordionTrigger>
@@ -267,25 +261,25 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   <AccordionContent className="pb-10">
                     <RichText
                       content={listing.description || {}}
-                      className="p-0 text-brand-gray-03 max-w-none"
+                      className="p-0 text-brand-gray-04 max-w-none *:text-brand-gray-04 font-light [&>p>strong]:text-brand-gray-04"
                     />
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="Resources">
                   <AccordionTrigger
                     className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
-                    closedIcon={
-                      <FontAwesomeIcon
-                        icon={faChevronDown}
-                        className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 close-icon hidden"
-                      />
-                    }
-                    openIcon={
-                      <FontAwesomeIcon
-                        icon={faChevronUp}
-                        className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 open-icon"
-                      />
-                    }
+                    // closedIcon={
+                    //   <FontAwesomeIcon
+                    //     icon={faChevronDown}
+                    //     className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 close-icon hidden"
+                    //   />
+                    // }
+                    // openIcon={
+                    //   <FontAwesomeIcon
+                    //     icon={faChevronUp}
+                    //     className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 open-icon"
+                    //   />
+                    // }
                   >
                     Resources
                   </AccordionTrigger>
@@ -353,7 +347,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
         columns={[
           {
             type: 'media',
-            media: contactMedia,
+            media: listing.featuredImage,
             size: 'half',
           },
           {
@@ -442,7 +436,15 @@ export default async function Listing({ params: paramsPromise }: Args) {
               borderColor: BRAND_COLORS.find((color) => color.label === 'blue')?.label,
             },
             backgroundColor: BRAND_COLORS.find((color) => color.label === 'offWhite')?.label,
-            backgroundImage: contactBgMedia,
+            backgroundImage: {
+              url: '/pattern-geometric-general.png',
+              alt: '',
+              width: 400,
+              height: 400,
+              id: -1,
+              createdAt: '',
+              updatedAt: '',
+            },
           },
         ]}
         styles={{

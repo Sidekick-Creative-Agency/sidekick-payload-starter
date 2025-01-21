@@ -50,7 +50,7 @@ export const Archive: Block = {
       },
       hasMany: true,
       label: 'Property Types To Show',
-      relationTo: 'propertyTypes',
+      relationTo: 'property-types',
     },
     {
       name: 'limit',
