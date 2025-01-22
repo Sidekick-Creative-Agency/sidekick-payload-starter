@@ -8,13 +8,22 @@ import { useToast } from '@/hooks/use-toast'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faMagnifyingGlass } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
+import {
+  faChevronDown,
+  faCircleNotch,
+  faMagnifyingGlass,
+} from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { validateNumberFieldInput } from '@/utilities/validateNumberFieldInput'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { formatNumber } from '@/utilities/formatNumber'
 import { usePayloadAPI } from '@payloadcms/ui'
+import { formatPrice } from '@/utilities/formatPrice'
+import { filterMapListings } from '@/app/(frontend)/api/filterMapListings'
+import { Listing } from '@/payload-types'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { MapFilters } from '@/app/(frontend)/listings/map/page.client'
 
 const FormSchema = z.object({
   search: z.string().optional(),
@@ -28,10 +37,28 @@ const FormSchema = z.object({
   listingType: z.string().optional(),
 })
 
-export const FilterBar = () => {
+interface FilterBarProps {
+  setActiveListings: (listings: Listing[]) => void
+  isLoading: boolean
+  setIsLoading: (isLoading: boolean) => void
+  activeFilters: MapFilters | undefined
+  setActiveFilters: (filters: MapFilters) => void
+}
+
+export const FilterBar: React.FC<FilterBarProps> = ({
+  setActiveListings,
+  isLoading,
+  setIsLoading,
+  activeFilters,
+  setActiveFilters,
+}) => {
+  const searchParams = useSearchParams()
   const { toast } = useToast()
   const [sizeText, setSizeText] = useState('Size')
-  const [propertyTypes, setPropertyTypes] = useState<string[]>([])
+  const [priceText, setPriceText] = useState('Price')
+  const [propertyTypes, setPropertyTypes] = useState<{ value: string; label: string }[]>([])
+  const router = useRouter()
+  const pathname = usePathname()
   const propertyTypesResponse = usePayloadAPI(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/property-types`,
   )
@@ -39,15 +66,65 @@ export const FilterBar = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsLoading(true)
+    const newSearchParams = new URLSearchParams(searchParams)
+    setActiveFilters({
+      search: data.search,
+      type: data.type,
+      minPrice: data.minPrice,
+      maxPrice: data.maxPrice,
+      minSize: data.minSize,
+      maxSize: data.maxSize,
+      availability: data.availability,
+      listingType: data.listingType,
+      sizeType: data.sizeType,
     })
+    if (data.search) {
+      newSearchParams.set('search', data.search)
+    }
+    if (data.type) {
+      newSearchParams.set('type', data.type)
+    }
+    if (data.minPrice) {
+      newSearchParams.set('min_price', data.minPrice.toString())
+    }
+    if (data.maxPrice) {
+      newSearchParams.set('max_price', data.maxPrice.toString())
+    }
+    if (data.minSize) {
+      newSearchParams.set('min_size', data.minSize.toString())
+    }
+    if (data.maxSize) {
+      newSearchParams.set('max_size', data.maxSize.toString())
+    }
+    if (data.availability) {
+      newSearchParams.set('availability', data.availability.toString())
+    }
+    if (data.listingType) {
+      newSearchParams.set('listing_type', data.listingType.toString())
+    }
+    if (data.sizeType) {
+      newSearchParams.set('size_type', data.sizeType.toString())
+    }
+    router.push(pathname + '?' + newSearchParams.toString())
+
+    const filteredListings = await filterMapListings({
+      search: data.search,
+      type: data.type,
+      minPrice: data.minPrice,
+      maxPrice: data.maxPrice,
+      minSize: data.minSize,
+      maxSize: data.maxSize,
+      sizeType: data.sizeType,
+      availability: data.availability,
+      listingType: data.listingType,
+    })
+    setActiveListings(filteredListings.docs)
+    toast({
+      title: `Found ${filteredListings.totalDocs} listings`,
+    })
+    setIsLoading(false)
   }
 
   const handleSizeChange = (
@@ -55,7 +132,7 @@ export const FilterBar = () => {
     max: string | number | undefined,
     type: string | undefined,
   ) => {
-    if (!type) {
+    if ((min || max) && !type) {
       form.setValue('sizeType', 'sqft')
     }
     if (min && max) {
@@ -69,25 +146,45 @@ export const FilterBar = () => {
     }
   }
 
+  const handlePriceChange = (
+    min: string | number | undefined,
+    max: string | number | undefined,
+  ) => {
+    if (min && max) {
+      setPriceText(`${formatPrice(Number(min))} - ${formatPrice(Number(max))}`)
+    } else if (min) {
+      setPriceText(`From ${formatPrice(Number(min))}`)
+    } else if (max) {
+      setPriceText(`Up to ${formatPrice(Number(max))}`)
+    } else {
+      setPriceText('Price')
+    }
+  }
+
   useEffect(() => {
     if (propertyTypesResponse[0].data && propertyTypesResponse[0].data.docs) {
       setPropertyTypes(
         propertyTypesResponse[0].data.docs.map((propertyType) => {
-          if (propertyType.title) {
-            return propertyType.title
-          }
-          return null
+          return { value: propertyType.id, label: propertyType.title }
         }),
       )
     }
   }, [propertyTypesResponse])
+  useEffect(() => {
+    handlePriceChange(activeFilters?.minPrice || '', activeFilters?.maxPrice || '')
+    handleSizeChange(
+      activeFilters?.minSize || '',
+      activeFilters?.maxSize || '',
+      activeFilters?.sizeType || '',
+    )
+  }, [activeFilters])
   return (
     <Form {...form}>
       <form className="w-full p-10 bg-white flex gap-2" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="search"
-          defaultValue=""
+          defaultValue={activeFilters?.search || ''}
           render={({ field }) => {
             return (
               <FormItem className="w-full">
@@ -105,8 +202,9 @@ export const FilterBar = () => {
         <FormField
           control={form.control}
           name="listingType"
-          defaultValue=""
+          defaultValue={activeFilters?.listingType || ''}
           render={({ field }) => {
+            console.log(field)
             return (
               <FormItem className="w-full">
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -115,9 +213,13 @@ export const FilterBar = () => {
                       <SelectValue placeholder="Listing Type" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="bg-white text-brand-navy">
-                    <SelectItem value="for-sale">For Sale</SelectItem>
-                    <SelectItem value="for-lease">For Lease</SelectItem>
+                  <SelectContent className="bg-white text-brand-navy rounded-none">
+                    <SelectItem value="for-sale" className="hover:bg-brand-blue rounded-none">
+                      For Sale
+                    </SelectItem>
+                    <SelectItem value="for-lease" className="hover:bg-brand-blue rounded-none">
+                      For Lease
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -126,18 +228,19 @@ export const FilterBar = () => {
         />
         <DropdownMenu>
           <DropdownMenuTrigger className="w-full border border-input flex justify-between items-center py-2 px-3">
-            Price
+            {priceText}
             <FontAwesomeIcon
               icon={faChevronDown}
               className="text-sm text-brand-gray-03"
               fontSize={14}
             />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="p-2">
+          <DropdownMenuContent className="p-2 rounded-none">
             <div className="flex flex-col gap-2">
               <FormField
                 control={form.control}
                 name="minPrice"
+                defaultValue={activeFilters?.minPrice || ''}
                 render={({ field }) => {
                   return (
                     <FormItem className="w-full">
@@ -147,6 +250,10 @@ export const FilterBar = () => {
                           placeholder="Min price"
                           {...field}
                           className="h-full text-lg font-light text-brand-navy"
+                          onChange={(event) => {
+                            field.onChange(event)
+                            handlePriceChange(form.getValues().minPrice, form.getValues().maxPrice)
+                          }}
                         />
                       </FormControl>
                     </FormItem>
@@ -156,6 +263,7 @@ export const FilterBar = () => {
               <FormField
                 control={form.control}
                 name="maxPrice"
+                defaultValue={activeFilters?.maxPrice || ''}
                 render={({ field }) => {
                   return (
                     <FormItem className="w-full">
@@ -165,6 +273,10 @@ export const FilterBar = () => {
                           placeholder="Max price"
                           {...field}
                           className="h-full text-lg font-light text-brand-navy"
+                          onChange={(event) => {
+                            field.onChange(event)
+                            handlePriceChange(form.getValues().minPrice, form.getValues().maxPrice)
+                          }}
                         />
                       </FormControl>
                     </FormItem>
@@ -185,11 +297,12 @@ export const FilterBar = () => {
               fontSize={14}
             />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="p-2">
+          <DropdownMenuContent className="p-2 rounded-none">
             <div className="flex flex-col gap-2">
               <FormField
                 control={form.control}
                 name="sizeType"
+                defaultValue={activeFilters?.sizeType || ''}
                 render={({ field }) => {
                   return (
                     <FormItem className="space-y-2">
@@ -228,7 +341,7 @@ export const FilterBar = () => {
               <FormField
                 control={form.control}
                 name="minSize"
-                defaultValue=""
+                defaultValue={activeFilters?.minSize || ''}
                 render={({ field }) => {
                   return (
                     <FormItem className="w-full">
@@ -254,7 +367,7 @@ export const FilterBar = () => {
               <FormField
                 control={form.control}
                 name="maxSize"
-                defaultValue=""
+                defaultValue={activeFilters?.maxSize || ''}
                 render={({ field }) => {
                   return (
                     <FormItem className="w-full">
@@ -283,22 +396,39 @@ export const FilterBar = () => {
         <FormField
           control={form.control}
           name="type"
-          defaultValue=""
+          defaultValue={activeFilters?.type || ''}
           render={({ field }) => {
             return (
               <FormItem className="w-full">
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={(event) => {
+                    console.log(event)
+                    field.onChange(event)
+                  }}
+                  defaultValue={field.value}
+                >
                   <FormControl>
-                    <SelectTrigger className="h-full text-lg font-light text-brand-navy w-full rounded-none">
-                      <SelectValue placeholder="Listing Type" />
+                    <SelectTrigger
+                      className="h-full text-lg font-light text-brand-navy w-full rounded-none"
+                      onChange={(event) => {
+                        console.log(event)
+                      }}
+                    >
+                      <SelectValue placeholder="Listing Type">
+                        {propertyTypes.find((type) => type.value.toString() === field.value)?.label}
+                      </SelectValue>
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="bg-white text-brand-navy">
+                  <SelectContent className="bg-white text-brand-navy rounded-none">
                     {propertyTypes &&
                       propertyTypes.length > 0 &&
                       propertyTypes.map((type, index) => (
-                        <SelectItem key={index} value={type.toLowerCase()}>
-                          {type}
+                        <SelectItem
+                          key={index}
+                          value={type.value}
+                          className="hover:bg-brand-blue rounded-none"
+                        >
+                          {type.label}
                         </SelectItem>
                       ))}
                   </SelectContent>
@@ -307,8 +437,17 @@ export const FilterBar = () => {
             )
           }}
         />
-        <Button type="submit" className="flex items-center gap-2">
-          <FontAwesomeIcon icon={faMagnifyingGlass} fontSize={16} /> Submit
+        <Button type="submit" className="flex items-center gap-2 min-w-40" disabled={isLoading}>
+          {!isLoading && (
+            <>
+              <FontAwesomeIcon icon={faMagnifyingGlass} fontSize={16} /> Search
+            </>
+          )}
+          {isLoading && (
+            <>
+              <FontAwesomeIcon icon={faCircleNotch} spin fontSize={16} />
+            </>
+          )}
         </Button>
       </form>
     </Form>

@@ -16,42 +16,38 @@ import { faEnvelope } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
 import { formatNumber } from '@/utilities/formatNumber'
 import { formatPrice } from '@/utilities/formatPrice'
 import { FilterBar } from '@/components/Map/filterBar'
+import { useHeaderTheme } from '@/providers/HeaderTheme'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { filterMapListings } from '../../api/filterMapListings'
 
 interface MapPageClientProps {
   listings: Listing[]
 }
 
+export interface MapFilters {
+  search: string | null | undefined
+  type: string | null | undefined
+  minPrice: number | string | null | undefined
+  maxPrice: number | string | null | undefined
+  minSize: number | string | null | undefined
+  maxSize: number | string | null | undefined
+  sizeType: string | null | undefined
+  availability: string | null | undefined
+  listingType: string | null | undefined
+}
+
 export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
   const mapContainerRef = useRef<any>(null)
   const mapRef = useRef<Map>(null)
+  const [activeListings, setActiveListings] = useState<Listing[]>([])
   const [boundingBox, setBoundingBox] = useState<number[][]>([])
   const [activeMarkers, setActiveMarkers] = useState<Marker[]>([])
-
-  const geoJson = {
-    type: 'FeatureCollection',
-    features: listings.map((listing) => {
-      return {
-        type: 'Feature',
-        properties: {
-          title: listing.title,
-          address: listing.streetAddress,
-          price: listing.price ? formatPrice(listing.price) : '',
-          image: listing.featuredImage,
-          lat: listing.latitude,
-          lon: listing.longitude,
-          iconSize: 32,
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: [listing.longitude, listing.latitude],
-        },
-      }
-    }),
-  }
-
-  const updateMarkers = () => {
-    setActiveMarkers([])
-  }
+  const [isLoading, setIsLoading] = useState(false)
+  const [activeFilters, setActiveFilters] = useState<MapFilters | undefined>(undefined)
+  const { setHeaderTheme } = useHeaderTheme()
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
 
   const centerMap = () => {
     if (boundingBox.length > 1) {
@@ -84,28 +80,45 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
   }
 
   useEffect(() => {
-    mapRef.current = new mapboxgl.Map({
-      accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '',
-      container: mapContainerRef.current,
-      center: [-97.2753695, 31.5532499],
-      zoom: 10,
-      scrollZoom: false,
-    })
+    activeMarkers.forEach((marker) => marker.remove())
+    setActiveMarkers([])
+    setBoundingBox([])
+    if (activeListings && activeListings.length > 0) {
+      const geoJson = {
+        type: 'FeatureCollection',
+        features: activeListings.map((listing) => {
+          return {
+            type: 'Feature',
+            properties: {
+              title: listing.title,
+              address: listing.streetAddress,
+              price: listing.price ? formatPrice(listing.price) : '',
+              image: listing.featuredImage,
+              lat: listing.latitude,
+              lon: listing.longitude,
+              iconSize: 32,
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: [listing.longitude, listing.latitude],
+            },
+          }
+        }),
+      }
+      for (const feature of geoJson.features) {
+        setBoundingBox((current) => [...current, feature.geometry.coordinates])
+        const el = document.createElement('div')
+        const size = feature.properties.iconSize
+        el.className = 'marker'
+        el.style.maxWidth = `${size}px`
 
-    for (const feature of geoJson.features) {
-      setBoundingBox((current) => [...current, feature.geometry.coordinates])
-      const el = document.createElement('div')
-      const size = feature.properties.iconSize
-      el.className = 'marker'
-      el.style.maxWidth = `${size}px`
+        el.innerHTML = mapMarkerIcon
 
-      el.innerHTML = mapMarkerIcon
-
-      const newMarker = new mapboxgl.Marker(el)
-        .setLngLat(feature.geometry.coordinates as LngLatLike)
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }).setHTML(
-            `
+        const newMarker = new mapboxgl.Marker(el)
+          .setLngLat(feature.geometry.coordinates as LngLatLike)
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 }).setHTML(
+              `
                 <div class="marker-popup rounded-lg overflow-hidden">
                   <div class="marker-popup_image-container relative aspect-video">
                     <img src="${(feature.properties.image as MediaType)?.sizes?.small?.url || null}" alt="${(feature?.properties?.image as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
@@ -115,21 +128,47 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
                     <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${feature.properties.price ? `${feature.properties.price}` : 'Contact for price'}</span>
                   </div>
                 </div>
-
                 `,
-          ),
-        )
-        .addTo(mapRef.current)
-      setActiveMarkers((current) => [...current, newMarker])
-
-      el.addEventListener('click', (e) => {
-        const coords = newMarker.getLngLat()
-        mapRef.current?.flyTo({
-          center: coords,
-          speed: 0.5,
+            ),
+          )
+        setActiveMarkers((current) => [...current, newMarker])
+        if (mapRef.current) {
+          newMarker.addTo(mapRef.current)
+        }
+        el.addEventListener('click', (e) => {
+          const coords = newMarker.getLngLat()
+          mapRef.current?.flyTo({
+            center: coords,
+            speed: 0.5,
+          })
         })
-      })
+      }
     }
+  }, [activeListings])
+
+  useEffect(() => {
+    setHeaderTheme('filled')
+    setActiveListings(listings)
+    mapRef.current = new mapboxgl.Map({
+      accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '',
+      container: mapContainerRef.current,
+      center: [-97.2753695, 31.5532499],
+      zoom: 10,
+      scrollZoom: false,
+    })
+
+    setActiveFilters({
+      search: searchParams.get('search') || null,
+      type: searchParams.get('type') || null,
+      minPrice: searchParams.get('min_price') || null,
+      maxPrice: searchParams.get('max_price') || null,
+      minSize: searchParams.get('min_size') || null,
+      maxSize: searchParams.get('max_size') || null,
+      sizeType: searchParams.get('size_type') || null,
+      availability: searchParams.get('availability') || null,
+      listingType: searchParams.get('listing_type') || null,
+    })
+
     return () => {
       mapRef.current?.remove()
     }
@@ -139,9 +178,33 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
     centerMap()
   }, [boundingBox])
 
+  const clearFilters = async () => {
+    setActiveFilters(undefined)
+    const fetchedListings = await filterMapListings()
+    setActiveListings(fetchedListings.docs)
+    router.push(pathname)
+    router.refresh()
+  }
+
+  // useEffect(() => {
+  //   const newSearchParams = new URLSearchParams(window.location.search)
+  //   if (activeFilters) {
+  //     Object.entries(activeFilters).forEach(([key, value]) => {
+  //       newSearchParams.set(key, value)
+  //     })
+  //     router.push(pathname + '?' + newSearchParams.toString())
+  //   }
+  // }, [activeFilters, pathname, router])
+
   return (
     <div>
-      <FilterBar />
+      <FilterBar
+        setActiveListings={setActiveListings}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        activeFilters={activeFilters}
+        setActiveFilters={setActiveFilters}
+      />
       <div className="w-full border-t border-gray-100 grid grid-cols-5">
         <div className="col-span-3 relative">
           <div
@@ -151,10 +214,12 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
           ></div>
         </div>
 
-        <div className="col-span-2 grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] xl:grid-cols-2  gap-x-4 gap-y-6 p-6 content-start bg-white">
-          {listings &&
-            listings.length > 0 &&
-            listings.map((listing) => {
+        <div
+          className={`col-span-2 grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] xl:grid-cols-2  gap-x-4 gap-y-6 p-6 content-start bg-white ${isLoading && 'animate-pulse'}`}
+        >
+          {activeListings &&
+            activeListings.length > 0 &&
+            activeListings.map((listing) => {
               return (
                 <Card
                   key={listing.id}
@@ -217,6 +282,19 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
                 </Card>
               )
             })}
+          {!activeListings ||
+            (activeListings.length === 0 && (
+              <div className="p-5 text-center">
+                <span>No listings found</span>
+                <Button
+                  onClick={() => {
+                    clearFilters()
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            ))}
         </div>
       </div>
     </div>

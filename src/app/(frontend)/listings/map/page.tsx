@@ -10,6 +10,7 @@ export default async function Page() {
   })
   const listingsDocs = await payload.find({
     collection: 'listings',
+    limit: 25,
   })
   const listings = listingsDocs.docs
   return <PageClient listings={listings} />
