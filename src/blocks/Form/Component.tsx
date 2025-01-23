@@ -30,7 +30,21 @@ export type FormBlockType = {
     [k: string]: unknown
   }[]
   styles?: {
-    [k: string]: unknown
+    global: { width: string }
+    resp: {
+      padVertDeskVal: number
+      padVertDeskUnit: string
+      padHorDeskVal: number
+      padHorDeskUnit: string
+      padVertTabVal: number
+      padVertTabUnit: string
+      padHorTabVal: number
+      padHorTabUnit: string
+      padVertMbVal: number
+      padVertMbUnit: string
+      padHorMbVal: number
+      padHorMbUnit: string
+    }
   }
 }
 
@@ -56,21 +70,21 @@ export const FormBlock: React.FC<
   } = formFromProps
   const {
     // @ts-ignore
-    global: { width },
+    global: { width = 'full' },
     // @ts-ignore
     resp: {
-      padVertDeskVal: pyDesktopVal,
-      padVertDeskUnit: pyDesktopUnit,
-      padHorDeskVal: pxDesktopVal,
-      padHorDeskUnit: pxDesktopUnit,
-      padVertTabVal: pyTabletVal,
-      padVertTabUnit: pyTabletUnit,
-      padHorTabVal: pxTabletVal,
-      padHorTabUnit: pxTabletUnit,
-      padVertMbVal: pyMobileVal,
-      padVertMbUnit: pyMobileUnit,
-      padHorMbVal: pxMobileVal,
-      padHorMbUnit: pxMobileUnit,
+      padVertDeskVal: pyDesktopVal = 0,
+      padVertDeskUnit: pyDesktopUnit = 'rem',
+      padHorDeskVal: pxDesktopVal = 0,
+      padHorDeskUnit: pxDesktopUnit = 'rem',
+      padVertTabVal: pyTabletVal = 0,
+      padVertTabUnit: pyTabletUnit = 'rem',
+      padHorTabVal: pxTabletVal = 0,
+      padHorTabUnit: pxTabletUnit = 'rem',
+      padVertMbVal: pyMobileVal = 0,
+      padVertMbUnit: pyMobileUnit = 'rem',
+      padHorMbVal: pxMobileVal = 0,
+      padHorMbUnit: pxMobileUnit = 'rem',
     },
   } = styles
   const pyDesktop = pyDesktopVal && pyDesktopUnit ? `${pyDesktopVal}${pyDesktopUnit}` : '0'

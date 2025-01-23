@@ -27,7 +27,7 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <FontAwesomeIcon icon={faChevronDown} className="text-sm text-brand-gray-04" />
+      <FontAwesomeIcon icon={faChevronDown} className="text-sm text-brand-gray-04 w-3.5" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))

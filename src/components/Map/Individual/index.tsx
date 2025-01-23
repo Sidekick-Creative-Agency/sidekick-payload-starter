@@ -87,7 +87,7 @@ export const ListingMap: React.FC<ListingMapProps> = ({ listing }) => {
         ),
       )
       .addTo(mapRef.current)
-      .togglePopup()
+    // .togglePopup()
 
     el.addEventListener('click', (e) => {
       centerMap()

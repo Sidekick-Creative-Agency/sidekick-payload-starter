@@ -1,9 +1,6 @@
 'use client'
-import ReactMapboxGl, { Layer, Feature, GeoJSONLayer, Image } from 'react-mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-
 import { Listing, Media as MediaType } from '@/payload-types'
-
 import { useEffect, useRef, useState } from 'react'
 import mapboxgl, { LngLatBoundsLike, LngLatLike, Map, Marker } from 'mapbox-gl'
 import { Card } from '../../../../components/ui/card'
@@ -17,8 +14,11 @@ import { formatNumber } from '@/utilities/formatNumber'
 import { formatPrice } from '@/utilities/formatPrice'
 import { FilterBar } from '@/components/Map/filterBar'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { filterMapListings } from '../../api/filterMapListings'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 interface MapPageClientProps {
   listings: Listing[]
@@ -27,14 +27,26 @@ interface MapPageClientProps {
 export interface MapFilters {
   search: string | null | undefined
   type: string | null | undefined
-  minPrice: number | string | null | undefined
-  maxPrice: number | string | null | undefined
-  minSize: number | string | null | undefined
-  maxSize: number | string | null | undefined
+  minPrice: string | null | undefined
+  maxPrice: string | null | undefined
+  minSize: string | null | undefined
+  maxSize: string | null | undefined
   sizeType: string | null | undefined
   availability: string | null | undefined
   listingType: string | null | undefined
 }
+
+export const FormSchema = z.object({
+  search: z.string().optional(),
+  type: z.string().optional(),
+  minPrice: z.string().optional(),
+  maxPrice: z.string().optional(),
+  minSize: z.string().optional(),
+  maxSize: z.string().optional(),
+  sizeType: z.string().optional(),
+  availability: z.string().optional(),
+  listingType: z.string().optional(),
+})
 
 export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
   const mapContainerRef = useRef<any>(null)
@@ -43,11 +55,13 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
   const [boundingBox, setBoundingBox] = useState<number[][]>([])
   const [activeMarkers, setActiveMarkers] = useState<Marker[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [activeFilters, setActiveFilters] = useState<MapFilters | undefined>(undefined)
   const { setHeaderTheme } = useHeaderTheme()
-  const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+  })
 
   const centerMap = () => {
     if (boundingBox.length > 1) {
@@ -68,14 +82,17 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
         center: [listing.longitude, listing.latitude],
         speed: 0.5,
       })
-      const matchingMarker = activeMarkers.find(
-        (marker) =>
+      activeMarkers.forEach((marker) => {
+        if (
           marker.getLngLat().lng === listing.longitude &&
-          marker.getLngLat().lat === listing.latitude,
-      )
-      if (matchingMarker && !matchingMarker.getPopup()?.isOpen()) {
-        matchingMarker.togglePopup()
-      }
+          marker.getLngLat().lat === listing.latitude &&
+          !marker.getPopup()?.isOpen()
+        ) {
+          marker.togglePopup()
+        } else if (marker.getPopup()?.isOpen()) {
+          marker.togglePopup()
+        }
+      })
     }
   }
 
@@ -157,18 +174,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
       scrollZoom: false,
     })
 
-    setActiveFilters({
-      search: searchParams.get('search') || null,
-      type: searchParams.get('type') || null,
-      minPrice: searchParams.get('min_price') || null,
-      maxPrice: searchParams.get('max_price') || null,
-      minSize: searchParams.get('min_size') || null,
-      maxSize: searchParams.get('max_size') || null,
-      sizeType: searchParams.get('size_type') || null,
-      availability: searchParams.get('availability') || null,
-      listingType: searchParams.get('listing_type') || null,
-    })
-
     return () => {
       mapRef.current?.remove()
     }
@@ -178,23 +183,12 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
     centerMap()
   }, [boundingBox])
 
-  const clearFilters = async () => {
-    setActiveFilters(undefined)
+  const resetFilters = async () => {
+    router.replace(pathname, { scroll: false })
     const fetchedListings = await filterMapListings()
     setActiveListings(fetchedListings.docs)
-    router.push(pathname)
-    router.refresh()
+    form.reset()
   }
-
-  // useEffect(() => {
-  //   const newSearchParams = new URLSearchParams(window.location.search)
-  //   if (activeFilters) {
-  //     Object.entries(activeFilters).forEach(([key, value]) => {
-  //       newSearchParams.set(key, value)
-  //     })
-  //     router.push(pathname + '?' + newSearchParams.toString())
-  //   }
-  // }, [activeFilters, pathname, router])
 
   return (
     <div>
@@ -202,20 +196,15 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
         setActiveListings={setActiveListings}
         isLoading={isLoading}
         setIsLoading={setIsLoading}
-        activeFilters={activeFilters}
-        setActiveFilters={setActiveFilters}
+        form={form}
       />
       <div className="w-full border-t border-gray-100 grid grid-cols-5">
-        <div className="col-span-3 relative">
-          <div
-            id="map"
-            ref={mapContainerRef}
-            style={{ height: '100%', minHeight: 'calc(100vh - 5rem)' }}
-          ></div>
+        <div className="col-span-3 sticky top-20 h-fit">
+          <div id="map" ref={mapContainerRef} className=" h-[calc(100vh-5rem)]"></div>
         </div>
 
         <div
-          className={`col-span-2 grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] xl:grid-cols-2  gap-x-4 gap-y-6 p-6 content-start bg-white ${isLoading && 'animate-pulse'}`}
+          className={`col-span-2 grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] xl:grid-cols-2 overflow-scroll  gap-x-4 gap-y-6 p-6 content-start bg-white ${isLoading && 'animate-pulse'}`}
         >
           {activeListings &&
             activeListings.length > 0 &&
@@ -288,7 +277,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
                 <span>No listings found</span>
                 <Button
                   onClick={() => {
-                    clearFilters()
+                    resetFilters()
                   }}
                 >
                   Clear Filters

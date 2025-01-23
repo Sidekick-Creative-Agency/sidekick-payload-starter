@@ -27,7 +27,6 @@ export const filterMapListings = async (body?: FilterBody) => {
     if (!body) {
       listings = await payload.find({
         collection: 'listings',
-        limit: 25,
       })
       return listings
     }
@@ -65,16 +64,25 @@ export const filterMapListings = async (body?: FilterBody) => {
                 ],
               },
               {
-                and: [
+                or: [
                   {
                     price: {
-                      greater_than_equal: body.minPrice ? Number(body.minPrice) : 0,
+                      exists: false,
                     },
                   },
                   {
-                    price: {
-                      less_than_equal: body.maxPrice ? Number(body.maxPrice) : Infinity,
-                    },
+                    and: [
+                      {
+                        price: {
+                          greater_than_equal: body.minPrice ? Number(body.minPrice) : 0,
+                        },
+                      },
+                      {
+                        price: {
+                          less_than_equal: body.maxPrice ? Number(body.maxPrice) : Infinity,
+                        },
+                      },
+                    ],
                   },
                 ],
               },
@@ -136,16 +144,25 @@ export const filterMapListings = async (body?: FilterBody) => {
                 ],
               },
               {
-                and: [
+                or: [
                   {
                     price: {
-                      greater_than_equal: body.minPrice ? Number(body.minPrice) : 0,
+                      exists: false,
                     },
                   },
                   {
-                    price: {
-                      less_than_equal: body.maxPrice ? Number(body.maxPrice) : Infinity,
-                    },
+                    and: [
+                      {
+                        price: {
+                          greater_than_equal: body.minPrice ? Number(body.minPrice) : 0,
+                        },
+                      },
+                      {
+                        price: {
+                          less_than_equal: body.maxPrice ? Number(body.maxPrice) : Infinity,
+                        },
+                      },
+                    ],
                   },
                 ],
               },
@@ -187,37 +204,46 @@ export const filterMapListings = async (body?: FilterBody) => {
                 or: [
                   {
                     streetAddress: {
-                      like: body.search,
+                      like: body.search ? body.search : '',
                     },
                   },
                   {
                     city: {
-                      like: body.search,
+                      like: body.search ? body.search : '',
                     },
                   },
                   {
                     state: {
-                      like: body.search,
+                      like: body.search ? body.search : '',
                     },
                   },
                   {
                     zipCode: {
-                      like: body.search,
+                      like: body.search ? body.search : '',
                     },
                   },
                 ],
               },
               {
-                and: [
+                or: [
                   {
                     price: {
-                      greater_than_equal: body.minPrice ? Number(body.minPrice) : 0,
+                      exists: false,
                     },
                   },
                   {
-                    price: {
-                      less_than_equal: body.maxPrice ? Number(body.maxPrice) : Infinity,
-                    },
+                    and: [
+                      {
+                        price: {
+                          greater_than_equal: body.minPrice ? Number(body.minPrice) : 0,
+                        },
+                      },
+                      {
+                        price: {
+                          less_than_equal: body.maxPrice ? Number(body.maxPrice) : Infinity,
+                        },
+                      },
+                    ],
                   },
                 ],
               },
@@ -228,7 +254,7 @@ export const filterMapListings = async (body?: FilterBody) => {
               },
               {
                 type: {
-                  contains: body.type ? body.type : '',
+                  in: body.type ? body.type : Array.from(Array(100).keys()).join(','),
                 },
               },
             ],

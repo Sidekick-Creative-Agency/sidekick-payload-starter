@@ -1,9 +1,9 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form'
 import { FormControl, Form, FormField, FormItem, FormLabel } from '../ui/form'
 import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+
 import { useToast } from '@/hooks/use-toast'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
@@ -15,7 +15,7 @@ import {
 } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '../ui/dropdown-menu'
-import { validateNumberFieldInput } from '@/utilities/validateNumberFieldInput'
+
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { formatNumber } from '@/utilities/formatNumber'
 import { usePayloadAPI } from '@payloadcms/ui'
@@ -23,34 +23,21 @@ import { formatPrice } from '@/utilities/formatPrice'
 import { filterMapListings } from '@/app/(frontend)/api/filterMapListings'
 import { Listing } from '@/payload-types'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { MapFilters } from '@/app/(frontend)/listings/map/page.client'
-
-const FormSchema = z.object({
-  search: z.string().optional(),
-  type: z.string().optional(),
-  minPrice: z.number().optional().or(z.string().optional()),
-  maxPrice: z.number().optional().or(z.string().optional()),
-  minSize: z.number().optional().or(z.string().optional()),
-  maxSize: z.number().optional().or(z.string().optional()),
-  sizeType: z.string().optional(),
-  availability: z.string().optional(),
-  listingType: z.string().optional(),
-})
+import { FormSchema } from '@/app/(frontend)/listings/map/page.client'
 
 interface FilterBarProps {
   setActiveListings: (listings: Listing[]) => void
   isLoading: boolean
   setIsLoading: (isLoading: boolean) => void
-  activeFilters: MapFilters | undefined
-  setActiveFilters: (filters: MapFilters) => void
+  form: UseFormReturn<z.infer<typeof FormSchema>>
 }
 
 export const FilterBar: React.FC<FilterBarProps> = ({
   setActiveListings,
   isLoading,
   setIsLoading,
-  activeFilters,
-  setActiveFilters,
+
+  form,
 }) => {
   const searchParams = useSearchParams()
   const { toast } = useToast()
@@ -63,23 +50,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/property-types`,
   )
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-  })
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setIsLoading(true)
     const newSearchParams = new URLSearchParams(searchParams)
-    setActiveFilters({
-      search: data.search,
-      type: data.type,
-      minPrice: data.minPrice,
-      maxPrice: data.maxPrice,
-      minSize: data.minSize,
-      maxSize: data.maxSize,
-      availability: data.availability,
-      listingType: data.listingType,
-      sizeType: data.sizeType,
-    })
     if (data.search) {
       newSearchParams.set('search', data.search)
     }
@@ -107,8 +80,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     if (data.sizeType) {
       newSearchParams.set('size_type', data.sizeType.toString())
     }
-    router.push(pathname + '?' + newSearchParams.toString())
-
+    router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
     const filteredListings = await filterMapListings({
       search: data.search,
       type: data.type,
@@ -170,21 +142,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       )
     }
   }, [propertyTypesResponse])
-  useEffect(() => {
-    handlePriceChange(activeFilters?.minPrice || '', activeFilters?.maxPrice || '')
-    handleSizeChange(
-      activeFilters?.minSize || '',
-      activeFilters?.maxSize || '',
-      activeFilters?.sizeType || '',
-    )
-  }, [activeFilters])
+
   return (
     <Form {...form}>
       <form className="w-full p-10 bg-white flex gap-2" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="search"
-          defaultValue={activeFilters?.search || ''}
+          defaultValue={searchParams.get('search') || ''}
           render={({ field }) => {
             return (
               <FormItem className="w-full">
@@ -202,12 +167,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         <FormField
           control={form.control}
           name="listingType"
-          defaultValue={activeFilters?.listingType || ''}
+          defaultValue={searchParams.get('listing_type') || ''}
           render={({ field }) => {
-            console.log(field)
             return (
               <FormItem className="w-full">
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="h-full text-lg font-light text-brand-navy w-full rounded-none">
                       <SelectValue placeholder="Listing Type" />
@@ -228,19 +192,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         />
         <DropdownMenu>
           <DropdownMenuTrigger className="w-full border border-input flex justify-between items-center py-2 px-3">
-            {priceText}
+            <span className="text-lg font-light text-brand-navy">{priceText}</span>
             <FontAwesomeIcon
               icon={faChevronDown}
-              className="text-sm text-brand-gray-03"
+              className="text-sm text-brand-gray-03 w-3.5"
               fontSize={14}
             />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="p-2 rounded-none">
+          <DropdownMenuContent className="p-2 rounded-none" tabIndex={0}>
             <div className="flex flex-col gap-2">
               <FormField
                 control={form.control}
                 name="minPrice"
-                defaultValue={activeFilters?.minPrice || ''}
+                defaultValue={searchParams.get('min_price') || ''}
                 render={({ field }) => {
                   return (
                     <FormItem className="w-full">
@@ -263,7 +227,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <FormField
                 control={form.control}
                 name="maxPrice"
-                defaultValue={activeFilters?.maxPrice || ''}
+                defaultValue={searchParams.get('max_price') || ''}
                 render={({ field }) => {
                   return (
                     <FormItem className="w-full">
@@ -289,11 +253,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
         <DropdownMenu>
           <DropdownMenuTrigger className="w-full border border-input flex justify-between items-center py-2 px-3">
-            {sizeText}
+            <span className="text-lg font-light text-brand-navy">{sizeText}</span>
 
             <FontAwesomeIcon
               icon={faChevronDown}
-              className="text-sm text-brand-gray-03"
+              className="text-sm text-brand-gray-03 w-3.5"
               fontSize={14}
             />
           </DropdownMenuTrigger>
@@ -302,7 +266,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <FormField
                 control={form.control}
                 name="sizeType"
-                defaultValue={activeFilters?.sizeType || ''}
+                defaultValue={searchParams.get('size_type') || ''}
                 render={({ field }) => {
                   return (
                     <FormItem className="space-y-2">
@@ -341,7 +305,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <FormField
                 control={form.control}
                 name="minSize"
-                defaultValue={activeFilters?.minSize || ''}
+                defaultValue={searchParams.get('min_size') || ''}
                 render={({ field }) => {
                   return (
                     <FormItem className="w-full">
@@ -367,7 +331,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <FormField
                 control={form.control}
                 name="maxSize"
-                defaultValue={activeFilters?.maxSize || ''}
+                defaultValue={searchParams.get('max_size') || ''}
                 render={({ field }) => {
                   return (
                     <FormItem className="w-full">
@@ -396,25 +360,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         <FormField
           control={form.control}
           name="type"
-          defaultValue={activeFilters?.type || ''}
+          defaultValue={searchParams.get('type') || ''}
           render={({ field }) => {
             return (
               <FormItem className="w-full">
                 <Select
-                  onValueChange={(event) => {
-                    console.log(event)
-                    field.onChange(event)
+                  onValueChange={(value) => {
+                    field.onChange(value)
                   }}
-                  defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger
-                      className="h-full text-lg font-light text-brand-navy w-full rounded-none"
-                      onChange={(event) => {
-                        console.log(event)
-                      }}
-                    >
-                      <SelectValue placeholder="Listing Type">
+                    <SelectTrigger className="h-full text-lg font-light text-brand-navy w-full rounded-none">
+                      <SelectValue placeholder="Type">
                         {propertyTypes.find((type) => type.value.toString() === field.value)?.label}
                       </SelectValue>
                     </SelectTrigger>
@@ -440,12 +398,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         <Button type="submit" className="flex items-center gap-2 min-w-40" disabled={isLoading}>
           {!isLoading && (
             <>
-              <FontAwesomeIcon icon={faMagnifyingGlass} fontSize={16} /> Search
+              <FontAwesomeIcon icon={faMagnifyingGlass} fontSize={16} className="w-4" /> Search
             </>
           )}
           {isLoading && (
             <>
-              <FontAwesomeIcon icon={faCircleNotch} spin fontSize={16} />
+              <FontAwesomeIcon icon={faCircleNotch} spin fontSize={16} className="w-4" />
             </>
           )}
         </Button>

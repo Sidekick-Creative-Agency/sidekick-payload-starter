@@ -54,6 +54,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
+import { ContactForm } from '@/components/Listing/ContactForm'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -83,9 +84,13 @@ export default async function Listing({ params: paramsPromise }: Args) {
   const listing = await queryListingBySlug({ slug })
   const payload = await getPayload({ config: configPromise })
 
-  const listingContactForm = await payload.findByID({
+  const generalContactForm = await payload.findByID({
     collection: 'forms',
     id: 1,
+  })
+  const listingContactForm = await payload.findByID({
+    collection: 'forms',
+    id: 2,
   })
   if (!listing) return <PayloadRedirects url={url} />
 
@@ -313,18 +318,13 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 </AccordionItem>
               </Accordion>
             </div>
-            <div className="col-span-1 p-10 bg-white border-t-[10px] border-brand-navy flex flex-col">
-              <div className="pb-10 flex gap-10 justify-between items-end border-b border-brand-gray-01">
+            <div className="col-span-1 p-10 bg-white border-t-[10px] border-brand-navy flex flex-col h-fit sticky top-24">
+              <div className="pb-10 flex gap-10 justify-between items-end">
                 <div className="flex flex-col gap-2">
-                  <h2 className="text-[2.5rem] font-bold text-brand-navy">Get Connected</h2>
-                  <span className="text-base font-light text-brand-gray-03">Reach out today!</span>
+                  <h2 className="text-2xl font-bold text-brand-navy">Get in Touch</h2>
                 </div>
               </div>
-              {listing.agents &&
-                typeof listing.agents[0] === 'object' &&
-                (listing.agents as TeamMember[]).map((agent) => {
-                  return <TeamMemberCard key={agent.id} teamMember={agent} />
-                })}
+              <ContactForm listing={listing} />
             </div>
           </div>
         </div>
@@ -403,7 +403,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     fields: {
                       blockName: 'formBlock',
                       blockType: 'formBlock',
-                      form: listingContactForm,
+                      form: generalContactForm,
                       styles: {
                         global: {
                           width: 'full',
