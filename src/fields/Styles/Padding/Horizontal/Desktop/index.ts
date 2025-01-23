@@ -9,7 +9,7 @@ export const DesktopHorizontalPaddingField: Field = {
       name: 'padHorDeskVal', // required
       label: 'Horizontal Padding',
       type: 'number', // required
-      defaultValue: 2.5,
+      defaultValue: 0,
     },
     {
       name: 'padHorDeskUnit',

@@ -7,7 +7,7 @@ export const TabletHorizontalPaddingField: Field = {
       name: 'padHorTabVal', // required
       label: 'Horizontal Padding',
       type: 'number', // required
-      defaultValue: 2.5,
+      defaultValue: 0,
     },
     {
       name: 'padHorTabUnit',

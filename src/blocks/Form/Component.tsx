@@ -29,6 +29,7 @@ export type FormBlockType = {
   introContent?: {
     [k: string]: unknown
   }[]
+  theme?: 'default' | 'thin'
   styles?: {
     global: { width: string }
     resp: {
@@ -67,7 +68,10 @@ export const FormBlock: React.FC<
     confirmationType = '',
     redirect = undefined,
     submitButtonLabel = '',
+    theme = 'default',
   } = formFromProps
+  console.log(formFromProps)
+
   const {
     // @ts-ignore
     global: { width = 'full' },
@@ -217,6 +221,7 @@ export const FormBlock: React.FC<
                 {formFromProps &&
                   formFromProps.fields &&
                   formFromProps.fields?.map((field, index) => {
+                    console.log(field)
                     const Field: React.FC<any> = fields?.[field.blockType]
                     if (Field) {
                       return (
@@ -227,7 +232,8 @@ export const FormBlock: React.FC<
                           control={control}
                           errors={errors}
                           register={register}
-                          className={`inline-block ${'width' in field ? fieldWidthClasses[field.width || 'full'] : ''} ${'name' in field && field.name && !errors[field.name] && 'mb-0'} relative transition-[margin] duration-300 ${'name' in field && field.name && errors[field.name] && 'mb-6'}`}
+                          className={`inline-block ${'width' in field ? fieldWidthClasses[field.width || 'full'] : ''} ${'name' in field && field.name && !errors[field.name] && 'mb-0'} relative transition-[margin] duration-300 ${'name' in field && field.name && errors[field.name] && 'mb-6'} `}
+                          fieldClassName={`${theme === 'thin' && 'border-t-0 border-r-0 border-l-0 border-b text-lg font-light'}`}
                           setValue={setValue}
                           key={index}
                         />

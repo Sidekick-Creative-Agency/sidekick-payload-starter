@@ -605,6 +605,7 @@ export interface Form {
         | {
             name: string;
             label?: string | null;
+            placeholder?: string | null;
             width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             required?: boolean | null;
             id?: string | null;
@@ -671,6 +672,7 @@ export interface Form {
         | {
             name: string;
             label?: string | null;
+            placeholder?: string | null;
             width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             required?: boolean | null;
             id?: string | null;
@@ -767,6 +769,7 @@ export interface Form {
         id?: string | null;
       }[]
     | null;
+  theme?: ('default' | 'thin') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1940,6 +1943,7 @@ export interface FormsSelect<T extends boolean = true> {
           | {
               name?: T;
               label?: T;
+              placeholder?: T;
               width?: T;
               required?: T;
               id?: T;
@@ -1997,6 +2001,7 @@ export interface FormsSelect<T extends boolean = true> {
           | {
               name?: T;
               label?: T;
+              placeholder?: T;
               width?: T;
               required?: T;
               id?: T;
@@ -2059,6 +2064,7 @@ export interface FormsSelect<T extends boolean = true> {
         message?: T;
         id?: T;
       };
+  theme?: T;
   updatedAt?: T;
   createdAt?: T;
 }

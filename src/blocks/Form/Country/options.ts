@@ -1,5 +1,9 @@
 export const countryOptions = [
   {
+    label: 'United States',
+    value: 'US',
+  },
+  {
     label: 'Afghanistan',
     value: 'AF',
   },
@@ -923,10 +927,7 @@ export const countryOptions = [
     label: 'United Kingdom',
     value: 'GB',
   },
-  {
-    label: 'United States',
-    value: 'US',
-  },
+
   {
     label: 'United States Minor Outlying Islands',
     value: 'UM',

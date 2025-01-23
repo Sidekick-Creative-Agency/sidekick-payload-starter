@@ -7,7 +7,7 @@ export const MobileHorizontalPaddingField: Field = {
       name: 'padHorMbVal', // required
       label: 'Horizontal Padding',
       type: 'number', // required
-      defaultValue: 1.25,
+      defaultValue: 0,
     },
     {
       name: 'padHorMbUnit',

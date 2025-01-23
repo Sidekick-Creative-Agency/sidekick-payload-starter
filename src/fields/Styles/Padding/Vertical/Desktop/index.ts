@@ -7,7 +7,7 @@ export const DesktopVerticalPaddingField: Field = {
       name: 'padVertDeskVal', // required
       label: 'Vertical Padding',
       type: 'number', // required
-      defaultValue: 5,
+      defaultValue: 0,
     },
     {
       name: 'padVertDeskUnit',

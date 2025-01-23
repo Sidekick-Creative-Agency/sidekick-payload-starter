@@ -7,7 +7,7 @@ export const MobileVerticalPaddingField: Field = {
       name: 'padVertMbVal', // required
       label: 'Vertical Padding',
       type: 'number', // required
-      defaultValue: 4,
+      defaultValue: 0,
     },
     {
       name: 'padVertMbUnit',

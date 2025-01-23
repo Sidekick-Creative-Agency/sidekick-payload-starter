@@ -7,7 +7,7 @@ export const TabletVerticalPaddingField: Field = {
       name: 'padVertTabVal', // required
       label: 'Vertical Padding',
       type: 'number', // required
-      defaultValue: 5,
+      defaultValue: 0,
     },
     {
       name: 'padVertTabUnit',
