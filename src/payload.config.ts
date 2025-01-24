@@ -59,8 +59,10 @@ const generateTitle: GenerateTitle<Post | Page | Listing | TeamMember> = ({ doc 
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
   return doc?.slug
-    ? `${process.env.NEXT_PUBLIC_SERVER_URL!}/${doc.slug}`
-    : process.env.NEXT_PUBLIC_SERVER_URL!
+    ? `${process.env.VERCEL === '1' ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/${doc.slug}`
+    : process.env.VERCEL === '1'
+      ? process.env.VERCEL_PROJECT_PRODUCTION_URL!
+      : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 }
 
 export default buildConfig({
@@ -155,7 +157,11 @@ export default buildConfig({
     TeamMembers,
     JobListings,
   ],
-  cors: [process.env.NEXT_PUBLIC_SERVER_URL || ''].filter(Boolean),
+  cors: [
+    process.env.VERCEL === '1'
+      ? process.env.VERCEL_PROJECT_PRODUCTION_URL!
+      : process.env.NEXT_PUBLIC_SERVER_URL || '',
+  ].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
     // redirectsPlugin({

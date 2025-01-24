@@ -58,7 +58,11 @@ export const AdminBar: React.FC<{
             logo: 'text-white',
             user: 'text-white',
           }}
-          cmsURL={process.env.NEXT_PUBLIC_SERVER_URL}
+          cmsURL={
+            process.env.VERCEL === '1'
+              ? process.env.VERCEL_PROJECT_PRODUCTION_URL!
+              : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+          }
           collection={collection}
           collectionLabels={{
             plural: collectionLabels[collection]?.plural || 'Pages',

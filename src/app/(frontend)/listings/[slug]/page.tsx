@@ -145,7 +145,9 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   {formatPrice(listing.price)}
                 </span>
               )}
-              <CopyButton value={`${process.env.NEXT_PUBLIC_SERVER_URL}${url}`} />
+              <CopyButton
+                value={`${process.env.VERCEL === '1' ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${url}`}
+              />
             </div>
           </div>
           <div className="grid grid-cols-4 grid-rows-2 gap-4">
