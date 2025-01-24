@@ -10,7 +10,7 @@ import {
   OrderedListFeature,
   UnorderedListFeature,
 } from '@payloadcms/richtext-lexical'
-import { slugField } from '@/fields/slug'
+import { slugField } from '@/fields/Slug'
 
 export const TeamMembers: CollectionConfig = {
   slug: 'team-members',
