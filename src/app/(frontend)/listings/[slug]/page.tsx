@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import { RelatedPosts } from '@/blocks/RelatedPosts/Component'
-import { PayloadRedirects } from '@/components/PayloadRedirects'
+// import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
@@ -55,6 +55,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 import { ContactForm } from '@/components/Listing/ContactForm'
+import { notFound, redirect } from 'next/navigation'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -92,14 +93,16 @@ export default async function Listing({ params: paramsPromise }: Args) {
     collection: 'forms',
     id: 2,
   })
-  if (!listing) return <PayloadRedirects url={url} />
+  // if (!listing) return <PayloadRedirects url={url} />
+  // if (!listing) notFound()
+  if (!listing) redirect('/listings')
 
   return (
     <article>
       <PageClient />
 
       {/* Allows redirects for valid pages too */}
-      <PayloadRedirects disableNotFound url={url} />
+      {/* <PayloadRedirects disableNotFound url={url} /> */}
       <div className="bg-white pt-10 pb-20">
         <div className="container flex flex-col gap-10">
           <h1 className="sr-only">{listing.title}</h1>

@@ -22,7 +22,6 @@ export interface Config {
     reviews: Review;
     'team-members': TeamMember;
     'job-listings': JobListing;
-    redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
     search: Search;
@@ -50,7 +49,6 @@ export interface Config {
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
     'job-listings': JobListingsSelect<false> | JobListingsSelect<true>;
-    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
@@ -1120,36 +1118,6 @@ export interface JobListing {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects".
- */
-export interface Redirect {
-  id: number;
-  /**
-   * You will need to rebuild the website when changing this field.
-   */
-  from: string;
-  to?: {
-    type?: ('reference' | 'custom') | null;
-    reference?:
-      | ({
-          relationTo: 'pages';
-          value: number | Page;
-        } | null)
-      | ({
-          relationTo: 'posts';
-          value: number | Post;
-        } | null)
-      | ({
-          relationTo: 'listings';
-          value: number | Listing;
-        } | null);
-    url?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions".
  */
 export interface FormSubmission {
@@ -1252,10 +1220,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'job-listings';
         value: number | JobListing;
-      } | null)
-    | ({
-        relationTo: 'redirects';
-        value: number | Redirect;
       } | null)
     | ({
         relationTo: 'forms';
@@ -1939,22 +1903,6 @@ export interface JobListingsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   active?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects_select".
- */
-export interface RedirectsSelect<T extends boolean = true> {
-  from?: T;
-  to?:
-    | T
-    | {
-        type?: T;
-        reference?: T;
-        url?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }

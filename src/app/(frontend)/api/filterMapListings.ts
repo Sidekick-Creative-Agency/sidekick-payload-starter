@@ -253,7 +253,10 @@ export const filterMapListings = async (body?: FilterBody) => {
               },
               {
                 type: {
-                  in: body.type ? body.type : Array.from(Array(100).keys()).join(','),
+                  in:
+                    body.type && typeof body.type === 'number'
+                      ? body.type
+                      : Array.from(Array(100).keys()).join(','),
                 },
               },
             ],

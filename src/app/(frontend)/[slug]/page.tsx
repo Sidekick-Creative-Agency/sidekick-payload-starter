@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import { PayloadRedirects } from '@/components/PayloadRedirects'
+// import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 
 import { draftMode } from 'next/headers'
@@ -13,6 +13,7 @@ import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { getPayload } from 'payload'
+import { notFound, redirect } from 'next/navigation'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -49,7 +50,9 @@ export default async function Page({ params: paramsPromise }: Args) {
     slug,
   })
   if (!page) {
-    return <PayloadRedirects url={url} />
+    // return <PayloadRedirects url={url} />
+    // notFound()
+    redirect('/')
   }
 
   const { hero, layout, title } = page
@@ -58,7 +61,7 @@ export default async function Page({ params: paramsPromise }: Args) {
     <div>
       <PageClient />
       {/* Allows redirects for valid pages too */}
-      <PayloadRedirects disableNotFound url={url} />
+      {/* <PayloadRedirects disableNotFound url={url} /> */}
 
       <RenderHero {...hero} title={title} />
       <RenderBlocks blocks={layout} />
