@@ -44,7 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.VERCEL === '1'
-      ? process.env.VERCELL_PROJECT_PRODUCTION_URL!
+      ? process.env._PROJECT_PRODUCTION_URL!
       : process.env.NEXT_PUBLIC_SERVER_URL || 'https://onwardrealestateteam.com',
   ),
   openGraph: mergeOpenGraph(),
