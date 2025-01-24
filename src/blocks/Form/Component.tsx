@@ -136,7 +136,7 @@ export const FormBlock: React.FC<
 
         try {
           const req = await fetch(
-            `${process.env.VERCEL === '1' ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/api/form-submissions`,
+            `${process.env.VERCEL ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/api/form-submissions`,
             {
               body: JSON.stringify({
                 form: formID,

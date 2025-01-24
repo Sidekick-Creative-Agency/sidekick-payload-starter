@@ -9,7 +9,7 @@ export const LivePreviewListener: React.FC = () => {
     <PayloadLivePreview
       refresh={router.refresh}
       serverURL={
-        process.env.VERCEL === '1'
+        process.env.VERCEL
           ? process.env.VERCEL_PROJECT_PRODUCTION_URL!
           : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
       }

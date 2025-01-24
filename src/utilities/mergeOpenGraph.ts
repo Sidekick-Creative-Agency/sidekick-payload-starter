@@ -5,10 +5,9 @@ const defaultOpenGraph: Metadata['openGraph'] = {
   description: 'Onward Real Estate Team',
   images: [
     {
-      url:
-        process.env.VERCEL === '1'
-          ? `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/website-template-OG.webp`
-          : `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/website-template-OG.webp`,
+      url: process.env.VERCEL
+        ? `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/website-template-OG.webp`
+        : `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/website-template-OG.webp`,
     },
   ],
   siteName: 'Payload Website Template',

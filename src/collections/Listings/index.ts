@@ -46,7 +46,7 @@ export const Listings: CollectionConfig = {
           collection: 'listings',
         })
 
-        return `${process.env.VERCEL === '1' ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
+        return `${process.env.VERCEL ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
       },
     },
     preview: (data) => {
@@ -55,7 +55,7 @@ export const Listings: CollectionConfig = {
         collection: 'listings',
       })
 
-      return `${process.env.VERCEL === '1' ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
+      return `${process.env.VERCEL ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
     },
     components: {
       beforeList: ['/components/Admin/LinkToImportView#LinkToImportView'],
