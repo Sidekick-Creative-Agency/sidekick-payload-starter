@@ -68,13 +68,11 @@ export const FormBlock: React.FC<
     confirmationType = '',
     redirect = undefined,
     submitButtonLabel = '',
-    theme = 'default',
   } = formFromProps
-  console.log(formFromProps)
 
   const {
     // @ts-ignore
-    global: { width = 'full' },
+    global: { width = 'full', theme = 'default' },
     // @ts-ignore
     resp: {
       padVertDeskVal: pyDesktopVal = 0,
@@ -208,7 +206,7 @@ export const FormBlock: React.FC<
       <div className={`container ${widthClasses[width]} form-block-${formID}`}>
         <FormProvider {...formMethods}>
           {enableIntro && introContent && !hasSubmitted && (
-            <RichText className="mb-8" content={introContent} enableGutter={false} />
+            <RichText className="mb-10" content={introContent} enableGutter={false} />
           )}
           {!isLoading && hasSubmitted && confirmationType === 'message' && (
             <RichText content={confirmationMessage} />
@@ -217,7 +215,7 @@ export const FormBlock: React.FC<
           {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
           {!hasSubmitted && (
             <form id={formID} onSubmit={handleSubmit(onSubmit)}>
-              <div className="mb-4 grid grid-cols-12 gap-4">
+              <div className={`mb-4 grid grid-cols-12 ${theme === 'default' ? 'gap-4' : 'gap-10'}`}>
                 {formFromProps &&
                   formFromProps.fields &&
                   formFromProps.fields?.map((field, index) => {
@@ -233,7 +231,7 @@ export const FormBlock: React.FC<
                           errors={errors}
                           register={register}
                           className={`inline-block ${'width' in field ? fieldWidthClasses[field.width || 'full'] : ''} ${'name' in field && field.name && !errors[field.name] && 'mb-0'} relative transition-[margin] duration-300 ${'name' in field && field.name && errors[field.name] && 'mb-6'} `}
-                          fieldClassName={`${theme === 'thin' && 'border-t-0 border-r-0 border-l-0 border-b text-lg font-light'}`}
+                          fieldClassName={`${theme === 'thin' && 'border-t-0 border-r-0 border-l-0 border-b text-lg font-light focus-visible:border-b-brand-navy'} `}
                           setValue={setValue}
                           key={index}
                         />
@@ -243,7 +241,7 @@ export const FormBlock: React.FC<
                   })}
               </div>
 
-              <Button form={formID} type="submit" variant="default">
+              <Button form={formID} type="submit" variant="default" className="mt-6">
                 {submitButtonLabel}
               </Button>
             </form>

@@ -46,7 +46,7 @@ export const Textarea: React.FC<
         {...register(name, { required: requiredFromProps })}
       />
 
-      {requiredFromProps && errors[name] && <Error />}
+      {requiredFromProps && errors[name] && <Error error={errors[name]} />}
     </div>
   )
 }

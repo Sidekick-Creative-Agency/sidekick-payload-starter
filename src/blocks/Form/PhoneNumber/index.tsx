@@ -25,6 +25,7 @@ export const PhoneNumber: React.FC<
     register: UseFormRegister<FieldValues>
     setValue: UseFormSetValue<FieldValues>
     className?: string
+    fieldClassName?: string
     placeholder?: string
   }
 > = ({
@@ -36,6 +37,7 @@ export const PhoneNumber: React.FC<
   required: requiredFromProps,
   setValue,
   className,
+  fieldClassName,
   placeholder,
 }) => {
   const [error, setError] = useState<
@@ -62,6 +64,7 @@ export const PhoneNumber: React.FC<
         maxLength={14}
         type="tel"
         placeholder={placeholder}
+        className={fieldClassName}
         {...register(name, {
           required: requiredFromProps,
           minLength: 14,
@@ -71,7 +74,7 @@ export const PhoneNumber: React.FC<
           setValue(name, formatPhoneNumber(e.target.value))
         }}
       />
-      {requiredFromProps && errors[name] && <Error error={error} />}
+      {requiredFromProps && errors[name] && <Error error={errors[name]} />}
     </div>
   )
 }

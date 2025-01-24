@@ -16,6 +16,7 @@ export const Text: React.FC<
     >
     register: UseFormRegister<FieldValues>
     className?: string
+    fieldClassName?: string
     width?: string
     placeholder?: string
   }
@@ -28,6 +29,7 @@ export const Text: React.FC<
   register,
   required: requiredFromProps,
   className,
+  fieldClassName,
 }) => {
   return (
     <div className={className}>
@@ -37,9 +39,10 @@ export const Text: React.FC<
         id={name}
         type="text"
         placeholder={placeholder}
+        className={fieldClassName}
         {...register(name, { required: requiredFromProps })}
       />
-      {requiredFromProps && errors[name] && <Error />}
+      {requiredFromProps && errors[name] && <Error error={errors[name]} />}
     </div>
   )
 }

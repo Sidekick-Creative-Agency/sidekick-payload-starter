@@ -127,13 +127,25 @@ const columnFields: Field[] = [
             ],
           }),
           TextColorFeature({
-            colors: BRAND_COLORS.map((color) => {
-              return {
+            colors: [
+              {
                 type: 'button',
-                label: color.label,
-                color: color.value,
-              }
-            }),
+                label: 'White',
+                color: '#FFFFFF',
+              },
+              {
+                type: 'button',
+                label: 'Black',
+                color: '#000000',
+              },
+              ...BRAND_COLORS.map((color) => {
+                return {
+                  type: 'button' as 'button' | 'palette',
+                  label: color.label,
+                  color: color.value,
+                }
+              }),
+            ],
           }),
         ]
       },
@@ -263,7 +275,22 @@ export const ColumnsBlock: Block = {
             { label: 'Boxed', value: 'boxed' },
           ],
         },
+
         BackgroundColorField(),
+        {
+          type: 'checkbox',
+          name: 'enableDivider',
+          label: 'Enable Column Divider',
+          defaultValue: false,
+        },
+        ColorField({
+          name: 'dividerColor',
+          adminOverrides: {
+            condition: (_, siblingData) => {
+              return siblingData.enableDivider
+            },
+          },
+        }),
       ],
       // desktopOverrides: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
       // tabletOverrides: [TabletHorizontalPaddingField, TabletVerticalPaddingField],

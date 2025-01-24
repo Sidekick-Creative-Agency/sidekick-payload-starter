@@ -70,6 +70,21 @@ export const FormBlock: Block = {
             { label: 'Narrow', value: 'narrow' },
           ],
         },
+        {
+          name: 'theme',
+          type: 'select',
+          defaultValue: 'default',
+          options: [
+            {
+              label: 'Default',
+              value: 'default',
+            },
+            {
+              label: 'Thin',
+              value: 'thin',
+            },
+          ],
+        },
       ],
       desktopOverrides: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
       tabletOverrides: [TabletHorizontalPaddingField, TabletVerticalPaddingField],

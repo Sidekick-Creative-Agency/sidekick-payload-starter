@@ -16,7 +16,7 @@ export const HighImpactHero: React.FC<Page['hero'] & { title: string }> = ({
   title,
 }) => {
   return (
-    <div className="relative flex items-center -mt-[113px] max-h-screen pt-40 pb-32 md:pt-48 md:pb-40">
+    <div className="relative flex items-center -mt-[114px] max-h-screen pt-40 pb-32 md:pt-48 md:pb-40">
       <div className="container z-10 relative flex flex-col items-center justify-center gap-16">
         <h1 className="text-white text-center text-[2.5rem] sm:text-5xl md:text-[4rem] leading-tight font-bold">
           {enableOverrideTitle ? overrideTitle : title}

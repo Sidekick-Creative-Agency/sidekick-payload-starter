@@ -17,6 +17,7 @@ export const Email: React.FC<
     >
     register: UseFormRegister<FieldValues>
     className?: string
+    fieldClassName?: string
     placeholder?: string
   }
 > = ({
@@ -28,6 +29,7 @@ export const Email: React.FC<
   required: requiredFromProps,
   placeholder,
   className,
+  fieldClassName,
 }) => {
   return (
     <div className={className}>
@@ -37,10 +39,10 @@ export const Email: React.FC<
         id={name}
         type="email"
         placeholder={placeholder}
+        className={fieldClassName}
         {...register(name, { pattern: /^\S[^\s@]*@\S+$/, required: requiredFromProps })}
       />
-
-      {requiredFromProps && errors[name] && <Error />}
+      {requiredFromProps && errors[name] && <Error error={errors[name]} />}
     </div>
   )
 }

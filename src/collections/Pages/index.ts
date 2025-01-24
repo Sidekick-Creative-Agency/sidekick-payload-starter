@@ -27,6 +27,7 @@ import { ExpertiseBlock } from '@/blocks/ExpertiseBlock/config'
 import { TimelineBlock } from '@/blocks/TimelineBlock/config'
 import { ReviewsBlock } from '@/blocks/ReviewsBlock/config'
 import { JobListingsBlock } from '@/blocks/JobListingsBlock/config'
+import { SocialProofCarouselBlock } from '@/blocks/SocialProofCarouselBlock/config'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
@@ -88,6 +89,7 @@ export const Pages: CollectionConfig = {
                 TimelineBlock,
                 ReviewsBlock,
                 JobListingsBlock,
+                SocialProofCarouselBlock,
               ],
               required: true,
             },

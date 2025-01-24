@@ -15,6 +15,7 @@ import { ExpertiseBlock } from './ExpertiseBlock/Component'
 import { TimelineBlock } from './TimelineBlock/Component'
 import { ReviewsBlock } from './ReviewsBlock/Component'
 import { JobListingsBlock } from './JobListingsBlock/Component'
+import { SocialProofCarouselBlock } from './SocialProofCarouselBlock/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -29,6 +30,7 @@ const blockComponents = {
   timelineBlock: TimelineBlock,
   reviewsBlock: ReviewsBlock,
   jobListingsBlock: JobListingsBlock,
+  socialProofCarouselBlock: SocialProofCarouselBlock,
 }
 
 export const RenderBlocks: React.FC<{

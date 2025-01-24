@@ -80,6 +80,22 @@ export const BRAND_BACKGROUND_COLOR_CLASSES = {
   'gray-06': 'bg-brand-gray-06',
   transparent: 'bg-transparent',
 }
+export const BRAND_BEFORE_BACKGROUND_COLOR_CLASSES = {
+  navy: 'before:bg-brand-navy',
+  offWhite: 'before:bg-brand-offWhite',
+  tan: 'before:bg-brand-tan',
+  blue: 'before:bg-brand-blue',
+  brown: 'before:bg-brand-brown',
+  green: 'before:bg-brand-green',
+  'gray-00': 'before:bg-brand-gray-00',
+  'gray-01': 'before:bg-brand-gray-01',
+  'gray-02': 'before:bg-brand-gray-02',
+  'gray-03': 'before:bg-brand-gray-03',
+  'gray-04': 'before:bg-brand-gray-04',
+  // 'gray-05': 'bg-brand-gray-05',
+  'gray-06': 'before:bg-brand-gray-06',
+  transparent: 'before:bg-transparent',
+}
 export const BRAND_BORDER_COLOR_CLASSES = {
   navy: 'border-brand-navy',
   offWhite: 'border-brand-offWhite',

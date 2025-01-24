@@ -143,6 +143,7 @@ export interface Page {
     | TimelineBlock
     | ReviewsBlock
     | JobListingsBlock
+    | SocialProofCarouselBlock
   )[];
   meta?: {
     title?: string | null;
@@ -563,6 +564,7 @@ export interface FormBlock {
   styles?: {
     global?: {
       width?: ('full' | 'boxed' | 'narrow') | null;
+      theme?: ('default' | 'thin') | null;
     };
     resp?: {
       padHorDeskVal?: number | null;
@@ -769,7 +771,6 @@ export interface Form {
         id?: string | null;
       }[]
     | null;
-  theme?: ('default' | 'thin') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -829,6 +830,8 @@ export interface ColumnsBlock {
     global?: {
       width?: ('full' | 'boxed') | null;
       backgroundColor?: string | null;
+      enableDivider?: boolean | null;
+      dividerColor?: string | null;
     };
     resp?: {
       reverseWrap?: boolean | null;
@@ -990,6 +993,23 @@ export interface JobListingsBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'jobListingsBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SocialProofCarouselBlock".
+ */
+export interface SocialProofCarouselBlock {
+  heading?: string | null;
+  subtitle?: string | null;
+  logos?:
+    | {
+        logo: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'socialProofCarouselBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1337,6 +1357,7 @@ export interface PagesSelect<T extends boolean = true> {
         timelineBlock?: T | TimelineBlockSelect<T>;
         reviewsBlock?: T | ReviewsBlockSelect<T>;
         jobListingsBlock?: T | JobListingsBlockSelect<T>;
+        socialProofCarouselBlock?: T | SocialProofCarouselBlockSelect<T>;
       };
   meta?:
     | T
@@ -1443,6 +1464,7 @@ export interface FormBlockSelect<T extends boolean = true> {
           | T
           | {
               width?: T;
+              theme?: T;
             };
         resp?:
           | T
@@ -1508,6 +1530,8 @@ export interface ColumnsBlockSelect<T extends boolean = true> {
           | {
               width?: T;
               backgroundColor?: T;
+              enableDivider?: T;
+              dividerColor?: T;
             };
         resp?:
           | T
@@ -1624,6 +1648,22 @@ export interface ReviewsBlockSelect<T extends boolean = true> {
 export interface JobListingsBlockSelect<T extends boolean = true> {
   heading?: T;
   subtitle?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SocialProofCarouselBlock_select".
+ */
+export interface SocialProofCarouselBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subtitle?: T;
+  logos?:
+    | T
+    | {
+        logo?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2064,7 +2104,6 @@ export interface FormsSelect<T extends boolean = true> {
         message?: T;
         id?: T;
       };
-  theme?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -219,21 +219,6 @@ export default buildConfig({
               }
               return field
             }),
-            {
-              name: 'theme',
-              type: 'select',
-              defaultValue: 'default',
-              options: [
-                {
-                  label: 'Default',
-                  value: 'default',
-                },
-                {
-                  label: 'Thin',
-                  value: 'thin',
-                },
-              ],
-            },
           ]
         },
       },
