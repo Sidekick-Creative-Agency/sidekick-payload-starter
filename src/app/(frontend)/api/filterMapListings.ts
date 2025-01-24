@@ -32,7 +32,6 @@ export const filterMapListings = async (body?: FilterBody) => {
     }
 
     const propertyTypesString = propertyTypes.docs.map((type) => type.title.toLowerCase()).join(',')
-    console.log(propertyTypesString)
     switch (body?.sizeType) {
       case 'sqft':
         listings = await payload.find({

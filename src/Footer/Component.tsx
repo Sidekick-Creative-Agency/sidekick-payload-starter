@@ -34,12 +34,11 @@ export async function Footer() {
           </Link>
         )}
 
-        <div className="flex flex-1 flex-col items-center md:items-start justify-around md:flex-row gap-10 md:items-start">
+        <div className="flex flex-1 flex-col items-center justify-around md:flex-row gap-10 md:items-start">
           {navMenus &&
             navMenus.map((navMenu, index) => {
               const title = navMenu?.title
               const navItems = navMenu?.navItems
-              console.log(navItems)
               if (!title || !navItems) return
               return (
                 <div key={index} className="flex flex-col gap-4">

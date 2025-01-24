@@ -34,7 +34,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({ listing }) => {
 
   const onSubmit = (data: z.infer<typeof ListingContactFormSchema>) => {
     console.log('Submitted data:', data)
-    console.log(form.formState.errors)
   }
   return (
     <Form {...form}>

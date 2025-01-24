@@ -219,7 +219,6 @@ export const FormBlock: React.FC<
                 {formFromProps &&
                   formFromProps.fields &&
                   formFromProps.fields?.map((field, index) => {
-                    console.log(field)
                     const Field: React.FC<any> = fields?.[field.blockType]
                     if (Field) {
                       return (
