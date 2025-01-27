@@ -59,9 +59,9 @@ const generateTitle: GenerateTitle<Post | Page | Listing | TeamMember> = ({ doc 
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
   return doc?.slug
-    ? `${process.env.VERCEL ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/${doc.slug}`
+    ? `${process.env.VERCEL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/${doc.slug}`
     : process.env.VERCEL
-      ? process.env.VERCEL_PROJECT_PRODUCTION_URL!
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`!
       : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 }
 
@@ -159,7 +159,7 @@ export default buildConfig({
   ],
   cors: [
     process.env.VERCEL
-      ? process.env.VERCEL_PROJECT_PRODUCTION_URL!
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`!
       : process.env.NEXT_PUBLIC_SERVER_URL || '',
   ].filter(Boolean),
   globals: [Header, Footer],
@@ -187,7 +187,7 @@ export default buildConfig({
     //   },
     // }),
     nestedDocsPlugin({
-      collections: ['categories'],
+      collections: ['categories', 'pages'],
     }),
     seoPlugin({
       generateTitle,

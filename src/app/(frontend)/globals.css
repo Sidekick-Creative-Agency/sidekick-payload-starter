@@ -67,18 +67,18 @@
 
     --radius: 0.2rem;
 
-    --brand-navy: #0b2a35;
-    --brand-off-white: #f7f3ed;
-    --brand-tan: #ccb6a6;
-    --brand-blue: #a9c1c9;
-    --brand-brown: #7f6c60;
-    --brand-green: #878e61;
-    --brand-gray-00: #f4f4f5;
-    --brand-gray-01: #dedede;
-    --brand-gray-02: #bfbfbf;
-    --brand-gray-03: #949494;
-    --brand-gray-04: #757575;
-    --brand-gray-06: #292929;
+    --brand-navy: 196 66% 13%;
+    --brand-off-white: 36 38% 95%;
+    --brand-tan: 25 27% 73%;
+    --brand-blue: 195 23% 73%;
+    --brand-brown: 23 14% 44%;
+    --brand-green: 69 19% 47%;
+    --brand-gray-00: 240 5% 96%;
+    --brand-gray-01: 0 0% 87%;
+    --brand-gray-02: 0 0% 75%;
+    --brand-gray-03: 0 0% 58%;
+    --brand-gray-04: 0 0% 46%;
+    --brand-gray-06: 0 0% 16%;
 
     --success: 196 52% 74%;
     --warning: 34 89% 85%;

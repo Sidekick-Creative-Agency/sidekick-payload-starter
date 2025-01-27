@@ -15,7 +15,7 @@ export const getMeUser = async (args?: {
   const token = cookieStore.get('payload-token')?.value
 
   const meUserReq = await fetch(
-    `${process.env.VERCEL ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/api/users/me`,
+    `${process.env.VERCEL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/api/users/me`,
     {
       headers: {
         Authorization: `JWT ${token}`,

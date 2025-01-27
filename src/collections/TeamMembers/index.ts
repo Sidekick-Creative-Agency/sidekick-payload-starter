@@ -38,7 +38,19 @@ export const TeamMembers: CollectionConfig = {
     },
     {
       name: 'bio',
-      type: 'textarea',
+      type: 'richText',
+      editor: lexicalEditor({
+        features: ({ rootFeatures }) => {
+          return [
+            ...rootFeatures,
+            FixedToolbarFeature(),
+            InlineToolbarFeature(),
+            OrderedListFeature(),
+            UnorderedListFeature(),
+            LinkFeature(),
+          ]
+        },
+      }),
       required: true,
     },
     {

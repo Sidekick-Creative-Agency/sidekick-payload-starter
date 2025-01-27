@@ -60,7 +60,7 @@ export const AdminBar: React.FC<{
           }}
           cmsURL={
             process.env.VERCEL
-              ? process.env.VERCEL_PROJECT_PRODUCTION_URL!
+              ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`!
               : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
           }
           collection={collection}

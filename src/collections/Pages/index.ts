@@ -28,6 +28,7 @@ import { TimelineBlock } from '@/blocks/TimelineBlock/config'
 import { ReviewsBlock } from '@/blocks/ReviewsBlock/config'
 import { JobListingsBlock } from '@/blocks/JobListingsBlock/config'
 import { SocialProofCarouselBlock } from '@/blocks/SocialProofCarouselBlock/config'
+import { MediaCarouselBlock } from '@/blocks/MediaCarouselBlock/config'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
@@ -45,7 +46,7 @@ export const Pages: CollectionConfig = {
           collection: 'pages',
         })
 
-        return `${process.env.VERCEL ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
+        return `${process.env.VERCEL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
       },
     },
     preview: (data) => {
@@ -54,7 +55,7 @@ export const Pages: CollectionConfig = {
         collection: 'pages',
       })
 
-      return `${process.env.VERCEL ? process.env.VERCEL_PROJECT_PRODUCTION_URL! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
+      return `${process.env.VERCEL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
     },
     useAsTitle: 'title',
   },
@@ -90,6 +91,7 @@ export const Pages: CollectionConfig = {
                 ReviewsBlock,
                 JobListingsBlock,
                 SocialProofCarouselBlock,
+                MediaCarouselBlock,
               ],
               required: true,
             },

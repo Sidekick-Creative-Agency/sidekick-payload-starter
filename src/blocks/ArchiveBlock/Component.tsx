@@ -1,4 +1,4 @@
-import type { Post, ArchiveBlock as ArchiveBlockProps } from '@/payload-types'
+import type { Post, ArchiveBlock as ArchiveBlockProps, TeamMember, Listing } from '@/payload-types'
 
 import configPromise from '@payload-config'
 import { Collection, DataFromCollectionSlug, getPayload } from 'payload'
@@ -8,6 +8,8 @@ import RichText from '@/components/RichText'
 import { CollectionArchiveGrid } from '@/components/CollectionArchive/GridArchive'
 import { CollectionArchiveCarousel } from '@/components/CollectionArchive/CarouselArchive'
 import { PropertyTypes } from '../../collections/PropertyTypes/index'
+import { TeamMemberArchiveGrid } from '@/components/Archive/TeamMemberArchive'
+import { ListingArchiveGrid } from '@/components/Archive/ListingArchive'
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
@@ -20,6 +22,7 @@ export const ArchiveBlock: React.FC<
     propertyTypes,
     limit: limitFromProps,
     layout,
+    headingAlign = 'left',
     navigationType,
     relationTo,
     heading,
@@ -27,6 +30,24 @@ export const ArchiveBlock: React.FC<
   } = props
 
   const limit = limitFromProps || 3
+
+  const alignClasses = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
+  }
+
+  const flexJustifyClasses = {
+    left: 'md:justify-between',
+    center: 'md:justify-center',
+    right: 'md:justify-between',
+  }
+
+  const flexDirectionClasses = {
+    left: 'md:flex-row',
+    center: 'md:flex-col',
+    right: 'md:flex-row-reverse',
+  }
 
   let archive: DataFromCollectionSlug<'posts' | 'team-members' | 'listings'>[] = []
 
@@ -69,16 +90,35 @@ export const ArchiveBlock: React.FC<
 
   archive = fetchedDocs.docs
 
+  const renderArchive = () => {
+    switch (relationTo) {
+      case 'team-members':
+        return <TeamMemberArchiveGrid data={archive as TeamMember[]} />
+      case 'listings':
+        return <ListingArchiveGrid data={archive as Listing[]} />
+      default:
+        return null
+    }
+  }
+
   return (
     <div className={`archive-block-${id}`}>
       <div className="container py-20 md:py-32 flex flex-col gap-16 md:gap-20">
-        <div className="flex flex-col gap-4 md:flex-row md:gap-10 md:justify-between md:items-center">
-          <h2 className="text-[2.5rem] font-bold text-brand-gray-06 flex-1">{heading}</h2>
-          <p className="max-w-[30rem] text-brand-gray-04 font-light flex-1">{subtitle}</p>
+        <div
+          className={`flex flex-col gap-4 md:gap-4 md:items-center ${headingAlign && flexJustifyClasses[headingAlign]} ${headingAlign && flexDirectionClasses[headingAlign]}`}
+        >
+          <h2
+            className={`text-[2.5rem] font-bold text-brand-gray-06 flex-1 ${headingAlign && alignClasses[headingAlign]}`}
+          >
+            {heading}
+          </h2>
+          <p
+            className={`max-w-[30rem] text-brand-gray-04 font-light flex-1 ${headingAlign && headingAlign !== 'right' && alignClasses[headingAlign]}`}
+          >
+            {subtitle}
+          </p>
         </div>
-        {layout !== 'carousel' && (
-          <CollectionArchiveGrid archive={archive} relationTo={relationTo} />
-        )}
+        {layout !== 'carousel' && renderArchive()}
         {/* {layout && layout === 'carousel' && (
           // <CollectionArchiveCarousel posts={posts} navigationType={navigationType || 'none'} />
         )} */}

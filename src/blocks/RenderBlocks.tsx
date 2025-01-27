@@ -16,6 +16,7 @@ import { TimelineBlock } from './TimelineBlock/Component'
 import { ReviewsBlock } from './ReviewsBlock/Component'
 import { JobListingsBlock } from './JobListingsBlock/Component'
 import { SocialProofCarouselBlock } from './SocialProofCarouselBlock/Component'
+import { MediaCarouselBlock } from './MediaCarouselBlock/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -31,6 +32,7 @@ const blockComponents = {
   reviewsBlock: ReviewsBlock,
   jobListingsBlock: JobListingsBlock,
   socialProofCarouselBlock: SocialProofCarouselBlock,
+  mediaCarouselBlock: MediaCarouselBlock,
 }
 
 export const RenderBlocks: React.FC<{

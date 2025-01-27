@@ -142,6 +142,7 @@ export interface Page {
     | ReviewsBlock
     | JobListingsBlock
     | SocialProofCarouselBlock
+    | MediaCarouselBlock
   )[];
   meta?: {
     title?: string | null;
@@ -154,6 +155,15 @@ export interface Page {
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  parent?: (number | null) | Page;
+  breadcrumbs?:
+    | {
+        doc?: (number | null) | Page;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -349,6 +359,7 @@ export interface MediaBlock {
 export interface ArchiveBlock {
   heading?: string | null;
   subtitle?: string | null;
+  headingAlign?: ('center' | 'left' | 'right') | null;
   relationTo?: ('posts' | 'team-members' | 'listings') | null;
   categories?: (number | Category)[] | null;
   propertyTypes?: (number | PropertyType)[] | null;
@@ -486,7 +497,21 @@ export interface TeamMember {
   id: number;
   title: string;
   jobTitle: string;
-  bio: string;
+  bio: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
   featuredImage: number | Media;
   designations?: string | null;
   email?: string | null;
@@ -1011,6 +1036,22 @@ export interface SocialProofCarouselBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaCarouselBlock".
+ */
+export interface MediaCarouselBlock {
+  enableAutoPlay?: boolean | null;
+  carouselItems?:
+    | {
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaCarouselBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
 export interface Post {
@@ -1322,6 +1363,7 @@ export interface PagesSelect<T extends boolean = true> {
         reviewsBlock?: T | ReviewsBlockSelect<T>;
         jobListingsBlock?: T | JobListingsBlockSelect<T>;
         socialProofCarouselBlock?: T | SocialProofCarouselBlockSelect<T>;
+        mediaCarouselBlock?: T | MediaCarouselBlockSelect<T>;
       };
   meta?:
     | T
@@ -1333,6 +1375,15 @@ export interface PagesSelect<T extends boolean = true> {
   publishedAt?: T;
   slug?: T;
   slugLock?: T;
+  parent?: T;
+  breadcrumbs?:
+    | T
+    | {
+        doc?: T;
+        url?: T;
+        label?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1404,6 +1455,7 @@ export interface MediaBlockSelect<T extends boolean = true> {
 export interface ArchiveBlockSelect<T extends boolean = true> {
   heading?: T;
   subtitle?: T;
+  headingAlign?: T;
   relationTo?: T;
   categories?: T;
   propertyTypes?: T;
@@ -1626,6 +1678,21 @@ export interface SocialProofCarouselBlockSelect<T extends boolean = true> {
     | T
     | {
         logo?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaCarouselBlock_select".
+ */
+export interface MediaCarouselBlockSelect<T extends boolean = true> {
+  enableAutoPlay?: T;
+  carouselItems?:
+    | T
+    | {
+        image?: T;
         id?: T;
       };
   id?: T;

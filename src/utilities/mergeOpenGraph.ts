@@ -6,7 +6,7 @@ const defaultOpenGraph: Metadata['openGraph'] = {
   images: [
     {
       url: process.env.VERCEL
-        ? `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/website-template-OG.webp`
+        ? `${`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`}/website-template-OG.webp`
         : `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/website-template-OG.webp`,
     },
   ],

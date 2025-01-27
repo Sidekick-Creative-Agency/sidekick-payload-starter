@@ -13,10 +13,29 @@ export const Archive: Block = {
       type: 'textarea',
     },
     {
+      type: 'select',
+      name: 'headingAlign',
+      defaultValue: 'left',
+      options: [
+        {
+          label: 'Center',
+          value: 'center',
+        },
+        {
+          label: 'Left',
+          value: 'left',
+        },
+        {
+          label: 'Right',
+          value: 'right',
+        },
+      ],
+    },
+    {
       name: 'relationTo',
       type: 'select',
       defaultValue: 'posts',
-      label: 'Collections To Show',
+      label: 'Collection',
       options: [
         {
           label: 'Posts',
