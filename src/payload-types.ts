@@ -143,6 +143,7 @@ export interface Page {
     | JobListingsBlock
     | SocialProofCarouselBlock
     | MediaCarouselBlock
+    | CardGridBlock
   )[];
   meta?: {
     title?: string | null;
@@ -365,6 +366,7 @@ export interface ArchiveBlock {
   propertyTypes?: (number | PropertyType)[] | null;
   limit?: number | null;
   enablePropertyCategoryFilters?: boolean | null;
+  defaultCategoryFilter?: ('commercial' | 'residential') | null;
   layout?: ('grid' | 'carousel') | null;
   navigationType?: ('arrows' | 'dots' | 'both' | 'none') | null;
   id?: string | null;
@@ -1063,6 +1065,45 @@ export interface MediaCarouselBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardGridBlock".
+ */
+export interface CardGridBlock {
+  heading?: string | null;
+  subtitle?: string | null;
+  headingAlign?: ('center' | 'left' | 'right') | null;
+  cards?:
+    | {
+        icon?: (number | null) | Media;
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  styles?: {
+    global?: {
+      backgroundColor?: string | null;
+    };
+    resp?: {};
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cardGridBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
 export interface Post {
@@ -1205,13 +1246,6 @@ export interface Search {
     description?: string | null;
     image?: (number | null) | Media;
   };
-  categories?:
-    | {
-        relationTo?: string | null;
-        id?: string | null;
-        title?: string | null;
-      }[]
-    | null;
   propertyTypes?:
     | {
         relationTo?: string | null;
@@ -1375,6 +1409,7 @@ export interface PagesSelect<T extends boolean = true> {
         jobListingsBlock?: T | JobListingsBlockSelect<T>;
         socialProofCarouselBlock?: T | SocialProofCarouselBlockSelect<T>;
         mediaCarouselBlock?: T | MediaCarouselBlockSelect<T>;
+        cardGridBlock?: T | CardGridBlockSelect<T>;
       };
   meta?:
     | T
@@ -1472,6 +1507,7 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   propertyTypes?: T;
   limit?: T;
   enablePropertyCategoryFilters?: T;
+  defaultCategoryFilter?: T;
   layout?: T;
   navigationType?: T;
   id?: T;
@@ -1706,6 +1742,34 @@ export interface MediaCarouselBlockSelect<T extends boolean = true> {
     | {
         image?: T;
         id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardGridBlock_select".
+ */
+export interface CardGridBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subtitle?: T;
+  headingAlign?: T;
+  cards?:
+    | T
+    | {
+        icon?: T;
+        content?: T;
+        id?: T;
+      };
+  styles?:
+    | T
+    | {
+        global?:
+          | T
+          | {
+              backgroundColor?: T;
+            };
+        resp?: T | {};
       };
   id?: T;
   blockName?: T;
@@ -2175,13 +2239,6 @@ export interface SearchSelect<T extends boolean = true> {
         title?: T;
         description?: T;
         image?: T;
-      };
-  categories?:
-    | T
-    | {
-        relationTo?: T;
-        id?: T;
-        title?: T;
       };
   propertyTypes?:
     | T

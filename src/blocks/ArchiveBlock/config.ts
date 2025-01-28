@@ -87,6 +87,25 @@ export const Archive: Block = {
       },
     },
     {
+      name: 'defaultCategoryFilter',
+      type: 'select',
+      defaultValue: 'commercial',
+      options: [
+        {
+          value: 'commercial',
+          label: 'Commercial',
+        },
+        {
+          value: 'residential',
+          label: 'Residential',
+        },
+      ],
+      admin: {
+        condition: (_, siblingData) =>
+          siblingData.relationTo === 'listings' && siblingData.enablePropertyCategoryFilters,
+      },
+    },
+    {
       name: 'layout',
       type: 'select',
       defaultValue: 'grid',

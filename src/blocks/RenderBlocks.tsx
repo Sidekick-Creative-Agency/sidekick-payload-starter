@@ -17,6 +17,7 @@ import { ReviewsBlock } from './ReviewsBlock/Component'
 import { JobListingsBlock } from './JobListingsBlock/Component'
 import { SocialProofCarouselBlock } from './SocialProofCarouselBlock/Component'
 import { MediaCarouselBlock } from './MediaCarouselBlock/Component'
+import { CardGridBlock } from './CardGridBlock/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -33,6 +34,7 @@ const blockComponents = {
   jobListingsBlock: JobListingsBlock,
   socialProofCarouselBlock: SocialProofCarouselBlock,
   mediaCarouselBlock: MediaCarouselBlock,
+  cardGridBlock: CardGridBlock,
 }
 
 export const RenderBlocks: React.FC<{

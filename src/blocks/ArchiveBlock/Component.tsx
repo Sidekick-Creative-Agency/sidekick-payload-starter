@@ -10,6 +10,8 @@ import { CollectionArchiveCarousel } from '@/components/CollectionArchive/Carous
 import { PropertyTypes } from '../../collections/PropertyTypes/index'
 import { TeamMemberArchiveGrid } from '@/components/Archive/TeamMemberArchive'
 import { ListingArchiveGrid } from '@/components/Archive/ListingArchive'
+import { Button } from '@/components/ui/button'
+import { PostArchiveGrid } from '@/components/Archive/PostArchive'
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
@@ -27,6 +29,8 @@ export const ArchiveBlock: React.FC<
     relationTo,
     heading,
     subtitle,
+    enablePropertyCategoryFilters,
+    defaultCategoryFilter,
   } = props
 
   const limit = limitFromProps || 3
@@ -66,26 +70,29 @@ export const ArchiveBlock: React.FC<
           if (typeof category === 'object') return category.id
           else return category
         })
-      : taxonomySlug === 'property-types'
-        ? propertyTypes?.map((propertyType) => {
-            if (typeof propertyType === 'object') return propertyType.id
-            else return propertyType
-          })
-        : undefined
+      : undefined
 
   const fetchedDocs = await payload.find({
     collection: relationTo || 'posts',
     depth: 1,
     limit: limit || 10,
-    ...(flattenedTaxonomies && flattenedTaxonomies.length > 0
-      ? {
-          where: {
-            propertyType: {
-              in: flattenedTaxonomies,
-            },
+    ...(flattenedTaxonomies &&
+      flattenedTaxonomies.length > 0 &&
+      relationTo === 'posts' && {
+        where: {
+          category: {
+            in: flattenedTaxonomies,
           },
-        }
-      : {}),
+        },
+      }),
+    ...(relationTo === 'listings' &&
+      enablePropertyCategoryFilters && {
+        where: {
+          category: {
+            equals: defaultCategoryFilter,
+          },
+        },
+      }),
   })
 
   archive = fetchedDocs.docs
@@ -95,14 +102,22 @@ export const ArchiveBlock: React.FC<
       case 'team-members':
         return <TeamMemberArchiveGrid data={archive as TeamMember[]} />
       case 'listings':
-        return <ListingArchiveGrid data={archive as Listing[]} />
+        return (
+          <ListingArchiveGrid
+            data={archive as Listing[]}
+            enableCategoryFilters={enablePropertyCategoryFilters}
+            defaultCategoryFilter={defaultCategoryFilter}
+          />
+        )
+      case 'posts':
+        return <PostArchiveGrid data={archive as Post[]} />
       default:
         return null
     }
   }
 
   return (
-    <div className={`archive-block-${id}`}>
+    <div className={`archive-block-${id} overflow-hidden`}>
       <div className="container py-20 md:py-32 flex flex-col gap-16 md:gap-20">
         <div
           className={`flex flex-col gap-4 md:gap-4 md:items-center ${headingAlign && flexJustifyClasses[headingAlign]} ${headingAlign && flexDirectionClasses[headingAlign]}`}
@@ -112,11 +127,13 @@ export const ArchiveBlock: React.FC<
           >
             {heading}
           </h2>
-          <p
-            className={`max-w-[30rem] text-brand-gray-04 font-light flex-1 ${headingAlign && headingAlign !== 'right' && alignClasses[headingAlign]}`}
-          >
-            {subtitle}
-          </p>
+          {!enablePropertyCategoryFilters && (
+            <p
+              className={`max-w-[30rem] text-brand-gray-04 font-light flex-1 ${headingAlign && headingAlign !== 'right' && alignClasses[headingAlign]}`}
+            >
+              {subtitle}
+            </p>
+          )}
         </div>
         {layout !== 'carousel' && renderArchive()}
         {/* {layout && layout === 'carousel' && (

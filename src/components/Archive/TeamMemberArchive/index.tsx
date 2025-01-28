@@ -5,11 +5,11 @@ import { Card } from '@/components/Card'
 import { DataFromCollectionSlug } from 'payload'
 import { TeamMemberCard } from '@/components/TeamMembers/TeamMemberCard'
 
-export type Props = {
+interface TeamMemberArchiveGridProps {
   data: DataFromCollectionSlug<'team-members'>[]
 }
 
-export const TeamMemberArchiveGrid: React.FC<Props> = (props) => {
+export const TeamMemberArchiveGrid: React.FC<TeamMemberArchiveGridProps> = (props) => {
   const { data } = props
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 md:gap-x-10 md:gap-y-20">

@@ -46,7 +46,7 @@ export default async function Post({ params: paramsPromise }: Args) {
   if (!post) redirect('/posts')
 
   return (
-    <article className="pt-16 pb-16">
+    <article>
       <PageClient />
 
       {/* Allows redirects for valid pages too */}

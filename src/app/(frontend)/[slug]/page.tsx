@@ -14,6 +14,7 @@ import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { getPayload } from 'payload'
 import { notFound, redirect } from 'next/navigation'
+import { queryPageBySlug } from '@/utilities/queryPageBySlug'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -77,23 +78,3 @@ export async function generateMetadata({ params: paramsPromise }): Promise<Metad
 
   return generateMeta({ doc: page })
 }
-
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = await draftMode()
-
-  const payload = await getPayload({ config: configPromise })
-
-  const result = await payload.find({
-    collection: 'pages',
-    draft,
-    limit: 1,
-    overrideAccess: draft,
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
-  })
-
-  return result.docs?.[0] || null
-})

@@ -1,17 +1,17 @@
 import { formatDateTime } from 'src/utilities/formatDateTime'
 import React from 'react'
 
-import type { Post } from '@/payload-types'
+import type { Media as MediaType, Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 
 export const PostHero: React.FC<{
   post: Post
 }> = ({ post }) => {
-  const { category, meta: { image: metaImage } = {}, populatedAuthors, publishedAt, title } = post
+  const { category, featuredImage = {}, populatedAuthors, publishedAt, title } = post
 
   return (
-    <div className="relative -mt-[10.4rem] flex items-end">
+    <div className="relative -mt-[114px] flex items-end">
       <div className="container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] text-white pb-8">
         <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
           <div className="uppercase text-sm mb-6">
@@ -64,8 +64,8 @@ export const PostHero: React.FC<{
         </div>
       </div>
       <div className="min-h-[80vh] select-none">
-        {metaImage && typeof metaImage !== 'string' && (
-          <Media fill imgClassName="-z-10 object-cover" resource={metaImage} />
+        {featuredImage && typeof featuredImage !== 'string' && (
+          <Media fill imgClassName="-z-10 object-cover" resource={featuredImage as MediaType} />
         )}
         <div className="absolute pointer-events-none left-0 bottom-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent" />
       </div>

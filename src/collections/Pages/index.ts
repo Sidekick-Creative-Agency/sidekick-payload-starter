@@ -29,6 +29,7 @@ import { ReviewsBlock } from '@/blocks/ReviewsBlock/config'
 import { JobListingsBlock } from '@/blocks/JobListingsBlock/config'
 import { SocialProofCarouselBlock } from '@/blocks/SocialProofCarouselBlock/config'
 import { MediaCarouselBlock } from '@/blocks/MediaCarouselBlock/config'
+import { CardGridBlock } from '@/blocks/CardGridBlock/config'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
@@ -92,6 +93,7 @@ export const Pages: CollectionConfig = {
                 JobListingsBlock,
                 SocialProofCarouselBlock,
                 MediaCarouselBlock,
+                CardGridBlock,
               ],
               required: true,
             },

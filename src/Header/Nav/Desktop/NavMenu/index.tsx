@@ -57,9 +57,9 @@ export const NavMenu: React.FC<{ navItems: Header['navItems']; isScrolled: boole
                     <NavigationMenuLink
                       key={childLink.id}
                       className={`text-black px-4 py-2 w-full text-base transition-none whitespace-nowrap`}
-                      href={childLink.link.url || ''}
+                      asChild
                     >
-                      {childLink.link.label}
+                      <CMSLink {...childLink.link} />
                     </NavigationMenuLink>
                   )
                 })}

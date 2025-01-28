@@ -20,11 +20,10 @@ export default function useWindowDimensions() {
     width: number | undefined
     height: number | undefined
   }>({ width: undefined, height: undefined })
-
+  function handleResize() {
+    setWindowDimensions(getWindowDimensions())
+  }
   useEffect(() => {
-    function handleResize() {
-      setWindowDimensions(getWindowDimensions())
-    }
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)

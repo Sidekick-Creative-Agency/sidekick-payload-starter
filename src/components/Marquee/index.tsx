@@ -20,8 +20,6 @@ export const Marquee: React.FC<MarqueeProps> = ({ children, speed = 20, directio
     if (contentRef.current && containerRef.current) {
       const containerWidth = containerRef.current.offsetWidth
       const singleContentWidth = contentRef.current.offsetWidth
-      console.log(containerWidth)
-      console.log(singleContentWidth)
       setContentWidth(singleContentWidth)
       if (singleContentWidth !== 0 && singleContentWidth < containerWidth) {
         const needed = Math.ceil(containerWidth / singleContentWidth) + 1

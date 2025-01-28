@@ -25,7 +25,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
   return (
     <Link
       href={`/listings/${listing.slug}`}
-      className="w-full relative p-8 flex items-end pt-40 h-full "
+      className="w-full relative p-8 flex items-end min-h-[20rem] md:min-h-[25rem] h-full "
     >
       <Media
         resource={listing.featuredImage}
