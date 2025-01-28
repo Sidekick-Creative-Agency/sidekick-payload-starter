@@ -140,6 +140,7 @@ html[data-theme='light'] {
 html,
 body {
   font-family: 'basic-sans', sans-serif;
+  scroll-behavior: smooth;
 }
 
 .mapboxgl-popup-content {

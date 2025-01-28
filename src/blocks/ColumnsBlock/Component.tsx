@@ -33,10 +33,10 @@ export const ColumnsBlock: React.FC<
   }
   const flexDirection = reverseWrap ? 'columnReverse' : 'column'
   const colsSpanClasses = {
-    full: '12',
-    half: '6',
-    oneThird: '4',
-    twoThirds: '8',
+    full: 'w-full sm:col-span-4 lg:col-span-12',
+    half: 'w-full sm:col-span-2 lg:col-span-6',
+    oneThird: 'w-full sm:col-span-2 lg:col-span-4',
+    twoThirds: 'w-full sm:col-span-2 lg:col-span-8',
   }
   const flexDirectionClasses = {
     column: 'flex-col',
@@ -59,7 +59,7 @@ export const ColumnsBlock: React.FC<
       >
         <div
           className={cn(
-            `flex ${flexDirectionClasses[flexDirection]} sm:grid sm:grid-cols-4 lg:grid-cols-12  ${width !== 'full' && !enableDivider ? 'gap-y-8' : 'gap-y-8 '}`,
+            `flex ${flexDirectionClasses[flexDirection]} sm:grid sm:grid-cols-4 lg:grid-cols-12  ${width !== 'full' && !enableDivider && 'gap-y-8'}`,
           )}
         >
           {columns &&
@@ -84,12 +84,26 @@ export const ColumnsBlock: React.FC<
 
               return (
                 <div
-                  className={cn(
-                    `relative lg:col-span-${colsSpanClasses[size || 'full']} ${type === 'text' && width === 'full' ? 'px-5 py-20 sm:px-10 sm:py-32 lg:px-20' : `${enableDivider ? (index === 0 ? 'sm:pr-20' : index === columns.length - 1 ? 'pt-10 sm:pl-20 sm:pt-0' : 'pt-10 sm:px-10 sm:pt-0') : index === 0 ? 'sm:pr-10' : index === columns.length - 1 ? 'sm:pl-10' : 'sm:px-5'}`} flex flex-col justify-center items-stretch sm:items-start ${colTwBackgroundColor} ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']} ${index !== 0 && enableDivider && `before:absolute before:content-[""] before:left-0 before:top-0 before:h-[1px] sm:before:h-full before:w-full sm:before:w-[1px] ${BRAND_BEFORE_BACKGROUND_COLOR_CLASSES[dividerColor || 'transparent']} before:opacity-50`}`,
-                    {
-                      'sm:col-span-2': size !== 'full',
-                    },
-                  )}
+                  className={`relative ${colsSpanClasses[size || 'full']} 
+                    ${
+                      type === 'text'
+                        ? width === 'full'
+                          ? 'px-5 py-20 sm:px-10 sm:py-32 lg:px-20'
+                          : enableDivider
+                            ? index === 0
+                              ? 'sm:pr-20'
+                              : index === columns.length - 1
+                                ? 'pt-10 sm:pl-20 sm:pt-0'
+                                : 'pt-10 sm:px-10 sm:pt-0'
+                            : size !== 'full'
+                              ? index === 0
+                                ? 'sm:pr-10'
+                                : index === columns.length - 1
+                                  ? 'sm:pl-10'
+                                  : 'sm:px-5'
+                              : ''
+                        : ''
+                    } flex flex-col justify-center items-stretch sm:items-start ${colTwBackgroundColor} ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']} ${index !== 0 && enableDivider && `before:absolute before:content-[""] before:left-0 before:top-0 before:h-[1px] sm:before:h-full before:w-full sm:before:w-[1px] ${BRAND_BEFORE_BACKGROUND_COLOR_CLASSES[dividerColor || 'transparent']} before:opacity-50`}`}
                   key={index}
                 >
                   {type === 'text' && (

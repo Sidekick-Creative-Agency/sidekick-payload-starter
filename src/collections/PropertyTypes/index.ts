@@ -26,7 +26,7 @@ export const PropertyTypes: CollectionConfig = {
       name: 'relatedListings',
       type: 'join',
       collection: 'listings',
-      on: 'type',
+      on: 'propertyType',
     },
   ],
 }

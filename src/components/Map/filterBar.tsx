@@ -56,8 +56,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     if (data.search) {
       newSearchParams.set('search', data.search)
     }
-    if (data.type) {
-      newSearchParams.set('type', data.type)
+    if (data.propertyType) {
+      newSearchParams.set('property_type', data.propertyType)
     }
     if (data.minPrice) {
       newSearchParams.set('min_price', data.minPrice.toString())
@@ -74,8 +74,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     if (data.availability) {
       newSearchParams.set('availability', data.availability.toString())
     }
-    if (data.listingType) {
-      newSearchParams.set('listing_type', data.listingType.toString())
+    if (data.transactionType) {
+      newSearchParams.set('transaction_type', data.transactionType.toString())
     }
     if (data.sizeType) {
       newSearchParams.set('size_type', data.sizeType.toString())
@@ -83,14 +83,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
     const filteredListings = await filterMapListings({
       search: data.search,
-      type: data.type,
+      propertyType: data.propertyType,
       minPrice: data.minPrice,
       maxPrice: data.maxPrice,
       minSize: data.minSize,
       maxSize: data.maxSize,
       sizeType: data.sizeType,
       availability: data.availability,
-      listingType: data.listingType,
+      transactionType: data.transactionType,
     })
     setActiveListings(filteredListings.docs)
     toast({
@@ -166,15 +166,15 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         />
         <FormField
           control={form.control}
-          name="listingType"
-          defaultValue={searchParams.get('listing_type') || ''}
+          name="transactionType"
+          defaultValue={searchParams.get('transaction_type') || ''}
           render={({ field }) => {
             return (
               <FormItem className="w-full">
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="h-full text-lg font-light text-brand-navy w-full rounded-none">
-                      <SelectValue placeholder="Listing Type" />
+                      <SelectValue placeholder="Transaction Type" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="bg-white text-brand-navy rounded-none">
@@ -359,8 +359,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </DropdownMenu>
         <FormField
           control={form.control}
-          name="type"
-          defaultValue={searchParams.get('type') || ''}
+          name="propertyType"
+          defaultValue={searchParams.get('property_type') || ''}
           render={({ field }) => {
             return (
               <FormItem className="w-full">
@@ -372,7 +372,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 >
                   <FormControl>
                     <SelectTrigger className="h-full text-lg font-light text-brand-navy w-full rounded-none">
-                      <SelectValue placeholder="Type">
+                      <SelectValue placeholder="Property Type">
                         {propertyTypes.find((type) => type.value.toString() === field.value)?.label}
                       </SelectValue>
                     </SelectTrigger>

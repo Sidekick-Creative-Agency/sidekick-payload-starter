@@ -80,7 +80,7 @@ export const ArchiveBlock: React.FC<
     ...(flattenedTaxonomies && flattenedTaxonomies.length > 0
       ? {
           where: {
-            type: {
+            propertyType: {
               in: flattenedTaxonomies,
             },
           },

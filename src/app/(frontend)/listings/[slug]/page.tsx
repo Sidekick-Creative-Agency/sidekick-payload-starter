@@ -89,10 +89,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
     collection: 'forms',
     id: 1,
   })
-  const listingContactForm = await payload.findByID({
-    collection: 'forms',
-    id: 2,
-  })
+
   // if (!listing) return <PayloadRedirects url={url} />
   // if (!listing) notFound()
   if (!listing) redirect('/listings')
@@ -111,13 +108,13 @@ export default async function Listing({ params: paramsPromise }: Args) {
               <div className="flex gap-4 text-base text-brand-gray-03 uppercase tracking-wider font-bold">
                 <span>{listing.availability}</span>|
                 <span>
-                  {listing.type &&
-                    typeof listing.type === 'object' &&
-                    listing.type.map((listingType, index) => {
-                      if (listing.type) {
-                        return index !== listing.type.length - 1
-                          ? `${(listingType as PropertyType).title}, `
-                          : (listingType as PropertyType).title
+                  {listing.propertyType &&
+                    typeof listing.propertyType === 'object' &&
+                    listing.propertyType.map((propertyType, index) => {
+                      if (listing.propertyType) {
+                        return index !== listing.propertyType.length - 1
+                          ? `${(propertyType as PropertyType).title}, `
+                          : (propertyType as PropertyType).title
                       }
                       return ''
                     })}
@@ -127,10 +124,10 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 <span className="text-[2.5rem] font-bold text-brand-navy">
                   {listing.streetAddress}
                 </span>
-                {listing.propertyStatus && (
+                {listing.availability && (
                   <div className="py-2 px-3 rounded-lg bg-brand-blue bg-opacity-50">
                     <span className="text-xs font-bold text-brand-navy tracking-wider uppercase">
-                      {listing.propertyStatus}
+                      {listing.availability}
                     </span>
                   </div>
                 )}
@@ -139,11 +136,14 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 {listing.city}, {listing.state} {listing.zipCode}
               </span>
             </div>
-            <div className="flex flex-col justify-between gap-4">
+            <div className="flex flex-col justify-center items-end gap-4">
               {listing.price && (
                 <span className="text-[2.5rem] font-bold text-brand-navy">
                   {formatPrice(listing.price)}
                 </span>
+              )}
+              {!listing.price && (
+                <span className="text-[2.5rem] font-bold text-brand-navy">Contact for price</span>
               )}
               <CopyButton
                 value={`${process.env.VERCEL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${url}`}
@@ -342,7 +342,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
               heading="Similar Listings in Your Area"
               blockType="archive"
               relationTo={'listings'}
-              propertyTypes={listing.type}
+              propertyTypes={listing.propertyType}
             />
           </div>
         </div>

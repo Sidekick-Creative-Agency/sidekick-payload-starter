@@ -4,22 +4,20 @@ import { Button } from '@/components/ui/button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import Link from 'next/link'
-import { Media } from '@/payload-types'
 import Image from 'next/image'
-import { formatNumber } from '@/utilities/formatNumber'
 import { faEnvelope, faPhone } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import {
   faFacebookF,
   faInstagram,
   faLinkedin,
-  faLinkedinIn,
-  faPinterestP,
   faXTwitter,
   faYoutube,
 } from '@awesome.me/kit-a7a0dd333d/icons/classic/brands'
 import RichText from '@/components/RichText'
 import { PageClient } from './page.client'
+import { TestimonialCarousel } from '@/components/TeamMembers/TestimonialCarousel'
+import { Media } from '@/payload-types'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -63,8 +61,8 @@ export default async function Page({ params: paramsPromise }: Args) {
   return (
     <>
       <PageClient />
-
       <div>
+        {/* HERO */}
         <div className="bg-brand-navy py-20 sm:py-32">
           <div className="container flex gap-32 relative">
             <Button
@@ -208,10 +206,17 @@ export default async function Page({ params: paramsPromise }: Args) {
             </div>
           </div>
         </div>
+        {/* TESTIMONIALS  */}
+        <div className="w-full">
+          <h2 className="sr-only">Testimonials</h2>
+          <TestimonialCarousel testimonials={teamMember.testimonials} />
+        </div>
+        {/* AGENT LISTINGS */}
         <div className="bg-white py-20">
           <div className="container"></div>
         </div>
-        <div className="flex">
+        {/* CONTACT FORM */}
+        <div className="flex scroll-my-28" id="contact-form">
           <div className="flex-1 relative h-full min-h-96 p-20">
             <Image
               src="/api/media/file/Image%20(1).webp"

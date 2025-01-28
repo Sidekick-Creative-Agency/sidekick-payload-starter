@@ -11,6 +11,7 @@ import {
   UnorderedListFeature,
 } from '@payloadcms/richtext-lexical'
 import { slugField } from '@/fields/Slug'
+import { revalidateTeamMember } from './hooks/revalidateTeamMember'
 
 export const TeamMembers: CollectionConfig = {
   slug: 'team-members',
@@ -125,6 +126,36 @@ export const TeamMembers: CollectionConfig = {
       }),
     },
     {
+      name: 'testimonials',
+      type: 'array',
+      fields: [
+        {
+          name: 'name',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'testimonial',
+          type: 'textarea',
+          required: true,
+        },
+        {
+          name: 'rating',
+          type: 'number',
+          min: 1,
+          max: 5,
+          defaultValue: 5,
+          required: true,
+        },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+        },
+      ],
+    },
+    {
       name: 'relatedListings',
       type: 'join',
       collection: 'listings',
@@ -132,4 +163,7 @@ export const TeamMembers: CollectionConfig = {
     },
     ...slugField(),
   ],
+  hooks: {
+    afterChange: [revalidateTeamMember],
+  },
 }

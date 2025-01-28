@@ -1,22 +1,24 @@
-import React from 'react'
+'use client'
+import React, { useEffect } from 'react'
 
 import type { Page } from '@/payload-types'
+import { useHeaderTheme } from '@/providers/HeaderTheme'
 
-import RichText from '@/components/RichText'
+export const LowImpactHero: React.FC<Page['hero'] & { title: string }> = ({
+  enableOverrideTitle,
+  overrideTitle,
+  title,
+}) => {
+  const { setHeaderTheme } = useHeaderTheme()
 
-type LowImpactHeroType =
-  | {
-      children?: React.ReactNode
-      richText?: never
-    }
-  | (Omit<Page['hero'], 'richText'> & {
-      children?: never
-    })
-
-export const LowImpactHero: React.FC<LowImpactHeroType> = ({ children }) => {
+  useEffect(() => {
+    setHeaderTheme('filled')
+  }, [setHeaderTheme])
   return (
-    <div className="container mt-16">
-      <div className="max-w-[48rem]">{children}</div>
+    <div className="container py-20">
+      <h1 className="text-center text-brand-navy text-[2.5rem] sm:text-[4rem] font-bold">
+        {enableOverrideTitle ? overrideTitle : title}
+      </h1>
     </div>
   )
 }

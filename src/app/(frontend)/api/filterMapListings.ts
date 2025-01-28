@@ -6,14 +6,14 @@ import { Listing } from '@/payload-types'
 
 interface FilterBody {
   search: string | null | undefined
-  type: string | null | undefined
+  propertyType: string | null | undefined
   minPrice: number | string | null | undefined
   maxPrice: number | string | null | undefined
   minSize: number | string | null | undefined
   maxSize: number | string | null | undefined
   sizeType: string | null | undefined
   availability: string | null | undefined
-  listingType: string | null | undefined
+  transactionType: string | null | undefined
 }
 
 export const filterMapListings = async (body?: FilterBody) => {
@@ -100,13 +100,18 @@ export const filterMapListings = async (body?: FilterBody) => {
                 ],
               },
               {
-                availability: {
-                  in: body.listingType ? [body.listingType] : ['for-sale', 'for-lease'],
+                transactionType: {
+                  in: body.transactionType ? [body.transactionType] : ['for-sale', 'for-lease'],
                 },
               },
               {
-                type: {
-                  contains: body.type ? body.type : '',
+                propertyType: {
+                  contains: body.propertyType ? body.propertyType : '',
+                },
+              },
+              {
+                availability: {
+                  in: body.availability ? [body.availability] : ['available', 'unavailable'],
                 },
               },
             ],
@@ -180,13 +185,18 @@ export const filterMapListings = async (body?: FilterBody) => {
                 ],
               },
               {
-                availability: {
-                  in: body.listingType ? [body.listingType] : ['for-sale', 'for-lease'],
+                transactionType: {
+                  in: body.transactionType ? [body.transactionType] : ['for-sale', 'for-lease'],
                 },
               },
               {
-                type: {
-                  contains: body.type ? body.type : '',
+                propertyType: {
+                  contains: body.propertyType ? body.propertyType : '',
+                },
+              },
+              {
+                availability: {
+                  in: body.availability ? [body.availability] : ['available', 'unavailable'],
                 },
               },
             ],
@@ -247,16 +257,21 @@ export const filterMapListings = async (body?: FilterBody) => {
                 ],
               },
               {
-                availability: {
-                  in: body.listingType ? body.listingType : 'for-sale,for-lease',
+                transactionType: {
+                  in: body.transactionType ? body.transactionType : 'for-sale,for-lease',
                 },
               },
               {
-                type: {
+                propertyType: {
                   in:
-                    body.type && typeof body.type === 'number'
-                      ? body.type
+                    body.propertyType && typeof body.propertyType === 'number'
+                      ? body.propertyType
                       : Array.from(Array(100).keys()).join(','),
+                },
+              },
+              {
+                availability: {
+                  in: body.availability ? [body.availability] : ['available', 'unavailable'],
                 },
               },
             ],

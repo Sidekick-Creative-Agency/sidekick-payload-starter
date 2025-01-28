@@ -11,28 +11,28 @@ export default async function Page({ searchParams }) {
   const awaitedSearchParams = await searchParams
 
   const search = awaitedSearchParams.search || ''
-  const type = awaitedSearchParams.type || ''
+  const propertyType = awaitedSearchParams.property_type || ''
   const minPrice = awaitedSearchParams.min_price || ''
   const maxPrice = awaitedSearchParams.max_price || ''
   const sizeType = awaitedSearchParams.size_type || ''
   const minSize = awaitedSearchParams.min_size || ''
   const maxSize = awaitedSearchParams.max_size || ''
   const availability = awaitedSearchParams.availability || ''
-  const listingType = awaitedSearchParams.listing_type || ''
+  const transactionType = awaitedSearchParams.transaction_type || ''
 
   const payload = await getPayload({
     config: configPromise,
   })
   const listingsDocs = await filterMapListings({
     search,
-    type,
+    propertyType,
     minPrice,
     maxPrice,
     sizeType,
     minSize,
     maxSize,
     availability,
-    listingType,
+    transactionType,
   })
   const listings = listingsDocs.docs
   return (

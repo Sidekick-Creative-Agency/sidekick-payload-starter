@@ -95,6 +95,20 @@ export const Listings: CollectionConfig = {
               ],
             },
             {
+              name: 'category',
+              type: 'select',
+              options: [
+                {
+                  value: 'commercial',
+                  label: 'Commercial',
+                },
+                {
+                  value: 'residential',
+                  label: 'Residential',
+                },
+              ],
+            },
+            {
               name: 'description',
               type: 'richText',
               editor: lexicalEditor({
@@ -119,7 +133,7 @@ export const Listings: CollectionConfig = {
                   type: 'number',
                 },
                 {
-                  name: 'type',
+                  name: 'propertyType',
                   type: 'relationship',
                   relationTo: 'property-types',
                   hasMany: true,
@@ -132,7 +146,7 @@ export const Listings: CollectionConfig = {
               type: 'row',
               fields: [
                 {
-                  name: 'availability',
+                  name: 'transactionType',
                   type: 'select',
                   options: [
                     {
@@ -146,7 +160,7 @@ export const Listings: CollectionConfig = {
                   ],
                 },
                 {
-                  name: 'propertyStatus',
+                  name: 'availability',
                   label: 'Status',
                   type: 'select',
                   options: [

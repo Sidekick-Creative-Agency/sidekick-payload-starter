@@ -26,26 +26,26 @@ interface MapPageClientProps {
 
 export interface MapFilters {
   search: string | null | undefined
-  type: string | null | undefined
+  propertyType: string | null | undefined
   minPrice: string | null | undefined
   maxPrice: string | null | undefined
   minSize: string | null | undefined
   maxSize: string | null | undefined
   sizeType: string | null | undefined
   availability: string | null | undefined
-  listingType: string | null | undefined
+  transactionType: 'for-sale' | 'for-lease' | null | undefined
 }
 
 export const FormSchema = z.object({
   search: z.string().optional(),
-  type: z.string().optional(),
+  propertyType: z.string().optional(),
   minPrice: z.string().optional(),
   maxPrice: z.string().optional(),
   minSize: z.string().optional(),
   maxSize: z.string().optional(),
   sizeType: z.string().optional(),
   availability: z.string().optional(),
-  listingType: z.string().optional(),
+  transactionType: z.string().optional(),
 })
 
 export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
@@ -229,9 +229,17 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
                       <div className="flex justify-between gap-4">
                         <div className="flex flex-col gap-2 flex-1">
                           <h3 className="sr-only">{listing.title}</h3>
-                          <span className="text-2xl text-brand-gray-06 font-bold font-basic-sans leading-none">
-                            {listing.price ? `${formatPrice(listing.price)}` : 'Contact for price'}
-                          </span>
+                          <div>
+                            <span className="text-2xl text-brand-gray-06 font-bold font-basic-sans leading-none">
+                              {listing.price
+                                ? `${formatPrice(listing.price)}`
+                                : 'Contact for price'}
+                            </span>
+                            {listing.price && listing.transactionType === 'for-lease' && (
+                              <span className="text-sm ml-2">per sqft</span>
+                            )}
+                          </div>
+
                           <span className="text-xl font-light text-brand-gray-06">
                             {listing.city}, {listing.state}
                           </span>

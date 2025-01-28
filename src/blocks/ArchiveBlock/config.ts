@@ -78,6 +78,15 @@ export const Archive: Block = {
       label: 'Limit',
     },
     {
+      name: 'enablePropertyCategoryFilters',
+      label: 'Enable Category Filters',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        condition: (_, siblingData) => siblingData.relationTo === 'listings',
+      },
+    },
+    {
       name: 'layout',
       type: 'select',
       defaultValue: 'grid',

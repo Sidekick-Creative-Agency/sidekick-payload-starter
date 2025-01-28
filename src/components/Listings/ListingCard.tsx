@@ -29,13 +29,16 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
     >
       <Media
         resource={listing.featuredImage}
-        className="absolute top-0 left-0 w-full h-full overflow-hidden bg-gradient-to-t from-black to-transparent via-transparent"
-        imgClassName="object-cover w-full h-full relative -z-10"
+        className="absolute top-0 left-0 w-full h-full overflow-hidden z-0"
+        imgClassName="object-cover w-full h-full relative"
       />
-      {listing.type && listing.type[0] && (
-        <div className="absolute top-4 -left-4 py-2 px-6 bg-brand-blue before:content-[''] before:absolute before:top-full before:left-0 before:w-0 before:h-0 before:border-[.725rem] before:border-transparent before:border-l-brand-blue before:opacity-50 before:-rotate-45 before:origin-top-left before:-z-20">
+      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black to-transparent via-transparent z-10"></div>
+      {listing.category && (
+        <div
+          className={`absolute top-4 -left-4 py-2 px-6 ${listing.category === 'commercial' ? 'bg-brand-brown before:border-l-brand-brown' : 'bg-brand-blue before:border-l-brand-blue'} before:content-[''] before:absolute before:top-full before:left-0 before:w-0 before:h-0 before:border-[.725rem] before:border-transparent  before:opacity-50 before:-rotate-45 before:origin-top-left`}
+        >
           <span className="text-white text-sm font-bold tracking-wider leading-none uppercase">
-            {(listing.type[0] as PropertyType).title}
+            {listing.category}
           </span>
         </div>
       )}
@@ -50,7 +53,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
         {listing.price && (
           <span className="text-xl font-light text-white">
             {formatPrice(listing.price)}{' '}
-            {listing.availability === 'for-lease' && <span className="text-sm">per sqft</span>}
+            {listing.transactionType === 'for-lease' && <span className="text-sm">per sqft</span>}
           </span>
         )}
         {!listing.price && <span className="text-xl font-light text-white">Contact for price</span>}

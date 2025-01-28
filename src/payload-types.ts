@@ -364,6 +364,7 @@ export interface ArchiveBlock {
   categories?: (number | Category)[] | null;
   propertyTypes?: (number | PropertyType)[] | null;
   limit?: number | null;
+  enablePropertyCategoryFilters?: boolean | null;
   layout?: ('grid' | 'carousel') | null;
   navigationType?: ('arrows' | 'dots' | 'both' | 'none') | null;
   id?: string | null;
@@ -417,6 +418,7 @@ export interface Listing {
         id?: string | null;
       }[]
     | null;
+  category?: ('commercial' | 'residential') | null;
   description?: {
     root: {
       type: string;
@@ -433,9 +435,9 @@ export interface Listing {
     [k: string]: unknown;
   } | null;
   price?: number | null;
-  type?: (number | PropertyType)[] | null;
-  availability?: ('for-sale' | 'for-lease') | null;
-  propertyStatus?: ('available' | 'unavailable') | null;
+  propertyType?: (number | PropertyType)[] | null;
+  transactionType?: ('for-sale' | 'for-lease') | null;
+  availability?: ('available' | 'unavailable') | null;
   /**
    * Square footage of the property
    */
@@ -553,6 +555,15 @@ export interface TeamMember {
     };
     [k: string]: unknown;
   } | null;
+  testimonials?:
+    | {
+        name: string;
+        testimonial: string;
+        rating: number;
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
   relatedListings?: {
     docs?: (number | Listing)[] | null;
     hasNextPage?: boolean | null;
@@ -1460,6 +1471,7 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   categories?: T;
   propertyTypes?: T;
   limit?: T;
+  enablePropertyCategoryFilters?: T;
   layout?: T;
   navigationType?: T;
   id?: T;
@@ -1860,11 +1872,12 @@ export interface ListingsSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
+  category?: T;
   description?: T;
   price?: T;
-  type?: T;
+  propertyType?: T;
+  transactionType?: T;
   availability?: T;
-  propertyStatus?: T;
   area?: T;
   acreage?: T;
   streetAddress?: T;
@@ -1956,6 +1969,15 @@ export interface TeamMembersSelect<T extends boolean = true> {
       };
   eductationAndCertifications?: T;
   notableTransactions?: T;
+  testimonials?:
+    | T
+    | {
+        name?: T;
+        testimonial?: T;
+        rating?: T;
+        image?: T;
+        id?: T;
+      };
   relatedListings?: T;
   slug?: T;
   slugLock?: T;
