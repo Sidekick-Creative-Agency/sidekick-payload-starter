@@ -1,12 +1,7 @@
 'use client'
 import type { StaticImageData } from 'next/image'
-
-import { cn } from 'src/utilities/cn'
 import React from 'react'
-import RichText from '@/components/RichText'
-
-import type { Media as MediaType, MediaBlock as MediaBlockProps, Page } from '@/payload-types'
-
+import type { Page } from '@/payload-types'
 import { Media } from '../../components/Media'
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
 import Autoplay from 'embla-carousel-autoplay'
