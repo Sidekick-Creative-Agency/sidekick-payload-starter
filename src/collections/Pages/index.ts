@@ -3,10 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock/config'
-import { CallToAction } from '../../blocks/CallToAction/config'
-import { Content } from '../../blocks/Content/config'
 import { FormBlock } from '../../blocks/Form/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { hero } from '@/heros/config'
 import { slugField } from '@/fields/Slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -30,6 +27,7 @@ import { JobListingsBlock } from '@/blocks/JobListingsBlock/config'
 import { SocialProofCarouselBlock } from '@/blocks/SocialProofCarouselBlock/config'
 import { MediaCarouselBlock } from '@/blocks/MediaCarouselBlock/config'
 import { CardGridBlock } from '@/blocks/CardGridBlock/config'
+import { FeaturedListingsBlock } from '@/blocks/FeaturedListingsBlock/config'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
@@ -79,9 +77,6 @@ export const Pages: CollectionConfig = {
               name: 'layout',
               type: 'blocks',
               blocks: [
-                CallToAction,
-                Content,
-                MediaBlock,
                 Archive,
                 FormBlock,
                 ColumnsBlock,
@@ -94,6 +89,7 @@ export const Pages: CollectionConfig = {
                 SocialProofCarouselBlock,
                 MediaCarouselBlock,
                 CardGridBlock,
+                FeaturedListingsBlock,
               ],
               required: true,
             },
@@ -134,6 +130,23 @@ export const Pages: CollectionConfig = {
       type: 'date',
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'url',
+      label: 'URL',
+      type: 'text',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+      },
+      hooks: {
+        beforeChange: [
+          ({ data }) => {
+            console.log(data?.breadcrumbs[data?.breadcrumbs?.length - 1]?.url)
+            return data?.breadcrumbs[data?.breadcrumbs?.length - 1]?.url || ''
+          },
+        ],
       },
     },
     ...slugField(),

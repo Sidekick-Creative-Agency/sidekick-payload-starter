@@ -34,12 +34,11 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
   } = props
 
   const href =
-    type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
-      ? `${reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''}/${
-          reference.value.slug
-        }`
+    type === 'reference' && typeof reference?.value === 'object'
+      ? reference?.relationTo === 'pages'
+        ? `${(reference?.value as Page)?.url}`
+        : `${reference?.relationTo}/${reference.value.slug}`
       : url
-
   if (!href) return null
 
   const size = appearance === 'link' ? 'clear' : sizeFromProps
@@ -48,7 +47,11 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
   /* Ensure we don't break any styles set by richText */
   if (appearance === 'inline') {
     return (
-      <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
+      <Link
+        className={cn(className)}
+        href={href === '/home' ? '/' : href || url || ''}
+        {...newTabProps}
+      >
         {label && label}
         {children && children}
       </Link>

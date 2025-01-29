@@ -19,6 +19,7 @@ import { filterMapListings } from '../../api/filterMapListings'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface MapPageClientProps {
   listings: Listing[]
@@ -26,6 +27,7 @@ interface MapPageClientProps {
 
 export interface MapFilters {
   search: string | null | undefined
+  category: string | null | undefined
   propertyType: string | null | undefined
   minPrice: string | null | undefined
   maxPrice: string | null | undefined
@@ -38,6 +40,7 @@ export interface MapFilters {
 
 export const FormSchema = z.object({
   search: z.string().optional(),
+  category: z.string().optional(),
   propertyType: z.string().optional(),
   minPrice: z.string().optional(),
   maxPrice: z.string().optional(),
@@ -58,6 +61,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
   const { setHeaderTheme } = useHeaderTheme()
   const router = useRouter()
   const pathname = usePathname()
+  const [isFirstRender, setIsFirstRender] = useState(true)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -110,6 +114,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
               title: listing.title,
               address: listing.streetAddress,
               price: listing.price ? formatPrice(listing.price) : '',
+              transactionType: listing.transactionType,
               image: listing.featuredImage,
               lat: listing.latitude,
               lon: listing.longitude,
@@ -142,7 +147,15 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
                   </div>
                   <div class="p-6 bg-white flex flex-col-reverse">
                     <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${feature.properties.address}</h3>
-                    <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${feature.properties.price ? `${feature.properties.price}` : 'Contact for price'}</span>
+                    <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${
+                      feature.properties.price
+                        ? `${feature.properties.price}${
+                            feature.properties.transactionType === 'for-lease'
+                              ? '<span class="text-sm ml-2 font-normal">per sqft</span>'
+                              : ''
+                          }`
+                        : 'Contact for price'
+                    }</span>
                   </div>
                 </div>
                 `,
@@ -166,6 +179,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
   useEffect(() => {
     setHeaderTheme('filled')
     setActiveListings(listings)
+    setIsFirstRender(false)
     mapRef.current = new mapboxgl.Map({
       accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '',
       container: mapContainerRef.current,
@@ -200,12 +214,37 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
       />
       <div className="w-full border-t border-gray-100 grid grid-cols-5">
         <div className="col-span-3 sticky top-20 h-fit">
-          <div id="map" ref={mapContainerRef} className=" h-[calc(100vh-5rem)]"></div>
+          {isFirstRender && <Skeleton className="h-[calc(100vh-5rem)]"></Skeleton>}
+          <div id="map" ref={mapContainerRef} className="h-[calc(100vh-5rem)]"></div>
         </div>
 
         <div
           className={`col-span-2 grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] xl:grid-cols-2 overflow-scroll  gap-x-4 gap-y-6 p-6 content-start bg-white ${isLoading && 'animate-pulse'}`}
         >
+          {isFirstRender &&
+            (!activeListings || activeListings.length === 0) &&
+            Array.from(Array(4).keys()).map((_, index) => {
+              return (
+                <Card key={index} className="rounded-none bg-white border-none shadow-md">
+                  <div className="relative pb-[66.66%] overflow-hidden w-full">
+                    <Skeleton className="absolute w-full h-full top-0 left-0" />
+                  </div>
+                  <div className="p-6 flex flex-col gap-4">
+                    <div className="flex justify-between gap-4">
+                      <div className="flex flex-col gap-2 flex-1">
+                        <div>
+                          <Skeleton className="w-full h-8" />
+                        </div>
+
+                        <Skeleton className="w-full h-6" />
+                        <Skeleton className="w-full h-6" />
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              )
+            })}
+
           {activeListings &&
             activeListings.length > 0 &&
             activeListings.map((listing) => {
@@ -279,19 +318,20 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
                 </Card>
               )
             })}
-          {!activeListings ||
-            (activeListings.length === 0 && (
-              <div className="p-5 text-center">
-                <span>No listings found</span>
-                <Button
-                  onClick={() => {
-                    resetFilters()
-                  }}
-                >
-                  Clear Filters
-                </Button>
-              </div>
-            ))}
+          {!isFirstRender &&
+            (!activeListings ||
+              (activeListings.length === 0 && (
+                <div className="p-5 text-center">
+                  <span>No listings found</span>
+                  <Button
+                    onClick={() => {
+                      resetFilters()
+                    }}
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              )))}
         </div>
       </div>
     </div>

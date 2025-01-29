@@ -1,6 +1,3 @@
-import { CallToActionBlock } from '@/blocks/CallToAction/Component'
-import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
-import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import React, { Fragment, JSX } from 'react'
 import { CMSLink } from '@/components/Link'
 import { DefaultNodeTypes, SerializedBlockNode } from '@payloadcms/richtext-lexical'
@@ -27,10 +24,6 @@ import {
 export type NodeTypes =
   | DefaultNodeTypes
   | SerializedBlockNode<
-      // @ts-ignore // TODO: Fix this
-      | Extract<Page['layout'][0], { blockType: 'cta' }>
-      | Extract<Page['layout'][0], { blockType: 'mediaBlock' }>
-      | CodeBlockProps
       | Extract<Page['layout'][0], { blockType: 'formBlock' }>
       | Extract<Page['layout'][0], { blockType: 'columnsBlock' }>
       | SubtitleBlockProps
@@ -143,22 +136,6 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             return null
           }
           switch (blockType) {
-            case 'cta':
-              return <CallToActionBlock key={index} {...block} />
-            case 'mediaBlock':
-              return (
-                <MediaBlock
-                  className="col-start-1 col-span-3"
-                  imgClassName="m-0"
-                  key={index}
-                  {...block}
-                  captionClassName="mx-auto max-w-[48rem]"
-                  enableGutter={false}
-                  disableInnerContainer={true}
-                />
-              )
-            case 'code':
-              return <CodeBlock className="col-start-2" key={index} {...block} />
             case 'formBlock':
               return typeof block.form !== 'number' ? (
                 // @ts-ignore

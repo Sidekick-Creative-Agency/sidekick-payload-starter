@@ -1,23 +1,37 @@
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
-import { notFound, redirect } from 'next/navigation'
 import { RenderHero } from '@/heros/RenderHero'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { queryPageBySlug } from '@/utilities/queryPageBySlug'
+import { queryPageByUrl } from '@/utilities/queryPageByUrl'
+import { PayloadRedirects } from '@/components/PayloadRedirects'
+import { Metadata } from 'next'
+import { Page as PageType } from '@/payload-types'
+import { generateMeta } from '@/utilities/generateMeta'
 
 export default async function Page() {
-  const page = await queryPageBySlug({ slug: 'about/team' })
-  if (page) {
-    return (
-      <div>
-        {/* Allows redirects for valid pages too */}
-        {/* <PayloadRedirects disableNotFound url={url} /> */}
-
-        <RenderHero {...page.hero} title={page.title} />
-        <RenderBlocks blocks={page.layout} />
-      </div>
-    )
-  } else {
-    redirect('/')
+  const url = '/about/team'
+  const page = await queryPageByUrl({
+    url,
+  })
+  if (!page) {
+    return <PayloadRedirects url={url} />
   }
+  const { hero, layout, title } = page
+  return (
+    <div>
+      {/* Allows redirects for valid pages too */}
+      <PayloadRedirects disableNotFound url={url} />
+
+      <RenderHero {...hero} title={title} />
+      <RenderBlocks blocks={layout} />
+    </div>
+  )
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const url = '/about/team'
+  let page: PageType | null
+  page = await queryPageByUrl({
+    url,
+  })
+
+  return generateMeta({ doc: page })
 }

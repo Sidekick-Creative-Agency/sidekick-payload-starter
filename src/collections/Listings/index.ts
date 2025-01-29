@@ -244,7 +244,11 @@ export const Listings: CollectionConfig = {
                 },
               ],
             },
-
+            {
+              name: 'isFeatured',
+              type: 'checkbox',
+              defaultValue: false,
+            },
             {
               name: 'agents',
               type: 'relationship',

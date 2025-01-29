@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import { RelatedPosts } from '@/blocks/RelatedPosts/Component'
-// import { PayloadRedirects } from '@/components/PayloadRedirects'
+import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
@@ -90,7 +90,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
     id: 1,
   })
 
-  // if (!listing) return <PayloadRedirects url={url} />
+  if (!listing) return <PayloadRedirects url={url} />
   // if (!listing) notFound()
   if (!listing) redirect('/listings')
 
@@ -99,7 +99,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
       <PageClient />
 
       {/* Allows redirects for valid pages too */}
-      {/* <PayloadRedirects disableNotFound url={url} /> */}
+      <PayloadRedirects disableNotFound url={url} />
       <div className="bg-white pt-10 pb-20">
         <div className="container flex flex-col gap-10">
           <h1 className="sr-only">{listing.title}</h1>

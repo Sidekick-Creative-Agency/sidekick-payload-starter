@@ -1,16 +1,11 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
 import React from 'react'
-
 import type { Footer } from '@/payload-types'
-
-import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFaceAngry } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import {
-  faFacebook,
   faFacebookF,
   faInstagram,
   faLinkedinIn,

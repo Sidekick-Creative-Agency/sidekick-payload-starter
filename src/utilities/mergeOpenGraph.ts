@@ -10,7 +10,7 @@ const defaultOpenGraph: Metadata['openGraph'] = {
         : `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/website-template-OG.webp`,
     },
   ],
-  siteName: 'Payload Website Template',
+  siteName: 'Onward Real Estate Team',
   title: 'Onward Real Estate Team',
 }
 

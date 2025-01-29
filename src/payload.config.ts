@@ -1,9 +1,8 @@
-// storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
 
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
-// import { redirectsPlugin } from '@payloadcms/plugin-redirects'
+import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { searchPlugin } from '@payloadcms/plugin-search'
 import {
@@ -28,7 +27,7 @@ import { Posts } from './collections/Posts'
 import Users from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
-// import { revalidateRedirects } from './hooks/revalidateRedirects'
+import { revalidateRedirects } from './hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { Listing, Page, Post, TeamMember } from 'src/payload-types'
 
@@ -164,30 +163,31 @@ export default buildConfig({
   ].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
-    // redirectsPlugin({
-    //   collections: ['pages', 'posts', 'listings'],
-    //   overrides: {
-    //     // @ts-expect-error
-    //     fields: ({ defaultFields }) => {
-    //       return defaultFields.map((field) => {
-    //         if ('name' in field && field.name === 'from') {
-    //           return {
-    //             ...field,
-    //             admin: {
-    //               description: 'You will need to rebuild the website when changing this field.',
-    //             },
-    //           }
-    //         }
-    //         return field
-    //       })
-    //     },
-    //     hooks: {
-    //       afterChange: [revalidateRedirects],
-    //     },
-    //   },
-    // }),
+    redirectsPlugin({
+      collections: ['pages', 'posts', 'listings'],
+      overrides: {
+        // @ts-expect-error
+        fields: ({ defaultFields }) => {
+          return defaultFields.map((field) => {
+            if ('name' in field && field.name === 'from') {
+              return {
+                ...field,
+                admin: {
+                  description: 'You will need to rebuild the website when changing this field.',
+                },
+              }
+            }
+            return field
+          })
+        },
+        hooks: {
+          afterChange: [revalidateRedirects],
+        },
+      },
+    }),
     nestedDocsPlugin({
       collections: ['categories', 'pages'],
+      generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
     }),
     seoPlugin({
       generateTitle,

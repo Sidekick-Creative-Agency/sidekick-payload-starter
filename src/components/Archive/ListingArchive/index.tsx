@@ -9,7 +9,7 @@ import { stringify } from 'qs-esm'
 interface ListingArchiveGridProps {
   data: DataFromCollectionSlug<'listings'>[]
   enableCategoryFilters?: boolean | undefined | null
-  defaultCategoryFilter?: 'commercial' | 'residential' | undefined | null
+  defaultCategoryFilter?: 'all' | 'commercial' | 'residential' | undefined | null
 }
 
 export const ListingArchiveGrid: React.FC<ListingArchiveGridProps> = ({

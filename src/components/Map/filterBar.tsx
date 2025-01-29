@@ -56,6 +56,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     if (data.search) {
       newSearchParams.set('search', data.search)
     }
+    if (data.category) {
+      newSearchParams.set('category', data.category)
+    }
     if (data.propertyType) {
       newSearchParams.set('property_type', data.propertyType)
     }
@@ -83,6 +86,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
     const filteredListings = await filterMapListings({
       search: data.search,
+      category: data.category,
       propertyType: data.propertyType,
       minPrice: data.minPrice,
       maxPrice: data.maxPrice,
@@ -160,6 +164,32 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                     className="h-full text-lg font-light text-brand-navy"
                   />
                 </FormControl>
+              </FormItem>
+            )
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="category"
+          defaultValue={searchParams.get('category') || ''}
+          render={({ field }) => {
+            return (
+              <FormItem className="w-full">
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="h-full text-lg font-light text-brand-navy w-full rounded-none">
+                      <SelectValue placeholder="Category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-white text-brand-navy rounded-none">
+                    <SelectItem value="commercial" className="hover:bg-brand-blue rounded-none">
+                      Commercial
+                    </SelectItem>
+                    <SelectItem value="residential" className="hover:bg-brand-blue rounded-none">
+                      Residential
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </FormItem>
             )
           }}

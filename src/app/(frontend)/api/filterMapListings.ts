@@ -6,6 +6,7 @@ import { Listing } from '@/payload-types'
 
 interface FilterBody {
   search: string | null | undefined
+  category: string | null | undefined
   propertyType: string | null | undefined
   minPrice: number | string | null | undefined
   maxPrice: number | string | null | undefined
@@ -106,12 +107,17 @@ export const filterMapListings = async (body?: FilterBody) => {
               },
               {
                 propertyType: {
-                  contains: body.propertyType ? body.propertyType : '',
+                  contains: body.propertyType ? Number(body.propertyType) : [...Array(25).keys()],
                 },
               },
               {
                 availability: {
                   in: body.availability ? [body.availability] : ['available', 'unavailable'],
+                },
+              },
+              {
+                category: {
+                  in: body.category ? [body.category] : ['commercial', 'residential'],
                 },
               },
             ],
@@ -191,12 +197,17 @@ export const filterMapListings = async (body?: FilterBody) => {
               },
               {
                 propertyType: {
-                  contains: body.propertyType ? body.propertyType : '',
+                  contains: body.propertyType ? Number(body.propertyType) : [...Array(25).keys()],
                 },
               },
               {
                 availability: {
                   in: body.availability ? [body.availability] : ['available', 'unavailable'],
+                },
+              },
+              {
+                category: {
+                  in: body.category ? [body.category] : ['commercial', 'residential'],
                 },
               },
             ],
@@ -261,17 +272,19 @@ export const filterMapListings = async (body?: FilterBody) => {
                   in: body.transactionType ? body.transactionType : 'for-sale,for-lease',
                 },
               },
-              {
-                propertyType: {
-                  in:
-                    body.propertyType && typeof body.propertyType === 'number'
-                      ? body.propertyType
-                      : Array.from(Array(100).keys()).join(','),
-                },
-              },
+              // {
+              //   propertyType: {
+              //     contains: body.propertyType ? Number(body.propertyType) : 1,
+              //   },
+              // },
               {
                 availability: {
                   in: body.availability ? [body.availability] : ['available', 'unavailable'],
+                },
+              },
+              {
+                category: {
+                  in: body.category ? [body.category] : ['commercial', 'residential'],
                 },
               },
             ],
