@@ -104,7 +104,7 @@ export interface Page {
   id: number;
   title: string;
   hero: {
-    type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
+    type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact' | 'home';
     enableOverrideTitle?: boolean | null;
     overrideTitle?: string | null;
     subtitle?: string | null;
@@ -176,7 +176,7 @@ export interface Page {
  */
 export interface Media {
   id: number;
-  alt: string;
+  alt?: string | null;
   caption?: {
     root: {
       type: string;

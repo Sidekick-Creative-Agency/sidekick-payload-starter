@@ -32,5 +32,13 @@ export const Attachments: CollectionConfig = {
     staticDir: path.resolve(dirname, '../../public/media'),
     adminThumbnail: 'thumbnail',
     mimeTypes: ['application/pdf'],
+    pasteURL: {
+      allowList: [
+        {
+          hostname: 'images.unsplash.com',
+          protocol: 'https',
+        },
+      ],
+    },
   },
 }

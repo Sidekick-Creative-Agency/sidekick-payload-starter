@@ -37,9 +37,7 @@ export const CardGridBlock: React.FC<
     center: 'md:flex-col',
     right: 'md:flex-row-reverse',
   }
-  // useEffect(() => {
-  //   console.log(width)
-  // }, [width])
+
   return (
     <div
       className={`card-grid-block-${id} ${BRAND_BACKGROUND_COLOR_CLASSES[backgroundColor || 'transparent']} overflow-hidden`}

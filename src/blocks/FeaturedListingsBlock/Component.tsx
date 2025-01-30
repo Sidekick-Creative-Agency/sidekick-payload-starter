@@ -43,7 +43,7 @@ export const FeaturedListingsBlock: React.FC<
   let archive: DataFromCollectionSlug<'listings'>[] = []
 
   const payload = await getPayload({ config: configPromise })
-  console.log(categoryFilter)
+
   const fetchedDocs = await payload.find({
     collection: 'listings',
     depth: 1,

@@ -29,7 +29,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
 
   let width: number | undefined
   let height: number | undefined
-  let alt = altFromProps
+  let alt = altFromProps || ''
   let src: StaticImageData | string = srcFromProps || ''
 
   if (!src && resource && typeof resource === 'object') {
@@ -43,7 +43,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
 
     width = fullWidth!
     height = fullHeight!
-    alt = altFromResource
+    alt = altFromResource || ''
 
     src = `${process.env.VERCEL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${url}`
   }

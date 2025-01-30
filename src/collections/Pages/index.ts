@@ -143,7 +143,6 @@ export const Pages: CollectionConfig = {
       hooks: {
         beforeChange: [
           ({ data }) => {
-            console.log(data?.breadcrumbs[data?.breadcrumbs?.length - 1]?.url)
             return data?.breadcrumbs[data?.breadcrumbs?.length - 1]?.url || ''
           },
         ],

@@ -273,9 +273,7 @@ export const Listings: CollectionConfig = {
             MetaImageField({
               relationTo: 'media',
             }),
-            MetaDescriptionField({
-              hasGenerateFn: true,
-            }),
+            MetaDescriptionField({}),
             PreviewField({
               // if the `generateUrl` function is configured
               hasGenerateFn: true,

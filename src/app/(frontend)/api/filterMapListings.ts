@@ -105,11 +105,11 @@ export const filterMapListings = async (body?: FilterBody) => {
                   in: body.transactionType ? [body.transactionType] : ['for-sale', 'for-lease'],
                 },
               },
-              {
-                propertyType: {
-                  contains: body.propertyType ? Number(body.propertyType) : [...Array(25).keys()],
-                },
-              },
+              // {
+              //   propertyType: {
+              //     contains: body.propertyType ? Number(body.propertyType) : [...Array(25).keys()],
+              //   },
+              // },
               {
                 availability: {
                   in: body.availability ? [body.availability] : ['available', 'unavailable'],
@@ -195,11 +195,11 @@ export const filterMapListings = async (body?: FilterBody) => {
                   in: body.transactionType ? [body.transactionType] : ['for-sale', 'for-lease'],
                 },
               },
-              {
-                propertyType: {
-                  contains: body.propertyType ? Number(body.propertyType) : [...Array(25).keys()],
-                },
-              },
+              // {
+              //   propertyType: {
+              //     contains: body.propertyType ? Number(body.propertyType) : [...Array(25).keys()],
+              //   },
+              // },
               {
                 availability: {
                   in: body.availability ? [body.availability] : ['available', 'unavailable'],

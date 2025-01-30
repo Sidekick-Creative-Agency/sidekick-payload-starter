@@ -13,9 +13,6 @@ interface CardGridBlockClientProps {
 export const CardGridBlockClient: React.FC<CardGridBlockClientProps> = ({ cards }) => {
   const { width } = useWindowDimensions()
 
-  // useEffect(() => {
-  //   console.log(width)
-  // }, [width])
   return (
     <>
       {width && width > 767 && (
