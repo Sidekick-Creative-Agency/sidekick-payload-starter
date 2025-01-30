@@ -5,9 +5,7 @@ const defaultOpenGraph: Metadata['openGraph'] = {
   description: 'Onward Real Estate Team',
   images: [
     {
-      url: process.env.VERCEL
-        ? `${`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`}/website-template-OG.webp`
-        : `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/website-template-OG.webp`,
+      url: `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/onward-logoprimary-color-light.webp`,
     },
   ],
   siteName: 'Onward Real Estate Team',

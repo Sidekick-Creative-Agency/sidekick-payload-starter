@@ -47,7 +47,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   const router = useRouter()
   const pathname = usePathname()
   const propertyTypesResponse = usePayloadAPI(
-    `${process.env.VERCEL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/api/property-types`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/api/property-types`,
   )
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {

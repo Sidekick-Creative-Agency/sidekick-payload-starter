@@ -17,8 +17,8 @@ export default async function Page() {
   })
 
   if (!page) {
-    // return <PayloadRedirects url={url} />
-    notFound()
+    return <PayloadRedirects url={url} />
+    // notFound()
   }
   const { hero, layout, title } = page
   return (
@@ -37,6 +37,8 @@ export async function generateMetadata(): Promise<Metadata> {
   page = await queryPageByUrl({
     url,
   })
-
-  return generateMeta({ doc: page })
+  if (page) {
+    return generateMeta({ doc: page })
+  }
+  return {}
 }

@@ -36,7 +36,7 @@ export const VideoMedia: React.FC<MediaProps> = (props) => {
         ref={videoRef}
       >
         <source
-          src={`${process.env.VERCEL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/media/${filename}`}
+          src={`${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/media/${filename}`}
         />
       </video>
     )

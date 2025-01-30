@@ -58,10 +58,8 @@ const generateTitle: GenerateTitle<Post | Page | Listing | TeamMember> = ({ doc 
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
   return doc?.slug
-    ? `${process.env.VERCEL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/${doc.slug}`
-    : process.env.VERCEL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`!
-      : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+    ? `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/${doc.slug}`
+    : `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}`
 }
 
 export default buildConfig({
@@ -156,11 +154,7 @@ export default buildConfig({
     TeamMembers,
     JobListings,
   ],
-  cors: [
-    process.env.VERCEL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`!
-      : process.env.NEXT_PUBLIC_SERVER_URL || '',
-  ].filter(Boolean),
+  cors: [process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
     redirectsPlugin({

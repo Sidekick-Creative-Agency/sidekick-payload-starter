@@ -11,7 +11,7 @@ export const generateMeta = async (args: { doc: Page | Post | Listing }): Promis
     typeof doc?.meta?.image === 'object' &&
     doc.meta.image !== null &&
     'url' in doc.meta.image &&
-    `${process.env.VERCEL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${doc.meta.image.url}`
+    `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${doc.meta.image.url}`
 
   const title = doc?.meta?.title
     ? doc?.meta?.title + ' | Onward Real Estate Team'

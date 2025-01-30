@@ -146,7 +146,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 <span className="text-[2.5rem] font-bold text-brand-navy">Contact for price</span>
               )}
               <CopyButton
-                value={`${process.env.VERCEL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`! : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${url}`}
+                value={`${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${url}`}
               />
             </div>
           </div>

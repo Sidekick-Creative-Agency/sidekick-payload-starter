@@ -33,5 +33,8 @@ export async function generateMetadata(): Promise<Metadata> {
     url,
   })
 
-  return generateMeta({ doc: page })
+  if (page) {
+    return generateMeta({ doc: page })
+  }
+  return {}
 }
