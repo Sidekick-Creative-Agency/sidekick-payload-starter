@@ -21,15 +21,17 @@ const AccordionItem = React.forwardRef<
 AccordionItem.displayName = 'AccordionItem'
 
 const AccordionTrigger = React.forwardRef<
-  React.ElementRef<typeof AccordionPrimitive.Trigger>,
-  // & {
-  //   closedIcon?: JSX.Element
-  // } & { openIcon?: JSX.Element }
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
-  // & {
-  //   closedIcon?: JSX.Element
-  // } & { openIcon?: JSX.Element }
->(({ className, children, ...props }, ref) => (
+  React.ElementRef<typeof AccordionPrimitive.Trigger> & {
+    iconClassName?: string
+  } & {
+    closedIcon?: IconDefinition
+  } & { openIcon?: IconDefinition },
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> & {
+    iconClassName?: string
+  } & {
+    closedIcon?: IconDefinition
+  } & { openIcon?: IconDefinition }
+>(({ className, children, iconClassName, closedIcon, openIcon, ...props }, ref) => (
   <AccordionPrimitive.Header className="flex">
     <AccordionPrimitive.Trigger
       ref={ref}
@@ -40,19 +42,16 @@ const AccordionTrigger = React.forwardRef<
       {...props}
     >
       {children}
-      {/* {props.closedIcon && props.openIcon && (
-        <React.Fragment>
-          {props.closedIcon}
-          {props.openIcon}
-        </React.Fragment>
-      )} */}
-      {/* {!props.closedIcon || */}
-      {/* // (!props.openIcon && ( */}
       <React.Fragment>
-        <FontAwesomeIcon icon={faPlus} className="w-6 h-6 text-brand-tan open-icon" />
-        <FontAwesomeIcon icon={faMinus} className="w-6 h-6 text-brand-tan close-icon hidden" />
+        <FontAwesomeIcon
+          icon={closedIcon || faPlus}
+          className={`${iconClassName ? iconClassName : 'w-6 h-6 text-brand-tan'} open-icon `}
+        />
+        <FontAwesomeIcon
+          icon={openIcon || faMinus}
+          className={`${iconClassName ? iconClassName : 'w-6 h-6 text-brand-tan'} close-icon hidden `}
+        />
       </React.Fragment>
-      {/* ))} */}
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ))

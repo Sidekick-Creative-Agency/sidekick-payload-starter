@@ -102,8 +102,8 @@ export const ArchiveBlock: React.FC<
   }
 
   return (
-    <div className={`archive-block-${id} overflow-hidden`}>
-      <div className="container py-20 md:py-32 flex flex-col gap-16 md:gap-20">
+    <div className={`archive-block-${id} overflow-hidden py-20 md:py-32`}>
+      <div className="container flex flex-col gap-16 md:gap-20">
         <div
           className={`flex flex-col gap-4 md:gap-4 md:items-center ${headingAlign && flexJustifyClasses[headingAlign]} ${headingAlign && flexDirectionClasses[headingAlign]}`}
         >

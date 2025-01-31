@@ -7,6 +7,15 @@ import type { Page } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
+import {
+  BRAND_TEXT_COLOR_CLASSES,
+  BRAND_BACKGROUND_COLOR_CLASSES,
+  BRAND_BACKGROUND_COLOR_HOVER_CLASSES,
+  BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES,
+  BRAND_BORDER_COLOR_CLASSES,
+  BRAND_TEXT_COLOR_HOVER_CLASSES,
+  SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS,
+} from '@/utilities/constants'
 
 export const HighImpactHero: React.FC<Page['hero'] & { title: string }> = ({
   links,
@@ -25,11 +34,16 @@ export const HighImpactHero: React.FC<Page['hero'] & { title: string }> = ({
           {Array.isArray(links) && links.length > 0 && (
             <ul className="flex justify-stretch flex-wrap gap-4 md:gap-6">
               {links.map(({ link }, i) => {
+                console.log(link)
                 return (
                   <li key={i} className="flex-1">
                     <CMSLink
                       {...link}
-                      className={`w-full border ${link.appearance === 'default' && 'bg-white text-brand-navy hover:bg-brand-navy focus-visible:bg-brand-navy hover:text-white focus-visible:text-white border-white hover:border-brand-navy focus-visible:border-brand-navy'} ${link.appearance === 'outline' && 'bg-transparent border-white text-white'}`}
+                      className={`z-10 relative w-full lg:w-auto ${BRAND_TEXT_COLOR_CLASSES[link.textColor || 'white']} ${
+                        link.appearance === 'default'
+                          ? `${BRAND_BACKGROUND_COLOR_CLASSES[link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[link.backgroundColor || 'navy']} hover:bg-opacity-90 focus-visible:bg-opacity-90 ${BRAND_BORDER_COLOR_CLASSES[link.backgroundColor || 'navy']}`
+                          : `${BRAND_BORDER_COLOR_CLASSES[link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[link.borderColor || 'navy']} ${link.borderColor && BRAND_TEXT_COLOR_HOVER_CLASSES[SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS.includes(link.borderColor) ? 'navy' : 'white']}`
+                      }`}
                     />
                   </li>
                 )

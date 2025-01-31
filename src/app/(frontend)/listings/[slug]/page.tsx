@@ -103,8 +103,8 @@ export default async function Listing({ params: paramsPromise }: Args) {
       <div className="bg-white pt-10 pb-20">
         <div className="container flex flex-col gap-10">
           <h1 className="sr-only">{listing.title}</h1>
-          <div className="flex justify-between gap-10">
-            <div className="flex flex-col gap-6">
+          <div className="flex flex-col md:flex-row justify-between gap-10">
+            <div className="flex flex-col gap-2 md:gap-6">
               <div className="flex gap-4 text-base text-brand-gray-03 uppercase tracking-wider font-bold">
                 <span>{listing.availability}</span>|
                 <span>
@@ -121,29 +121,38 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 </span>
               </div>
               <div className="flex gap-4 items-center">
-                <span className="text-[2.5rem] font-bold text-brand-navy">
+                <span className="text-[2.5rem] font-bold text-brand-navy leading-tight whitespace-pre-wrap md:whitespace-nowrap hidden md:block">
                   {listing.streetAddress}
                 </span>
+                <span className="text-[2.5rem] font-bold text-brand-navy leading-tight md:hidden">
+                  {listing.price ? formatPrice(listing.price) : 'Contact for price'}
+                </span>
                 {listing.availability && (
-                  <div className="py-2 px-3 rounded-lg bg-brand-blue bg-opacity-50">
+                  <div className="py-2 px-3 rounded-lg bg-brand-blue bg-opacity-50 hidden md:block">
                     <span className="text-xs font-bold text-brand-navy tracking-wider uppercase">
                       {listing.availability}
                     </span>
                   </div>
                 )}
               </div>
-              <span className="text-lg font-light text-brand-gray-03">
+              <span className="text-lg font-light text-brand-gray-03 hidden md:inline-block">
                 {listing.city}, {listing.state} {listing.zipCode}
               </span>
+              <span className="text-lg font-light text-brand-gray-03 inline-block md:hidden">
+                {listing.streetAddress}, {listing.city}, {listing.state} {listing.zipCode}
+              </span>
             </div>
-            <div className="flex flex-col justify-center items-end gap-4">
-              {listing.price && (
-                <span className="text-[2.5rem] font-bold text-brand-navy">
-                  {formatPrice(listing.price)}
-                </span>
-              )}
-              {!listing.price && (
-                <span className="text-[2.5rem] font-bold text-brand-navy">Contact for price</span>
+            <div className="flex flex-row md:flex-col justify-between md:justify-center items-center md:items-end gap-4">
+              <span className="text-3xl md:text-[2.5rem] font-bold text-brand-navy hidden md:inline-block text-right">
+                {listing.price ? formatPrice(listing.price) : 'Contact for price'}
+              </span>
+
+              {listing.availability && (
+                <div className="py-2 px-3 rounded-lg bg-brand-blue bg-opacity-50 block md:hidden">
+                  <span className="text-xs font-bold text-brand-navy tracking-wider uppercase">
+                    {listing.availability}
+                  </span>
+                </div>
               )}
               <CopyButton
                 value={`${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${url}`}
@@ -153,17 +162,17 @@ export default async function Listing({ params: paramsPromise }: Args) {
           <div className="grid grid-cols-4 grid-rows-2 gap-4">
             <Media
               resource={listing.featuredImage}
-              className="col-span-3 row-span-2 relative aspect-video"
+              className="col-span-4 sm:col-span-3 row-span-1 sm:row-span-2 relative aspect-video"
               imgClassName="absolute top-0 left-0 w-full h-full object-cover"
             />
             {listing.imageGallery && listing.imageGallery[0] && listing.imageGallery[1] && (
               <>
                 <Media
                   resource={listing?.imageGallery[0]?.image as MediaType | number | undefined}
-                  className="col-span-1 row-span-1 relative"
+                  className="col-span-2 sm:col-span-1 row-span-1 relative"
                   imgClassName="absolute top-0 left-0 w-full h-full object-cover"
                 />
-                <div className="col-span-1 row-span-1 relative">
+                <div className="col-span-2 sm:col-span-1 row-span-1 relative">
                   <Media
                     resource={listing.imageGallery[1].image as MediaType | number | undefined}
                     className="w-full h-full relative"
@@ -173,14 +182,14 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     <DialogTrigger asChild>
                       <Button
                         size={'icon'}
-                        className="absolute bottom-2 right-2 z-10 w-12 h-12 p-2 rounded-md bg-white bg-opacity-50 hover:bg-white hover:bg-opacity-50 focus-visible:bg-white focus-visible:bg-opacity-50 backdrop-blur-sm"
+                        className="absolute bottom-2 right-2 z-10 w-12 h-12 p-2 rounded-md border-none bg-white bg-opacity-50 hover:bg-white hover:bg-opacity-50 focus-visible:bg-white focus-visible:bg-opacity-50 backdrop-blur-sm"
                       >
                         <FontAwesomeIcon icon={faImage} className="w-full h-auto" />
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="w-auto max-w-[calc(100vw - 5rem)] p-0 rounded-none bg-transparent">
+                    <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] p-0 rounded-none bg-transparent">
                       <DialogTitle hidden>Image Gallery</DialogTitle>
-                      <Carousel className="max-w-[80rem] w-full rounded-none bg-transparent">
+                      <Carousel className=" w-full rounded-none bg-transparent">
                         <CarouselContent className="bg-transparent">
                           <CarouselItem className="basis-full pl-0 bg-transparent">
                             <Media resource={listing.featuredImage} className="w-full" />
@@ -216,20 +225,18 @@ export default async function Listing({ params: paramsPromise }: Args) {
       </div>
       <div className="bg-brand-offWhite py-20">
         <div className="container">
-          <div className="grid grid-cols-3 gap-10">
-            <div className="col-span-2 p-10 bg-white border-t-[10px] border-brand-navy flex flex-col">
-              <div className="pb-10 flex gap-10 justify-between items-end border-b border-brand-gray-01">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div className="col-span-1 md:col-span-2 p-4 py-10 sm:p-10 bg-white border-t-[10px] border-brand-navy flex flex-col">
+              <div className="pb-10 flex flex-col sm:flex-row gap-6 sm:gap-10 justify-between items-start sm:items-end border-b border-brand-gray-01">
                 <div className="flex flex-col gap-2">
-                  {listing.price && (
-                    <h2 className="text-[2.5rem] font-bold text-brand-navy">
-                      {formatPrice(listing.price)}
-                    </h2>
-                  )}
+                  <h2 className="text-[2.5rem] font-bold text-brand-navy">
+                    {listing.price ? formatPrice(listing.price) : 'Contact for price'}
+                  </h2>
                   <span className="text-base font-light text-brand-gray-03">
                     {listing.streetAddress}, {listing.city}, {listing.state} {listing.zipCode}
                   </span>
                 </div>
-                <div className="flex gap-2 justify-start">
+                <div className="flex gap-2 justify-end flex-wrap">
                   {listing.area && (
                     <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                       <FloorPlanIcon className="w-6" />
@@ -252,18 +259,9 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 <AccordionItem value="Overview">
                   <AccordionTrigger
                     className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
-                    // closedIcon={
-                    //   <FontAwesomeIcon
-                    //     icon={faChevronDown}
-                    //     className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 close-icon hidden"
-                    //   />
-                    // }
-                    // openIcon={
-                    //   <FontAwesomeIcon
-                    //     icon={faChevronUp}
-                    //     className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 open-icon"
-                    //   />
-                    // }
+                    iconClassName="border border-brand-gray-01 w-4 h-4 text-brand-navy fill-brand-navy p-1"
+                    closedIcon={faChevronDown}
+                    openIcon={faChevronUp}
                   >
                     Property Overview
                   </AccordionTrigger>
@@ -278,18 +276,9 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 <AccordionItem value="Resources">
                   <AccordionTrigger
                     className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
-                    // closedIcon={
-                    //   <FontAwesomeIcon
-                    //     icon={faChevronDown}
-                    //     className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 close-icon hidden"
-                    //   />
-                    // }
-                    // openIcon={
-                    //   <FontAwesomeIcon
-                    //     icon={faChevronUp}
-                    //     className="border border-brand-gray-01 w-4 h-4 text-brand-navy p-1 open-icon"
-                    //   />
-                    // }
+                    iconClassName="border border-brand-gray-01 w-4 h-4 text-brand-navy fill-brand-navy p-1"
+                    closedIcon={faChevronDown}
+                    openIcon={faChevronUp}
                   >
                     Resources
                   </AccordionTrigger>
@@ -323,7 +312,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 </AccordionItem>
               </Accordion>
             </div>
-            <div className="col-span-1 p-10 bg-white border-t-[10px] border-brand-navy flex flex-col h-fit sticky top-24">
+            <div className="col-span-1 p-4 py-10 sm:p-10 bg-white border-t-[10px] border-brand-navy flex flex-col h-fit sticky top-24">
               <div className="pb-10 flex gap-10 justify-between items-end">
                 <div className="flex flex-col gap-2">
                   <h2 className="text-2xl font-bold text-brand-navy">Get in Touch</h2>

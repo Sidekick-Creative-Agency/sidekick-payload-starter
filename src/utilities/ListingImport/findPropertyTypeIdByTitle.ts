@@ -13,6 +13,5 @@ export const findPropertyTypeIdByTitle = async (title: string) => {
       },
     },
   })
-  console.log(propertyType)
   return propertyType?.docs?.at(0)?.id || undefined
 }

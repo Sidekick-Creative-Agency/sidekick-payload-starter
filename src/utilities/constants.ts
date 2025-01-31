@@ -13,6 +13,8 @@ export const BRAND_COLORS = [
   // { label: 'gray-05', value: '#757575' },
   { label: 'gray-06', value: '#292929' },
   { label: 'transparent', value: 'transparent' },
+  { label: 'white', value: '#FFFFFF' },
+  { label: 'black', value: '#000000' },
 ]
 
 export const BRAND_TEXT_COLOR_CLASSES = {
@@ -30,6 +32,8 @@ export const BRAND_TEXT_COLOR_CLASSES = {
   // 'gray-05': 'text-brand-gray-05',
   'gray-06': 'text-brand-gray-06',
   transparent: 'text-transparent',
+  white: 'text-white',
+  black: 'text-black',
 }
 export const BRAND_TEXT_COLOR_HOVER_CLASSES = {
   navy: 'hover:text-brand-navy',
@@ -46,6 +50,8 @@ export const BRAND_TEXT_COLOR_HOVER_CLASSES = {
   // 'gray-05': 'hover:text-brand-gray-05',
   'gray-06': 'hover:text-brand-gray-06',
   transparent: 'hover:text-transparent',
+  white: 'hover:text-white',
+  black: 'hover:text-black',
 }
 export const BRAND_TEXT_COLOR_FOCUS_VISIBLE_CLASSES = {
   navy: 'focus-visible:text-brand-navy',
@@ -62,6 +68,8 @@ export const BRAND_TEXT_COLOR_FOCUS_VISIBLE_CLASSES = {
   // 'gray-05': 'focus-visible:text-brand-gray-05',
   'gray-06': 'focus-visible:text-brand-gray-06',
   transparent: 'focus-visible:text-transparent',
+  white: 'focus-visible:text-white',
+  black: 'focus-visible:text-black',
 }
 
 export const BRAND_BACKGROUND_COLOR_CLASSES = {
@@ -79,6 +87,8 @@ export const BRAND_BACKGROUND_COLOR_CLASSES = {
   // 'gray-05': 'bg-brand-gray-05',
   'gray-06': 'bg-brand-gray-06',
   transparent: 'bg-transparent',
+  white: 'bg-white',
+  black: 'bg-black',
 }
 
 export const BRAND_BACKGROUND_COLOR_HOVER_CLASSES = {
@@ -96,6 +106,8 @@ export const BRAND_BACKGROUND_COLOR_HOVER_CLASSES = {
   // 'gray-05': 'hover:bg-brand-gray-05',
   'gray-06': 'hover:bg-brand-gray-06',
   transparent: 'hover:bg-transparent',
+  white: 'hover:bg-white',
+  black: 'hover:bg-black',
 }
 export const BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES = {
   navy: 'focus-visible:bg-brand-navy',
@@ -112,6 +124,8 @@ export const BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES = {
   // 'gray-05': 'focus-visible:bg-brand-gray-05',
   'gray-06': 'focus-visible:bg-brand-gray-06',
   transparent: 'focus-visible:bg-transparent',
+  white: 'focus-visible:bg-white',
+  black: 'focus-visible:bg-black',
 }
 
 export const BRAND_BEFORE_BACKGROUND_COLOR_CLASSES = {
@@ -129,6 +143,8 @@ export const BRAND_BEFORE_BACKGROUND_COLOR_CLASSES = {
   // 'gray-05': 'bg-brand-gray-05',
   'gray-06': 'before:bg-brand-gray-06',
   transparent: 'before:bg-transparent',
+  white: 'before:bg-white',
+  black: 'before:bg-black',
 }
 export const BRAND_BORDER_COLOR_CLASSES = {
   navy: 'border-brand-navy',
@@ -145,6 +161,8 @@ export const BRAND_BORDER_COLOR_CLASSES = {
   // 'gray-05': 'border-brand-gray-05',
   'gray-06': 'border-brand-gray-06',
   transparent: 'border-transparent',
+  white: 'border-white',
+  black: 'border-black',
 }
 
 export const SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS = ['white', 'offWhite', 'gray-00', 'gray-01']

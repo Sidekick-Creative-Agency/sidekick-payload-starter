@@ -15,7 +15,7 @@ import { CardGridBlock } from './CardGridBlock/Component'
 import { FeaturedListingsBlock } from './FeaturedListingsBlock/Component'
 
 const blockComponents = {
-  archive: ArchiveBlock,
+  archiveBlock: ArchiveBlock,
   formBlock: FormBlock,
   faqBlock: FAQBlock,
   columnsBlock: ColumnsBlock,

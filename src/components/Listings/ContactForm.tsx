@@ -51,7 +51,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ listing }) => {
                   <Input
                     placeholder="Full Name*"
                     {...field}
-                    className="h-full text-lg font-light text-brand-gray-06 p-4 border-t-0 border-r-0 border-l-0 border-b border-brand-gray-01 focus-visible:border-brand-navy"
+                    className="h-full text-lg font-light text-brand-gray-06 p-4 border-0 border-b border-brand-gray-01 focus-visible:border-brand-navy focus-visible:ring-0"
                   />
                 </FormControl>
                 {form.formState.errors[field.name] && (
@@ -78,7 +78,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ listing }) => {
                     // type="email"
                     // required
                     {...field}
-                    className="h-full text-lg font-light text-brand-gray-06 p-4 border-t-0 border-r-0 border-l-0 border-b border-brand-gray-01 focus-visible:border-brand-navy"
+                    className="h-full text-lg font-light text-brand-gray-06 p-4 border-0 border-b border-brand-gray-01 focus-visible:border-brand-navy focus-visible:ring-0"
                   />
                 </FormControl>
                 {form.formState.errors[field.name] && (
@@ -103,7 +103,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ listing }) => {
                   <Input
                     placeholder="Phone"
                     {...field}
-                    className="h-full text-lg font-light text-brand-gray-06 p-4 border-t-0 border-r-0 border-l-0 border-b border-brand-gray-01 focus-visible:border-brand-navy"
+                    className="h-full text-lg font-light text-brand-gray-06 p-4 border-0 border-b border-brand-gray-01 focus-visible:border-brand-navy focus-visible:ring-0"
                   />
                 </FormControl>
                 {form.formState.errors[field.name] && (
@@ -128,7 +128,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ listing }) => {
                   <Textarea
                     placeholder={`I would like to know more about ${listing.streetAddress}, ${listing.city}, ${listing.state} ${listing.zipCode}`}
                     {...field}
-                    className="text-lg font-light text-brand-gray-06 p-4 border-t-0 border-r-0 border-l-0 border-b border-brand-gray-01 focus-visible:border-brand-navy h-32"
+                    className="text-lg font-light text-brand-gray-06 p-4 border-0 border-b border-brand-gray-01 focus-visible:border-brand-navy h-32 focus-visible:ring-0"
                   />
                 </FormControl>
                 {form.formState.errors[field.name] && (

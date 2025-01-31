@@ -103,7 +103,7 @@ export const ColumnsBlock: React.FC<
                           ? `px-5 py-20 sm:px-10 sm:py-32 lg:px-20 ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}`
                           : enableDivider
                             ? index === 0
-                              ? 'sm:pr-20'
+                              ? 'pb-10 sm:pb-0 sm:pr-20'
                               : index === columns.length - 1
                                 ? 'pt-10 sm:pl-20 sm:pt-0'
                                 : 'pt-10 sm:px-10 sm:pt-0'
