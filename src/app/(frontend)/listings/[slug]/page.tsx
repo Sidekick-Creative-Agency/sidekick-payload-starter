@@ -340,7 +340,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
           <div className="flex flex-col gap-10">
             <ArchiveBlock
               heading="Similar Listings in Your Area"
-              blockType="archive"
+              blockType="archiveBlock"
               relationTo={'listings'}
               propertyTypes={listing.propertyType}
             />
