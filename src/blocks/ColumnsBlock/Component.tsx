@@ -161,7 +161,7 @@ export const ColumnsBlock: React.FC<
                           })}
                         </div>
                       )}
-                      {backgroundImage && (
+                      {backgroundImage && width !== 'full' && (
                         <Media
                           resource={backgroundImage}
                           className={`absolute top-0 left-0 w-full h-full pointer-events-none z-0 `}
@@ -169,6 +169,13 @@ export const ColumnsBlock: React.FC<
                         />
                       )}
                     </div>
+                  )}
+                  {backgroundImage && width === 'full' && (
+                    <Media
+                      resource={backgroundImage}
+                      className={`absolute top-0 left-0 w-full h-full pointer-events-none z-0 `}
+                      imgClassName="w-full h-full object-cover"
+                    />
                   )}
                   {type === 'media' && media && (
                     <Media

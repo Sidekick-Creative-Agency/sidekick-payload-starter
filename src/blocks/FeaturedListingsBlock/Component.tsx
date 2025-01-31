@@ -1,18 +1,9 @@
-import type {
-  Post,
-  TeamMember,
-  Listing,
-  FeaturedListingsBlock as FeaturedListingsBlockProps,
-} from '@/payload-types'
+import type { Listing, FeaturedListingsBlock as FeaturedListingsBlockProps } from '@/payload-types'
 
 import configPromise from '@payload-config'
 import { DataFromCollectionSlug, getPayload } from 'payload'
 import React from 'react'
-import { TeamMemberArchiveGrid } from '@/components/Archive/TeamMemberArchive'
 import { ListingArchiveGrid } from '@/components/Archive/ListingArchive'
-import { PostArchiveGrid } from '@/components/Archive/PostArchive'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { CMSLink } from '@/components/Link'
 
 export const FeaturedListingsBlock: React.FC<

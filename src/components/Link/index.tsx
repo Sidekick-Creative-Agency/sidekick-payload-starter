@@ -49,7 +49,11 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     return (
       <Link
         className={cn(className)}
-        href={href === '/home' ? '/' : href || url || ''}
+        href={
+          href === '/home' || href === `${process.env.NEXT_PUBLIC_SERVER_URL}/home`
+            ? '/'
+            : href || url || ''
+        }
         {...newTabProps}
       >
         {label && label}
