@@ -107,6 +107,38 @@ const columnFields: Field[] = [
     },
   },
   {
+    name: 'subtitleAlign',
+    type: 'select',
+    defaultValue: 'left',
+    options: [
+      {
+        label: 'Left',
+        value: 'left',
+      },
+      {
+        label: 'Center',
+        value: 'center',
+      },
+      {
+        label: 'Right',
+        value: 'right',
+      },
+    ],
+    admin: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'text' && siblingData.enableSubtitle
+      },
+    },
+  },
+  ColorField({
+    name: 'subtitleColor',
+    adminOverrides: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'text' && siblingData.enableSubtitle
+      },
+    },
+  }),
+  {
     name: 'richText',
     type: 'richText',
 
@@ -158,7 +190,7 @@ const columnFields: Field[] = [
     label: false,
   },
   {
-    name: 'enableLink',
+    name: 'enableLinks',
     type: 'checkbox',
     admin: {
       condition: (_, siblingData) => {
@@ -166,19 +198,25 @@ const columnFields: Field[] = [
       },
     },
   },
-  link({
-    appearanceEnumName: 'pb_columns_block_content_columns_link_appearance',
-    overrides: {
-      admin: {
-        condition: (_, { enableLink, type }) => {
-          if (Boolean(enableLink) && type === 'text') {
-            return true
-          }
-          return false
-        },
+  {
+    name: 'links',
+    type: 'array',
+    fields: [
+      link({
+        appearanceEnumName: 'pb_columns_block_content_columns_links_link_appearance',
+      }),
+    ],
+    admin: {
+      condition: (_, { enableLinks, type }) => {
+        if (Boolean(enableLinks) && type === 'text') {
+          return true
+        }
+        return false
       },
     },
-  }),
+    maxRows: 2,
+  },
+
   {
     name: 'media',
     type: 'upload',

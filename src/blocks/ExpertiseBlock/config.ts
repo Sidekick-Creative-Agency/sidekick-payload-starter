@@ -1,4 +1,5 @@
 import { ColorField } from '@/fields/Color'
+import { link } from '@/fields/link'
 import type { Block, Field } from 'payload'
 
 const expertiseAreaFields: Field[] = [
@@ -12,13 +13,9 @@ const expertiseAreaFields: Field[] = [
     relationTo: 'media',
   },
   ColorField({
-    name: 'accentColor',
+    name: 'borderColor',
   }),
-  {
-    name: 'link',
-    type: 'relationship',
-    relationTo: 'pages',
-  },
+  link({ appearanceEnumName: 'enum_pages_bks_expterise_bk_areas_link_appearance' }),
 ]
 
 export const ExpertiseBlock: Block = {

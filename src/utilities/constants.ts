@@ -80,6 +80,40 @@ export const BRAND_BACKGROUND_COLOR_CLASSES = {
   'gray-06': 'bg-brand-gray-06',
   transparent: 'bg-transparent',
 }
+
+export const BRAND_BACKGROUND_COLOR_HOVER_CLASSES = {
+  navy: 'hover:bg-brand-navy',
+  offWhite: 'hover:bg-brand-offWhite',
+  tan: 'hover:bg-brand-tan',
+  blue: 'hover:bg-brand-blue',
+  brown: 'hover:bg-brand-brown',
+  green: 'hover:bg-brand-green',
+  'gray-00': 'hover:bg-brand-gray-00',
+  'gray-01': 'hover:bg-brand-gray-01',
+  'gray-02': 'hover:bg-brand-gray-02',
+  'gray-03': 'hover:bg-brand-gray-03',
+  'gray-04': 'hover:bg-brand-gray-04',
+  // 'gray-05': 'hover:bg-brand-gray-05',
+  'gray-06': 'hover:bg-brand-gray-06',
+  transparent: 'hover:bg-transparent',
+}
+export const BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES = {
+  navy: 'focus-visible:bg-brand-navy',
+  offWhite: 'focus-visible:bg-brand-offWhite',
+  tan: 'focus-visible:bg-brand-tan',
+  blue: 'focus-visible:bg-brand-blue',
+  brown: 'focus-visible:bg-brand-brown',
+  green: 'focus-visible:bg-brand-green',
+  'gray-00': 'focus-visible:bg-brand-gray-00',
+  'gray-01': 'focus-visible:bg-brand-gray-01',
+  'gray-02': 'focus-visible:bg-brand-gray-02',
+  'gray-03': 'focus-visible:bg-brand-gray-03',
+  'gray-04': 'focus-visible:bg-brand-gray-04',
+  // 'gray-05': 'focus-visible:bg-brand-gray-05',
+  'gray-06': 'focus-visible:bg-brand-gray-06',
+  transparent: 'focus-visible:bg-transparent',
+}
+
 export const BRAND_BEFORE_BACKGROUND_COLOR_CLASSES = {
   navy: 'before:bg-brand-navy',
   offWhite: 'before:bg-brand-offWhite',
@@ -112,3 +146,5 @@ export const BRAND_BORDER_COLOR_CLASSES = {
   'gray-06': 'border-brand-gray-06',
   transparent: 'border-transparent',
 }
+
+export const SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS = ['white', 'offWhite', 'gray-00', 'gray-01']

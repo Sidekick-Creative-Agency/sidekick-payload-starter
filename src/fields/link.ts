@@ -1,6 +1,7 @@
 import type { Field } from 'payload'
 
 import deepMerge from '@/utilities/deepMerge'
+import { ColorField } from './Color/index'
 
 export type LinkAppearances = 'default' | 'outline'
 
@@ -28,7 +29,6 @@ export const link: LinkType = ({
   disableLabel = false,
   overrides = {},
   appearanceEnumName,
-  enableNestedLinks = false,
 } = {}) => {
   const linkResult: Field = {
     name: 'link',
@@ -72,14 +72,6 @@ export const link: LinkType = ({
           },
         ],
       },
-      // {
-      //   name: 'nestedLinks',
-      //   type: 'array',
-      //   fields: [link],
-      //   admin: {
-      //     condition: () => enableNestedLinks,
-      //   },
-      // },
     ],
   }
 
@@ -160,6 +152,25 @@ export const link: LinkType = ({
           defaultValue: 'default',
           options: appearanceOptionsToUse,
         })
+    linkResult.fields.push(
+      ...[
+        ColorField({
+          name: 'backgroundColor',
+          adminOverrides: {
+            condition: (_, siblingData) => siblingData?.appearance === 'default',
+          },
+        }),
+        ColorField({
+          name: 'borderColor',
+          adminOverrides: {
+            condition: (_, siblingData) => siblingData?.appearance === 'outline',
+          },
+        }),
+        ColorField({
+          name: 'textColor',
+        }),
+      ],
+    )
   }
 
   return deepMerge(linkResult, overrides)

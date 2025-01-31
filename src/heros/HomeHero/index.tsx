@@ -96,7 +96,7 @@ export const HomeHero: React.FC<Page['hero'] & { title: string }> = ({
       </div>
       <div className="container p-0 min-[888px]:px-10 min-[888px]:pt-40 relative z-10 flex flex-wrap flex-col min-[888px]:flex-row gap-0 min-[888px]:gap-6 justify-between items-center w-full bg-white min-[888px]:bg-transparent">
         <Button
-          className="bg-transparent w-full p-10 min-[888px]:p-4 min-[888px]:w-auto flex flex-col gap-2 items-start border-b border-brand-gray-01 min-[888px]:border-white hover:bg-transparent focus-visible:bg-transparent group text-brand-navy min-[888px]:text-white "
+          className="bg-transparent w-full p-10 min-[888px]:p-4 min-[888px]:w-auto flex flex-col gap-2 items-start border-0 border-b border-brand-gray-01 min-[888px]:border-white hover:bg-transparent focus-visible:bg-transparent group text-brand-navy min-[888px]:text-white "
           asChild
         >
           <Link href="/listings/map?category=commercial">
@@ -111,7 +111,7 @@ export const HomeHero: React.FC<Page['hero'] & { title: string }> = ({
           </Link>
         </Button>
         <Button
-          className="bg-transparent w-full p-10 min-[888px]:p-4 min-[888px]:w-auto flex flex-col gap-2 items-start border-b border-brand-gray-01 min-[888px]:border-white hover:bg-transparent focus-visible:bg-transparent group text-brand-navy min-[888px]:text-white "
+          className="bg-transparent w-full p-10 min-[888px]:p-4 min-[888px]:w-auto flex flex-col gap-2 items-start border-0 border-b border-brand-gray-01 min-[888px]:border-white hover:bg-transparent focus-visible:bg-transparent group text-brand-navy min-[888px]:text-white "
           asChild
         >
           <Link href="/listings/map?category=residential">
@@ -126,7 +126,7 @@ export const HomeHero: React.FC<Page['hero'] & { title: string }> = ({
           </Link>
         </Button>
         <Button
-          className="bg-transparent w-full p-10 min-[888px]:p-4 min-[888px]:w-auto flex flex-col gap-2 items-start border-b border-brand-gray-01 min-[888px]:border-white hover:bg-transparent focus-visible:bg-transparent group text-brand-navy min-[888px]:text-white "
+          className="bg-transparent w-full p-10 min-[888px]:p-4 min-[888px]:w-auto flex flex-col gap-2 items-start border-0 border-b border-brand-gray-01 min-[888px]:border-white hover:bg-transparent focus-visible:bg-transparent group text-brand-navy min-[888px]:text-white "
           asChild
         >
           <Link href="/">

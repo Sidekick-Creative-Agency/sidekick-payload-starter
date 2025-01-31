@@ -71,17 +71,16 @@ export const ListingArchiveGrid: React.FC<ListingArchiveGridProps> = ({
       {enableCategoryFilters && (
         <div className="absolute left-0 right-auto -translate-y-1/2 md:right-0 md:left-auto top-0 md:bottom-[calc(100%+2rem)] md:top-auto md:translate-y-0 flex flex-wrap gap-2 sm:gap-6 gap-y-0">
           <Button
-            onClick={(e) => handleFilterChange('residential')}
-            className={`px-2 py-4 text-lg font-bold tracking-wider bg-transparent hover:bg-transparent focus-visible:bg-transparent border-0 border-b ${activeFilter === 'residential' ? 'border-brand-tan text-brand-navy' : 'border-brand-gray-01 text-brand-gray-03'} `}
-          >
-            Residential
-          </Button>
-
-          <Button
             onClick={(e) => handleFilterChange('commercial')}
             className={`px-2 py-4 text-lg font-bold tracking-wider bg-transparent hover:bg-transparent focus-visible:bg-transparent border-0 border-b ${activeFilter === 'commercial' ? 'border-brand-tan text-brand-navy' : 'border-brand-gray-01 text-brand-gray-03'} `}
           >
             Commercial
+          </Button>
+          <Button
+            onClick={(e) => handleFilterChange('residential')}
+            className={`px-2 py-4 text-lg font-bold tracking-wider bg-transparent hover:bg-transparent focus-visible:bg-transparent border-0 border-b ${activeFilter === 'residential' ? 'border-brand-tan text-brand-navy' : 'border-brand-gray-01 text-brand-gray-03'} `}
+          >
+            Residential
           </Button>
         </div>
       )}

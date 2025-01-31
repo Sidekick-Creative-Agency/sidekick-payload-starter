@@ -11,6 +11,11 @@ import {
   BRAND_BORDER_COLOR_CLASSES,
   BRAND_BACKGROUND_COLOR_CLASSES,
   BRAND_BEFORE_BACKGROUND_COLOR_CLASSES,
+  BRAND_TEXT_COLOR_CLASSES,
+  BRAND_BACKGROUND_COLOR_HOVER_CLASSES,
+  BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES,
+  BRAND_TEXT_COLOR_HOVER_CLASSES,
+  SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS,
 } from '@/utilities/constants'
 
 type Props = Extract<Page['layout'][0], { blockType: 'columnsBlock' }>
@@ -51,6 +56,11 @@ export const ColumnsBlock: React.FC<
     xxl: 'rounded-media2Xl',
     full: 'rounded-full',
   }
+  const subtitleAlignClasses = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
+  }
   const blockTwBackgroundColor = BRAND_BACKGROUND_COLOR_CLASSES[blockBgColor || 'transparent']
   return (
     <div className={`columns-block-${id} ${blockTwBackgroundColor} `}>
@@ -66,10 +76,12 @@ export const ColumnsBlock: React.FC<
             columns.length > 0 &&
             columns.map((col, index) => {
               const {
-                enableLink,
-                link,
+                enableLinks,
+                links,
                 enableSubtitle,
                 subtitle,
+                subtitleAlign,
+                subtitleColor,
                 richText,
                 size,
                 media,
@@ -88,7 +100,7 @@ export const ColumnsBlock: React.FC<
                     ${
                       type === 'text'
                         ? width === 'full'
-                          ? 'px-5 py-20 sm:px-10 sm:py-32 lg:px-20'
+                          ? `px-5 py-20 sm:px-10 sm:py-32 lg:px-20 ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}`
                           : enableDivider
                             ? index === 0
                               ? 'sm:pr-20'
@@ -97,19 +109,31 @@ export const ColumnsBlock: React.FC<
                                 : 'pt-10 sm:px-10 sm:pt-0'
                             : size !== 'full'
                               ? index === 0
-                                ? 'sm:pr-10'
+                                ? 'sm:pr-12 md:pr-16'
                                 : index === columns.length - 1
-                                  ? 'sm:pl-10'
+                                  ? 'sm:pl-12 md:pl-16'
                                   : 'sm:px-5'
                               : ''
-                        : ''
-                    } flex flex-col justify-center items-stretch sm:items-start ${colTwBackgroundColor} ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']} ${index !== 0 && enableDivider && `before:absolute before:content-[""] before:left-0 before:top-0 before:h-[1px] sm:before:h-full before:w-full sm:before:w-[1px] ${BRAND_BEFORE_BACKGROUND_COLOR_CLASSES[dividerColor || 'transparent']} before:opacity-50`}`}
+                        : width === 'full'
+                          ? `${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}`
+                          : size !== 'full'
+                            ? index === 0
+                              ? 'sm:pr-12 md:pr-16'
+                              : index === columns.length - 1
+                                ? 'sm:pl-12 md:pl-16'
+                                : 'sm:px-5'
+                            : ''
+                    } flex flex-col justify-center items-stretch sm:items-start ${colTwBackgroundColor} ${index !== 0 && enableDivider && `before:absolute before:content-[""] before:left-0 before:top-0 before:h-[1px] sm:before:h-full before:w-full sm:before:w-[1px] ${BRAND_BEFORE_BACKGROUND_COLOR_CLASSES[dividerColor || 'transparent']} before:opacity-50`}`}
                   key={index}
                 >
                   {type === 'text' && (
-                    <div className={`${width === 'full' && 'w-[40rem] max-w-full mx-auto'}`}>
+                    <div
+                      className={`relative ${width !== 'full' ? `${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}` : 'w-[40rem] max-w-full mx-auto'}  `}
+                    >
                       {enableSubtitle && subtitle && (
-                        <span className="uppercase tracking-widest leading-none text-base font-basic-sans text-brand-tan font-bold mb-2 z-10 relative">
+                        <span
+                          className={`inline-block w-full uppercase tracking-widest leading-none text-base font-basic-sans font-bold mb-2 z-10 relative ${subtitleAlignClasses[subtitleAlign || 'left']} ${BRAND_TEXT_COLOR_CLASSES[subtitleColor || 'tan']}`}
+                        >
                           {subtitle}
                         </span>
                       )}
@@ -120,11 +144,27 @@ export const ColumnsBlock: React.FC<
                           className="z-10 relative"
                         />
                       )}
-                      {enableLink && <CMSLink {...link} className="mt-10 z-10 relative" />}
+                      {enableLinks && links && links.length > 0 && (
+                        <div className="mt-10 flex gap-4 lg:gap-6 flex-wrap justify-stretch">
+                          {links.map((link) => {
+                            return (
+                              <CMSLink
+                                key={link.id}
+                                {...link.link}
+                                className={`z-10 relative w-full lg:w-auto ${BRAND_TEXT_COLOR_CLASSES[link.link.textColor || 'white']} ${
+                                  link.link.appearance === 'default'
+                                    ? `${BRAND_BACKGROUND_COLOR_CLASSES[link.link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[link.link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[link.link.backgroundColor || 'navy']} hover:bg-opacity-90 focus-visible:bg-opacity-90 ${BRAND_BORDER_COLOR_CLASSES[link.link.backgroundColor || 'navy']}`
+                                    : `${BRAND_BORDER_COLOR_CLASSES[link.link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[link.link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[link.link.borderColor || 'navy']} ${link.link.borderColor && BRAND_TEXT_COLOR_HOVER_CLASSES[SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS.includes(link.link.borderColor) ? 'navy' : 'white']}`
+                                }`}
+                              />
+                            )
+                          })}
+                        </div>
+                      )}
                       {backgroundImage && (
                         <Media
                           resource={backgroundImage}
-                          className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
+                          className={`absolute top-0 left-0 w-full h-full pointer-events-none z-0 `}
                           imgClassName="w-full h-full object-cover"
                         />
                       )}
@@ -133,10 +173,8 @@ export const ColumnsBlock: React.FC<
                   {type === 'media' && media && (
                     <Media
                       resource={media}
-                      className={cn(
-                        `${mediaBorderRadiusClasses[mediaBorderRadius || 'none']} overflow-hidden w-full h-full z-0`,
-                      )}
-                      imgClassName="w-full h-full object-cover"
+                      className={`relative aspect-[5/4] overflow-hidden w-full h-auto z-0 ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']} ${width !== 'full' ? `md:aspect-square ${mediaBorderRadiusClasses[mediaBorderRadius || 'none']}` : 'md:aspect-auto md:h-full'}`}
+                      imgClassName="absolute top-0 left-0 w-full h-full object-cover"
                     />
                   )}
                 </div>

@@ -15,7 +15,8 @@
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation next lint --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm package-lock.json && npm --ignore-workspace install",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
+    "update:payload": "cross-env NODE_OPTIONS=--no-deprecation"
   },
   "dependencies": {
     "@awesome.me/kit-a7a0dd333d": "^1.0.17",
@@ -99,7 +100,7 @@
     "typescript": "5.6.3"
   },
   "engines": {
-    "node": "^22.13.1"
+    "node": "^21.1.0"
   },
   "pnpm": {
     "overrides": {

@@ -10,7 +10,11 @@ import {
   BRAND_TEXT_COLOR_CLASSES,
   BRAND_TEXT_COLOR_HOVER_CLASSES,
   BRAND_TEXT_COLOR_FOCUS_VISIBLE_CLASSES,
+  BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES,
+  BRAND_BACKGROUND_COLOR_HOVER_CLASSES,
+  SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS,
 } from '@/utilities/constants'
+import { CMSLink } from '@/components/Link'
 
 type Props = Extract<Page['layout'][0], { blockType: 'expertiseBlock' }>
 
@@ -32,23 +36,26 @@ export const ExpertiseBlock: React.FC<
           <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-6">
             {expertiseAreas &&
               expertiseAreas.map((area, index) => {
-                const { title, accentColor, image, link } = area
+                const { title, borderColor, image, link } = area
                 return (
                   <div
                     key={index}
-                    className={`w-full h-[25rem] md:h-[35rem] flex flex-col justify-end gap-4 p-6 md:p-10 relative border-t-[12px] ${BRAND_BORDER_COLOR_CLASSES[accentColor || 'transparent']}`}
+                    className={`w-full h-[25rem] md:h-[35rem] flex flex-col justify-end gap-4 p-6 md:p-10 relative border-t-[12px] ${BRAND_BORDER_COLOR_CLASSES[borderColor || 'transparent']}`}
                   >
                     <div className="flex flex-col gap-4 relative z-10">
                       <h3 className="text-white uppercase tracking-[.075rem] font-bold text-2xl">
                         {title}
                       </h3>
-                      <Link href="/">
-                        <Button
-                          className={`w-full ${BRAND_BACKGROUND_COLOR_CLASSES[accentColor || 'transparent']} hover:bg-white ${BRAND_TEXT_COLOR_HOVER_CLASSES[accentColor || 'white']} focus-visible:bg-white ${BRAND_TEXT_COLOR_FOCUS_VISIBLE_CLASSES[accentColor || 'white']}`}
-                        >
-                          Learn More
-                        </Button>
-                      </Link>
+                      {area.link && (
+                        <CMSLink
+                          {...area.link}
+                          className={`${BRAND_TEXT_COLOR_CLASSES[area.link.textColor || 'white']} ${
+                            area.link.appearance === 'default'
+                              ? `${BRAND_BACKGROUND_COLOR_CLASSES[area.link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[area.link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[area.link.backgroundColor || 'navy']} hover:bg-opacity-90 focus-visible:bg-opacity-90 ${BRAND_BORDER_COLOR_CLASSES[area.link.backgroundColor || 'navy']}`
+                              : `${BRAND_BORDER_COLOR_CLASSES[area.link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[area.link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[area.link.borderColor || 'navy']} ${area.link.borderColor && BRAND_TEXT_COLOR_HOVER_CLASSES[SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS.includes(area.link.borderColor) ? 'navy' : 'white']}`
+                          }`}
+                        ></CMSLink>
+                      )}
                     </div>
                     <Media
                       resource={image as MediaType}

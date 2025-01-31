@@ -17,7 +17,17 @@ import {
 import RichText from '@/components/RichText'
 import { PageClient } from './page.client'
 import { TestimonialCarousel } from '@/components/TeamMembers/TestimonialCarousel'
-import { Media } from '@/payload-types'
+import { Listing, Media } from '@/payload-types'
+import { ListingArchiveGrid } from '@/components/Archive/ListingArchive'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel'
+import { ListingCard } from '@/components/Listings/ListingCard'
+import { ContactForm } from '@/components/TeamMembers/ContactForm'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -51,6 +61,7 @@ export default async function Page({ params: paramsPromise }: Args) {
         equals: slug,
       },
     },
+    depth: 2,
     limit: 1,
   })
   const teamMember = teamMemberArr.docs[0] || null
@@ -58,23 +69,25 @@ export default async function Page({ params: paramsPromise }: Args) {
     console.log('No Team Member found')
     return
   }
+  const relatedListings = teamMember.relatedListings?.docs
+  console.log(relatedListings)
   return (
     <>
       <PageClient />
       <div>
         {/* HERO */}
-        <div className="bg-brand-navy py-20 sm:py-32">
-          <div className="container flex gap-32 relative">
+        <div className="bg-brand-navy pt-0 py-20 sm:py-32">
+          <div className="container px-0 sm:px-10 flex flex-col sm:flex-row gap-10 sm:gap-16 md:gap-24 lg:gap-32 relative">
             <Button
               variant={'link'}
-              className="text-brand-gray-02 flex items-center gap-2 hover:no-underline focus-visible:no-underline absolute -top-16 left-10 2xl:left-20 hover:text-white focus-visible:text-white p-2"
+              className="text-brand-navy sm:text-brand-gray-02 flex items-center gap-2 hover:no-underline focus-visible:no-underline absolute top-6 left-5 sm:-top-20 sm:left-10 sm:hover:text-white sm:focus-visible:text-white p-2 z-10 focus-visible:ring-brand-navy sm:focus-visible:ring-white"
               asChild
             >
               <Link href="/about/team">
                 <FontAwesomeIcon icon={faChevronLeft} className="w-2 h-auto" /> Back To Our Team
               </Link>
             </Button>
-            <div className="p-6 bg-brand-blue flex flex-col gap-10 w-full max-w-96 sticky top-24 h-fit">
+            <div className="px-5 pb-10 pt-20 sm:p-6 sm:pt-6 bg-brand-blue flex flex-col gap-8 sm:gap-10 w-full sm:max-w-96 relative sm:sticky sm:top-24 h-fit">
               <div className="relative pb-[115%] overflow-hidden w-full">
                 <Image
                   src={(teamMember.featuredImage as Media).url || ''}
@@ -83,31 +96,34 @@ export default async function Page({ params: paramsPromise }: Args) {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="w-full flex flex-col gap-6">
-                <div>
-                  <h1 className="text-brand-navy text-[2rem] font-bold leading-tight inline">
-                    {teamMember.title}
-                  </h1>
-                  {teamMember.designations && (
-                    <span className="inline ml-2 text-brand-navy text-xs font-bold leading-none">
-                      {teamMember.designations}
-                    </span>
-                  )}
+              <div className="w-full flex flex-col gap-8 sm:gap-6">
+                <div className="flex flex-col gap-4 sm:gap-6">
+                  <div>
+                    <h1 className="text-brand-navy text-[2rem] font-bold leading-tight inline">
+                      {teamMember.title}
+                    </h1>
+                    {teamMember.designations && (
+                      <span className="inline ml-2 text-brand-navy text-xs font-bold leading-none">
+                        {teamMember.designations}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <h2 className="text-base text-brand-navy font-bold leading-tight tracking-wider uppercase">
+                      {teamMember.jobTitle}
+                    </h2>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-base text-brand-navy font-bold leading-tight tracking-wider uppercase">
-                    {teamMember.jobTitle}
-                  </h2>
-                </div>
+
                 <div className="flex gap-2 flex-wrap">
                   {teamMember.email && (
                     <Link
                       href={`mailto:${teamMember.email}`}
-                      className="py-3 px-4 rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
+                      className="p-3 rounded-xl bg-white border border-brand-gray-01 flex flex-grow gap-2 items-center justify-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
                     >
                       <FontAwesomeIcon
                         icon={faEnvelope}
-                        className="w-full max-w-8 text-brand-navy"
+                        className="w-full max-w-4 h-auto text-brand-navy"
                       />
                       <span className="text-base text-brand-gray-06 font-light">Email</span>
                     </Link>
@@ -115,9 +131,12 @@ export default async function Page({ params: paramsPromise }: Args) {
                   {teamMember.phone && (
                     <Link
                       href={`tel:${teamMember.phone.replaceAll('-', '')}`}
-                      className="py-3 px-4 rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
+                      className="p-3 rounded-xl bg-white border border-brand-gray-01 flex flex-grow gap-2 items-center justify-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
                     >
-                      <FontAwesomeIcon icon={faPhone} className="w-full max-w-8 text-brand-navy" />
+                      <FontAwesomeIcon
+                        icon={faPhone}
+                        className="w-full max-w-4 h-auto text-brand-navy"
+                      />
                       <span className="text-base text-brand-gray-06 font-light">Phone</span>
                     </Link>
                   )}
@@ -150,9 +169,12 @@ export default async function Page({ params: paramsPromise }: Args) {
                           key={social.id}
                           href={social.url || ''}
                           target="_blank"
-                          className="py-3 px-4 rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
+                          className="p-3 rounded-xl bg-white border border-brand-gray-01 flex flex-grow gap-2 items-center justify-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
                         >
-                          <FontAwesomeIcon icon={icon} className="w-full max-w-8 text-brand-navy" />
+                          <FontAwesomeIcon
+                            icon={icon}
+                            className="w-full max-w-4 h-auto text-brand-navy"
+                          />
                           <span className="text-base text-brand-gray-06 font-light">
                             {social?.platform?.at(0)?.toUpperCase()}
                             {social.platform?.slice(1)}
@@ -169,7 +191,7 @@ export default async function Page({ params: paramsPromise }: Args) {
               </div>
             </div>
 
-            <div className="w-full">
+            <div className="w-full px-5 md:px-0">
               <div
                 className={`py-16 flex flex-col gap-6 border-t border-brand-gray-04 ${!teamMember.notableTransactions && !teamMember.eductationAndCertifications && 'border-b'}`}
               >
@@ -206,18 +228,43 @@ export default async function Page({ params: paramsPromise }: Args) {
             </div>
           </div>
         </div>
+
         {/* TESTIMONIALS  */}
         <div className="w-full">
           <h2 className="sr-only">Testimonials</h2>
           <TestimonialCarousel testimonials={teamMember.testimonials} />
         </div>
+
         {/* AGENT LISTINGS */}
-        <div className="bg-white py-20">
-          <div className="container"></div>
-        </div>
+        {relatedListings && relatedListings.length > 0 && (
+          <div className="bg-white py-20">
+            <div className="container flex flex-col gap-10 overflow-hidden">
+              <div>
+                <h2 className="text-brand-gray-06 font-bold">My Listings in Your Area</h2>
+              </div>
+              <Carousel className="relative">
+                <CarouselContent showOverflow={true}>
+                  {relatedListings.map((listing: Listing, index) => (
+                    <CarouselItem
+                      key={listing.id}
+                      className="basis-full sm:basis-1/2 lg:basis-1/3 ml-2"
+                    >
+                      <ListingCard listing={listing} />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="mt-10 pb-1 sm:pb-0 sm:mt-0 sm:absolute sm:bottom-[calc(100%+2.5rem)] sm:left-auto sm:right-0 sm:top-auto flex justify-end items-center gap-6 sm:gap-10 ">
+                  <CarouselPrevious className="w-8 p-1 border-none text-brand-gray-02 static top-auto left-auto bottom-auto right-auto translate-x-0 translate-y-0 hover:bg-transparent focus-visible:bg-transparent hover:text-brand-gray-04 focus-visible:text-brand-gray-04 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-gray-04 focus-visible:outline-offset-4" />
+                  <CarouselNext className="w-8 p-1 border-none text-brand-gray-02 static top-auto left-auto bottom-auto right-auto translate-x-0 translate-y-0 hover:bg-transparent focus-visible:bg-transparent hover:text-brand-gray-04 focus-visible:text-brand-gray-04 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-gray-04 focus-visible:outline-offset-4" />
+                </div>
+              </Carousel>
+            </div>
+          </div>
+        )}
+
         {/* CONTACT FORM */}
-        <div className="flex scroll-my-28" id="contact-form">
-          <div className="flex-1 relative h-full min-h-96 p-20">
+        <div className="flex flex-col sm:flex-row scroll-my-28" id="contact-form">
+          <div className="flex-1 relative aspect-square md:aspect-auto h-auto md:min-h-96 p-20 px-10 lg:px-20">
             <Image
               src="/api/media/file/Image%20(1).webp"
               alt="Image"
@@ -225,21 +272,24 @@ export default async function Page({ params: paramsPromise }: Args) {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className=" p-20 flex-1 border-t-[10px] border-brand-blue bg-brand-offWhite relative flex flex-col gap-6">
+          <div className="px-5 py-20 md:px-10 lg:px-20 flex-1 border-t-[10px] border-brand-blue bg-brand-offWhite relative flex flex-col gap-6">
             <img
-              className="absolute top-0 left-0 object-cover z-0 pointer-events-none"
+              className="absolute w-full h-full top-0 left-0 object-cover z-0 pointer-events-none"
               alt=""
               src="/pattern-geometric-general.png"
             />
-            <div className="flex flex-col gap-4">
-              <h2 className="text-brand-gray-06 font-bold">Contact Me</h2>
-              <p className="text-brand-gray-04 font-light">
-                Call me at{' '}
-                <Link href={`tel:${teamMember.phone?.replaceAll('-', '')}`} className="underline">
-                  {teamMember.phone}
-                </Link>{' '}
-                or fill out this form to get in touch!
-              </p>
+            <div className="flex flex-col gap-10 relative z-10">
+              <div className="flex flex-col gap-4">
+                <h2 className="text-brand-gray-06 font-bold">Contact Me</h2>
+                <p className="text-brand-gray-04 font-light">
+                  Call me at{' '}
+                  <Link href={`tel:${teamMember.phone?.replaceAll('-', '')}`} className="underline">
+                    {teamMember.phone}
+                  </Link>{' '}
+                  or fill out this form to get in touch!
+                </p>
+              </div>
+              <ContactForm teamMember={teamMember} />
             </div>
           </div>
         </div>

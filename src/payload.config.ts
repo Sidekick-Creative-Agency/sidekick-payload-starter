@@ -232,7 +232,6 @@ export default buildConfig({
         },
       },
     }),
-
     s3Storage({
       collections: {
         media: {

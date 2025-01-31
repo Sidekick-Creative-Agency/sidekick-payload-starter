@@ -1,16 +1,9 @@
 import type { Post, ArchiveBlock as ArchiveBlockProps, TeamMember, Listing } from '@/payload-types'
-
 import configPromise from '@payload-config'
-import { Collection, DataFromCollectionSlug, getPayload } from 'payload'
+import { DataFromCollectionSlug, getPayload } from 'payload'
 import React from 'react'
-import RichText from '@/components/RichText'
-
-import { CollectionArchiveGrid } from '@/components/CollectionArchive/GridArchive'
-import { CollectionArchiveCarousel } from '@/components/CollectionArchive/CarouselArchive'
-import { PropertyTypes } from '../../collections/PropertyTypes/index'
 import { TeamMemberArchiveGrid } from '@/components/Archive/TeamMemberArchive'
 import { ListingArchiveGrid } from '@/components/Archive/ListingArchive'
-import { Button } from '@/components/ui/button'
 import { PostArchiveGrid } from '@/components/Archive/PostArchive'
 
 export const ArchiveBlock: React.FC<
@@ -21,11 +14,8 @@ export const ArchiveBlock: React.FC<
   const {
     id,
     categories,
-    propertyTypes,
     limit: limitFromProps,
-    layout,
     headingAlign = 'left',
-    navigationType,
     relationTo,
     heading,
     subtitle,
@@ -52,18 +42,14 @@ export const ArchiveBlock: React.FC<
     center: 'md:flex-col',
     right: 'md:flex-row-reverse',
   }
-
   let archive: DataFromCollectionSlug<'posts' | 'team-members' | 'listings'>[] = []
-
   const taxonomySlug =
     relationTo === 'posts'
       ? 'categories'
       : relationTo === 'listings'
         ? 'property-types'
         : 'undefined'
-
   const payload = await getPayload({ config: configPromise })
-
   const flattenedTaxonomies =
     taxonomySlug === 'categories'
       ? categories?.map((category) => {
@@ -71,7 +57,6 @@ export const ArchiveBlock: React.FC<
           else return category
         })
       : undefined
-
   const fetchedDocs = await payload.find({
     collection: relationTo || 'posts',
     depth: 1,
@@ -135,10 +120,7 @@ export const ArchiveBlock: React.FC<
             </p>
           )}
         </div>
-        {layout !== 'carousel' && renderArchive()}
-        {/* {layout && layout === 'carousel' && (
-          // <CollectionArchiveCarousel posts={posts} navigationType={navigationType || 'none'} />
-        )} */}
+        {renderArchive()}
       </div>
     </div>
   )

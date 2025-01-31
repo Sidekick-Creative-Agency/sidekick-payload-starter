@@ -1,7 +1,7 @@
 import type { Block } from 'payload'
 
-export const Archive: Block = {
-  slug: 'archive',
+export const ArchiveBlock: Block = {
+  slug: 'archiveBlock',
   interfaceName: 'ArchiveBlock',
   fields: [
     {
@@ -103,41 +103,6 @@ export const Archive: Block = {
       admin: {
         condition: (_, siblingData) =>
           siblingData.relationTo === 'listings' && siblingData.enablePropertyCategoryFilters,
-      },
-    },
-    {
-      name: 'layout',
-      type: 'select',
-      defaultValue: 'grid',
-      options: [
-        { value: 'grid', label: 'Grid' },
-        {
-          value: 'carousel',
-          label: 'Carousel',
-        },
-      ],
-    },
-    {
-      name: 'navigationType',
-      type: 'radio',
-      defaultValue: 'arrows',
-      options: [
-        { value: 'arrows', label: 'Arrows' },
-        {
-          value: 'dots',
-          label: 'Dots',
-        },
-        {
-          value: 'both',
-          label: 'Both',
-        },
-        {
-          value: 'none',
-          label: 'None',
-        },
-      ],
-      admin: {
-        condition: (_, siblingData) => siblingData.layout === 'carousel',
       },
     },
   ],

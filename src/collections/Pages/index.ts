@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { Archive } from '../../blocks/ArchiveBlock/config'
+import { ArchiveBlock } from '../../blocks/ArchiveBlock/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { hero } from '@/heros/config'
 import { slugField } from '@/fields/Slug'
@@ -77,7 +77,7 @@ export const Pages: CollectionConfig = {
               name: 'layout',
               type: 'blocks',
               blocks: [
-                Archive,
+                ArchiveBlock,
                 FormBlock,
                 ColumnsBlock,
                 FAQBlock,

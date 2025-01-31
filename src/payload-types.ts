@@ -124,6 +124,9 @@ export interface Page {
              * Choose how the link should be rendered.
              */
             appearance?: ('default' | 'outline') | null;
+            backgroundColor?: string | null;
+            borderColor?: string | null;
+            textColor?: string | null;
           };
           id?: string | null;
         }[]
@@ -177,21 +180,6 @@ export interface Page {
 export interface Media {
   id: number;
   alt?: string | null;
-  caption?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -269,11 +257,9 @@ export interface ArchiveBlock {
   limit?: number | null;
   enablePropertyCategoryFilters?: boolean | null;
   defaultCategoryFilter?: ('commercial' | 'residential') | null;
-  layout?: ('grid' | 'carousel') | null;
-  navigationType?: ('arrows' | 'dots' | 'both' | 'none') | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'archive';
+  blockType: 'archiveBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -726,6 +712,8 @@ export interface ColumnsBlock {
         backgroundImage?: (number | null) | Media;
         enableSubtitle?: boolean | null;
         subtitle?: string | null;
+        subtitleAlign?: ('left' | 'center' | 'right') | null;
+        subtitleColor?: string | null;
         richText?: {
           root: {
             type: string;
@@ -741,21 +729,29 @@ export interface ColumnsBlock {
           };
           [k: string]: unknown;
         } | null;
-        enableLink?: boolean | null;
-        link?: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?: {
-            relationTo: 'pages';
-            value: number | Page;
-          } | null;
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
+        enableLinks?: boolean | null;
+        links?:
+          | {
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+                /**
+                 * Choose how the link should be rendered.
+                 */
+                appearance?: ('default' | 'outline') | null;
+                backgroundColor?: string | null;
+                borderColor?: string | null;
+                textColor?: string | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
         media?: (number | null) | Media;
         mediaBorderRadius?: ('none' | 'small' | 'medium' | 'large' | 'xl' | 'xxl' | 'full') | null;
         styles?: {
@@ -842,8 +838,24 @@ export interface ExpertiseBlock {
     | {
         title?: string | null;
         image?: (number | null) | Media;
-        accentColor?: string | null;
-        link?: (number | null) | Page;
+        borderColor?: string | null;
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?: {
+            relationTo: 'pages';
+            value: number | Page;
+          } | null;
+          url?: string | null;
+          label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline') | null;
+          backgroundColor?: string | null;
+          borderColor?: string | null;
+          textColor?: string | null;
+        };
         id?: string | null;
       }[]
     | null;
@@ -1348,6 +1360,9 @@ export interface PagesSelect<T extends boolean = true> {
                     url?: T;
                     label?: T;
                     appearance?: T;
+                    backgroundColor?: T;
+                    borderColor?: T;
+                    textColor?: T;
                   };
               id?: T;
             };
@@ -1356,7 +1371,7 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
-        archive?: T | ArchiveBlockSelect<T>;
+        archiveBlock?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         columnsBlock?: T | ColumnsBlockSelect<T>;
         faqBlock?: T | FAQBlockSelect<T>;
@@ -1408,8 +1423,6 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   limit?: T;
   enablePropertyCategoryFilters?: T;
   defaultCategoryFilter?: T;
-  layout?: T;
-  navigationType?: T;
   id?: T;
   blockName?: T;
 }
@@ -1464,17 +1477,27 @@ export interface ColumnsBlockSelect<T extends boolean = true> {
         backgroundImage?: T;
         enableSubtitle?: T;
         subtitle?: T;
+        subtitleAlign?: T;
+        subtitleColor?: T;
         richText?: T;
-        enableLink?: T;
-        link?:
+        enableLinks?: T;
+        links?:
           | T
           | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                    appearance?: T;
+                    backgroundColor?: T;
+                    borderColor?: T;
+                    textColor?: T;
+                  };
+              id?: T;
             };
         media?: T;
         mediaBorderRadius?: T;
@@ -1553,8 +1576,20 @@ export interface ExpertiseBlockSelect<T extends boolean = true> {
     | {
         title?: T;
         image?: T;
-        accentColor?: T;
-        link?: T;
+        borderColor?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+              backgroundColor?: T;
+              borderColor?: T;
+              textColor?: T;
+            };
         id?: T;
       };
   id?: T;
@@ -1733,7 +1768,6 @@ export interface PostsSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
-  caption?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
