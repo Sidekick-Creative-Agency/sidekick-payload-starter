@@ -9,19 +9,23 @@ import Autoplay from 'embla-carousel-autoplay'
 type Props = Extract<Page['layout'][0], { blockType: 'mediaCarouselBlock' }>
 
 export const MediaCarouselBlock: React.FC<Props> = (props) => {
-  const { carouselItems, enableAutoPlay } = props
+  const { carouselItems, enableAutoPlay, elementId } = props
 
   if (!carouselItems || carouselItems.length === 0) {
     return null
   }
   return (
-    <div className="w-full">
+    <div className="w-full" {...(elementId ? { id: elementId } : {})}>
       <Carousel
-        plugins={[
-          Autoplay({
-            delay: 5000,
-          }),
-        ]}
+        {...(enableAutoPlay
+          ? {
+              plugins: [
+                Autoplay({
+                  delay: 5000,
+                }),
+              ],
+            }
+          : {})}
         opts={{
           loop: true,
         }}

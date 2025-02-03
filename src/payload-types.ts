@@ -257,6 +257,10 @@ export interface ArchiveBlock {
   limit?: number | null;
   enablePropertyCategoryFilters?: boolean | null;
   defaultCategoryFilter?: ('commercial' | 'residential') | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'archiveBlock';
@@ -506,6 +510,10 @@ export interface FormBlock {
       padVertMbUnit?: ('rem' | 'px' | '%') | null;
     };
   };
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'formBlock';
@@ -772,6 +780,10 @@ export interface ColumnsBlock {
       reverseWrap?: boolean | null;
     };
   };
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'columnsBlock';
@@ -805,6 +817,10 @@ export interface FAQBlock {
       }[]
     | null;
   size?: ('sm' | 'md' | 'lg' | 'full') | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'faqBlock';
@@ -823,6 +839,10 @@ export interface NumberCountersBlock {
         id?: string | null;
       }[]
     | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'numberCountersBlock';
@@ -859,6 +879,10 @@ export interface ExpertiseBlock {
         id?: string | null;
       }[]
     | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'expertiseBlock';
@@ -896,6 +920,10 @@ export interface TimelineBlock {
         id?: string | null;
       }[]
     | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'timelineBlock';
@@ -916,6 +944,10 @@ export interface ReviewsBlock {
         id?: string | null;
       }[]
     | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'reviewsBlock';
@@ -941,6 +973,10 @@ export interface JobListingsBlock {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'jobListingsBlock';
@@ -958,6 +994,10 @@ export interface SocialProofCarouselBlock {
         id?: string | null;
       }[]
     | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'socialProofCarouselBlock';
@@ -974,6 +1014,10 @@ export interface MediaCarouselBlock {
         id?: string | null;
       }[]
     | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaCarouselBlock';
@@ -1013,6 +1057,10 @@ export interface CardGridBlock {
     };
     resp?: {};
   };
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'cardGridBlock';
@@ -1037,6 +1085,10 @@ export interface FeaturedListingsBlock {
     url?: string | null;
     label: string;
   };
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'featuredListingsBlock';
@@ -1423,6 +1475,7 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   limit?: T;
   enablePropertyCategoryFilters?: T;
   defaultCategoryFilter?: T;
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1460,6 +1513,7 @@ export interface FormBlockSelect<T extends boolean = true> {
               padVertMbUnit?: T;
             };
       };
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1526,6 +1580,7 @@ export interface ColumnsBlockSelect<T extends boolean = true> {
               reverseWrap?: T;
             };
       };
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1544,6 +1599,7 @@ export interface FAQBlockSelect<T extends boolean = true> {
         id?: T;
       };
   size?: T;
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1561,6 +1617,7 @@ export interface NumberCountersBlockSelect<T extends boolean = true> {
         suffix?: T;
         id?: T;
       };
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1592,6 +1649,7 @@ export interface ExpertiseBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1618,6 +1676,7 @@ export interface TimelineBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1637,6 +1696,7 @@ export interface ReviewsBlockSelect<T extends boolean = true> {
         review?: T;
         id?: T;
       };
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1647,6 +1707,7 @@ export interface ReviewsBlockSelect<T extends boolean = true> {
 export interface JobListingsBlockSelect<T extends boolean = true> {
   heading?: T;
   subtitle?: T;
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1663,6 +1724,7 @@ export interface SocialProofCarouselBlockSelect<T extends boolean = true> {
         logo?: T;
         id?: T;
       };
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1678,6 +1740,7 @@ export interface MediaCarouselBlockSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1706,6 +1769,7 @@ export interface CardGridBlockSelect<T extends boolean = true> {
             };
         resp?: T | {};
       };
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -1728,6 +1792,7 @@ export interface FeaturedListingsBlockSelect<T extends boolean = true> {
         url?: T;
         label?: T;
       };
+  elementId?: T;
   id?: T;
   blockName?: T;
 }
@@ -2490,6 +2555,16 @@ export interface CheckmarkListLexicalBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'checkmarkList';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "spacerLexicalBlock".
+ */
+export interface SpacerLexicalBlock {
+  size?: ('small' | 'medium' | 'large') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'spacer';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

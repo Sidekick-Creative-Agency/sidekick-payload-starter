@@ -21,6 +21,7 @@ export const ArchiveBlock: React.FC<
     subtitle,
     enablePropertyCategoryFilters,
     defaultCategoryFilter,
+    elementId,
   } = props
 
   const limit = limitFromProps || 3
@@ -102,7 +103,10 @@ export const ArchiveBlock: React.FC<
   }
 
   return (
-    <div className={`archive-block-${id} overflow-hidden py-20 md:py-32`}>
+    <div
+      className={`archive-block-${id} overflow-hidden py-20 md:py-32`}
+      {...(elementId ? { id: elementId } : {})}
+    >
       <div className="container flex flex-col gap-16 md:gap-20">
         <div
           className={`flex flex-col gap-4 md:gap-4 md:items-center ${headingAlign && flexJustifyClasses[headingAlign]} ${headingAlign && flexDirectionClasses[headingAlign]}`}

@@ -1,3 +1,4 @@
+import { AdvancedFields } from '@/fields/Advanced'
 import {
   AlignFeature,
   FixedToolbarFeature,
@@ -65,5 +66,6 @@ export const TimelineBlock: Block = {
       type: 'array',
       fields: timelineItemFields,
     },
+    AdvancedFields,
   ],
 }

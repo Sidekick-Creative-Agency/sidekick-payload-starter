@@ -14,21 +14,29 @@ import {
 import type { Page } from '@/payload-types'
 import { FormBlock } from '@/blocks/Form/Component'
 import { ColumnsBlock } from '@/blocks/ColumnsBlock/Component'
-import { SubtitleBlockProps, SubtitleLexicalBlock } from '@/blocks/Lexical/Subtitle/Component'
-import { CarouselBlockProps, CarouselLexicalBlock } from '@/blocks/Lexical/Carousel/Component'
 import {
-  CheckmarkListBlockProps,
+  SubtitleLexicalBlockProps,
+  SubtitleLexicalBlock,
+} from '@/blocks/Lexical/Subtitle/Component'
+import {
+  CarouselLexicalBlockProps,
+  CarouselLexicalBlock,
+} from '@/blocks/Lexical/Carousel/Component'
+import {
+  CheckmarkListLexicalBlockProps,
   CheckmarkListLexicalBlock,
 } from '@/blocks/Lexical/CheckmarkList/Component'
+import { SpacerLexicalBlock, SpacerLexicalBlockProps } from '@/blocks/Lexical/Spacer/Component'
 
 export type NodeTypes =
   | DefaultNodeTypes
   | SerializedBlockNode<
       | Extract<Page['layout'][0], { blockType: 'formBlock' }>
       | Extract<Page['layout'][0], { blockType: 'columnsBlock' }>
-      | SubtitleBlockProps
-      | CarouselBlockProps
-      | CheckmarkListBlockProps
+      | SubtitleLexicalBlockProps
+      | CarouselLexicalBlockProps
+      | CheckmarkListLexicalBlockProps
+      | SpacerLexicalBlockProps
     >
 
 type Props = {
@@ -149,6 +157,8 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
               return <CarouselLexicalBlock key={index} {...block} />
             case 'checkmarkList':
               return <CheckmarkListLexicalBlock key={index} {...block} />
+            case 'spacer':
+              return <SpacerLexicalBlock key={index} {...block} />
             default:
               return null
           }
@@ -160,7 +170,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             case 'paragraph': {
               return (
                 <p
-                  className={`col-start-2 ${node.format && formatClasses[node.format]} mb-3`}
+                  className={`col-start-2 ${node.format && formatClasses[node.format]} mb-3 mt-0 last:mb-0`}
                   key={index}
                 >
                   {serializedChildren}

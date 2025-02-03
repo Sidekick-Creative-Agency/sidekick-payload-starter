@@ -28,6 +28,14 @@ import {
   NavigationMenuList,
 } from '@/components/ui/navigation-menu'
 import { useMotionValueEvent, useScroll } from 'framer-motion'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faBars,
+  faChevronDown,
+  faChevronUp,
+  faX,
+  faXmark,
+} from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 
 export const HeaderMobileNav: React.FC<{ header: HeaderType }> = ({ header }) => {
   const navItems = header?.navItems || []
@@ -41,65 +49,67 @@ export const HeaderMobileNav: React.FC<{ header: HeaderType }> = ({ header }) =>
 
   return (
     <Sheet>
-      <SheetTrigger>
-        <Menu
-          size={32}
-          className={`transition-colors duration-200 ${isScrolled ? 'text-black' : 'text-white'}`}
+      <SheetTrigger className="flex justify-end items-center" tabIndex={0}>
+        <FontAwesomeIcon
+          icon={faBars}
+          className={`w-6 h-auto transition-colors duration-200 ${isScrolled ? 'text-brand-tan' : 'text-white'}`}
         />
       </SheetTrigger>
-      <SheetContent className="p-[1.25rem] bg-white border-none w-full sm:w-3/4 ">
+      <SheetContent className="p-[1.25rem] sm:p-8 bg-white border-none w-96 max-w-full">
         <SheetHeader className="sr-only">
           <SheetTitle>Mobile Menu</SheetTitle>
         </SheetHeader>
-        <NavigationMenu orientation="vertical" className="w-full max-w-none justify-stretch">
-          <NavigationMenuList className="flex-col items-start mt-16 space-x-0 gap-2 w-full min-w-64 sm:min-w-80">
-            {navItems.map(({ navItem }, i) => {
-              if (navItem?.type === 'link') {
+        <nav className="w-full justify-stretch">
+          <ul className="flex-col items-start mt-16 space-x-0 gap-2 w-full">
+            <Accordion type="single" collapsible className="w-full">
+              {navItems.map(({ navItem }, i) => {
+                if (navItem?.type === 'link') {
+                  return (
+                    <li key={i} className="[&:not(:last-child)]:border-b border-brand-gray-01">
+                      <CMSLink
+                        key={i}
+                        {...navItem.link}
+                        appearance="link"
+                        className="w-full text-lg text-black py-4 uppercase hover:no-underline focus-visible:no-underline font-bold tracking-wider focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
+                      />
+                    </li>
+                  )
+                }
                 return (
-                  <NavigationMenuItem key={i}>
-                    <CMSLink
-                      key={i}
-                      {...navItem.link}
-                      appearance="link"
-                      className="text-lg text-black py-2"
-                    />
-                  </NavigationMenuItem>
+                  <li key={i} className="[&:not(:last-child)]:border-b border-brand-gray-01">
+                    <AccordionItem
+                      value={navItem?.label || `item-${i}`}
+                      className="border-none w-full"
+                    >
+                      <AccordionTrigger
+                        className="py-4 w-full text-lg text-black hover:no-underline focus-visible:no-underline font-bold tracking-wider uppercase [&_svg]:text-brand-navy [&_svg]:w-4 focus-visible:ring-black rounded-none"
+                        openIcon={faChevronUp}
+                        closedIcon={faChevronDown}
+                      >
+                        {navItem?.label}
+                      </AccordionTrigger>
+                      <AccordionContent className="flex flex-col gap-2 px-4">
+                        {navItem?.childrenLinks?.map((childLink, i) => {
+                          return (
+                            <Link
+                              key={i}
+                              href={childLink.link.url || ''}
+                              className="w-full text-brand-gray-06 uppercase tracking-wide font-bold py-1"
+                            >
+                              {childLink.link.label}
+                            </Link>
+                          )
+                        })}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </li>
                 )
-              }
-              return (
-                <Accordion type="single" collapsible key={i} className="w-full">
-                  <AccordionItem
-                    value={navItem?.label || `item-${i}`}
-                    className="border-none w-full"
-                  >
-                    <AccordionTrigger className="py-2 w-full text-lg text-black">
-                      {navItem?.label}
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      {navItem?.childrenLinks?.map((childLink, i) => {
-                        return (
-                          <Button
-                            variant="link"
-                            className="px-4 py-2 w-full text-black"
-                            key={childLink.id}
-                          >
-                            <Link href={childLink.link.url || ''}>{childLink.link.label}</Link>
-                          </Button>
-                        )
-                      })}
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              )
-            })}
-            <Link href="/search">
-              <span className="sr-only">Search</span>
-              <SearchIcon className="w-5 text-black" />
-            </Link>
-          </NavigationMenuList>
-        </NavigationMenu>
+              })}
+            </Accordion>
+          </ul>
+        </nav>
         <SheetClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary z-20">
-          <X size={24} className="text-black" />
+          <FontAwesomeIcon icon={faXmark} className="w-4 h-auto text-black" />
         </SheetClose>
       </SheetContent>
     </Sheet>

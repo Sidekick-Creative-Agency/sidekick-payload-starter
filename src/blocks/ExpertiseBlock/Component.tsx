@@ -23,10 +23,10 @@ export const ExpertiseBlock: React.FC<
     id?: string
   } & Props
 > = (props) => {
-  const { id, heading, description, expertiseAreas } = props
+  const { id, heading, description, expertiseAreas, elementId } = props
 
   return (
-    <div className={`expertise-block-${id}`}>
+    <div className={`expertise-block-${id}`} {...(elementId ? { id: elementId } : {})}>
       <div className="py-32 container">
         <div className="flex flex-col gap-16 md:gap-20">
           <div className="flex flex-col gap-4 md:flex-row md:gap-10 md:justify-between md:items-center">

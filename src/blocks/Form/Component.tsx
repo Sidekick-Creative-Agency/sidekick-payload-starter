@@ -47,6 +47,7 @@ export type FormBlockType = {
       padHorMbUnit: string
     }
   }
+  elementId?: string
 }
 
 export const fieldWidthClasses = {
@@ -61,7 +62,7 @@ export const FormBlock: React.FC<
     id?: string
   } & FormBlockType
 > = (props) => {
-  const { enableIntro, form: formFromProps, introContent, styles } = props
+  const { enableIntro, form: formFromProps, introContent, styles, elementId } = props
   const {
     id: formID = '',
     confirmationMessage = '',
@@ -206,7 +207,10 @@ export const FormBlock: React.FC<
        }
       }`}
       </style>
-      <div className={`container ${widthClasses[width]} form-block-${formID}`}>
+      <div
+        className={`container ${widthClasses[width]} form-block-${formID}`}
+        {...(elementId ? { id: elementId } : {})}
+      >
         <FormProvider {...formMethods}>
           {enableIntro && introContent && !hasSubmitted && (
             <RichText className="mb-10" content={introContent} enableGutter={false} />
@@ -233,7 +237,7 @@ export const FormBlock: React.FC<
                           errors={errors}
                           register={register}
                           className={`inline-block ${'width' in field ? fieldWidthClasses[field.width || 'full'] : ''} ${'name' in field && field.name && !errors[field.name] && 'mb-0'} relative transition-[margin] duration-300 ${'name' in field && field.name && errors[field.name] && 'mb-6'} `}
-                          fieldClassName={`${theme === 'thin' && 'border-t-0 border-r-0 border-l-0 border-b text-lg font-light focus-visible:border-b-brand-navy'} `}
+                          fieldClassName={`${theme === 'thin' && 'border-t-0 border-r-0 border-l-0 border-b text-lg font-light focus-visible:border-b-brand-navy focus-visible:ring-0'} `}
                           setValue={setValue}
                           key={index}
                         />

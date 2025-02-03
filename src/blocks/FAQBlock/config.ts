@@ -5,6 +5,7 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import { AdvancedFields } from '@/fields/Advanced'
 
 const faqFields: Field[] = [
   {
@@ -83,5 +84,6 @@ export const FAQBlock: Block = {
         },
       ],
     },
+    AdvancedFields,
   ],
 }

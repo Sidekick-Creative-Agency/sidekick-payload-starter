@@ -1,3 +1,4 @@
+import { AdvancedFields } from '@/fields/Advanced'
 import type { Block, Field } from 'payload'
 
 const ReviewFields: Field[] = [
@@ -41,6 +42,7 @@ export const ReviewsBlock: Block = {
       type: 'array',
       fields: ReviewFields,
     },
+    AdvancedFields,
   ],
   labels: {
     plural: 'Reviews',

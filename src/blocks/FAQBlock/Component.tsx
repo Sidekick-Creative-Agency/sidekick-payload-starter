@@ -16,7 +16,7 @@ export const FAQBlock: React.FC<
     id?: string
   } & Props
 > = (props) => {
-  const { id, enableHeading, heading, faqs, size } = props
+  const { id, enableHeading, heading, faqs, size, elementId } = props
 
   const maxWidthClasses = {
     sm: 'max-w-4xl',
@@ -27,7 +27,10 @@ export const FAQBlock: React.FC<
 
   return (
     <>
-      <div className={`faq-block-${id} flex flex-col items-stretch`}>
+      <div
+        className={`faq-block-${id} flex flex-col items-stretch`}
+        {...(elementId ? { id: elementId } : {})}
+      >
         <div className="container py:20 sm:py-32 flex flex-col gap-20">
           {enableHeading && heading && (
             <h2 className="text-center text-[2.5rem] text-brand-gray-06 font-bold">{heading}</h2>
@@ -47,7 +50,7 @@ export const FAQBlock: React.FC<
                 return (
                   <AccordionItem key={faqId} value={faqId}>
                     {question && (
-                      <AccordionTrigger className="text-2xl text-brand-navy font-bold text-start">
+                      <AccordionTrigger className="text-2xl text-brand-navy font-bold text-start hover:no-underline focus-visible:no-underline">
                         {question}
                       </AccordionTrigger>
                     )}

@@ -11,12 +11,13 @@ export const SocialProofCarouselBlock: React.FC<
     id?: string
   } & Props
 > = (props) => {
-  const { id, heading, subtitle, logos } = props
+  const { id, heading, subtitle, logos, elementId } = props
 
   return (
     <>
       <div
         className={`social-proof-carousel-block-${id} flex flex-col items-stretch bg-brand-offWhite overflow-hidden`}
+        {...(elementId ? { id: elementId } : {})}
       >
         <div className="container py-20 sm:py-32 flex flex-col gap-16 sm:gap-20">
           {(heading || subtitle) && (

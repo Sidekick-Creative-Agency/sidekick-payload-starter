@@ -15,6 +15,7 @@ import { MobileVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Mob
 import { StylesField } from '@/fields/Styles'
 import { TextColorFeature } from '@/components/RichText/Color/features/textColor/feature.server'
 import { BRAND_COLORS } from '@/utilities/constants'
+import { AdvancedFields } from '@/fields/Advanced'
 
 export const FormBlock: Block = {
   slug: 'formBlock',
@@ -90,6 +91,7 @@ export const FormBlock: Block = {
       tabletOverrides: [TabletHorizontalPaddingField, TabletVerticalPaddingField],
       mobileOverrides: [MobileHorizontalPaddingField, MobileVerticalPaddingField],
     }),
+    AdvancedFields,
   ],
   graphQL: {
     singularName: 'FormBlock',

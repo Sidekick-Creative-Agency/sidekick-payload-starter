@@ -1,4 +1,5 @@
 import { TextColorFeature } from '@/components/RichText/Color/features/textColor/feature.server'
+import { AdvancedFields } from '@/fields/Advanced'
 import { BackgroundColorField } from '@/fields/Color/Background'
 import { StylesField } from '@/fields/Styles'
 import { BRAND_COLORS } from '@/utilities/constants'
@@ -71,5 +72,6 @@ export const CardGridBlock: Block = {
     StylesField({
       globalOverrides: [BackgroundColorField()],
     }),
+    AdvancedFields,
   ],
 }

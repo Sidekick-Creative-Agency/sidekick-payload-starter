@@ -1,3 +1,4 @@
+import { AdvancedFields } from '@/fields/Advanced'
 import type { Block } from 'payload'
 
 export const SocialProofCarouselBlock: Block = {
@@ -24,5 +25,6 @@ export const SocialProofCarouselBlock: Block = {
         },
       ],
     },
+    AdvancedFields,
   ],
 }

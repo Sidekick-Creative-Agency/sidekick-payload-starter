@@ -1,3 +1,4 @@
+import { AdvancedFields } from '@/fields/Advanced'
 import { ColorField } from '@/fields/Color'
 import { link } from '@/fields/link'
 import type { Block, Field } from 'payload'
@@ -35,5 +36,6 @@ export const ExpertiseBlock: Block = {
       type: 'array',
       fields: expertiseAreaFields,
     },
+    AdvancedFields,
   ],
 }

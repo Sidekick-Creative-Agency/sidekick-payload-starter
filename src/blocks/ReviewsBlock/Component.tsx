@@ -15,10 +15,10 @@ export const ReviewsBlock: React.FC<
     id?: string
   }
 > = async (props) => {
-  const { id, heading, subtitle, reviews } = props
+  const { id, heading, subtitle, reviews, elementId } = props
 
   return (
-    <div className={`reviews-block-${id}`}>
+    <div className={`reviews-block-${id}`} {...(elementId ? { id: elementId } : {})}>
       <div className="container py-20 md:py-32 flex flex-col gap-16 md:gap-20">
         <div className="flex flex-col gap-4 md:flex-row md:gap-10 md:justify-between md:items-center">
           <h2 className="text-[2.5rem] font-bold text-brand-gray-06 flex-1">{heading}</h2>

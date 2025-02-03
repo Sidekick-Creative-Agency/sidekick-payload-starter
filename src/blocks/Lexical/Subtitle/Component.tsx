@@ -2,13 +2,13 @@ import { cn } from 'src/utilities/cn'
 import React from 'react'
 import RichText from '@/components/RichText'
 
-export type SubtitleBlockProps = {
+export type SubtitleLexicalBlockProps = {
   subtitle: string
   color: string
   blockType: 'subtitle'
 }
 
-export const SubtitleLexicalBlock: React.FC<SubtitleBlockProps> = (props) => {
+export const SubtitleLexicalBlock: React.FC<SubtitleLexicalBlockProps> = (props) => {
   const { subtitle, color } = props
 
   return (

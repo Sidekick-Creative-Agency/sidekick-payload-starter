@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/carousel'
 import useWindowDimensions from '@/utilities/useWindowDimensions'
 
-export type CarouselBlockProps = {
+export type CarouselLexicalBlockProps = {
   items: {
     icon: MediaType
     heading: string
@@ -24,7 +24,7 @@ export type CarouselBlockProps = {
   blockType: 'carousel'
 }
 
-export const CarouselLexicalBlock: React.FC<CarouselBlockProps> = ({ items }) => {
+export const CarouselLexicalBlock: React.FC<CarouselLexicalBlockProps> = ({ items }) => {
   const { width } = useWindowDimensions()
 
   return (

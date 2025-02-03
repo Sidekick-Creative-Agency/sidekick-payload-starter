@@ -25,7 +25,7 @@ export const ColumnsBlock: React.FC<
     id?: string
   } & Props
 > = (props) => {
-  const { id, columns, styles } = props
+  const { id, columns, styles, elementId } = props
   const width = styles?.global?.width || 'boxed'
   const blockBgColor = styles?.global?.backgroundColor
   const reverseWrap = styles?.resp?.reverseWrap
@@ -96,6 +96,7 @@ export const ColumnsBlock: React.FC<
 
               return (
                 <div
+                  {...(elementId ? { id: elementId } : {})}
                   className={`relative ${colsSpanClasses[size || 'full']} 
                     ${
                       type === 'text'
@@ -128,7 +129,7 @@ export const ColumnsBlock: React.FC<
                 >
                   {type === 'text' && (
                     <div
-                      className={`relative ${width !== 'full' ? `${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}` : 'w-[40rem] max-w-full mx-auto'}  `}
+                      className={`relative mx-auto ${width !== 'full' ? `${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}` : 'w-[40rem] max-w-full mx-auto'}  `}
                     >
                       {enableSubtitle && subtitle && (
                         <span
@@ -141,7 +142,7 @@ export const ColumnsBlock: React.FC<
                         <RichText
                           content={richText}
                           enableGutter={false}
-                          className="z-10 relative"
+                          className="z-10 relative [&_a]:no-underline"
                         />
                       )}
                       {enableLinks && links && links.length > 0 && (

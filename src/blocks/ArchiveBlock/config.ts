@@ -1,3 +1,4 @@
+import { AdvancedFields } from '@/fields/Advanced'
 import type { Block } from 'payload'
 
 export const ArchiveBlock: Block = {
@@ -105,6 +106,7 @@ export const ArchiveBlock: Block = {
           siblingData.relationTo === 'listings' && siblingData.enablePropertyCategoryFilters,
       },
     },
+    AdvancedFields,
   ],
   labels: {
     plural: 'Archives',

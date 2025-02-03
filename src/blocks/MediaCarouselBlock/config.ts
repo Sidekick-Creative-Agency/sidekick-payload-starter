@@ -1,3 +1,4 @@
+import { AdvancedFields } from '@/fields/Advanced'
 import type { Block } from 'payload'
 
 export const MediaCarouselBlock: Block = {
@@ -20,5 +21,6 @@ export const MediaCarouselBlock: Block = {
         },
       ],
     },
+    AdvancedFields,
   ],
 }

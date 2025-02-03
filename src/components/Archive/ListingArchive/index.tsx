@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import { DataFromCollectionSlug, Find, PaginatedDocs, Where } from 'payload'
+import { DataFromCollectionSlug, PaginatedDocs, Where } from 'payload'
 import { ListingCard } from '@/components/Listings/ListingCard'
 import { Listing } from '@/payload-types'
 import { Button } from '@/components/ui/button'
@@ -17,7 +17,7 @@ export const ListingArchiveGrid: React.FC<ListingArchiveGridProps> = ({
   enableCategoryFilters,
   defaultCategoryFilter,
 }) => {
-  const [activeFilter, setActiveFilter] = useState(defaultCategoryFilter)
+  const [activeFilter, setActiveFilter] = useState(defaultCategoryFilter || null)
   const [activeListings, setActiveListings] = useState<Listing[]>(data || [])
   const [isLoading, setIsLoading] = useState(false)
 

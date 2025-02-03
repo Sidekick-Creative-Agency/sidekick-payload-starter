@@ -13,7 +13,7 @@ export const CardGridBlock: React.FC<
   }
 > = async (props) => {
   // const { width } = useWindowDimensions()
-  const { id, headingAlign = 'left', heading, subtitle, cards, styles } = props
+  const { id, headingAlign = 'left', heading, subtitle, cards, styles, elementId } = props
 
   const {
     // @ts-ignore
@@ -41,6 +41,7 @@ export const CardGridBlock: React.FC<
   return (
     <div
       className={`card-grid-block-${id} ${BRAND_BACKGROUND_COLOR_CLASSES[backgroundColor || 'transparent']} overflow-hidden`}
+      {...(elementId ? { id: elementId } : {})}
     >
       <div className="container py-20 md:py-32 flex flex-col gap-16 md:gap-20">
         <div

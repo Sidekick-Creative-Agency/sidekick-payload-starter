@@ -28,6 +28,8 @@ import { BRAND_COLORS } from '@/utilities/constants'
 import { color } from 'framer-motion'
 import { TextColorFeature } from '@/components/RichText/Color/features/textColor/feature.server'
 import { CheckmarkListLexicalBlock } from '../Lexical/CheckmarkList/config'
+import { AdvancedFields } from '@/fields/Advanced'
+import { SpacerLexicalBlock } from '../Lexical/Spacer/config'
 
 const columnFields: Field[] = [
   {
@@ -156,6 +158,7 @@ const columnFields: Field[] = [
               SubtitleLexicalBlock,
               CarouselLexicalBlock,
               CheckmarkListLexicalBlock,
+              SpacerLexicalBlock,
             ],
           }),
           TextColorFeature({
@@ -299,7 +302,7 @@ export const ColumnsBlock: Block = {
       name: 'columns',
       type: 'array',
       fields: columnFields,
-      maxRows: 2,
+      maxRows: 3,
     },
 
     StylesField({
@@ -342,5 +345,6 @@ export const ColumnsBlock: Block = {
         },
       ],
     }),
+    AdvancedFields,
   ],
 }

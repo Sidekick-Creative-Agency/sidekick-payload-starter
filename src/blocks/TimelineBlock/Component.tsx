@@ -15,7 +15,7 @@ export const TimelineBlock: React.FC<
     id?: string
   } & Props
 > = (props) => {
-  const { id, heading, timelineItems } = props
+  const { id, heading, timelineItems, elementId } = props
   const tabs = timelineItems?.map((timelineItem) => timelineItem.tab)
   const contents = timelineItems?.map((timelineItem) => timelineItem.content)
   const [activeIndex, setActiveIndex] = useState(0)
@@ -40,7 +40,7 @@ export const TimelineBlock: React.FC<
 
   if (!timelineItems) return
   return (
-    <div className={`timeline-block-${id} bg-brand-navy`}>
+    <div className={`timeline-block-${id} bg-brand-navy`} {...(elementId ? { id: elementId } : {})}>
       <div className="py-20 md:py-24 lg:py-32 container flex flex-col gap-16">
         <h2 className="text-white text-center text-[2.5rem] font-bold">{heading}</h2>
         <div className="flex flex-col items-center gap-28">

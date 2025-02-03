@@ -11,7 +11,16 @@ export const FeaturedListingsBlock: React.FC<
     id?: string
   }
 > = async (props) => {
-  const { id, headingAlign = 'left', heading, subtitle, categoryFilter, enableLink, link } = props
+  const {
+    id,
+    headingAlign = 'left',
+    heading,
+    subtitle,
+    categoryFilter,
+    enableLink,
+    link,
+    elementId,
+  } = props
 
   const alignClasses = {
     left: 'text-left',
@@ -61,7 +70,10 @@ export const FeaturedListingsBlock: React.FC<
     return
   }
   return (
-    <div className={`archive-block-${id} overflow-hidden`}>
+    <div
+      className={`archive-block-${id} overflow-hidden`}
+      {...(elementId ? { id: elementId } : {})}
+    >
       <div className="container py-20 md:py-32 flex flex-col gap-16 md:gap-20">
         <div
           className={`flex flex-col gap-4 md:gap-4 md:items-center ${headingAlign && flexJustifyClasses[headingAlign]} ${headingAlign && flexDirectionClasses[headingAlign]}`}

@@ -10,11 +10,14 @@ export const NumberCountersBlock: React.FC<
     id?: string
   } & Props
 > = (props) => {
-  const { id, numberCounters } = props
+  const { id, numberCounters, elementId } = props
 
   return (
     <>
-      <div className={`number-counters-block-${id} bg-brand-navy`}>
+      <div
+        className={`number-counters-block-${id} bg-brand-navy`}
+        {...(elementId ? { id: elementId } : {})}
+      >
         <div className="py-20 container">
           <div className="flex flex-col md:flex-row justify-around gap-10 flex-wrap">
             {numberCounters &&
@@ -27,11 +30,17 @@ export const NumberCountersBlock: React.FC<
                     <div className="text-white text-5xl md:text-7xl font-bold text-center">
                       <div>
                         {prefix && <span className="leading-none">{prefix}</span>}
-                        <SlotCounter value={formatNumber(number)} />
+                        <SlotCounter
+                          value={formatNumber(number)}
+                          animateOnVisible={{
+                            triggerOnce: true,
+                          }}
+                          duration={2}
+                        />
                         {suffix && <span className="leading-none">{suffix}</span>}
                       </div>
                     </div>
-                    <div className="text-white text-base leading-none uppercase text-brand-offWhite font-light tracking-wider text-center">
+                    <div className="text-base leading-none uppercase text-brand-offWhite font-light tracking-wider text-center">
                       {label}
                     </div>
                   </div>

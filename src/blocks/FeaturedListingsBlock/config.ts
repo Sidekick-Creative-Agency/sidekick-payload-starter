@@ -1,3 +1,4 @@
+import { AdvancedFields } from '@/fields/Advanced'
 import { link } from '@/fields/link'
 import type { Block } from 'payload'
 
@@ -66,5 +67,6 @@ export const FeaturedListingsBlock: Block = {
         },
       },
     }),
+    AdvancedFields,
   ],
 }

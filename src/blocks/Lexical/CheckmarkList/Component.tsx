@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import { BRAND_TEXT_COLOR_CLASSES } from '@/utilities/constants'
 
-export type CheckmarkListBlockProps = {
+export type CheckmarkListLexicalBlockProps = {
   items: {
     iconColor: string
     text: string
@@ -12,7 +12,7 @@ export type CheckmarkListBlockProps = {
   blockType: 'checkmarkList'
 }
 
-export const CheckmarkListLexicalBlock: React.FC<CheckmarkListBlockProps> = ({ items }) => {
+export const CheckmarkListLexicalBlock: React.FC<CheckmarkListLexicalBlockProps> = ({ items }) => {
   return (
     <ul className="flex flex-col gap-4 pl-0">
       {items &&

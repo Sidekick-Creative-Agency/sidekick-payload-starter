@@ -1,3 +1,4 @@
+import { AdvancedFields } from '@/fields/Advanced'
 import type { Block, Field } from 'payload'
 
 const numberCounterFields: Field[] = [
@@ -31,5 +32,6 @@ export const NumberCountersBlock: Block = {
       fields: numberCounterFields,
       maxRows: 4,
     },
+    AdvancedFields,
   ],
 }
