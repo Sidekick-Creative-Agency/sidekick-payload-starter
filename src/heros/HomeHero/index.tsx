@@ -143,7 +143,13 @@ export const HomeHero: React.FC<Page['hero'] & { title: string }> = ({
       </div>
       {media && typeof media === 'object' && (
         <div className="absolute top-0 left-0 w-full h-3/4 min-[888px]:h-full">
-          <Image src={media.url || ''} alt={media.alt || ''} fill className="object-cover -z-10" />
+          <Image
+            src={media.url || ''}
+            alt={media.alt || ''}
+            fill
+            className="object-cover -z-10"
+            priority
+          />
           <div className="absolute pointer-events-none left-0 bottom-0 w-full h-full bg-brand-navy/85  mix-blend-multiply z-0" />
         </div>
       )}
