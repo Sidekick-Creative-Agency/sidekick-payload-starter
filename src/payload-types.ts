@@ -553,6 +553,10 @@ export interface Form {
             width?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
             placeholder?: string | null;
             required?: boolean | null;
+            /**
+             * If checked, the field will not be displayed in the form.
+             */
+            hidden?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'email';
@@ -2136,6 +2140,7 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               placeholder?: T;
               required?: T;
+              hidden?: T;
               id?: T;
               blockName?: T;
             };

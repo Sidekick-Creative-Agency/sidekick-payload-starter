@@ -37,7 +37,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
       />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <div>
+          <Link href={`/about/team/${teamMember.slug}`}>
             <h3 className="text-2xl text-brand-gray-06 font-bold inline leading-tight">
               {teamMember.title}
             </h3>
@@ -46,7 +46,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
                 {teamMember.designations}
               </span>
             )}
-          </div>
+          </Link>
         </div>
         <span className="text-gray-600 text-base font-light leading-tight">
           {teamMember.jobTitle}

@@ -19,6 +19,7 @@ export const Email: React.FC<
     className?: string
     fieldClassName?: string
     placeholder?: string
+    hidden?: boolean
   }
 > = ({
   name,
@@ -30,6 +31,7 @@ export const Email: React.FC<
   placeholder,
   className,
   fieldClassName,
+  hidden,
 }) => {
   return (
     <div className={className}>
@@ -37,7 +39,7 @@ export const Email: React.FC<
       <Input
         defaultValue={defaultValue}
         id={name}
-        type="email"
+        type={hidden ? 'hidden' : 'email'}
         placeholder={placeholder}
         className={fieldClassName}
         {...register(name, { pattern: /^\S[^\s@]*@\S+$/, required: requiredFromProps })}

@@ -75,7 +75,7 @@ const SheetContent = React.forwardRef<
       >
         {children}
         {!hasCloseButton && (
-          <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+          <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand-navy focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
             <FontAwesomeIcon icon={faXmark} className="w-4 h-auto" />
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>

@@ -62,5 +62,13 @@ export const EmailField: Block = {
       type: 'checkbox',
       label: 'Required',
     },
+    {
+      name: 'hidden',
+      type: 'checkbox',
+      label: 'Hidden',
+      admin: {
+        description: 'If checked, the field will not be displayed in the form.',
+      },
+    },
   ],
 }

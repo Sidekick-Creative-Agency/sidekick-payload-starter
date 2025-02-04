@@ -34,7 +34,6 @@ export const HighImpactHero: React.FC<Page['hero'] & { title: string }> = ({
           {Array.isArray(links) && links.length > 0 && (
             <ul className="flex justify-stretch flex-wrap gap-4 md:gap-6">
               {links.map(({ link }, i) => {
-                console.log(link)
                 return (
                   <li key={i} className="flex-1">
                     <CMSLink

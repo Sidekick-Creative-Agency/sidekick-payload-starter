@@ -23,7 +23,6 @@ export const NavMenu: React.FC<{ navItems: Header['navItems']; isScrolled: boole
     <nav className="w-full">
       <ul className="flex w-full gap-10 justify-evenly items-center">
         {navItems.map(({ navItem }, i) => {
-          console.log(navItem)
           if (navItem?.type === 'link') {
             return (
               <li key={i}>

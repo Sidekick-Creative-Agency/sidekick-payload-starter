@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/carousel'
 import { ListingCard } from '@/components/Listings/ListingCard'
 import { ContactForm } from '@/components/TeamMembers/ContactForm'
+import { FormBlock } from '@/blocks/Form/Component'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -69,11 +70,14 @@ export default async function Page({ params: paramsPromise }: Args) {
     console.log('No Team Member found')
     return
   }
+  const teamMemberContactForm = await payload.findByID({
+    collection: 'forms',
+    id: 4,
+  })
   const relatedListings = teamMember.relatedListings?.docs
-  console.log(relatedListings)
   return (
     <>
-      <PageClient />
+      <PageClient teamMember={teamMember} />
       <div>
         {/* HERO */}
         <div className="bg-brand-navy pt-0 py-20 sm:py-32">
@@ -290,6 +294,14 @@ export default async function Page({ params: paramsPromise }: Args) {
                 </p>
               </div>
               <ContactForm teamMember={teamMember} />
+              {/* {teamMemberContactForm && (
+                <FormBlock
+                  // @ts-ignore
+                  form={teamMemberContactForm}
+                  enableIntro={false}
+                  styles={{ global: {}, resp: {} }}
+                />
+              )} */}
             </div>
           </div>
         </div>

@@ -31,20 +31,20 @@ export type FormBlockType = {
   }[]
   theme?: 'default' | 'thin'
   styles?: {
-    global: { width: string }
+    global: { width?: string }
     resp: {
-      padVertDeskVal: number
-      padVertDeskUnit: string
-      padHorDeskVal: number
-      padHorDeskUnit: string
-      padVertTabVal: number
-      padVertTabUnit: string
-      padHorTabVal: number
-      padHorTabUnit: string
-      padVertMbVal: number
-      padVertMbUnit: string
-      padHorMbVal: number
-      padHorMbUnit: string
+      padVertDeskVal?: number
+      padVertDeskUnit?: string
+      padHorDeskVal?: number
+      padHorDeskUnit?: string
+      padVertTabVal?: number
+      padVertTabUnit?: string
+      padHorTabVal?: number
+      padHorTabUnit?: string
+      padVertMbVal?: number
+      padVertMbUnit?: string
+      padHorMbVal?: number
+      padHorMbUnit?: string
     }
   }
   elementId?: string

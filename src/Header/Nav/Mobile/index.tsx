@@ -108,7 +108,7 @@ export const HeaderMobileNav: React.FC<{ header: HeaderType }> = ({ header }) =>
             </Accordion>
           </ul>
         </nav>
-        <SheetClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary z-20">
+        <SheetClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand-navy focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary z-20">
           <FontAwesomeIcon icon={faXmark} className="w-4 h-auto text-black" />
         </SheetClose>
       </SheetContent>
