@@ -14,15 +14,24 @@ import { formatNumber } from '@/utilities/formatNumber'
 import { formatPrice } from '@/utilities/formatPrice'
 import { FilterBar } from '@/components/Map/filterBar'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { filterMapListings } from '../../api/filterMapListings'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Skeleton } from '@/components/ui/skeleton'
+import { faArrowUpArrowDown, faCircleNotch } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 interface MapPageClientProps {
-  listings: Listing[]
+  listingsCount?: number
 }
 
 export interface MapFilters {
@@ -51,7 +60,34 @@ export const FormSchema = z.object({
   transactionType: z.string().optional(),
 })
 
-export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
+const sortByOptions = [
+  {
+    value: 'price-desc',
+    label: 'Price (High to Low)',
+  },
+  {
+    value: 'price-asc',
+    label: 'Price (Low to High)',
+  },
+  {
+    value: 'size-desc',
+    label: 'Size (High to Low)',
+  },
+  {
+    value: 'size-asc',
+    label: 'Size (Low to High)',
+  },
+  {
+    value: 'date-desc',
+    label: 'Newest',
+  },
+  {
+    value: 'date-asc',
+    label: 'Oldest',
+  },
+]
+
+export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const mapContainerRef = useRef<any>(null)
   const mapRef = useRef<Map>(null)
   const [activeListings, setActiveListings] = useState<Listing[]>([])
@@ -60,8 +96,10 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { setHeaderTheme } = useHeaderTheme()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const pathname = usePathname()
   const [isFirstRender, setIsFirstRender] = useState(true)
+  const [sortBy, setSortBy] = useState<{ value: string; label: string } | undefined>(undefined)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -178,8 +216,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
 
   useEffect(() => {
     setHeaderTheme('filled')
-    setActiveListings(listings)
     setIsFirstRender(false)
+
     mapRef.current = new mapboxgl.Map({
       accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '',
       container: mapContainerRef.current,
@@ -187,6 +225,35 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
       zoom: 10,
       scrollZoom: false,
     })
+    ;(async () => {
+      setIsLoading(true)
+      const search = searchParams.get('search')
+      const category = searchParams.get('category')
+      const propertyType = searchParams.get('property_type')
+      const minPrice = searchParams.get('min_price')
+      const maxPrice = searchParams.get('max_price')
+      const sizeType = searchParams.get('size_type')
+      const minSize = searchParams.get('min_size')
+      const maxSize = searchParams.get('max_size')
+      const availability = searchParams.get('availability')
+      const transactionType = searchParams.get('transaction_type')
+
+      const listingsDocs = await filterMapListings({
+        search,
+        category,
+        propertyType,
+        minPrice,
+        maxPrice,
+        sizeType,
+        minSize,
+        maxSize,
+        availability,
+        transactionType,
+      })
+      console.log(listingsDocs.docs)
+      setActiveListings(listingsDocs.docs)
+      setIsLoading(false)
+    })()
 
     return () => {
       mapRef.current?.remove()
@@ -198,10 +265,18 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
   }, [boundingBox])
 
   const resetFilters = async () => {
-    router.replace(pathname, { scroll: false })
-    const fetchedListings = await filterMapListings()
-    setActiveListings(fetchedListings.docs)
-    form.reset()
+    try {
+      setIsLoading(true)
+      router.replace(pathname, { scroll: false })
+      const fetchedListings = await filterMapListings()
+      setActiveListings(fetchedListings.docs)
+      form.reset()
+    } catch (error: any) {
+      console.log(error.message)
+      router.push(pathname)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -212,126 +287,162 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listings }) => {
         setIsLoading={setIsLoading}
         form={form}
       />
-      <div className="w-full border-t border-gray-100 grid grid-cols-5">
+      <div className="w-full border-t border-brand-gray-01 grid grid-cols-5">
         <div className="col-span-3 sticky top-20 h-fit">
-          {isFirstRender && <Skeleton className="h-[calc(100vh-5rem)]"></Skeleton>}
+          {(isFirstRender || !mapRef.current) && (
+            <Skeleton className="h-[calc(100vh-5rem)]"></Skeleton>
+          )}
+
           <div id="map" ref={mapContainerRef} className="h-[calc(100vh-5rem)]"></div>
         </div>
-
-        <div
-          className={`col-span-2 grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] xl:grid-cols-2 overflow-scroll  gap-x-4 gap-y-6 p-6 content-start bg-white ${isLoading && 'animate-pulse'}`}
-        >
-          {isFirstRender &&
-            (!activeListings || activeListings.length === 0) &&
-            Array.from(Array(4).keys()).map((_, index) => {
-              return (
-                <Card key={index} className="rounded-none bg-white border-none shadow-md">
-                  <div className="relative pb-[66.66%] overflow-hidden w-full">
-                    <Skeleton className="absolute w-full h-full top-0 left-0" />
-                  </div>
-                  <div className="p-6 flex flex-col gap-4">
-                    <div className="flex justify-between gap-4">
-                      <div className="flex flex-col gap-2 flex-1">
-                        <div>
-                          <Skeleton className="w-full h-8" />
-                        </div>
-
-                        <Skeleton className="w-full h-6" />
-                        <Skeleton className="w-full h-6" />
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              )
-            })}
-
-          {activeListings &&
-            activeListings.length > 0 &&
-            activeListings.map((listing) => {
-              return (
-                <Card
-                  key={listing.id}
-                  className="rounded-none bg-white border-none shadow-md"
-                  onMouseEnter={() => {
-                    handleCardMouseEnter(listing)
-                  }}
+        <div className="col-span-2 overflow-scroll bg-white">
+          <div className="p-6 border-b border-brand-gray-01 flex gap-6 justify-between items-center">
+            <span className="text-lg font-medium text-brand-gray-03">
+              {(isFirstRender || isLoading) && (
+                <FontAwesomeIcon icon={faCircleNotch} className="animate-spin w-4 h-auto inline" />
+              )}
+              {!isFirstRender && !isLoading && activeListings.length} of {listingsCount} Listings
+            </span>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="text-lg text-brand-gray-03 font-medium tracking-normal flex items-center gap-2 rounded-none focus:outline-none focus:ring-2 focus:ring-brand-navy focus:ring-offset-2">
+                <FontAwesomeIcon icon={faArrowUpArrowDown} className="w-5 h-auto" />{' '}
+                {sortBy ? sortBy.label : 'Sort By'}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="rounded-none">
+                <DropdownMenuRadioGroup
+                  value={sortBy?.value}
+                  onValueChange={(value) =>
+                    setSortBy(sortByOptions.find((_option) => _option.value === value))
+                  }
                 >
-                  <Link href={`/listings/${listing.slug}`}>
+                  {sortByOptions.map((option) => {
+                    return (
+                      <DropdownMenuRadioItem
+                        key={option.value}
+                        className="hover:bg-brand-blue rounded-none"
+                        value={option.value}
+                      >
+                        {option.label}
+                      </DropdownMenuRadioItem>
+                    )
+                  })}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] xl:grid-cols-2 gap-x-4 gap-y-6 p-6 content-start ">
+            {(isFirstRender || isLoading) &&
+              Array.from(Array(4).keys()).map((_, index) => {
+                return (
+                  <Card key={index} className="rounded-none bg-white border-none shadow-md">
                     <div className="relative pb-[66.66%] overflow-hidden w-full">
-                      <Media
-                        resource={listing.featuredImage}
-                        className="absolute top-0 left-0 w-full h-full"
-                        imgClassName="w-full h-full object-cover"
-                      />
+                      <Skeleton className="absolute w-full h-full top-0 left-0" />
                     </div>
                     <div className="p-6 flex flex-col gap-4">
                       <div className="flex justify-between gap-4">
                         <div className="flex flex-col gap-2 flex-1">
-                          <h3 className="sr-only">{listing.title}</h3>
                           <div>
-                            <span className="text-2xl text-brand-gray-06 font-bold font-basic-sans leading-none">
-                              {listing.price
-                                ? `${formatPrice(listing.price)}`
-                                : 'Contact for price'}
-                            </span>
-                            {listing.price && listing.transactionType === 'for-lease' && (
-                              <span className="text-sm ml-2">per sqft</span>
-                            )}
+                            <Skeleton className="w-full h-8" />
                           </div>
 
-                          <span className="text-xl font-light text-brand-gray-06">
-                            {listing.city}, {listing.state}
-                          </span>
-                          <span className="text-base font-light font-basic-sans text-brand-gray-03">
-                            {listing.streetAddress}
-                          </span>
+                          <Skeleton className="w-full h-6" />
+                          <Skeleton className="w-full h-6" />
                         </div>
-                        <div>
-                          <Button
-                            className="flex justify-center items-center w-12 h-12 p-0 rounded-full border border-brand-gray-00 bg-white text-brand-gray-06 hover:bg-brand-gray-00"
-                            style={{ boxShadow: '0px 3px 10px rgba(0,0,0,.1)' }}
-                          >
-                            <FontAwesomeIcon icon={faEnvelope} fontWeight={300} size="lg" />
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="flex gap-2 justify-start flex-wrap">
-                        {listing.area && (
-                          <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
-                            <FloorPlanIcon className="w-6" />
-                            <span className="text-base text-brand-gray-06 font-light">
-                              {formatNumber(listing.area)} sqft
-                            </span>
-                          </div>
-                        )}
-                        {listing.acreage && (
-                          <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
-                            <FontAwesomeIcon icon={faFarm} className="w-6 text-brand-navy" />
-                            <span className="text-base text-brand-gray-06 font-light fill-brand-navy">
-                              {formatNumber(listing.acreage)} acres
-                            </span>
-                          </div>
-                        )}
                       </div>
                     </div>
-                  </Link>
-                </Card>
-              )
-            })}
-          {!isFirstRender &&
-            (!activeListings ||
-              (activeListings.length === 0 && (
-                <div className="p-5 text-center">
-                  <span>No listings found</span>
-                  <Button
-                    onClick={() => {
-                      resetFilters()
+                  </Card>
+                )
+              })}
+
+            {activeListings &&
+              activeListings.length > 0 &&
+              activeListings.map((listing) => {
+                return (
+                  <Card
+                    key={listing.id}
+                    className="rounded-none bg-white border-none shadow-md"
+                    onMouseEnter={() => {
+                      handleCardMouseEnter(listing)
                     }}
                   >
-                    Clear Filters
-                  </Button>
-                </div>
-              )))}
+                    <Link href={`/listings/${listing.slug}`}>
+                      <div className="relative pb-[66.66%] overflow-hidden w-full">
+                        <Media
+                          resource={listing.featuredImage}
+                          className="absolute top-0 left-0 w-full h-full"
+                          imgClassName="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="p-6 flex flex-col gap-4">
+                        <div className="flex justify-between gap-4">
+                          <div className="flex flex-col gap-2 flex-1">
+                            <h3 className="sr-only">{listing.title}</h3>
+                            <div>
+                              <span className="text-2xl text-brand-gray-06 font-bold font-basic-sans leading-none">
+                                {listing.price
+                                  ? `${formatPrice(listing.price)}`
+                                  : 'Contact for price'}
+                              </span>
+                              {listing.price && listing.transactionType === 'for-lease' && (
+                                <span className="text-sm ml-2">per sqft</span>
+                              )}
+                            </div>
+
+                            <span className="text-xl font-light text-brand-gray-06">
+                              {listing.city}, {listing.state}
+                            </span>
+                            <span className="text-base font-light font-basic-sans text-brand-gray-03">
+                              {listing.streetAddress}
+                            </span>
+                          </div>
+                          <div>
+                            <Button
+                              className="flex justify-center items-center w-12 h-12 p-0 rounded-full border border-brand-gray-00 bg-white text-brand-gray-06 hover:bg-brand-gray-00"
+                              style={{ boxShadow: '0px 3px 10px rgba(0,0,0,.1)' }}
+                            >
+                              <FontAwesomeIcon icon={faEnvelope} fontWeight={300} size="lg" />
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 justify-start flex-wrap">
+                          {listing.area && (
+                            <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
+                              <FloorPlanIcon className="w-6" />
+                              <span className="text-base text-brand-gray-06 font-light">
+                                {formatNumber(listing.area)} sqft
+                              </span>
+                            </div>
+                          )}
+                          {listing.acreage && (
+                            <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
+                              <FontAwesomeIcon icon={faFarm} className="w-6 text-brand-navy" />
+                              <span className="text-base text-brand-gray-06 font-light fill-brand-navy">
+                                {formatNumber(listing.acreage)} acres
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  </Card>
+                )
+              })}
+            {!isFirstRender &&
+              !isLoading &&
+              (!activeListings ||
+                (activeListings.length === 0 && (
+                  <div className="p-5 text-center">
+                    <span>No listings found</span>
+                    <Button
+                      onClick={() => {
+                        resetFilters()
+                      }}
+                    >
+                      Clear Filters
+                    </Button>
+                  </div>
+                )))}
+          </div>
         </div>
       </div>
     </div>

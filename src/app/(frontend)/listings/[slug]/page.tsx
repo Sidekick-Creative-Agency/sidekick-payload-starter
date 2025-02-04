@@ -187,26 +187,31 @@ export default async function Listing({ params: paramsPromise }: Args) {
                         <FontAwesomeIcon icon={faImage} className="w-full h-auto" />
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] p-0 rounded-none bg-transparent">
+                    <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] p-0 bg-transparent rounded-lg">
                       <DialogTitle hidden>Image Gallery</DialogTitle>
-                      <Carousel className=" w-full rounded-none bg-transparent">
-                        <CarouselContent className="bg-transparent">
-                          <CarouselItem className="basis-full pl-0 bg-transparent">
-                            <Media resource={listing.featuredImage} className="w-full" />
+                      <Carousel className="w-full rounded-lg overflow-hidden">
+                        <CarouselContent className=" ml-0 rounded-lg">
+                          <CarouselItem className="pl-0 basis-full">
+                            <Media
+                              resource={listing.featuredImage}
+                              className="w-full rounded-lg overflow-hidden"
+                              imgClassName="w-full object-cover"
+                            />
                           </CarouselItem>
                           {listing.imageGallery.map((image, index) => {
                             return (
-                              <CarouselItem key={image.id} className="basis-full pl-0">
+                              <CarouselItem key={image.id} className=" pl-0 basis-full rounded-lg">
                                 <Media
                                   resource={image.image as MediaType | number | undefined}
-                                  className="w-full"
+                                  className="w-full overflow-hidden rounded-lg"
+                                  imgClassName="w-full object-cover"
                                 />
                               </CarouselItem>
                             )
                           })}
                         </CarouselContent>
-                        <CarouselPrevious className="left-2 p-2 bg-brand-navy text-white border-none hover:bg-brand-navy hover:text-white hover:opacity-80 focus-visible:bg-brand-navy focus-visible:text-white focus-visible:opacity-80" />
-                        <CarouselNext className="right-2 p-2 bg-brand-navy text-white border-none hover:bg-brand-navy hover:text-white hover:opacity-80 focus-visible:bg-brand-navy focus-visible:text-white focus-visible:opacity-80" />
+                        <CarouselPrevious className="left-2 p-2 bg-brand-navy text-white border-none hover:bg-brand-navy hover:text-white hover:opacity-80 focus-visible:bg-brand-navy focus-visible:text-white focus-visible:opacity-80 rounded-sm" />
+                        <CarouselNext className="right-2 p-2 bg-brand-navy text-white border-none hover:bg-brand-navy hover:text-white hover:opacity-80 focus-visible:bg-brand-navy focus-visible:text-white focus-visible:opacity-80 rounded-sm" />
                       </Carousel>
                     </DialogContent>
                   </Dialog>
@@ -399,23 +404,8 @@ export default async function Listing({ params: paramsPromise }: Args) {
                       blockType: 'formBlock',
                       form: generalContactForm,
                       styles: {
-                        global: {
-                          width: 'full',
-                        },
-                        resp: {
-                          padHorDeskUnit: 'rem',
-                          padHorDeskVal: null,
-                          padHorTabUnit: 'rem',
-                          padHorTabVal: null,
-                          padHorMbUnit: 'rem',
-                          padHorMbVal: null,
-                          padVertDeskUnit: 'rem',
-                          padVertDeskVal: null,
-                          padVertTabUnit: 'rem',
-                          padVertTabVal: null,
-                          padVertMbUnit: 'rem',
-                          padVertMbVal: null,
-                        },
+                        global: {},
+                        resp: {},
                       },
                     },
                     type: 'block',

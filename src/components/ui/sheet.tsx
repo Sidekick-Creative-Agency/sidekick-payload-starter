@@ -61,10 +61,11 @@ const SheetContent = React.forwardRef<
     closeButton?: React.ForwardRefExoticComponent<any & React.RefAttributes<SVGSVGElement>>
   }
 >(({ side = 'right', className, closeButton: CloseButton, children, ...props }, ref) => {
-  const hasCloseButton = (children as [any])?.filter(
-    (child) => child?.type?.render?.displayName === 'DialogClose',
-  )
-
+  console.log(children)
+  // const hasCloseButton = (children)?.filter(
+  //   (child) => child?.type?.render?.displayName === 'DialogClose',
+  // )
+  const hasCloseButton = false
   return (
     <SheetPortal>
       <SheetOverlay />
@@ -74,8 +75,9 @@ const SheetContent = React.forwardRef<
         {...props}
       >
         {children}
+
         {!hasCloseButton && (
-          <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand-navy focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+          <SheetPrimitive.Close className="absolute right-4 top-4 flex items-center rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
             <FontAwesomeIcon icon={faXmark} className="w-4 h-auto" />
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>
