@@ -31,7 +31,7 @@ export const FAQBlock: React.FC<
         className={`faq-block-${id} flex flex-col items-stretch`}
         {...(elementId ? { id: elementId } : {})}
       >
-        <div className="container py:20 sm:py-32 flex flex-col gap-20">
+        <div className="container py-20 sm:py-32 flex flex-col gap-20">
           {enableHeading && heading && (
             <h2 className="text-center text-[2.5rem] text-brand-gray-06 font-bold">{heading}</h2>
           )}

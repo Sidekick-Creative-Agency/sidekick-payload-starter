@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import type { Header as HeaderType } from '@/payload-types'
 
@@ -36,23 +36,32 @@ import {
   faX,
   faXmark,
 } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
+import { useHeaderTheme } from '@/providers/HeaderTheme'
+import { usePathname } from 'next/navigation'
 
 export const HeaderMobileNav: React.FC<{ header: HeaderType }> = ({ header }) => {
   const navItems = header?.navItems || []
+  const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const { headerTheme } = useHeaderTheme()
   const { scrollY } = useScroll()
+  const pathname = usePathname()
 
   useMotionValueEvent(scrollY, 'change', (latest) => {
     if (latest > 1) setIsScrolled(true)
     else setIsScrolled(false)
   })
 
+  useEffect(() => {
+    setIsOpen(false)
+  }, [pathname])
+
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger className="flex justify-end items-center" tabIndex={0}>
         <FontAwesomeIcon
           icon={faBars}
-          className={`w-6 h-auto transition-colors duration-200 ${isScrolled ? 'text-brand-tan' : 'text-white'}`}
+          className={`w-6 h-auto transition-colors duration-200 ${isScrolled || headerTheme === 'filled' ? 'text-brand-tan' : 'text-white'}`}
         />
       </SheetTrigger>
       <SheetContent className="p-[1.25rem] sm:p-8 bg-white border-none w-96 max-w-full">
@@ -91,13 +100,18 @@ export const HeaderMobileNav: React.FC<{ header: HeaderType }> = ({ header }) =>
                       <AccordionContent className="flex flex-col gap-2 px-4">
                         {navItem?.childrenLinks?.map((childLink, i) => {
                           return (
-                            <Link
+                            <CMSLink
                               key={i}
-                              href={childLink.link.url || ''}
+                              {...childLink.link}
                               className="w-full text-brand-gray-06 uppercase tracking-wide font-bold py-1"
-                            >
-                              {childLink.link.label}
-                            </Link>
+                            />
+                            // <Link
+                            //   key={i}
+                            //   href={childLink.link.url || ''}
+                            //   className="w-full text-brand-gray-06 uppercase tracking-wide font-bold py-1"
+                            // >
+                            //   {childLink.link.label}
+                            // </Link>
                           )
                         })}
                       </AccordionContent>
