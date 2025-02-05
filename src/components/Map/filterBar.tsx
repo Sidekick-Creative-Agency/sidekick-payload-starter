@@ -175,7 +175,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   <FormItem className="w-full">
                     <FormControl>
                       <Input
-                        placeholder="Search"
+                        placeholder="Search by Address, City, Zipcode..."
                         {...field}
                         className="h-full text-lg font-light text-brand-navy"
                       />
@@ -512,7 +512,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   <FormItem className="w-full">
                     <FormControl>
                       <Input
-                        placeholder="Search"
+                        placeholder="Search by Address, City, Zipcode..."
                         {...field}
                         className="h-full text-lg font-light text-brand-navy"
                       />

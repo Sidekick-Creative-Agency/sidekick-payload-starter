@@ -222,13 +222,8 @@ export const Listings: CollectionConfig = {
               type: 'row',
               fields: [
                 {
-                  name: 'latitude',
-                  type: 'number',
-                  required: true,
-                },
-                {
-                  name: 'longitude',
-                  type: 'number',
+                  name: 'coordinates',
+                  type: 'point',
                   required: true,
                 },
               ],

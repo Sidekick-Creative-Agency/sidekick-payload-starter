@@ -209,23 +209,7 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
-    small?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
     medium?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    large?: {
       url?: string | null;
       width?: number | null;
       height?: number | null;
@@ -341,8 +325,11 @@ export interface Listing {
   city: string;
   state: string;
   zipCode: string;
-  latitude: number;
-  longitude: number;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  coordinates: [number, number];
   attachments?:
     | {
         attachment?: (number | null) | Attachment;
@@ -1872,27 +1859,7 @@ export interface MediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
-        small?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
         medium?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        large?:
           | T
           | {
               url?: T;
@@ -1973,8 +1940,7 @@ export interface ListingsSelect<T extends boolean = true> {
   city?: T;
   state?: T;
   zipCode?: T;
-  latitude?: T;
-  longitude?: T;
+  coordinates?: T;
   attachments?:
     | T
     | {

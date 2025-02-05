@@ -9,7 +9,13 @@ import { Button } from '../../../../components/ui/button'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFarm } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
-import { faEnvelope } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
+import {
+  faEnvelope,
+  faArrowUpArrowDown,
+  faCircleNotch,
+  faList,
+  faMap,
+} from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
 import { formatNumber } from '@/utilities/formatNumber'
 import { formatPrice } from '@/utilities/formatPrice'
 import { FilterBar } from '@/components/Map/filterBar'
@@ -20,15 +26,16 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Skeleton } from '@/components/ui/skeleton'
-import { faArrowUpArrowDown, faCircleNotch } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import useWindowDimensions from '@/utilities/useWindowDimensions'
+import defaultTheme from 'tailwindcss/defaultTheme'
 
 interface MapPageClientProps {
   listingsCount?: number
@@ -90,10 +97,12 @@ const sortByOptions = [
 export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const mapContainerRef = useRef<any>(null)
   const mapRef = useRef<Map>(null)
+  const { width } = useWindowDimensions()
   const [activeListings, setActiveListings] = useState<Listing[]>([])
   const [boundingBox, setBoundingBox] = useState<number[][]>([])
   const [activeMarkers, setActiveMarkers] = useState<Marker[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [activeTab, setActiveTab] = useState('map')
   const { setHeaderTheme } = useHeaderTheme()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -181,7 +190,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
               `
                 <div class="marker-popup rounded-lg overflow-hidden">
                   <div class="marker-popup_image-container relative aspect-video">
-                    <img src="${(feature.properties.image as MediaType)?.sizes?.small?.url || null}" alt="${(feature?.properties?.image as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
+                    <img src="${(feature.properties.image as MediaType)?.sizes?.medium?.url || null}" alt="${(feature?.properties?.image as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
                   </div>
                   <div class="p-6 bg-white flex flex-col-reverse">
                     <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${feature.properties.address}</h3>
@@ -287,15 +296,37 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
         setIsLoading={setIsLoading}
         form={form}
       />
-      <div className="w-full border-t border-brand-gray-01 grid grid-cols-5">
-        <div className="col-span-3 sticky top-20 h-fit">
+      <div className="w-full border-t border-brand-gray-01 md:grid md:grid-cols-5">
+        {width && width <= parseInt(defaultTheme.screens.md) && (
+          <div className="flex">
+            <Button
+              className={`flex-1 flex gap-2 items-center text-lg font-medium tracking-normal normal-case bg-transparent hover:bg-transparent focus-visible:bg-transparent  border-0 border-b-2 ${activeTab === 'map' ? 'text-brand-navy border-b-brand-navy' : 'text-brand-gray-03 border-b-transparent'}`}
+              onClick={() => setActiveTab('map')}
+            >
+              <FontAwesomeIcon icon={faMap} className="w-5 h-auto" /> Map
+            </Button>
+            <Button
+              className={`flex-1 flex gap-2 items-center text-lg font-medium tracking-normal normal-case bg-transparent hover:bg-transparent focus-visible:bg-transparent border-0 border-b-2 ${activeTab === 'list' ? 'text-brand-navy border-b-brand-navy' : 'text-brand-gray-03 border-b-transparent'}`}
+              onClick={() => setActiveTab('list')}
+            >
+              <FontAwesomeIcon icon={faList} className="w-5 h-auto" /> List
+            </Button>
+          </div>
+        )}
+
+        <div
+          className={`col-span-3 relative md:sticky md:top-20 h-fit ${width && width <= parseInt(defaultTheme.screens.md) && activeTab !== 'map' && 'hidden'}`}
+        >
           {(isFirstRender || !mapRef.current) && (
             <Skeleton className="h-[calc(100vh-5rem)]"></Skeleton>
           )}
 
           <div id="map" ref={mapContainerRef} className="h-[calc(100vh-5rem)]"></div>
         </div>
-        <div className="col-span-2 overflow-scroll bg-white">
+
+        <div
+          className={`col-span-2 overflow-scroll bg-white ${width && width <= parseInt(defaultTheme.screens.md) && activeTab !== 'list' && 'hidden'}`}
+        >
           <div className="p-6 border-b border-brand-gray-01 flex gap-6 justify-between items-center">
             <span className="text-lg font-medium text-brand-gray-03">
               {(isFirstRender || isLoading) && (
@@ -431,7 +462,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
               !isLoading &&
               (!activeListings ||
                 (activeListings.length === 0 && (
-                  <div className="p-5 text-center">
+                  <div className="p-5 text-center flex flex-col gap-4">
                     <span>No listings found</span>
                     <Button
                       onClick={() => {
