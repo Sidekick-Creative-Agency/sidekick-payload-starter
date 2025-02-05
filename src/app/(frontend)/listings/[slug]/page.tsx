@@ -69,8 +69,11 @@ export async function generateStaticParams() {
   const params = listings.docs.map(({ slug }) => {
     return { slug }
   })
-
-  return params
+  if (params && params.length > 0) {
+    return params
+  }
+  console.log('hi')
+  return [{ slug: 'test' }]
 }
 
 type Args = {

@@ -130,13 +130,13 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const handleCardMouseEnter = (listing: Listing) => {
     if (mapRef.current) {
       mapRef.current.flyTo({
-        center: [listing.longitude, listing.latitude],
+        center: [listing.coordinates[0], listing.coordinates[1]],
         speed: 0.5,
       })
       activeMarkers.forEach((marker) => {
         if (
-          marker.getLngLat().lng === listing.longitude &&
-          marker.getLngLat().lat === listing.latitude &&
+          marker.getLngLat().lng === listing.coordinates[0] &&
+          marker.getLngLat().lat === listing.coordinates[1] &&
           !marker.getPopup()?.isOpen()
         ) {
           marker.togglePopup()
@@ -163,13 +163,13 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
               price: listing.price ? formatPrice(listing.price) : '',
               transactionType: listing.transactionType,
               image: listing.featuredImage,
-              lat: listing.latitude,
-              lon: listing.longitude,
+              lat: listing.coordinates[1],
+              lon: listing.coordinates[0],
               iconSize: 32,
             },
             geometry: {
               type: 'Point',
-              coordinates: [listing.longitude, listing.latitude],
+              coordinates: [listing.coordinates[0], listing[1]],
             },
           }
         }),

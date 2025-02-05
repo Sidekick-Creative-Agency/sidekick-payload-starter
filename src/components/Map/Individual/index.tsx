@@ -34,13 +34,13 @@ export const ListingMap: React.FC<ListingMapProps> = ({ listing }) => {
           address: listing.streetAddress,
           price: listing.price ? formatPrice(listing.price) : '',
           image: listing.featuredImage,
-          lat: listing.latitude,
-          lon: listing.longitude,
+          lat: listing.coordinates[1],
+          lon: listing.coordinates[0],
           iconSize: 32,
         },
         geometry: {
           type: 'Point',
-          coordinates: [listing.longitude, listing.latitude],
+          coordinates: [listing.coordinates[0], listing.coordinates[1]],
         },
       },
     ],
@@ -48,7 +48,7 @@ export const ListingMap: React.FC<ListingMapProps> = ({ listing }) => {
 
   const centerMap = () => {
     mapRef.current?.flyTo({
-      center: [listing.longitude, listing.latitude],
+      center: [listing.coordinates[0], listing.coordinates[1]],
       speed: 0.5,
     })
   }
@@ -57,7 +57,7 @@ export const ListingMap: React.FC<ListingMapProps> = ({ listing }) => {
     mapRef.current = new mapboxgl.Map({
       accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '',
       container: mapContainerRef.current,
-      center: [listing.longitude, listing.latitude],
+      center: [listing.coordinates[0], listing.coordinates[1]],
       zoom: 10,
       scrollZoom: false,
     })
@@ -69,13 +69,13 @@ export const ListingMap: React.FC<ListingMapProps> = ({ listing }) => {
     el.innerHTML = mapMarkerIcon
 
     const newMarker = new mapboxgl.Marker(el)
-      .setLngLat([listing.longitude, listing.latitude])
+      .setLngLat([listing.coordinates[0], listing.coordinates[1]])
       .setPopup(
         new mapboxgl.Popup({ offset: 25 }).setHTML(
           `
                 <div class="marker-popup rounded-lg overflow-hidden">
                   <div class="marker-popup_image-container relative aspect-video">
-                    <img src="${(listing.featuredImage as MediaType)?.sizes?.small?.url}" alt="${(listing.featuredImage as MediaType).alt}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
+                    <img src="${(listing.featuredImage as MediaType)?.sizes?.medium?.url}" alt="${(listing.featuredImage as MediaType).alt}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
                   </div>
                   <div class="p-6 bg-white flex flex-col-reverse">
                     <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${listing.streetAddress}</h3>
