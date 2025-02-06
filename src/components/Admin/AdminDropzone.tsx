@@ -342,7 +342,7 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
             city,
             state,
             zipCode,
-            coordinates: [latitude, longitude],
+            coordinates: [longitude, latitude],
             attachments,
             isFeatured,
             bedrooms,
