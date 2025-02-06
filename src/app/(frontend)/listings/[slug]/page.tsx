@@ -304,7 +304,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                                   className="w-6 h-auto text-brand-navy"
                                 />
                                 <span className="text-base font-bold text-brand-gray-04">
-                                  {(attachment.attachment as Attachment).label}
+                                  {(attachment.attachment as Attachment).title}
                                 </span>
                               </a>
                             )

@@ -3,6 +3,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { authenticated } from '@/access/authenticated'
 import { anyone } from '@/access/anyone'
+import { beforeChangeHook } from './hooks/beforeChangeHook'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -17,15 +18,15 @@ export const Attachments: CollectionConfig = {
   },
   fields: [
     {
-      name: 'label',
+      name: 'title',
       type: 'text',
     },
-    // {
-    //   name: 'relatedListings',
-    //   type: 'join',
-    //   collection: 'listings',
-    //   on: 'attachments',
-    // },
+    {
+      name: 'relatedListings',
+      type: 'join',
+      collection: 'listings',
+      on: 'attachments.attachment',
+    },
   ],
   upload: {
     // Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload
@@ -40,5 +41,8 @@ export const Attachments: CollectionConfig = {
         },
       ],
     },
+  },
+  hooks: {
+    beforeChange: [beforeChangeHook],
   },
 }

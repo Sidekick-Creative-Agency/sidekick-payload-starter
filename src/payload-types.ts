@@ -31,6 +31,9 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    attachments: {
+      relatedListings: 'listings';
+    };
     'property-types': {
       relatedListings: 'listings';
     };
@@ -297,6 +300,8 @@ export interface Listing {
       }[]
     | null;
   category?: ('commercial' | 'residential') | null;
+  bedrooms?: number | null;
+  bathrooms?: number | null;
   description?: {
     root: {
       type: string;
@@ -315,7 +320,7 @@ export interface Listing {
   price?: number | null;
   propertyType?: (number | PropertyType)[] | null;
   transactionType?: ('for-sale' | 'for-lease') | null;
-  availability?: ('available' | 'unavailable') | null;
+  availability?: ('available' | 'unavailable' | 'sold') | null;
   /**
    * Square footage of the property
    */
@@ -333,6 +338,13 @@ export interface Listing {
   attachments?:
     | {
         attachment?: (number | null) | Attachment;
+        id?: string | null;
+      }[]
+    | null;
+  videos?:
+    | {
+        url: string;
+        title?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -359,7 +371,11 @@ export interface Listing {
  */
 export interface Attachment {
   id: number;
-  label?: string | null;
+  title?: string | null;
+  relatedListings?: {
+    docs?: (number | Listing)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -1929,6 +1945,8 @@ export interface ListingsSelect<T extends boolean = true> {
         id?: T;
       };
   category?: T;
+  bedrooms?: T;
+  bathrooms?: T;
   description?: T;
   price?: T;
   propertyType?: T;
@@ -1945,6 +1963,13 @@ export interface ListingsSelect<T extends boolean = true> {
     | T
     | {
         attachment?: T;
+        id?: T;
+      };
+  videos?:
+    | T
+    | {
+        url?: T;
+        title?: T;
         id?: T;
       };
   isFeatured?: T;
@@ -1968,7 +1993,8 @@ export interface ListingsSelect<T extends boolean = true> {
  * via the `definition` "attachments_select".
  */
 export interface AttachmentsSelect<T extends boolean = true> {
-  label?: T;
+  title?: T;
+  relatedListings?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;

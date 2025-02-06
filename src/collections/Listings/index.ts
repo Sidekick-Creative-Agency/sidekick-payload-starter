@@ -13,7 +13,6 @@ import {
 } from '@payloadcms/richtext-lexical'
 
 import { authenticated } from '../../access/authenticated'
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -28,13 +27,14 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/Slug'
+import { anyone } from '@/access/anyone'
 
 export const Listings: CollectionConfig = {
   slug: 'listings',
   access: {
     create: authenticated,
     delete: authenticated,
-    read: () => true,
+    read: anyone,
     update: authenticated,
   },
   admin: {
@@ -109,6 +109,22 @@ export const Listings: CollectionConfig = {
               ],
             },
             {
+              type: 'row',
+              fields: [
+                {
+                  name: 'bedrooms',
+                  type: 'number',
+                },
+                {
+                  name: 'bathrooms',
+                  type: 'number',
+                },
+              ],
+              admin: {
+                condition: (_, siblingData) => siblingData?.category === 'residential',
+              },
+            },
+            {
               name: 'description',
               type: 'richText',
               editor: lexicalEditor({
@@ -171,6 +187,10 @@ export const Listings: CollectionConfig = {
                     {
                       label: 'Unavailable',
                       value: 'unavailable',
+                    },
+                    {
+                      label: 'Sold',
+                      value: 'sold',
                     },
                   ],
                 },
@@ -236,6 +256,21 @@ export const Listings: CollectionConfig = {
                   name: 'attachment',
                   type: 'upload',
                   relationTo: 'attachments',
+                },
+              ],
+            },
+            {
+              name: 'videos',
+              type: 'array',
+              fields: [
+                {
+                  name: 'url',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'title',
+                  type: 'text',
                 },
               ],
             },
