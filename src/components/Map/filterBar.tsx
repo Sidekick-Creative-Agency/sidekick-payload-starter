@@ -22,10 +22,10 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { formatNumber } from '@/utilities/formatNumber'
 import { usePayloadAPI } from '@payloadcms/ui'
 import { formatPrice } from '@/utilities/formatPrice'
-import { filterMapListings } from '@/app/(frontend)/api/filterMapListings'
+import { getMapListings } from '@/app/(frontend)/api/getMapListings'
 import { Listing } from '@/payload-types'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { FormSchema } from '@/app/(frontend)/listings/map/page.client'
+import { FormSchema, MapFilters } from '@/app/(frontend)/listings/map/page.client'
 import useWindowDimensions from '@/utilities/useWindowDimensions'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet'
@@ -33,18 +33,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '..
 import { Label } from '../ui/label'
 
 interface FilterBarProps {
-  setActiveListings: (listings: Listing[]) => void
-  isLoading: boolean
-  setIsLoading: (isLoading: boolean) => void
+  handleFilter: (filterData?: MapFilters, page?: number) => Promise<void>
   form: UseFormReturn<z.infer<typeof FormSchema>>
+  isLoading: boolean
 }
 
-export const FilterBar: React.FC<FilterBarProps> = ({
-  setActiveListings,
-  isLoading,
-  setIsLoading,
-  form,
-}) => {
+export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoading }) => {
   const searchParams = useSearchParams()
   const { toast } = useToast()
   const [sizeText, setSizeText] = useState('Size')
@@ -60,40 +54,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   )
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    setIsLoading(true)
-    const newSearchParams = new URLSearchParams(searchParams)
-    if (data.search) {
-      newSearchParams.set('search', data.search)
-    }
-    if (data.category) {
-      newSearchParams.set('category', data.category)
-    }
-    if (data.propertyType) {
-      newSearchParams.set('property_type', data.propertyType)
-    }
-    if (data.minPrice) {
-      newSearchParams.set('min_price', data.minPrice.toString())
-    }
-    if (data.maxPrice) {
-      newSearchParams.set('max_price', data.maxPrice.toString())
-    }
-    if (data.minSize) {
-      newSearchParams.set('min_size', data.minSize.toString())
-    }
-    if (data.maxSize) {
-      newSearchParams.set('max_size', data.maxSize.toString())
-    }
-    if (data.availability) {
-      newSearchParams.set('availability', data.availability.toString())
-    }
-    if (data.transactionType) {
-      newSearchParams.set('transaction_type', data.transactionType.toString())
-    }
-    if (data.sizeType) {
-      newSearchParams.set('size_type', data.sizeType.toString())
-    }
-    router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
-    const filteredListings = await filterMapListings({
+    const filterData = {
       search: data.search,
       category: data.category,
       propertyType: data.propertyType,
@@ -103,13 +64,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       maxSize: data.maxSize,
       sizeType: data.sizeType,
       availability: data.availability,
-      transactionType: data.transactionType,
-    })
-    setActiveListings(filteredListings.docs)
-    toast({
-      title: `Found ${filteredListings.totalDocs} listings`,
-    })
-    setIsLoading(false)
+      transactionType: data.transactionType as 'for-sale' | 'for-lease' | null | undefined,
+    }
+    handleFilter(filterData)
+
     setIsOpen(false)
   }
 

@@ -4,7 +4,7 @@ import { getPayload, PaginatedDocs } from 'payload'
 import configPromise from '@payload-config'
 import { Listing } from '@/payload-types'
 
-interface FilterBody {
+interface Filterfilters {
   search: string | null | undefined
   category: string | null | undefined
   propertyType: string | null | undefined
@@ -17,44 +17,49 @@ interface FilterBody {
   transactionType: string | null | undefined
 }
 
-export const filterMapListings = async (body?: FilterBody) => {
+export const getMapListings = async (data?: {
+  filters?: Filterfilters
+  page?: number | null | undefined
+}) => {
   try {
     const payload = await getPayload({ config: configPromise })
     let listings: PaginatedDocs<Listing> | undefined = undefined
 
-    if (!body) {
+    if (!data) {
       listings = await payload.find({
         collection: 'listings',
       })
       return listings
     }
-
+    const { filters, page } = data
     listings = await payload.find({
       collection: 'listings',
+      limit: 2,
+      ...(page ? { page: page } : {}),
       where: {
         and: [
           {
-            ...(body.search
+            ...(filters?.search
               ? {
                   or: [
                     {
                       streetAddress: {
-                        like: body.search,
+                        like: filters.search,
                       },
                     },
                     {
                       city: {
-                        like: body.search,
+                        like: filters.search,
                       },
                     },
                     {
                       state: {
-                        like: body.search,
+                        like: filters.search,
                       },
                     },
                     {
                       zipCode: {
-                        like: body.search,
+                        like: filters.search,
                       },
                     },
                   ],
@@ -77,12 +82,12 @@ export const filterMapListings = async (body?: FilterBody) => {
                 and: [
                   {
                     price: {
-                      greater_than_equal: body.minPrice ? Number(body.minPrice) : 0,
+                      greater_than_equal: filters?.minPrice ? Number(filters.minPrice) : 0,
                     },
                   },
                   {
                     price: {
-                      less_than_equal: body.maxPrice ? Number(body.maxPrice) : Infinity,
+                      less_than_equal: filters?.maxPrice ? Number(filters.maxPrice) : Infinity,
                     },
                   },
                 ],
@@ -90,32 +95,32 @@ export const filterMapListings = async (body?: FilterBody) => {
             ],
           },
           {
-            ...(body.sizeType && body.sizeType === 'sqft'
+            ...(filters?.sizeType && filters.sizeType === 'sqft'
               ? {
                   and: [
                     {
                       area: {
-                        greater_than_equal: body.minSize ? Number(body.minSize) : 0,
+                        greater_than_equal: filters.minSize ? Number(filters.minSize) : 0,
                       },
                     },
                     {
                       area: {
-                        less_than_equal: body.maxSize ? Number(body.maxSize) : Infinity,
+                        less_than_equal: filters.maxSize ? Number(filters.maxSize) : Infinity,
                       },
                     },
                   ],
                 }
-              : body.sizeType && body.sizeType === 'acres'
+              : filters?.sizeType && filters.sizeType === 'acres'
                 ? {
                     and: [
                       {
                         acreage: {
-                          greater_than_equal: body.minSize ? Number(body.minSize) : 0,
+                          greater_than_equal: filters.minSize ? Number(filters.minSize) : 0,
                         },
                       },
                       {
                         acreage: {
-                          less_than_equal: body.maxSize ? Number(body.maxSize) : Infinity,
+                          less_than_equal: filters.maxSize ? Number(filters.maxSize) : Infinity,
                         },
                       },
                     ],
@@ -128,22 +133,22 @@ export const filterMapListings = async (body?: FilterBody) => {
           },
           {
             transactionType: {
-              in: body.transactionType ? [body.transactionType] : ['for-sale', 'for-lease'],
+              in: filters?.transactionType ? [filters.transactionType] : ['for-sale', 'for-lease'],
             },
           },
           {
             'propertyType.id': {
-              in: body.propertyType ? body.propertyType : [...Array(25).keys()],
+              in: filters?.propertyType ? filters.propertyType : [...Array(25).keys()],
             },
           },
           {
             availability: {
-              in: body.availability ? [body.availability] : ['available', 'unavailable'],
+              in: filters?.availability ? [filters.availability] : ['available', 'unavailable'],
             },
           },
           {
             category: {
-              in: body.category ? [body.category] : ['commercial', 'residential'],
+              in: filters?.category ? [filters.category] : ['commercial', 'residential'],
             },
           },
         ],

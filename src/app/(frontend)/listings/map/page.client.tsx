@@ -15,13 +15,15 @@ import {
   faCircleNotch,
   faList,
   faMap,
+  faChevronLeft,
+  faChevronRight,
 } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
 import { formatNumber } from '@/utilities/formatNumber'
 import { formatPrice } from '@/utilities/formatPrice'
 import { FilterBar } from '@/components/Map/filterBar'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { filterMapListings } from '../../api/filterMapListings'
+import { getMapListings } from '../../api/getMapListings'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -103,6 +105,12 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const [activeMarkers, setActiveMarkers] = useState<Marker[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('map')
+  const [filters, setFilters] = useState<MapFilters | undefined>(undefined)
+  const [hasNextPage, setHasNextPage] = useState<boolean | null | undefined>(undefined)
+  const [hasPrevPage, setHasPrevPage] = useState<boolean | null | undefined>(undefined)
+  const [currentPage, setCurrentPage] = useState<number | null | undefined>(undefined)
+  const [nextPage, setNextPage] = useState<number | null | undefined>(undefined)
+  const [prevPage, setPrevPage] = useState<number | null | undefined>(undefined)
   const { setHeaderTheme } = useHeaderTheme()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -147,6 +155,58 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     }
   }
 
+  const handleFetchListings = async (filterData?: MapFilters, page?: number) => {
+    setIsLoading(true)
+    if (filterData) {
+      setFilters(filterData)
+      const newSearchParams = new URLSearchParams(searchParams)
+      if (filterData.search) {
+        newSearchParams.set('search', filterData.search)
+      }
+      if (filterData.category) {
+        newSearchParams.set('category', filterData.category)
+      }
+      if (filterData.propertyType) {
+        newSearchParams.set('property_type', filterData.propertyType)
+      }
+      if (filterData.minPrice) {
+        newSearchParams.set('min_price', filterData.minPrice.toString())
+      }
+      if (filterData.maxPrice) {
+        newSearchParams.set('max_price', filterData.maxPrice.toString())
+      }
+      if (filterData.minSize) {
+        newSearchParams.set('min_size', filterData.minSize.toString())
+      }
+      if (filterData.maxSize) {
+        newSearchParams.set('max_size', filterData.maxSize.toString())
+      }
+      if (filterData.availability) {
+        newSearchParams.set('availability', filterData.availability.toString())
+      }
+      if (filterData.transactionType) {
+        newSearchParams.set('transaction_type', filterData.transactionType.toString())
+      }
+      if (filterData.sizeType) {
+        newSearchParams.set('size_type', filterData.sizeType.toString())
+      }
+      router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
+    }
+
+    const response = await getMapListings({
+      filters: filterData ? filterData : filters,
+      page: page,
+    })
+    console.log(response.nextPage)
+    setCurrentPage(response.page)
+    setPrevPage(response.prevPage)
+    setHasPrevPage(response.hasPrevPage)
+    setNextPage(response.nextPage)
+    setHasNextPage(response.hasNextPage)
+    setActiveListings(response.docs)
+    setIsLoading(false)
+  }
+
   useEffect(() => {
     activeMarkers.forEach((marker) => marker.remove())
     setActiveMarkers([])
@@ -169,7 +229,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             },
             geometry: {
               type: 'Point',
-              coordinates: [listing.coordinates[0], listing[1]],
+              coordinates: [listing.coordinates[0], listing.coordinates[1]],
             },
           }
         }),
@@ -234,35 +294,26 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       zoom: 10,
       scrollZoom: false,
     })
-    ;(async () => {
-      setIsLoading(true)
-      const search = searchParams.get('search')
-      const category = searchParams.get('category')
-      const propertyType = searchParams.get('property_type')
-      const minPrice = searchParams.get('min_price')
-      const maxPrice = searchParams.get('max_price')
-      const sizeType = searchParams.get('size_type')
-      const minSize = searchParams.get('min_size')
-      const maxSize = searchParams.get('max_size')
-      const availability = searchParams.get('availability')
-      const transactionType = searchParams.get('transaction_type')
+    // FETCH PROPERTIES ON FIRST RENDER
 
-      const listingsDocs = await filterMapListings({
-        search,
-        category,
-        propertyType,
-        minPrice,
-        maxPrice,
-        sizeType,
-        minSize,
-        maxSize,
-        availability,
-        transactionType,
-      })
-      console.log(listingsDocs.docs)
-      setActiveListings(listingsDocs.docs)
-      setIsLoading(false)
-    })()
+    setIsLoading(true)
+    const filterData = {
+      search: searchParams.get('search'),
+      category: searchParams.get('category'),
+      propertyType: searchParams.get('property_type'),
+      minPrice: searchParams.get('min_price'),
+      maxPrice: searchParams.get('max_price'),
+      sizeType: searchParams.get('size_type'),
+      minSize: searchParams.get('min_size'),
+      maxSize: searchParams.get('max_size'),
+      availability: searchParams.get('availability'),
+      transactionType: searchParams.get('transaction_type') as
+        | 'for-sale'
+        | 'for-lease'
+        | null
+        | undefined,
+    }
+    handleFetchListings(filterData)
 
     return () => {
       mapRef.current?.remove()
@@ -273,13 +324,19 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     centerMap()
   }, [boundingBox])
 
+  useEffect(() => {
+    console.log(hasPrevPage)
+    console.log(prevPage)
+    console.log(hasNextPage)
+    console.log(nextPage)
+  }, [hasPrevPage, prevPage, hasNextPage, nextPage])
+
   const resetFilters = async () => {
     try {
       setIsLoading(true)
       router.replace(pathname, { scroll: false })
-      const fetchedListings = await filterMapListings()
-      setActiveListings(fetchedListings.docs)
       form.reset()
+      handleFetchListings()
     } catch (error: any) {
       console.log(error.message)
       router.push(pathname)
@@ -290,12 +347,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
 
   return (
     <div>
-      <FilterBar
-        setActiveListings={setActiveListings}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-        form={form}
-      />
+      <FilterBar handleFilter={handleFetchListings} form={form} isLoading={isLoading} />
       <div className="w-full border-t border-brand-gray-01 md:grid md:grid-cols-5">
         {width && width <= parseInt(defaultTheme.screens.md) && (
           <div className="flex">
@@ -458,6 +510,35 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                   </Card>
                 )
               })}
+            {!isFirstRender && activeListings && activeListings.length > 0 && (
+              <div className="col-span-full flex justify-center gap-4">
+                <Button
+                  variant="outline"
+                  className="p-0 w-8 h-8"
+                  disabled={!hasPrevPage}
+                  onClick={() => {
+                    if (hasPrevPage && prevPage) {
+                      handleFetchListings(undefined, prevPage)
+                    }
+                  }}
+                >
+                  <FontAwesomeIcon icon={faChevronLeft} />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="p-0 w-8 h-8"
+                  disabled={!hasNextPage}
+                  onClick={() => {
+                    if (hasNextPage && nextPage) {
+                      handleFetchListings(undefined, nextPage)
+                    }
+                  }}
+                >
+                  <FontAwesomeIcon icon={faChevronRight} />
+                </Button>
+              </div>
+            )}
+
             {!isFirstRender &&
               !isLoading &&
               (!activeListings ||

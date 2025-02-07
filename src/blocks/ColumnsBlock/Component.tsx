@@ -181,7 +181,7 @@ export const ColumnsBlock: React.FC<
                   {type === 'media' && media && (
                     <Media
                       resource={media}
-                      className={`relative aspect-[5/4] overflow-hidden w-full h-auto z-0 ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']} ${width !== 'full' ? `md:aspect-square ${mediaBorderRadiusClasses[mediaBorderRadius || 'none']}` : 'md:aspect-auto md:h-full'}`}
+                      className={`relative aspect-[5/4] overflow-hidden w-full h-auto z-0 ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']} ${width !== 'full' ? `sm:aspect-square ${mediaBorderRadiusClasses[mediaBorderRadius || 'none']}` : 'sm:aspect-auto sm:h-full'}`}
                       imgClassName="absolute top-0 left-0 w-full h-full object-cover"
                     />
                   )}
