@@ -423,8 +423,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
               Array.from(Array(4).keys()).map((_, index) => {
                 return (
                   <Card key={index} className="rounded-none bg-white border-none shadow-md">
-                    <div className="relative pb-[66.66%] overflow-hidden w-full">
-                      <Skeleton className="absolute w-full h-full top-0 left-0" />
+                    <div className="relative pb-[66.66%] rounded-none overflow-hidden w-full">
+                      <Skeleton className="absolute w-full h-full top-0 left-0 rounded-none" />
                     </div>
                     <div className="p-6 flex flex-col gap-4">
                       <div className="flex justify-between gap-4">

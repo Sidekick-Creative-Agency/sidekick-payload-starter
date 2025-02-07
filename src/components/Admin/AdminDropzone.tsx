@@ -5,12 +5,12 @@ import React, { useRef, useState } from 'react'
 import Papa from 'papaparse'
 import { $generateNodesFromDOM } from '@lexical/html'
 import { createHeadlessEditor } from '@lexical/headless'
-import { LexicalNode } from 'lexical'
+import { $getRoot, LexicalNode, SerializedEditor, SerializedEditorState } from 'lexical'
 import { PropertyType } from '@/payload-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
-import { generateId } from '@/utilities/generateId'
 import { useRouter } from 'next/navigation'
+import { $getSelection } from '@payloadcms/richtext-lexical/lexical'
 
 interface AdminDropzoneProps {
   collectionSlug: string
@@ -60,7 +60,7 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
       let failedImportCount = 0
       let skippedImportCount = 0
       const uploadPromises = data.map(async (item, index) => {
-        if (index < 10) {
+        if (index < 11) {
           if (!item.title) {
             toast.error(`Skipping import on line ${index + 2}. Title is required`)
             return
@@ -311,18 +311,23 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
             )
             attachments.push(...allAttachments?.filter((attachment) => attachment.attachment))
           }
-          console.log(attachments)
-          let formattedDescription: LexicalNode[] | undefined = undefined
+
+          let formattedDescription: SerializedEditorState | undefined = undefined
           const editor = createHeadlessEditor()
           const parser = new DOMParser()
 
-          editor.update(() => {
-            const dom = item.description
-              ? parser.parseFromString(item.description, 'text/html')
-              : undefined
+          editor.update(
+            () => {
+              const dom = parser.parseFromString(item.description || '', 'text/html')
 
-            formattedDescription = dom ? $generateNodesFromDOM(editor, dom) : undefined
-          })
+              const nodes = $generateNodesFromDOM(editor, dom)
+              $getRoot().select()
+              $getSelection()?.insertNodes(nodes)
+            },
+            { discrete: true },
+          )
+          formattedDescription = editor.getEditorState().toJSON()
+          console.log(formattedDescription)
           console.log(imageGallery)
           console.log(attachments)
 
@@ -331,7 +336,7 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
             featuredImage: featuredImageId,
             imageGallery,
             category,
-            // description: formattedDescription,
+            description: formattedDescription,
             price,
             propertyType: propertyTypes,
             transactionType,

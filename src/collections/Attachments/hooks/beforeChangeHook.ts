@@ -17,7 +17,7 @@ export const beforeChangeHook: CollectionBeforeChangeHook = async ({
       },
     },
   })
-  if (existingAttachmentFilenames) {
+  if (existingAttachmentFilenames.docs.length > 0) {
     data.filename = `${filename}-${existingAttachmentFilenames.docs.length}.pdf`
   }
 

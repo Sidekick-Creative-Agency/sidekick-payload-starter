@@ -106,10 +106,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
   }
 
   useEffect(() => {
+    console.log(propertyTypesResponse)
     if (propertyTypesResponse[0].data && propertyTypesResponse[0].data.docs) {
       setPropertyTypes(
         propertyTypesResponse[0].data.docs.map((propertyType) => {
-          return { value: propertyType.id, label: propertyType.title }
+          return { value: String(propertyType.id), label: propertyType.title }
         }),
       )
     }
@@ -406,7 +407,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
                       <FormField
                         control={form.control}
                         name="propertyType"
-                        defaultValue={searchParams.get('property_type') || ''}
+                        defaultValue={
+                          propertyTypes
+                            ? propertyTypes.find(
+                                (type) => type.value === searchParams.get('property_type'),
+                              )?.value
+                            : ''
+                        }
                         render={({ field }) => {
                           return (
                             <FormItem className="w-full">

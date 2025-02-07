@@ -288,8 +288,9 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   </AccordionTrigger>
 
                   <AccordionContent className="pb-10">
-                    <div className="flex gap-10">
+                    <div className="flex gap-10 flex-wrap">
                       {listing.attachments &&
+                        listing.attachments.length > 0 &&
                         listing.attachments.map((attachment, index) => {
                           if (typeof attachment.attachment === 'object') {
                             return (
