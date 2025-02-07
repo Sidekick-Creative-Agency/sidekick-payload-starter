@@ -10,7 +10,14 @@ export default async function Page({ searchParams }) {
   const payload = await getPayload({
     config: configPromise,
   })
-  const listingsCount = await payload.count({ collection: 'listings' })
+  const listingsCount = await payload.count({
+    collection: 'listings',
+    where: {
+      _status: {
+        equals: 'published',
+      },
+    },
+  })
   return (
     <Suspense fallback={LoadingState()}>
       <PageClient listingsCount={listingsCount.totalDocs} />

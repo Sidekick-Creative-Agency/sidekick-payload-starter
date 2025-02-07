@@ -166,3 +166,5 @@ export const BRAND_BORDER_COLOR_CLASSES = {
 }
 
 export const SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS = ['white', 'offWhite', 'gray-00', 'gray-01']
+
+export const MAP_PAGINATION_LIMIT = undefined

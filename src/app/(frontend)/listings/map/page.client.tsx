@@ -38,6 +38,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import useWindowDimensions from '@/utilities/useWindowDimensions'
 import defaultTheme from 'tailwindcss/defaultTheme'
+import { MAP_PAGINATION_LIMIT } from '@/utilities/constants'
 
 interface MapPageClientProps {
   listingsCount?: number
@@ -101,6 +102,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const mapRef = useRef<Map>(null)
   const { width } = useWindowDimensions()
   const [activeListings, setActiveListings] = useState<Listing[]>([])
+  const [totalListings, setTotalListings] = useState<number | undefined>(listingsCount)
   const [boundingBox, setBoundingBox] = useState<number[][]>([])
   const [activeMarkers, setActiveMarkers] = useState<Marker[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -108,7 +110,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const [filters, setFilters] = useState<MapFilters | undefined>(undefined)
   const [hasNextPage, setHasNextPage] = useState<boolean | null | undefined>(undefined)
   const [hasPrevPage, setHasPrevPage] = useState<boolean | null | undefined>(undefined)
-  const [currentPage, setCurrentPage] = useState<number | null | undefined>(undefined)
+  const [currentPage, setCurrentPage] = useState<number | null | undefined>(1)
   const [nextPage, setNextPage] = useState<number | null | undefined>(undefined)
   const [prevPage, setPrevPage] = useState<number | null | undefined>(undefined)
   const { setHeaderTheme } = useHeaderTheme()
@@ -117,6 +119,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const pathname = usePathname()
   const [isFirstRender, setIsFirstRender] = useState(true)
   const [sortBy, setSortBy] = useState<{ value: string; label: string } | undefined>(undefined)
+  const limit = MAP_PAGINATION_LIMIT || 10
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -157,53 +160,57 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
 
   const handleFetchListings = async (filterData?: MapFilters, page?: number) => {
     setIsLoading(true)
-    if (filterData) {
-      setFilters(filterData)
+    setActiveListings([])
+    if (filterData || page) {
+      filterData && setFilters(filterData)
       const newSearchParams = new URLSearchParams(searchParams)
-      if (filterData.search) {
+      if (filterData?.search) {
         newSearchParams.set('search', filterData.search)
       }
-      if (filterData.category) {
+      if (filterData?.category) {
         newSearchParams.set('category', filterData.category)
       }
-      if (filterData.propertyType) {
+      if (filterData?.propertyType) {
         newSearchParams.set('property_type', filterData.propertyType)
       }
-      if (filterData.minPrice) {
+      if (filterData?.minPrice) {
         newSearchParams.set('min_price', filterData.minPrice.toString())
       }
-      if (filterData.maxPrice) {
+      if (filterData?.maxPrice) {
         newSearchParams.set('max_price', filterData.maxPrice.toString())
       }
-      if (filterData.minSize) {
+      if (filterData?.minSize) {
         newSearchParams.set('min_size', filterData.minSize.toString())
       }
-      if (filterData.maxSize) {
+      if (filterData?.maxSize) {
         newSearchParams.set('max_size', filterData.maxSize.toString())
       }
-      if (filterData.availability) {
+      if (filterData?.availability) {
         newSearchParams.set('availability', filterData.availability.toString())
       }
-      if (filterData.transactionType) {
+      if (filterData?.transactionType) {
         newSearchParams.set('transaction_type', filterData.transactionType.toString())
       }
-      if (filterData.sizeType) {
+      if (filterData?.sizeType) {
         newSearchParams.set('size_type', filterData.sizeType.toString())
+      }
+      if (page) {
+        newSearchParams.set('page', page.toString())
       }
       router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
     }
 
     const response = await getMapListings({
-      filters: filterData ? filterData : filters,
+      filters: filterData || undefined,
       page: page,
     })
-    console.log(response.nextPage)
     setCurrentPage(response.page)
     setPrevPage(response.prevPage)
     setHasPrevPage(response.hasPrevPage)
     setNextPage(response.nextPage)
     setHasNextPage(response.hasNextPage)
     setActiveListings(response.docs)
+    setTotalListings(response.totalDocs)
     setIsLoading(false)
   }
 
@@ -294,9 +301,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       zoom: 10,
       scrollZoom: false,
     })
-    // FETCH PROPERTIES ON FIRST RENDER
 
-    setIsLoading(true)
+    // FETCH PROPERTIES ON FIRST RENDER
     const filterData = {
       search: searchParams.get('search'),
       category: searchParams.get('category'),
@@ -313,7 +319,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
         | null
         | undefined,
     }
-    handleFetchListings(filterData)
+    const page = searchParams.get('page') ? Number(searchParams.get('page')) : undefined
+
+    handleFetchListings(filterData, page)
 
     return () => {
       mapRef.current?.remove()
@@ -323,13 +331,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   useEffect(() => {
     centerMap()
   }, [boundingBox])
-
-  useEffect(() => {
-    console.log(hasPrevPage)
-    console.log(prevPage)
-    console.log(hasNextPage)
-    console.log(nextPage)
-  }, [hasPrevPage, prevPage, hasNextPage, nextPage])
 
   const resetFilters = async () => {
     try {
@@ -384,7 +385,11 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
               {(isFirstRender || isLoading) && (
                 <FontAwesomeIcon icon={faCircleNotch} className="animate-spin w-4 h-auto inline" />
               )}
-              {!isFirstRender && !isLoading && activeListings.length} of {listingsCount} Listings
+              {!isFirstRender &&
+                !isLoading &&
+                currentPage &&
+                `${currentPage * limit - limit + 1}-${hasNextPage ? currentPage * limit : totalListings}`}{' '}
+              of {totalListings} Listings
             </span>
             <DropdownMenu>
               <DropdownMenuTrigger className="text-lg text-brand-gray-03 font-medium tracking-normal flex items-center gap-2 rounded-none focus:outline-none focus:ring-2 focus:ring-brand-navy focus:ring-offset-2">
@@ -518,7 +523,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                   disabled={!hasPrevPage}
                   onClick={() => {
                     if (hasPrevPage && prevPage) {
-                      handleFetchListings(undefined, prevPage)
+                      handleFetchListings(filters, prevPage)
                     }
                   }}
                 >
@@ -530,7 +535,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                   disabled={!hasNextPage}
                   onClick={() => {
                     if (hasNextPage && nextPage) {
-                      handleFetchListings(undefined, nextPage)
+                      handleFetchListings(filters, nextPage)
                     }
                   }}
                 >
