@@ -119,13 +119,16 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     })}
                 </span>
               </div>
-              <div className="flex gap-4 items-center">
+              <div className="md:flex md:gap-4 md:items-center">
                 <span className="text-[2.5rem] font-bold text-brand-navy leading-tight whitespace-pre-wrap md:whitespace-nowrap hidden md:block">
                   {listing.streetAddress}
                 </span>
                 <span className="text-[2.5rem] font-bold text-brand-navy leading-tight md:hidden">
                   {listing.price ? formatPrice(listing.price) : 'Contact for price'}
                 </span>
+                {listing.price && listing.transactionType === 'for-lease' && (
+                  <span className=" inline md:hidden ml-2">per sqft</span>
+                )}
                 {listing.availability && (
                   <div className="py-2 px-3 rounded-lg bg-brand-blue bg-opacity-50 hidden md:block">
                     <span className="text-xs font-bold text-brand-navy tracking-wider uppercase">
@@ -142,9 +145,14 @@ export default async function Listing({ params: paramsPromise }: Args) {
               </span>
             </div>
             <div className="flex flex-row md:flex-col justify-between md:justify-center items-center md:items-end gap-4">
-              <span className="text-3xl md:text-[2.5rem] font-bold text-brand-navy hidden md:inline-block text-right">
-                {listing.price ? formatPrice(listing.price) : 'Contact for price'}
-              </span>
+              <div className="hidden md:block">
+                <span className="text-3xl md:text-[2.5rem] font-bold text-brand-navy hidden md:inline-block text-right">
+                  {listing.price ? formatPrice(listing.price) : 'Contact for price'}
+                </span>
+                {listing.price && listing.transactionType === 'for-lease' && (
+                  <span className="hidden md:inline ml-2">per sqft</span>
+                )}
+              </div>
 
               {listing.availability && (
                 <div className="py-2 px-3 rounded-lg bg-brand-blue bg-opacity-50 block md:hidden">
@@ -163,6 +171,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
               resource={listing.featuredImage}
               className="col-span-4 sm:col-span-3 row-span-1 sm:row-span-2 relative aspect-video"
               imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+              priority
             />
             {listing.imageGallery && listing.imageGallery[0] && listing.imageGallery[1] && (
               <>
@@ -170,12 +179,14 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   resource={listing?.imageGallery[0]?.image as MediaType | number | undefined}
                   className="col-span-2 sm:col-span-1 row-span-1 relative"
                   imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+                  priority
                 />
                 <div className="col-span-2 sm:col-span-1 row-span-1 relative">
                   <Media
                     resource={listing.imageGallery[1].image as MediaType | number | undefined}
                     className="w-full h-full relative"
                     imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+                    priority
                   />
                   <Dialog>
                     <DialogTrigger asChild>
@@ -222,6 +233,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 resource={listing.imageGallery[0].image as MediaType | number | undefined}
                 className="col-span-1 row-span-2 relative"
                 imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+                priority
               />
             )}
           </div>
@@ -233,9 +245,14 @@ export default async function Listing({ params: paramsPromise }: Args) {
             <div className="col-span-1 md:col-span-2 p-4 py-10 sm:p-10 bg-white border-t-[10px] border-brand-navy flex flex-col">
               <div className="pb-10 flex flex-col sm:flex-row gap-6 sm:gap-10 justify-between items-start sm:items-end border-b border-brand-gray-01">
                 <div className="flex flex-col gap-2">
-                  <h2 className="text-[2.5rem] font-bold text-brand-navy">
-                    {listing.price ? formatPrice(listing.price) : 'Contact for price'}
-                  </h2>
+                  <div>
+                    <h2 className="text-[2.5rem] font-bold text-brand-navy inline">
+                      {listing.price ? formatPrice(listing.price) : 'Contact for price'}
+                    </h2>
+                    {listing.price && listing.transactionType === 'for-lease' && (
+                      <span className="inline text-sm ml-2">per sqft</span>
+                    )}
+                  </div>
                   <span className="text-base font-light text-brand-gray-03">
                     {listing.streetAddress}, {listing.city}, {listing.state} {listing.zipCode}
                   </span>

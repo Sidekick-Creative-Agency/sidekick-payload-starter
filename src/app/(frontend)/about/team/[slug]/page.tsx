@@ -98,6 +98,7 @@ export default async function Page({ params: paramsPromise }: Args) {
                   alt={(teamMember.featuredImage as Media).alt || ''}
                   fill
                   className="w-full h-full object-cover"
+                  priority
                 />
               </div>
               <div className="w-full flex flex-col gap-8 sm:gap-6">
@@ -294,14 +295,6 @@ export default async function Page({ params: paramsPromise }: Args) {
                 </p>
               </div>
               <ContactForm teamMember={teamMember} />
-              {/* {teamMemberContactForm && (
-                <FormBlock
-                  // @ts-ignore
-                  form={teamMemberContactForm}
-                  enableIntro={false}
-                  styles={{ global: {}, resp: {} }}
-                />
-              )} */}
             </div>
           </div>
         </div>
