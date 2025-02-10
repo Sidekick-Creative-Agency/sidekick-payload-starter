@@ -2,7 +2,11 @@ import { TeamMember, Media as MediaType } from '@/payload-types'
 import React from 'react'
 import { Media } from '../Media'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEnvelope, faPhone } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
+import {
+  faArrowUpRightFromSquare,
+  faEnvelope,
+  faPhone,
+} from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
 import { Button } from '../ui/button'
 import Link from 'next/link'
 import {
@@ -84,7 +88,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
             </DialogHeader>
 
             <RichText
-              content={teamMember.bio}
+              content={teamMember?.bio || {}}
               className="text-brand-gray-04 font-light max-w-none p-0"
             />
             <div className="flex gap-2 flex-wrap">
@@ -135,7 +139,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
                       key={social.id}
                       href={social.url || ''}
                       target="_blank"
-                      className="py-3 px-4 rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
+                      className="py-3 px-4 rounded-xl w-fit whitespace-nowrap bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
                     >
                       <FontAwesomeIcon icon={icon} className="w-full max-w-8 text-brand-navy" />
                       <span className="text-base text-brand-gray-06 font-light">
@@ -145,6 +149,16 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
                     </Link>
                   )
                 })}
+              <Link
+                href={`/about/team/${teamMember.slug}`}
+                className="py-3 px-4 rounded-xl w-fit whitespace-nowrap bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
+              >
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
+                  className="w-full max-w-8 text-brand-navy"
+                />
+                <span className="text-base text-brand-gray-06 font-light">Learn More</span>
+              </Link>
             </div>
           </DialogContent>
         </Dialog>

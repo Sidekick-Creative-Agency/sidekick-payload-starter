@@ -166,36 +166,58 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       const newSearchParams = new URLSearchParams(searchParams)
       if (filterData?.search) {
         newSearchParams.set('search', filterData.search)
+      } else {
+        newSearchParams.delete('search')
       }
       if (filterData?.category) {
         newSearchParams.set('category', filterData.category)
+      } else {
+        newSearchParams.delete('category')
       }
       if (filterData?.propertyType) {
         newSearchParams.set('property_type', filterData.propertyType)
+      } else {
+        newSearchParams.delete('property_type')
       }
       if (filterData?.minPrice) {
         newSearchParams.set('min_price', filterData.minPrice.toString())
+      } else {
+        newSearchParams.delete('min_price')
       }
       if (filterData?.maxPrice) {
         newSearchParams.set('max_price', filterData.maxPrice.toString())
+      } else {
+        newSearchParams.delete('max_price')
       }
       if (filterData?.minSize) {
         newSearchParams.set('min_size', filterData.minSize.toString())
+      } else {
+        newSearchParams.delete('min_size')
       }
       if (filterData?.maxSize) {
         newSearchParams.set('max_size', filterData.maxSize.toString())
+      } else {
+        newSearchParams.delete('max_size')
       }
       if (filterData?.availability) {
         newSearchParams.set('availability', filterData.availability.toString())
+      } else {
+        newSearchParams.delete('availability')
       }
       if (filterData?.transactionType) {
         newSearchParams.set('transaction_type', filterData.transactionType.toString())
+      } else {
+        newSearchParams.delete('transaction_type')
       }
       if (filterData?.sizeType) {
         newSearchParams.set('size_type', filterData.sizeType.toString())
+      } else {
+        newSearchParams.delete('size_type')
       }
       if (page) {
         newSearchParams.set('page', page.toString())
+      } else {
+        newSearchParams.delete('page')
       }
       router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
     }
@@ -332,23 +354,34 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     centerMap()
   }, [boundingBox])
 
-  const resetFilters = async () => {
+  const handleReset = async () => {
     try {
       setIsLoading(true)
       router.replace(pathname, { scroll: false })
+      // Object.entries(form.getValues()).forEach(([key, value]) => {
+      //   if (form.getValues()[key]) {
+      //     // @ts-ignore
+      //     form.setValue(key, '')
+      //   }
+      // })
       form.reset()
+      setFilters(undefined)
       handleFetchListings()
     } catch (error: any) {
       console.log(error.message)
       router.push(pathname)
     } finally {
-      setIsLoading(false)
     }
   }
 
   return (
     <div>
-      <FilterBar handleFilter={handleFetchListings} form={form} isLoading={isLoading} />
+      <FilterBar
+        handleFilter={handleFetchListings}
+        handleReset={handleReset}
+        form={form}
+        isLoading={isLoading}
+      />
       <div className="w-full border-t border-brand-gray-01 md:grid md:grid-cols-5">
         {width && width <= parseInt(defaultTheme.screens.md) && (
           <div className="flex">
@@ -448,9 +481,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                 return (
                   <Card
                     key={listing.id}
-                    className="rounded-none bg-white border-none shadow-md"
+                    className="rounded-none bg-white border-none shadow-md transition-shadow hover:shadow-xl focus-visible:shadow-xl"
                     onMouseEnter={() => {
-                      handleCardMouseEnter(listing)
+                      // handleCardMouseEnter(listing)
                     }}
                   >
                     <Link href={`/listings/${listing.slug}`}>
@@ -524,6 +557,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                   onClick={() => {
                     if (hasPrevPage && prevPage) {
                       handleFetchListings(filters, prevPage)
+                      window.scrollTo({ top: 0 })
                     }
                   }}
                 >
@@ -536,6 +570,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                   onClick={() => {
                     if (hasNextPage && nextPage) {
                       handleFetchListings(filters, nextPage)
+                      window.scrollTo({ top: 0 })
                     }
                   }}
                 >
@@ -552,7 +587,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                     <span>No listings found</span>
                     <Button
                       onClick={() => {
-                        resetFilters()
+                        handleReset()
                       }}
                     >
                       Clear Filters

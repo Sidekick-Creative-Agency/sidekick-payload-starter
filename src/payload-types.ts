@@ -150,6 +150,7 @@ export interface Page {
     | MediaCarouselBlock
     | CardGridBlock
     | FeaturedListingsBlock
+    | SearchBarBlock
   )[];
   meta?: {
     title?: string | null;
@@ -397,7 +398,7 @@ export interface TeamMember {
   id: number;
   title: string;
   jobTitle: string;
-  bio: {
+  bio?: {
     root: {
       type: string;
       children: {
@@ -411,7 +412,7 @@ export interface TeamMember {
       version: number;
     };
     [k: string]: unknown;
-  };
+  } | null;
   featuredImage: number | Media;
   designations?: string | null;
   email?: string | null;
@@ -462,6 +463,7 @@ export interface TeamMember {
         id?: string | null;
       }[]
     | null;
+  isLeadership?: boolean | null;
   relatedListings?: {
     docs?: (number | Listing)[] | null;
     hasNextPage?: boolean | null;
@@ -1102,6 +1104,20 @@ export interface FeaturedListingsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SearchBarBlock".
+ */
+export interface SearchBarBlock {
+  category?: ('commercial' | 'residential') | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'searchBarBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
 export interface Post {
@@ -1443,6 +1459,7 @@ export interface PagesSelect<T extends boolean = true> {
         mediaCarouselBlock?: T | MediaCarouselBlockSelect<T>;
         cardGridBlock?: T | CardGridBlockSelect<T>;
         featuredListingsBlock?: T | FeaturedListingsBlockSelect<T>;
+        searchBarBlock?: T | SearchBarBlockSelect<T>;
       };
   meta?:
     | T
@@ -1805,6 +1822,16 @@ export interface FeaturedListingsBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SearchBarBlock_select".
+ */
+export interface SearchBarBlockSelect<T extends boolean = true> {
+  category?: T;
+  elementId?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
@@ -2060,6 +2087,7 @@ export interface TeamMembersSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
+  isLeadership?: T;
   relatedListings?: T;
   slug?: T;
   slugLock?: T;

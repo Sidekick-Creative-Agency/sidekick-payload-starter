@@ -129,7 +129,7 @@ export const getMapListings = async (data: {
 
         // TRANSACTION TYPE
         {
-          ...(filters?.transactionType
+          ...(filters?.transactionType && filters.transactionType !== 'all'
             ? {
                 transactionType: {
                   equals: filters.transactionType,
@@ -140,7 +140,7 @@ export const getMapListings = async (data: {
 
         // PROPERTY TYPE
         {
-          ...(filters?.propertyType
+          ...(filters?.propertyType && filters.propertyType !== 'all'
             ? {
                 'propertyType.id': {
                   equals: filters.propertyType,
@@ -162,7 +162,7 @@ export const getMapListings = async (data: {
 
         // CATEGORY
         {
-          ...(filters?.category
+          ...(filters?.category && filters.category !== 'all'
             ? {
                 category: {
                   equals: filters.category,

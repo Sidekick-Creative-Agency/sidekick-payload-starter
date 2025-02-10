@@ -99,6 +99,7 @@ export default async function Page({ params: paramsPromise }: Args) {
                   fill
                   className="w-full h-full object-cover"
                   priority
+                  quality={100}
                 />
               </div>
               <div className="w-full flex flex-col gap-8 sm:gap-6">
@@ -202,7 +203,7 @@ export default async function Page({ params: paramsPromise }: Args) {
               >
                 <h2 className="text-[2rem] text-brand-offWhite font-bold leading-tight">About</h2>
                 <RichText
-                  content={teamMember.bio}
+                  content={teamMember.bio || {}}
                   className="text-brand-offWhite max-w-none p-0 font-light"
                 />
               </div>

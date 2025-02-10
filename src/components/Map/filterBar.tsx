@@ -31,21 +31,25 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion'
 import { Label } from '../ui/label'
+import { faXmark } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
 
 interface FilterBarProps {
   handleFilter: (filterData?: MapFilters, page?: number) => Promise<void>
+  handleReset: () => Promise<void>
   form: UseFormReturn<z.infer<typeof FormSchema>>
   isLoading: boolean
 }
 
-export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoading }) => {
+export const FilterBar: React.FC<FilterBarProps> = ({
+  handleFilter,
+  handleReset,
+  form,
+  isLoading,
+}) => {
   const searchParams = useSearchParams()
-  const { toast } = useToast()
   const [sizeText, setSizeText] = useState('Size')
   const [priceText, setPriceText] = useState('Price')
   const [propertyTypes, setPropertyTypes] = useState<{ value: string; label: string }[]>([])
-  const router = useRouter()
-  const pathname = usePathname()
   const { width } = useWindowDimensions()
   const formRef = useRef<HTMLFormElement | null>(null)
   const [isOpen, setIsOpen] = useState(false)
@@ -106,7 +110,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
   }
 
   useEffect(() => {
-    console.log(propertyTypesResponse)
     if (propertyTypesResponse[0].data && propertyTypesResponse[0].data.docs) {
       setPropertyTypes(
         propertyTypesResponse[0].data.docs.map((propertyType) => {
@@ -119,7 +122,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
   return (
     <Form {...form}>
       <form
-        className="w-full p-10 bg-white flex gap-2"
+        className="w-full p-10 bg-white flex gap-2 relative"
         onSubmit={form.handleSubmit(onSubmit)}
         ref={formRef}
       >
@@ -176,6 +179,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
                             <FormItem className="w-full">
                               <RadioGroup onValueChange={field.onChange}>
                                 <div className="flex items-center gap-x-2 text-brand-gray-06">
+                                  <RadioGroupItem value="all" id="category_r0" />
+                                  <Label htmlFor="category_r0">All</Label>
+                                </div>
+                                <div className="flex items-center gap-x-2 text-brand-gray-06">
                                   <RadioGroupItem value="commercial" id="category_r1" />
                                   <Label htmlFor="category_r1">Commercial</Label>
                                 </div>
@@ -208,6 +215,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
                           return (
                             <FormItem className="w-full">
                               <RadioGroup onValueChange={field.onChange}>
+                                <div className="flex items-center gap-x-2 text-brand-gray-06">
+                                  <RadioGroupItem value="all" id="transaction_type_r0" />
+                                  <Label htmlFor="transaction_type_r0">All</Label>
+                                </div>
                                 <div className="flex items-center gap-x-2 text-brand-gray-06">
                                   <RadioGroupItem value="for-sale" id="transaction_type_r1" />
                                   <Label htmlFor="transaction_type_r1">For Sale</Label>
@@ -418,6 +429,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
                           return (
                             <FormItem className="w-full">
                               <RadioGroup onValueChange={field.onChange}>
+                                <div className="flex items-center gap-x-2 text-brand-gray-06">
+                                  <RadioGroupItem value="all" id="property_type_r0" />
+                                  <Label htmlFor="property_type_r0">All</Label>
+                                </div>
                                 {propertyTypes &&
                                   propertyTypes.map((propertyType, index) => {
                                     return (
@@ -500,6 +515,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-white text-brand-navy rounded-none">
+                        <SelectItem value="all" className="hover:bg-brand-blue rounded-none">
+                          All
+                        </SelectItem>
                         <SelectItem value="commercial" className="hover:bg-brand-blue rounded-none">
                           Commercial
                         </SelectItem>
@@ -524,11 +542,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
                   <FormItem className="w-full">
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="h-full text-lg font-light text-brand-navy w-full rounded-none">
+                        <SelectTrigger className="h-full text-lg font-light text-brand-navy w-full rounded-none text-left">
                           <SelectValue placeholder="Transaction Type" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-white text-brand-navy rounded-none">
+                        <SelectItem value="all" className="hover:bg-brand-blue rounded-none">
+                          All
+                        </SelectItem>
                         <SelectItem value="for-sale" className="hover:bg-brand-blue rounded-none">
                           For Sale
                         </SelectItem>
@@ -605,6 +626,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
                     }}
                   />
                 </div>
+                {(form.getValues().minPrice !== '' || form.getValues().maxPrice !== '') && (
+                  <Button
+                    className="w-full flex gap-2 mt-4"
+                    onClick={() => {
+                      form.setValue('minPrice', '')
+                      form.setValue('maxPrice', '')
+                      handlePriceChange(form.getValues().minPrice, form.getValues().maxPrice)
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faXmark} />
+                    Reset
+                  </Button>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -643,13 +677,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
                             >
                               <FormItem className="flex items-center space-x-3 space-y-0">
                                 <FormControl>
-                                  <RadioGroupItem value="sqft" />
+                                  <RadioGroupItem value="sqft" checked={field.value === 'sqft'} />
                                 </FormControl>
                                 <FormLabel className="font-normal">Sqft</FormLabel>
                               </FormItem>
                               <FormItem className="flex items-center space-x-3 space-y-0">
                                 <FormControl>
-                                  <RadioGroupItem value="acres" />
+                                  <RadioGroupItem value="acres" checked={field.value === 'acres'} />
                                 </FormControl>
                                 <FormLabel className="font-normal">Acres</FormLabel>
                               </FormItem>
@@ -712,6 +746,21 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
                     }}
                   />
                 </div>
+                {((form.getValues().sizeType && form.getValues().sizeType !== 'all') ||
+                  form.getValues().minSize ||
+                  form.getValues().maxSize) && (
+                  <Button
+                    className="w-full mt-4 flex gap-2"
+                    onClick={() => {
+                      form.resetField('sizeType')
+                      form.setValue('minSize', '')
+                      form.setValue('maxSize', '')
+                      handleSizeChange(form.getValues().minSize, form.getValues().maxSize, '')
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faXmark} /> Reset
+                  </Button>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
             <FormField
@@ -739,6 +788,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-white text-brand-navy rounded-none">
+                        <SelectItem value="all" className="hover:bg-brand-blue rounded-none">
+                          All
+                        </SelectItem>
                         {propertyTypes &&
                           propertyTypes.length > 0 &&
                           propertyTypes.map((type, index) => (
@@ -769,6 +821,27 @@ export const FilterBar: React.FC<FilterBarProps> = ({ handleFilter, form, isLoad
               <span className="hidden lg:inline">Search</span>
             </Button>
           </>
+        )}
+        {(form.getValues().availability ||
+          form.getValues().category ||
+          form.getValues().maxPrice ||
+          form.getValues().maxSize ||
+          form.getValues().minPrice ||
+          form.getValues().minSize ||
+          form.getValues().propertyType ||
+          form.getValues().search ||
+          form.getValues().sizeType ||
+          form.getValues().transactionType) && (
+          <Button
+            variant={'link'}
+            className="absolute bottom-2 right-10  flex gap-1 items-center text-sm normal-case tracking-normal leading-none p-1 hover:no-underline focus-visible:no-underline"
+            onClick={() => {
+              handleReset()
+            }}
+          >
+            <FontAwesomeIcon icon={faXmark} />
+            Clear Filters
+          </Button>
         )}
       </form>
     </Form>

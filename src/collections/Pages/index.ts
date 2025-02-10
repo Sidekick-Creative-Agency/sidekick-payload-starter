@@ -28,6 +28,7 @@ import { SocialProofCarouselBlock } from '@/blocks/SocialProofCarouselBlock/conf
 import { MediaCarouselBlock } from '@/blocks/MediaCarouselBlock/config'
 import { CardGridBlock } from '@/blocks/CardGridBlock/config'
 import { FeaturedListingsBlock } from '@/blocks/FeaturedListingsBlock/config'
+import { SearchBarBlock } from '@/blocks/SearchBarBlock/config'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
@@ -90,6 +91,7 @@ export const Pages: CollectionConfig = {
                 MediaCarouselBlock,
                 CardGridBlock,
                 FeaturedListingsBlock,
+                SearchBarBlock,
               ],
               required: true,
             },

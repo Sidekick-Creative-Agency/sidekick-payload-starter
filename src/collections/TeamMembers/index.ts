@@ -52,7 +52,6 @@ export const TeamMembers: CollectionConfig = {
           ]
         },
       }),
-      required: true,
     },
     {
       name: 'featuredImage',
@@ -154,6 +153,11 @@ export const TeamMembers: CollectionConfig = {
           required: true,
         },
       ],
+    },
+    {
+      name: 'isLeadership',
+      type: 'checkbox',
+      defaultValue: false,
     },
     {
       name: 'relatedListings',

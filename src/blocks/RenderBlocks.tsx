@@ -13,6 +13,7 @@ import { SocialProofCarouselBlock } from './SocialProofCarouselBlock/Component'
 import { MediaCarouselBlock } from './MediaCarouselBlock/Component'
 import { CardGridBlock } from './CardGridBlock/Component'
 import { FeaturedListingsBlock } from './FeaturedListingsBlock/Component'
+import { SearchBarBlock } from './SearchBarBlock/Component'
 
 const blockComponents = {
   archiveBlock: ArchiveBlock,
@@ -28,6 +29,7 @@ const blockComponents = {
   mediaCarouselBlock: MediaCarouselBlock,
   cardGridBlock: CardGridBlock,
   featuredListingsBlock: FeaturedListingsBlock,
+  searchBarBlock: SearchBarBlock,
 }
 
 export const RenderBlocks: React.FC<{
