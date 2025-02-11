@@ -39,6 +39,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
         ? `${(reference?.value as Page)?.url}`
         : `${reference?.relationTo}/${reference.value.slug}`
       : url
+
   if (!href) return null
 
   const size = appearance === 'link' ? 'clear' : sizeFromProps
@@ -50,7 +51,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
       <Link
         className={cn(className)}
         href={
-          href === '/home' || href === `${process.env.NEXT_PUBLIC_SERVER_URL}/home`
+          href.includes('/home') || href === `${process.env.NEXT_PUBLIC_SERVER_URL}/home`
             ? '/'
             : href || url || ''
         }
