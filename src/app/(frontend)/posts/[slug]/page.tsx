@@ -42,16 +42,19 @@ export default async function Post({ params: paramsPromise }: Args) {
   const url = '/posts/' + slug
   const post = await queryPostBySlug({ slug })
   const payload = await getPayload({ config: configPromise })
-  console.log(post.category)
   const relatedPostsResult = await payload.find({
     collection: 'posts',
     where: {
       slug: {
         not_equals: slug,
       },
-      'category.id': {
-        equals: (post.category as Category)?.id,
-      },
+      ...(post.category
+        ? {
+            'category.id': {
+              equals: (post?.category as Category)?.id,
+            },
+          }
+        : {}),
     },
   })
   const relatedPosts = relatedPostsResult.docs
