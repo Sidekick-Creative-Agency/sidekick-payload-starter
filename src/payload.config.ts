@@ -74,6 +74,10 @@ export default buildConfig({
           Component: '/views/Listings/Import#ImportView',
           path: '/import/listings',
         },
+        importPostsView: {
+          Component: '/views/Posts/Import#ImportView',
+          path: '/import/posts',
+        },
       },
     },
     importMap: {

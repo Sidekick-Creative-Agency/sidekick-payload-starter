@@ -12,11 +12,11 @@ export const PostHero: React.FC<{
 
   return (
     <div className="relative -mt-[114px] flex items-end">
-      <div className="container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] text-white pb-8">
+      <div className="container max-w-6xl z-10 relative text-white pb-8">
         <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
           <div className="uppercase text-sm mb-6">
             {category && typeof category === 'object' && category !== null && (
-              <React.Fragment>{title || 'Untitled category'}</React.Fragment>
+              <React.Fragment>{category.title || 'Untitled category'}</React.Fragment>
             )}
           </div>
 
@@ -25,8 +25,8 @@ export const PostHero: React.FC<{
           </div>
 
           <div className="flex flex-col md:flex-row gap-4 md:gap-16">
-            <div className="flex flex-col gap-4">
-              {populatedAuthors && (
+            {populatedAuthors && populatedAuthors.length > 0 && (
+              <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
                   <p className="text-sm">Author</p>
                   {populatedAuthors.map((author, index) => {
@@ -51,8 +51,8 @@ export const PostHero: React.FC<{
                     )
                   })}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
             {publishedAt && (
               <div className="flex flex-col gap-1">
                 <p className="text-sm">Date Published</p>

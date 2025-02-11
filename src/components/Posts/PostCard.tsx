@@ -11,10 +11,11 @@ interface PostCardProps {
   post: Post
 }
 export const PostCard: React.FC<PostCardProps> = ({ post }) => {
+  console.log(post.featuredImage)
   return (
     <Link href={`/posts/${post.slug}`} className="w-full relative flex flex-col">
       <Media
-        resource={post.featuredImage as MediaType}
+        resource={post.featuredImage || undefined}
         className="w-full relative pb-[80%] overflow-hidden"
         imgClassName="absolute top-0 left-0 object-cover w-full h-full"
       />

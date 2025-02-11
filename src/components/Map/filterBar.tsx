@@ -515,15 +515,21 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-white text-brand-navy rounded-none">
-                        <SelectItem value="all" className="hover:bg-brand-blue rounded-none">
+                        <SelectItem
+                          value="all"
+                          className="hover:bg-brand-blue rounded-none text-base font-light"
+                        >
                           All
                         </SelectItem>
-                        <SelectItem value="commercial" className="hover:bg-brand-blue rounded-none">
+                        <SelectItem
+                          value="commercial"
+                          className="hover:bg-brand-blue rounded-none text-base font-light"
+                        >
                           Commercial
                         </SelectItem>
                         <SelectItem
                           value="residential"
-                          className="hover:bg-brand-blue rounded-none"
+                          className="hover:bg-brand-blue rounded-none text-base font-light"
                         >
                           Residential
                         </SelectItem>
@@ -547,13 +553,22 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-white text-brand-navy rounded-none">
-                        <SelectItem value="all" className="hover:bg-brand-blue rounded-none">
+                        <SelectItem
+                          value="all"
+                          className="hover:bg-brand-blue rounded-none text-base font-light"
+                        >
                           All
                         </SelectItem>
-                        <SelectItem value="for-sale" className="hover:bg-brand-blue rounded-none">
+                        <SelectItem
+                          value="for-sale"
+                          className="hover:bg-brand-blue rounded-none text-base font-light"
+                        >
                           For Sale
                         </SelectItem>
-                        <SelectItem value="for-lease" className="hover:bg-brand-blue rounded-none">
+                        <SelectItem
+                          value="for-lease"
+                          className="hover:bg-brand-blue rounded-none text-base font-light"
+                        >
                           For Lease
                         </SelectItem>
                       </SelectContent>
@@ -679,13 +694,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                 <FormControl>
                                   <RadioGroupItem value="sqft" checked={field.value === 'sqft'} />
                                 </FormControl>
-                                <FormLabel className="font-normal">Sqft</FormLabel>
+                                <FormLabel className="text-base font-light">Sqft</FormLabel>
                               </FormItem>
                               <FormItem className="flex items-center space-x-3 space-y-0">
                                 <FormControl>
                                   <RadioGroupItem value="acres" checked={field.value === 'acres'} />
                                 </FormControl>
-                                <FormLabel className="font-normal">Acres</FormLabel>
+                                <FormLabel className="text-base font-light">Acres</FormLabel>
                               </FormItem>
                             </RadioGroup>
                           </FormControl>
@@ -788,7 +803,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-white text-brand-navy rounded-none">
-                        <SelectItem value="all" className="hover:bg-brand-blue rounded-none">
+                        <SelectItem
+                          value="all"
+                          className="hover:bg-brand-blue rounded-none text-base font-light"
+                        >
                           All
                         </SelectItem>
                         {propertyTypes &&
@@ -797,7 +815,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                             <SelectItem
                               key={index}
                               value={type.value}
-                              className="hover:bg-brand-blue rounded-none"
+                              className="hover:bg-brand-blue rounded-none text-base font-light"
                             >
                               {type.label}
                             </SelectItem>

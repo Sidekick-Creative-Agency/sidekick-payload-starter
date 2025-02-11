@@ -7,6 +7,9 @@ import {
   HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
+  LinkFeature,
+  OrderedListFeature,
+  UnorderedListFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { authenticated } from '../../access/authenticated'
@@ -23,6 +26,8 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/Slug'
+import { ColumnsBlock } from '@/blocks/ColumnsBlock/config'
+import { MediaCarouselBlock } from '@/blocks/MediaCarouselBlock/config'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -52,6 +57,9 @@ export const Posts: CollectionConfig = {
 
       return `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
     },
+    components: {
+      beforeList: ['/components/Admin/LinkToImportView#LinkToImportView'],
+    },
     useAsTitle: 'title',
   },
   fields: [
@@ -76,6 +84,10 @@ export const Posts: CollectionConfig = {
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),
+                    UnorderedListFeature(),
+                    OrderedListFeature(),
+                    LinkFeature(),
+                    BlocksFeature({ blocks: [ColumnsBlock, MediaCarouselBlock] }),
                   ]
                 },
               }),

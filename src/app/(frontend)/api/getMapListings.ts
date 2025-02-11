@@ -21,12 +21,13 @@ interface Filterfilters {
 export const getMapListings = async (data: {
   filters?: Filterfilters
   page?: number | null | undefined
+  sort?: string | null | undefined
 }) => {
   try {
     const payload = await getPayload({ config: configPromise })
     let listings: PaginatedDocs<Listing> | undefined = undefined
 
-    const { filters, page } = data
+    const { filters, page, sort } = data
 
     const whereQuery: Where = {
       and: [
@@ -182,6 +183,11 @@ export const getMapListings = async (data: {
         : {}),
       ...(page ? { page } : {}),
       where: whereQuery,
+      ...(sort
+        ? {
+            sort: sort.split(','),
+          }
+        : {}),
     })
 
     return listings

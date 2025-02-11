@@ -1,13 +1,9 @@
 'use client'
-
 import type { StaticImageData } from 'next/image'
-
 import { cn } from 'src/utilities/cn'
 import NextImage from 'next/image'
 import React, { useEffect, useState } from 'react'
-
 import type { Props as MediaProps } from '../types'
-
 import cssVariables from '@/cssVariables'
 
 const { breakpoints } = cssVariables
@@ -88,7 +84,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         }
       }}
       priority={priority}
-      quality={90}
+      quality={100}
       sizes={sizes}
       src={src}
       width={!fill ? width : undefined}

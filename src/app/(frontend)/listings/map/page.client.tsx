@@ -39,6 +39,7 @@ import {
 import useWindowDimensions from '@/utilities/useWindowDimensions'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import { MAP_PAGINATION_LIMIT } from '@/utilities/constants'
+import { faXmark } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 
 interface MapPageClientProps {
   listingsCount?: number
@@ -70,29 +71,29 @@ export const FormSchema = z.object({
   transactionType: z.string().optional(),
 })
 
-const sortByOptions = [
+const sortOptions = [
   {
-    value: 'price-desc',
+    value: '-price',
     label: 'Price (High to Low)',
   },
   {
-    value: 'price-asc',
+    value: 'price',
     label: 'Price (Low to High)',
   },
   {
-    value: 'size-desc',
+    value: '-area, -acreage',
     label: 'Size (High to Low)',
   },
   {
-    value: 'size-asc',
+    value: 'area, acreage',
     label: 'Size (Low to High)',
   },
   {
-    value: 'date-desc',
+    value: '-createdAt',
     label: 'Newest',
   },
   {
-    value: 'date-asc',
+    value: 'createdAt',
     label: 'Oldest',
   },
 ]
@@ -113,12 +114,13 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const [currentPage, setCurrentPage] = useState<number | null | undefined>(1)
   const [nextPage, setNextPage] = useState<number | null | undefined>(undefined)
   const [prevPage, setPrevPage] = useState<number | null | undefined>(undefined)
+  const [isSortOpen, setIsSortOpen] = useState(false)
   const { setHeaderTheme } = useHeaderTheme()
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const [isFirstRender, setIsFirstRender] = useState(true)
-  const [sortBy, setSortBy] = useState<{ value: string; label: string } | undefined>(undefined)
+  const [sortData, setSortData] = useState<{ value: string; label: string } | undefined>(undefined)
   const limit = MAP_PAGINATION_LIMIT || 10
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -158,11 +160,18 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     }
   }
 
-  const handleFetchListings = async (filterData?: MapFilters, page?: number) => {
+  const handleFetchListings = async (
+    filterData?: MapFilters,
+    page?: number,
+    sort?: string | null,
+  ) => {
     setIsLoading(true)
     setActiveListings([])
-    if (filterData || page) {
+    if (filterData || page || sort) {
       filterData && setFilters(filterData)
+      sort
+        ? setSortData(sortOptions.find((option) => option.value === sort))
+        : setSortData(undefined)
       const newSearchParams = new URLSearchParams(searchParams)
       if (filterData?.search) {
         newSearchParams.set('search', filterData.search)
@@ -219,12 +228,18 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       } else {
         newSearchParams.delete('page')
       }
+      if (sort) {
+        newSearchParams.set('sort', sort)
+      } else {
+        newSearchParams.delete('sort')
+      }
       router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
     }
 
     const response = await getMapListings({
       filters: filterData || undefined,
       page: page,
+      sort: sort,
     })
     setCurrentPage(response.page)
     setPrevPage(response.prevPage)
@@ -342,8 +357,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
         | undefined,
     }
     const page = searchParams.get('page') ? Number(searchParams.get('page')) : undefined
+    const sort = searchParams.get('sort')
 
-    handleFetchListings(filterData, page)
+    handleFetchListings(filterData, page, sort)
 
     return () => {
       mapRef.current?.remove()
@@ -374,6 +390,13 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     }
   }
 
+  const handleSort = async () => {
+    try {
+    } catch (error: any) {
+      console.log(error.message)
+      router.push(pathname)
+    }
+  }
   return (
     <div>
       <FilterBar
@@ -421,26 +444,26 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
               {!isFirstRender &&
                 !isLoading &&
                 currentPage &&
-                `${currentPage * limit - limit + 1}-${hasNextPage ? currentPage * limit : totalListings}`}{' '}
+                `${currentPage * limit - limit + 1 !== totalListings ? `${currentPage * limit - limit + 1}-${hasNextPage ? currentPage * limit : totalListings}` : totalListings}`}{' '}
               of {totalListings} Listings
             </span>
-            <DropdownMenu>
+            <DropdownMenu open={isSortOpen} onOpenChange={setIsSortOpen}>
               <DropdownMenuTrigger className="text-lg text-brand-gray-03 font-medium tracking-normal flex items-center gap-2 rounded-none focus:outline-none focus:ring-2 focus:ring-brand-navy focus:ring-offset-2">
                 <FontAwesomeIcon icon={faArrowUpArrowDown} className="w-5 h-auto" />{' '}
-                {sortBy ? sortBy.label : 'Sort By'}
+                {sortData ? sortData.label : 'Sort By'}
               </DropdownMenuTrigger>
               <DropdownMenuContent className="rounded-none">
                 <DropdownMenuRadioGroup
-                  value={sortBy?.value}
-                  onValueChange={(value) =>
-                    setSortBy(sortByOptions.find((_option) => _option.value === value))
-                  }
+                  value={sortData?.value}
+                  onValueChange={(value) => {
+                    handleFetchListings(filters, currentPage || 1, value)
+                  }}
                 >
-                  {sortByOptions.map((option) => {
+                  {sortOptions.map((option, index) => {
                     return (
                       <DropdownMenuRadioItem
-                        key={option.value}
-                        className="hover:bg-brand-blue rounded-none"
+                        key={index}
+                        className="hover:bg-brand-blue rounded-none text-base font-light"
                         value={option.value}
                       >
                         {option.label}
@@ -448,6 +471,19 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                     )
                   })}
                 </DropdownMenuRadioGroup>
+                {sortData && (
+                  <Button
+                    variant={'ghost'}
+                    className="flex items-center gap-2 w-full"
+                    onClick={() => {
+                      handleFetchListings(filters, currentPage || 1)
+                      setIsSortOpen(false)
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faXmark} />
+                    Reset
+                  </Button>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

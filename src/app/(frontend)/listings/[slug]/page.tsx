@@ -104,7 +104,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
           <h1 className="sr-only">{listing.title}</h1>
           <div className="flex flex-col md:flex-row justify-between gap-10">
             <div className="flex flex-col gap-2 md:gap-6">
-              <div className="flex gap-4 text-base text-brand-gray-03 uppercase tracking-wider font-bold">
+              <div className="flex gap-x-4 gap-y-0 flex-wrap text-base text-brand-gray-03 uppercase tracking-wider font-bold">
                 <span>{listing.transactionType}</span>|
                 <span>
                   {listing.propertyType &&

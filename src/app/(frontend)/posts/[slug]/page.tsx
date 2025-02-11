@@ -7,12 +7,13 @@ import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 import RichText from '@/components/RichText'
 
-import type { Post } from '@/payload-types'
+import type { Category, Post } from '@/payload-types'
 
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { notFound, redirect } from 'next/navigation'
+import { PostArchiveGrid } from '@/components/Archive/PostArchive'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -40,7 +41,21 @@ export default async function Post({ params: paramsPromise }: Args) {
   const { slug = '' } = await paramsPromise
   const url = '/posts/' + slug
   const post = await queryPostBySlug({ slug })
-
+  const payload = await getPayload({ config: configPromise })
+  console.log(post.category)
+  const relatedPostsResult = await payload.find({
+    collection: 'posts',
+    where: {
+      slug: {
+        not_equals: slug,
+      },
+      'category.id': {
+        equals: (post.category as Category)?.id,
+      },
+    },
+  })
+  const relatedPosts = relatedPostsResult.docs
+  console.log(relatedPosts)
   if (!post) return <PayloadRedirects url={url} />
 
   return (
@@ -52,21 +67,19 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       <PostHero post={post} />
 
-      <div className="flex flex-col items-center gap-4 pt-8">
-        <div className="container lg:mx-0 lg:grid lg:grid-cols-[1fr_48rem_1fr] grid-rows-[1fr]">
-          <RichText
-            className="lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[1fr]"
-            content={post.content}
-            enableGutter={false}
-          />
+      <div className="flex flex-col items-center gap-4 py-20">
+        <div className="container max-w-6xl">
+          <RichText className="max-w-none p-0" content={post.content} enableGutter={false} />
         </div>
 
-        {/* {post.relatedPosts && post.relatedPosts.length > 0 && (
-          <RelatedPosts
-            className="mt-12"
-            docs={post.relatedPosts.filter((post) => typeof post === 'object')}
-          />
-        )} */}
+        <div className="py-20 w-full">
+          <div className="container w-full max-w-6xl flex flex-col gap-10">
+            <div>
+              <h2 className="font-bold">Related Posts</h2>
+            </div>
+            <PostArchiveGrid data={relatedPosts} />
+          </div>
+        </div>
       </div>
     </article>
   )
