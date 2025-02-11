@@ -63,10 +63,10 @@ export const CarouselLexicalBlock: React.FC<CarouselLexicalBlockProps> = ({ item
         {width && width > parseInt(defaultTheme.screens.sm) && (
           <>
             <CarouselPrevious
-              className={`bg-transparent border-none text-brand-blue hover:bg-transparent focus-visible:bg-transparent hover:text-white focus-visible:text-white ${width && width < parseInt(defaultTheme.screens.lg) && '-left-8'}`}
+              className={`bg-transparent border-none text-brand-blue hover:bg-transparent focus-visible:bg-transparent hover:text-white focus-visible:text-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy -left-8 lg:-left-12 [&_svg]:w-full [&_svg]:h-auto [&_svg]:max-h-full`}
             />
             <CarouselNext
-              className={`bg-transparent border-none text-brand-blue hover:bg-transparent focus-visible:bg-transparent hover:text-white focus-visible:text-white ${width && width < parseInt(defaultTheme.screens.lg) && '-right-8'}`}
+              className={`bg-transparent border-none text-brand-blue hover:bg-transparent focus-visible:bg-transparent hover:text-white focus-visible:text-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy -right-8 lg:-right-12 [&_svg]:w-full [&_svg]:h-auto [&_svg]:max-h-full`}
             />
           </>
         )}

@@ -7,8 +7,13 @@ export const SearchBarBlock: React.FC<
   }
 > = async ({ category, id, elementId }) => {
   return (
-    <div className={`search-bar-block-${id}`} {...(elementId ? { id: elementId } : {})}>
-      <SearchBarBlockClient category={category} />
+    <div
+      className={`search-bar-block-${id} py-10 md:py-6`}
+      {...(elementId ? { id: elementId } : {})}
+    >
+      <div className="container">
+        <SearchBarBlockClient category={category} />
+      </div>
     </div>
   )
 }

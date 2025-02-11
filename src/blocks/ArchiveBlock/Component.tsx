@@ -22,6 +22,7 @@ export const ArchiveBlock: React.FC<
     enablePropertyCategoryFilters,
     defaultCategoryFilter,
     elementId,
+    propertyTypes,
   } = props
 
   const limit = limitFromProps || 3
@@ -62,23 +63,27 @@ export const ArchiveBlock: React.FC<
     collection: relationTo || 'posts',
     depth: 1,
     limit: limit || 10,
-    ...(flattenedTaxonomies &&
-      flattenedTaxonomies.length > 0 &&
-      relationTo === 'posts' && {
-        where: {
+    where: {
+      ...(flattenedTaxonomies &&
+        flattenedTaxonomies.length > 0 &&
+        relationTo === 'posts' && {
           category: {
             in: flattenedTaxonomies,
           },
-        },
-      }),
-    ...(relationTo === 'listings' &&
-      enablePropertyCategoryFilters && {
-        where: {
+        }),
+      ...(relationTo === 'listings' &&
+        propertyTypes && {
           category: {
             equals: defaultCategoryFilter,
           },
-        },
-      }),
+        }),
+      ...(relationTo === 'listings' &&
+        enablePropertyCategoryFilters && {
+          propertyType: {
+            in: propertyTypes,
+          },
+        }),
+    },
   })
 
   archive = fetchedDocs.docs
@@ -93,6 +98,7 @@ export const ArchiveBlock: React.FC<
             data={archive as Listing[]}
             enableCategoryFilters={enablePropertyCategoryFilters}
             defaultCategoryFilter={defaultCategoryFilter}
+            limit={limit}
           />
         )
       case 'posts':
@@ -100,6 +106,9 @@ export const ArchiveBlock: React.FC<
       default:
         return null
     }
+  }
+  if (!archive || archive.length === 0) {
+    return
   }
 
   return (

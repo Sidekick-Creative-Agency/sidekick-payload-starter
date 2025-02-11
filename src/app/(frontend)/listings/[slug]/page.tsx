@@ -105,7 +105,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
           <div className="flex flex-col md:flex-row justify-between gap-10">
             <div className="flex flex-col gap-2 md:gap-6">
               <div className="flex gap-4 text-base text-brand-gray-03 uppercase tracking-wider font-bold">
-                <span>{listing.availability}</span>|
+                <span>{listing.transactionType}</span>|
                 <span>
                   {listing.propertyType &&
                     typeof listing.propertyType === 'object' &&
@@ -192,20 +192,25 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     <DialogTrigger asChild>
                       <Button
                         size={'icon'}
-                        className="absolute bottom-2 right-2 z-10 w-12 h-12 p-2 rounded-md border-none bg-white bg-opacity-50 hover:bg-white hover:bg-opacity-50 focus-visible:bg-white focus-visible:bg-opacity-50 backdrop-blur-sm"
+                        className="absolute bottom-2 right-2 z-10 w-12 h-12 p-3 rounded-md border-none bg-white bg-opacity-50 hover:bg-white hover:bg-opacity-50 focus-visible:bg-white focus-visible:bg-opacity-50 backdrop-blur-sm"
                       >
-                        <FontAwesomeIcon icon={faImage} className="w-full h-auto" />
+                        <FontAwesomeIcon
+                          icon={faImage}
+                          className="w-full h-auto"
+                          style={{ width: '100%' }}
+                        />
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] p-0 bg-transparent rounded-lg">
+                    <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] h-auto max-h-[calc(100vh-2.5rem)] p-0 bg-transparent">
                       <DialogTitle hidden>Image Gallery</DialogTitle>
-                      <Carousel className="w-full rounded-lg overflow-hidden">
-                        <CarouselContent className=" ml-0 rounded-lg">
+                      <Carousel className="w-full  [&>div]:rounded-md sm:[&>div]:rounded-lg">
+                        <CarouselContent className=" ml-0">
                           <CarouselItem className="pl-0 basis-full">
                             <Media
                               resource={listing.featuredImage}
-                              className="w-full rounded-lg overflow-hidden"
+                              className="w-full overflow-hidden aspect-video relative"
                               imgClassName="w-full object-cover"
+                              fill
                             />
                           </CarouselItem>
                           {listing.imageGallery.map((image, index) => {
@@ -213,15 +218,16 @@ export default async function Listing({ params: paramsPromise }: Args) {
                               <CarouselItem key={image.id} className=" pl-0 basis-full rounded-lg">
                                 <Media
                                   resource={image.image as MediaType | number | undefined}
-                                  className="w-full overflow-hidden rounded-lg"
+                                  className="w-full overflow-hidden aspect-video relative"
                                   imgClassName="w-full object-cover"
+                                  fill
                                 />
                               </CarouselItem>
                             )
                           })}
                         </CarouselContent>
-                        <CarouselPrevious className="left-2 p-2 bg-brand-navy text-white border-none hover:bg-brand-navy hover:text-white hover:opacity-80 focus-visible:bg-brand-navy focus-visible:text-white focus-visible:opacity-80 rounded-sm" />
-                        <CarouselNext className="right-2 p-2 bg-brand-navy text-white border-none hover:bg-brand-navy hover:text-white hover:opacity-80 focus-visible:bg-brand-navy focus-visible:text-white focus-visible:opacity-80 rounded-sm" />
+                        <CarouselPrevious className="top-[calc(100%+.5rem)] left-auto right-10 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:left-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
+                        <CarouselNext className="top-[calc(100%+.5rem)] left-auto right-0 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:right-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
                       </Carousel>
                     </DialogContent>
                   </Dialog>
@@ -346,18 +352,14 @@ export default async function Listing({ params: paramsPromise }: Args) {
         </div>
       </div>
       <ListingMap listing={listing} />
-      <div className="bg-white py-20">
-        <div className="container">
-          <div className="flex flex-col gap-10">
-            <ArchiveBlock
-              heading="Similar Listings in Your Area"
-              blockType="archiveBlock"
-              relationTo={'listings'}
-              propertyTypes={listing.propertyType}
-            />
-          </div>
-        </div>
-      </div>
+
+      <ArchiveBlock
+        heading="Similar Listings in Your Area"
+        blockType="archiveBlock"
+        relationTo={'listings'}
+        propertyTypes={listing.propertyType}
+      />
+
       <ColumnsBlock
         blockType="columnsBlock"
         columns={[

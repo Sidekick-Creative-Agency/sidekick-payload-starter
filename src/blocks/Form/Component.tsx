@@ -247,7 +247,12 @@ export const FormBlock: React.FC<
                   })}
               </div>
 
-              <Button form={formID} type="submit" variant="default" className="mt-6">
+              <Button
+                form={formID}
+                type="submit"
+                variant="default"
+                className="mt-6 w-full sm:w-auto"
+              >
                 {submitButtonLabel}
               </Button>
             </form>

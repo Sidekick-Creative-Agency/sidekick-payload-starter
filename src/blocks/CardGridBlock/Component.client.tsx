@@ -23,7 +23,7 @@ export const CardGridBlockClient: React.FC<CardGridBlockClientProps> = ({ cards 
               return (
                 <div
                   key={card.id}
-                  className="p-10 w-full rounded-[1.25rem] shadow-md flex flex-col justify-center gap-4 bg-white"
+                  className="p-10 w-full rounded-[1.25rem] shadow-md flex flex-col justify-start items-start md:items-center gap-4 bg-white"
                 >
                   {card.icon && <Media resource={card.icon} className="w-full max-w-20 mx-auto" />}
                   {card.content && (

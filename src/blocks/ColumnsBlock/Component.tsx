@@ -63,7 +63,10 @@ export const ColumnsBlock: React.FC<
   }
   const blockTwBackgroundColor = BRAND_BACKGROUND_COLOR_CLASSES[blockBgColor || 'transparent']
   return (
-    <div className={`columns-block-${id} ${blockTwBackgroundColor} `}>
+    <div
+      className={`columns-block-${id} ${blockTwBackgroundColor} ${elementId && 'scroll-m-10'}`}
+      {...(elementId ? { id: elementId } : {})}
+    >
       <div
         className={`${widthClasses[width]} ${width !== 'full' ? 'py-20 md:py-24 lg:py-32 container' : ''}`}
       >
@@ -96,7 +99,6 @@ export const ColumnsBlock: React.FC<
 
               return (
                 <div
-                  {...(elementId ? { id: elementId } : {})}
                   className={`relative ${colsSpanClasses[size || 'full']} 
                     ${
                       type === 'text'
