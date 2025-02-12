@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import { useRouter } from 'next/navigation'
 import { $getSelection } from '@payloadcms/richtext-lexical/lexical'
+import { cleanNumber } from '@/utilities/cleanNumber'
 
 interface AdminDropzoneProps {
   collectionSlug: string
@@ -60,13 +61,9 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
       let failedImportCount = 0
       let skippedImportCount = 0
       const uploadPromises = data.map(async (item, index) => {
-        if (index < 11) {
+        if (index < 20) {
           if (!item.title) {
             toast.error(`Skipping import on line ${index + 2}. Title is required`)
-            return
-          }
-          if (!item.featured_image_url) {
-            toast.error(`Skipping import on line ${index + 2}. Featured Image is required`)
             return
           }
           if (!item.street_address) {
@@ -94,7 +91,7 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
             return
           }
           const existingListing = await fetch(
-            `/api/listings?where[title][equals]=${item.title}`,
+            `/api/listings?where[title][like]=${item.title}`,
           ).then((res) => res.json().then((json) => json))
           if (existingListing.docs && existingListing.docs[0]) {
             skippedImportCount += 1
@@ -133,21 +130,57 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
             : []
 
           // GET FEATURED IMAGE VALUES
-          const featuredImageUrl = imageUrls.shift() || undefined
-          const featuredImageAltText = imageAltTexts.shift() || undefined
-          const featuredImageFileName = imageFileNames.shift() || undefined
+          const featuredImageUrl = imageUrls?.shift() || undefined
+          const featuredImageAltText = imageAltTexts?.shift() || undefined
+          const featuredImageFileName = imageFileNames?.shift() || undefined
 
-          // GET IMAGE GALLERY VALUES
+          // GET ATTACHMENT VALUES
+          const attachmentIds = item.attachment_ids ? item.attachment_ids.split('|') : []
           const attachmentUrls: string[] = item.attachment_urls
             ? item.attachment_urls.split('|')
             : []
           const attachmentFileNames: string[] = item.attachment_filenames
             ? item.attachment_filenames.split('|')
             : []
-          const attachmentTitles = item.attachment_filenames
-            ? item.attachment_titles.split('|')
-            : []
+          const attachmentTitles = item.attachment_titles ? item.attachment_titles.split('|') : []
 
+          const propertyAttachmentIds = item.file_attachments
+            .split('i:')
+            .map((attachment, index) => {
+              if (index > 0) {
+                return attachment.split(';')[0]
+              }
+            })
+            .filter((attachment) => attachment)
+
+          const propertyAttachmentIndexes = propertyAttachmentIds.map((id) =>
+            attachmentIds.indexOf(id),
+          )
+          const propertyAttachmentUrls = propertyAttachmentIndexes
+            .map((index) => {
+              if (index !== -1) {
+                return attachmentUrls[index] || ''
+              }
+            })
+            .filter((url) => url)
+          const propertyAttachmentFilenames = propertyAttachmentIndexes
+            .map((index) => {
+              if (index !== -1) {
+                return attachmentFileNames[index] || ''
+              }
+            })
+            .filter((filename) => filename)
+
+          const propertyAttachmentTitles = propertyAttachmentIndexes
+            .map((index) => {
+              if (index !== -1) {
+                return attachmentTitles[index] || ''
+              }
+            })
+            .filter((filename) => filename)
+
+          console.log(propertyAttachmentFilenames)
+          console.log(attachmentFileNames)
           // GET LISTING DATA VALUES
           const title = item.title || ''
           const category = item.bedrooms || item.bathrooms ? 'residential' : 'commercial'
@@ -159,19 +192,16 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
                 (type) => type.title === propertyType.toLowerCase().replaceAll(' ', '-'),
               )?.id,
           )
-          const price = item.price
-            ? /^\D/.test(item.price)
-              ? undefined
-              : Number(item.price)
-            : undefined
+          const price = item.price ? cleanNumber(item.price) : undefined
+          const textAfterPrice = item.text_after_price
           const transactionType = item.transaction_type
             ? item.transaction_type.toLowerCase().replaceAll(' ', '-')
             : undefined
           const availability = item.property_status
             ? item.property_status.toLowerCase().replaceAll(' ', '-')
             : undefined
-          const area = item.area ? Number(item.area) : undefined
-          const acreage = item.acreage ? Number(item.acreage) : undefined
+          const area = item.area ? cleanNumber(item.area) : undefined
+          const acreage = item.acreage ? cleanNumber(item.acreage) : undefined
           const isFeatured =
             item.is_featured &&
             (item.is_featured.toLowerCase() === 'yes' || item.is_featured.toLowerCase() === 'true')
@@ -181,10 +211,10 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
           const city = item.city ? item.city : undefined
           const state = item.state ? item.state : undefined
           const zipCode = item.zip_code ? item.zip_code : undefined
-          const longitude = item.longitude ? Number(item.longitude) : undefined
-          const latitude = item.latitude ? Number(item.latitude) : undefined
-          const bedrooms = item.bedrooms ? Number(item.bedrooms) : undefined
-          const bathrooms = item.bathrooms ? Number(item.bathrooms) : undefined
+          const longitude = item.longitude ? cleanNumber(item.longitude) : undefined
+          const latitude = item.latitude ? cleanNumber(item.latitude) : undefined
+          const bedrooms = item.bedrooms ? cleanNumber(item.bedrooms) : undefined
+          const bathrooms = item.bathrooms ? cleanNumber(item.bathrooms) : undefined
           const virtualTourLink = item.virtual_tour_link ? item.virtual_tour_link : undefined
           const videos = [item.video_1, item.video_2, item.video_3].filter(
             (video) => video !== undefined && /^https/.test(video),
@@ -201,7 +231,7 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
             if (existingImage.docs && existingImage.docs[0]) {
               featuredImageId = existingImage.docs[0].id
             } else {
-              const featuredImageBlob = await fetch(item.featured_image_url).then((res) =>
+              const featuredImageBlob = await fetch(featuredImageUrl).then((res) =>
                 res.blob().then((blob) => blob),
               )
               const formData = new FormData()
@@ -237,7 +267,6 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
                     `/api/media?where[filename][equals]=${imageFileNames[_index].split('.')[0]}.webp`,
                   ).then((res) => res.json().then((json) => json))
                   console.log('EXISTING IMAGE')
-                  console.log(existingImage)
                   if (existingImage.docs && existingImage.docs[0]) {
                     return { image: existingImage.docs[0].id }
                   } else {
@@ -277,17 +306,17 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
           }
 
           // ATTACHMENTS UPLOAD
-          if (attachmentUrls && attachmentUrls.length > 0) {
+          if (propertyAttachmentUrls && propertyAttachmentUrls.length > 0) {
             const allAttachments = await Promise.all(
-              attachmentUrls.map(async (attachmentUrl: string, _index: number) => {
+              propertyAttachmentUrls.map(async (attachmentUrl: string, _index: number) => {
                 const attachmentBlob = await fetch(attachmentUrl).then((res) =>
                   res.blob().then((blob) => blob),
                 )
                 const formData = new FormData()
-                formData.append('file', attachmentBlob, attachmentFileNames[_index])
+                formData.append('file', attachmentBlob, propertyAttachmentFilenames[_index])
                 formData.append(
                   '_payload',
-                  JSON.stringify({ title: attachmentTitles[_index] || '' }),
+                  JSON.stringify({ title: propertyAttachmentTitles[_index] || '' }),
                 )
                 const attachmentResponse = await fetch('/api/attachments', {
                   method: 'POST',
@@ -327,10 +356,6 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
             { discrete: true },
           )
           formattedDescription = editor.getEditorState().toJSON()
-          console.log(formattedDescription)
-          console.log(imageGallery)
-          console.log(attachments)
-
           const postData = {
             title,
             featuredImage: featuredImageId,
@@ -338,6 +363,7 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
             category,
             description: formattedDescription,
             price,
+            textAfterPrice,
             propertyType: propertyTypes,
             transactionType,
             availability,
@@ -354,6 +380,7 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
             bathrooms,
             videos,
             virtualTourLink,
+            _status: 'published',
             meta: {
               title: metaTitle,
               description: metaDescription,
@@ -384,7 +411,6 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
               }),
           )
           if (listingResponse.doc) {
-            console.log(listingResponse.doc)
             successfulImportCount += 1
             toast.success(
               <div className="flex flex-col gap-2">
@@ -419,7 +445,7 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
       setIsLoading(false)
       setFile(null)
       setData([])
-      router.push('/admin/collections/listings')
+      // router.push('/admin/collections/listings')
     }
   }
 
@@ -427,7 +453,6 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
     <div>
       <Dropzone
         onChange={(fileList) => {
-          console.log(fileList)
           if (fileList.length > 0) {
             const firstFile = fileList[0]
             const firstFileType = firstFile.type
@@ -437,7 +462,6 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
               Papa.parse(firstFile, {
                 header: true,
                 complete: (results) => {
-                  console.log(results)
                   const errors = results.errors
                   const errorIndices: number[] = []
                   if (errors.length > 0) {

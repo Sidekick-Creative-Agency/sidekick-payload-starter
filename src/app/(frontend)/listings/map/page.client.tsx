@@ -265,6 +265,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
               title: listing.title,
               address: listing.streetAddress,
               price: listing.price ? formatPrice(listing.price) : '',
+              textAfterPrice: listing.textAfterPrice || '',
               transactionType: listing.transactionType,
               image: listing.featuredImage,
               lat: listing.coordinates[1],
@@ -301,8 +302,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                     <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${
                       feature.properties.price
                         ? `${feature.properties.price}${
-                            feature.properties.transactionType === 'for-lease'
-                              ? '<span class="text-sm ml-2 font-normal">per sqft</span>'
+                            feature.properties.textAfterPrice
+                              ? `<span class="text-sm ml-2 font-normal">${feature.properties.textAfterPrice}</span>`
                               : ''
                           }`
                         : 'Contact for price'
@@ -536,12 +537,12 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                             <h3 className="sr-only">{listing.title}</h3>
                             <div>
                               <span className="text-2xl text-brand-gray-06 font-bold font-basic-sans leading-none">
-                                {listing.price
+                                {listing.price && listing.price !== 0
                                   ? `${formatPrice(listing.price)}`
                                   : 'Contact for price'}
                               </span>
-                              {listing.price && listing.transactionType === 'for-lease' && (
-                                <span className="text-sm ml-2">per sqft</span>
+                              {listing.price && listing.price !== 0 && listing.textAfterPrice && (
+                                <span className="text-sm ml-2">{listing.textAfterPrice}</span>
                               )}
                             </div>
 

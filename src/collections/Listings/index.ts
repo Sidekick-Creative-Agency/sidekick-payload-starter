@@ -149,6 +149,10 @@ export const Listings: CollectionConfig = {
                   type: 'number',
                 },
                 {
+                  name: 'textAfterPrice',
+                  type: 'text',
+                },
+                {
                   name: 'propertyType',
                   type: 'relationship',
                   relationTo: 'property-types',

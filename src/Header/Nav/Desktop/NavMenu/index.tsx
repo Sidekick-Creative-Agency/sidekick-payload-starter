@@ -38,7 +38,18 @@ export const NavMenu: React.FC<{ navItems: Header['navItems']; isScrolled: boole
           return (
             <li key={i}>
               <DropdownMenu>
-                <DropdownMenuTrigger>{navItem?.label}</DropdownMenuTrigger>
+                <DropdownMenuTrigger>
+                  {navItem?.enableParentLink && navItem?.parentLink ? (
+                    <CMSLink
+                      key={i}
+                      {...navItem.parentLink}
+                      appearance="link"
+                      className={`hover:no-underline focus-visible:no-underline ${isScrolled || headerTheme === 'filled' ? 'text-black' : 'text-white'} uppercase font-bold text-base tracking-[1.6px] py-2`}
+                    />
+                  ) : (
+                    navItem?.label
+                  )}
+                </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   {navItem?.childrenLinks &&
                     navItem.childrenLinks.map((link) => {

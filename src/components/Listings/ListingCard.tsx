@@ -53,7 +53,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
         {listing.price && (
           <span className="text-xl font-light text-white">
             {formatPrice(listing.price)}{' '}
-            {listing.transactionType === 'for-lease' && <span className="text-sm">per sqft</span>}
+            {listing.textAfterPrice && <span className="text-sm">{listing.textAfterPrice}</span>}
           </span>
         )}
         {!listing.price && <span className="text-xl font-light text-white">Contact for price</span>}

@@ -319,6 +319,7 @@ export interface Listing {
     [k: string]: unknown;
   } | null;
   price?: number | null;
+  textAfterPrice?: string | null;
   propertyType?: (number | PropertyType)[] | null;
   transactionType?: ('for-sale' | 'for-lease') | null;
   availability?: ('available' | 'unavailable' | 'sold') | null;
@@ -1990,6 +1991,7 @@ export interface ListingsSelect<T extends boolean = true> {
   bathrooms?: T;
   description?: T;
   price?: T;
+  textAfterPrice?: T;
   propertyType?: T;
   transactionType?: T;
   availability?: T;

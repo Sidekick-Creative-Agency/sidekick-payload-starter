@@ -133,8 +133,8 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 <span className="text-[2.5rem] font-bold text-brand-navy leading-tight md:hidden">
                   {listing.price ? formatPrice(listing.price) : 'Contact for price'}
                 </span>
-                {listing.price && listing.transactionType === 'for-lease' && (
-                  <span className=" inline md:hidden ml-2">per sqft</span>
+                {listing.price && listing.textAfterPrice && (
+                  <span className=" inline md:hidden ml-2">{listing.textAfterPrice}</span>
                 )}
                 {listing.availability && (
                   <div className="py-2 px-3 rounded-lg bg-brand-blue bg-opacity-50 hidden md:block">
@@ -156,8 +156,8 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 <span className="text-3xl md:text-[2.5rem] font-bold text-brand-navy hidden md:inline-block text-right">
                   {listing.price ? formatPrice(listing.price) : 'Contact for price'}
                 </span>
-                {listing.price && listing.transactionType === 'for-lease' && (
-                  <span className="hidden md:inline ml-2">per sqft</span>
+                {listing.price && listing.textAfterPrice && (
+                  <span className="hidden md:inline ml-2">{listing.textAfterPrice}</span>
                 )}
               </div>
 
@@ -262,8 +262,8 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     <h2 className="text-[2.5rem] font-bold text-brand-navy inline">
                       {listing.price ? formatPrice(listing.price) : 'Contact for price'}
                     </h2>
-                    {listing.price && listing.transactionType === 'for-lease' && (
-                      <span className="inline text-sm ml-2">per sqft</span>
+                    {listing.price && listing.textAfterPrice && (
+                      <span className="inline text-sm ml-2">{listing.textAfterPrice}</span>
                     )}
                   </div>
                   <span className="text-base font-light text-brand-gray-03">
