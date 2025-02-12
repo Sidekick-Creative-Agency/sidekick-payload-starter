@@ -35,7 +35,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
   return (
     <div className="flex flex-col gap-6 w-full">
       <Media
-        resource={teamMember.featuredImage}
+        resource={teamMember.details.featuredImage}
         className="aspect-square relative"
         imgClassName="absolute top-0 left-0 object-cover w-full h-full"
       />
@@ -45,15 +45,15 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
             <h3 className="text-2xl text-brand-gray-06 font-bold inline leading-tight">
               {teamMember.title}
             </h3>
-            {teamMember.designations && (
+            {teamMember.details.designations && (
               <span className="inline text-xs text-brand-gray-06 font-bold ml-2 leading-tight">
-                {teamMember.designations}
+                {teamMember.details.designations}
               </span>
             )}
           </Link>
         </div>
         <span className="text-gray-600 text-base font-light leading-tight">
-          {teamMember.jobTitle}
+          {teamMember.details.jobTitle}
         </span>
         <Dialog>
           <DialogTrigger asChild>
@@ -65,7 +65,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
           <DialogContent className="w-[60rem] max-w-[calc(100vw-5rem)] p-16 h-fit max-h-screen overflow-scroll">
             <DialogHeader className="flex flex-row gap-8 items-center">
               <Media
-                resource={teamMember.featuredImage}
+                resource={teamMember.details.featuredImage}
                 className="aspect-square rounded-full overflow-hidden relative w-20"
                 imgClassName="absolute top-0 left-0 object-cover w-full h-full"
               />
@@ -75,44 +75,44 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
                   <span className="text-[2rem] text-brand-gray-06 font-bold inline leading-tight">
                     {teamMember.title}
                   </span>
-                  {teamMember.designations && (
+                  {teamMember.details.designations && (
                     <span className="inline text-xs text-brand-gray-06 font-bold ml-2">
-                      {teamMember.designations}
+                      {teamMember.details.designations}
                     </span>
                   )}
                 </div>
                 <span className="text-gray-600 text-base font-light leading-tight">
-                  {teamMember.jobTitle}
+                  {teamMember.details.jobTitle}
                 </span>
               </div>
             </DialogHeader>
 
             <RichText
-              content={teamMember?.bio || {}}
+              content={teamMember?.details.bio || {}}
               className="text-brand-gray-04 font-light max-w-none p-0"
             />
             <div className="flex gap-2 flex-wrap">
-              {teamMember.email && (
+              {teamMember.details.email && (
                 <Link
-                  href={`mailto:${teamMember.email}`}
+                  href={`mailto:${teamMember.details.email}`}
                   className="py-3 px-4 rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
                 >
                   <FontAwesomeIcon icon={faEnvelope} className="w-full max-w-8 text-brand-navy" />
                   <span className="text-base text-brand-gray-06 font-light">Email</span>
                 </Link>
               )}
-              {teamMember.phone && (
+              {teamMember.details.phone && (
                 <Link
-                  href={`tel:${teamMember.phone.replaceAll('-', '')}`}
+                  href={`tel:${teamMember.details.phone.replaceAll('-', '')}`}
                   className="py-3 px-4 rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
                 >
                   <FontAwesomeIcon icon={faPhone} className="w-full max-w-8 text-brand-navy" />
                   <span className="text-base text-brand-gray-06 font-light">Phone</span>
                 </Link>
               )}
-              {teamMember.socials &&
-                teamMember.socials.length > 0 &&
-                teamMember.socials.map((social) => {
+              {teamMember.details.socials &&
+                teamMember.details.socials.length > 0 &&
+                teamMember.details.socials.map((social) => {
                   let icon: IconDefinition | undefined = undefined
                   switch (social.platform) {
                     case 'facebook':

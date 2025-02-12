@@ -353,7 +353,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   <h2 className="text-2xl font-bold text-brand-navy">Get in Touch</h2>
                 </div>
               </div>
-
+              {/* @ts-ignore */}
               <SidebarForm listing={listing} payloadForm={sidebarForm} />
             </div>
           </div>
@@ -388,6 +388,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 Get in touch today and let us help you find your perfect property!
               </p>
             </div>
+            {/* @ts-ignore */}
             <FooterForm payloadForm={footerContactForm} listing={listing} />
           </div>
         </div>

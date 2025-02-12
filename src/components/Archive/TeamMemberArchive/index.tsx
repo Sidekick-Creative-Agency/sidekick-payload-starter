@@ -15,7 +15,7 @@ export const TeamMemberArchiveGrid: React.FC<TeamMemberArchiveGridProps> = (prop
     <div className="flex flex-col gap-12 md:gap-20">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-x-10 md:gap-y-20">
         {data
-          ?.filter((teamMember) => teamMember.isLeadership)
+          ?.filter((teamMember) => teamMember.details.isLeadership)
           .map((teamMember, index) => {
             if (typeof teamMember === 'object' && teamMember !== null) {
               return (
@@ -29,7 +29,7 @@ export const TeamMemberArchiveGrid: React.FC<TeamMemberArchiveGridProps> = (prop
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 md:gap-x-10 md:gap-y-20">
         {data
-          ?.filter((teamMember) => !teamMember.isLeadership)
+          ?.filter((teamMember) => !teamMember.details.isLeadership)
           .map((teamMember, index) => {
             if (typeof teamMember === 'object' && teamMember !== null) {
               return (

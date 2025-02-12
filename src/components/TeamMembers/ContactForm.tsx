@@ -239,7 +239,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ teamMember }) => {
           <FormField
             control={form.control}
             name="teamMemberEmail"
-            defaultValue={teamMember.email || ''}
+            defaultValue={teamMember.details.email || ''}
             render={({ field }) => {
               return (
                 <FormItem className="hidden">

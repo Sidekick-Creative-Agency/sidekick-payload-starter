@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import RichText from '../RichText'
 
 interface TestimonialCarouselProps {
-  testimonials: TeamMember['testimonials']
+  testimonials: TeamMember['details']['testimonials']
 }
 export const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({ testimonials }) => {
   return (

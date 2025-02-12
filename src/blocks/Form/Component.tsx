@@ -136,8 +136,6 @@ export const FormBlock: React.FC<
           field: name,
           value,
         }))
-        console.log(data)
-        console.log(dataToSend)
 
         try {
           const req = await fetch(
@@ -230,7 +228,6 @@ export const FormBlock: React.FC<
                   formFromProps.fields?.map((field, index) => {
                     const Field: React.FC<any> = fields?.[field.blockType]
                     if (Field) {
-                      console.log(theme)
                       return (
                         <Field
                           form={formFromProps}
@@ -239,7 +236,12 @@ export const FormBlock: React.FC<
                           control={control}
                           errors={errors}
                           register={register}
-                          className={`inline-block w-full ${'width' in field ? (theme === 'default' ? fieldWidthClassesDefault[field.width || 'full'] : fieldWidthClassesThin[field.width || 'full']) : ''} ${'name' in field && field.name && !errors[field.name] ? 'mb-0' : 'mb-6'} relative transition-[margin] duration-300 ${field.hidden ? 'hidden' : ''} `}
+                          className={`inline-block w-full ${'width' in field ? (theme === 'default' ? fieldWidthClassesDefault[field.width || 'full'] : fieldWidthClassesThin[field.width || 'full']) : ''} ${'name' in field && field.name && !errors[field.name] ? 'mb-0' : 'mb-6'} relative transition-[margin] duration-300 
+
+                            ${
+                              // @ts-ignore
+                              field.hidden ? 'hidden' : ''
+                            } `}
                           fieldClassName={`${theme === 'thin' ? 'border-t-0 border-r-0 border-l-0 border-b text-lg font-light focus-visible:border-b-brand-navy focus-visible:ring-0' : ''} `}
                           setValue={setValue}
                           key={index}
