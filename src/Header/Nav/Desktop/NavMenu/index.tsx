@@ -44,7 +44,7 @@ export const NavMenu: React.FC<{ navItems: Header['navItems']; isScrolled: boole
                       key={i}
                       {...navItem.parentLink}
                       appearance="link"
-                      className={`hover:no-underline focus-visible:no-underline ${isScrolled || headerTheme === 'filled' ? 'text-black' : 'text-white'} uppercase font-bold text-base tracking-[1.6px] py-2`}
+                      className={`hover:no-underline focus-visible:no-underline ${isScrolled || headerTheme === 'filled' ? 'text-black' : 'text-white'} uppercase font-bold text-base tracking-[1.6px]`}
                     />
                   ) : (
                     navItem?.label
