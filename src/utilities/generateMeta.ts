@@ -15,9 +15,7 @@ export const generateMeta = async (args: {
     'url' in doc.meta.image &&
     `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${doc.meta.image.url}`
 
-  const title = doc?.meta?.title
-    ? doc?.meta?.title + ' | Onward Real Estate Team'
-    : 'Onward Real Estate Team'
+  const title = doc?.meta?.title ? doc?.meta?.title : 'Onward Real Estate Team'
 
   return {
     description: doc?.meta?.description,
