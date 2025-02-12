@@ -29,6 +29,10 @@ import {
 import { ListingCard } from '@/components/Listings/ListingCard'
 import { ContactForm } from '@/components/TeamMembers/ContactForm'
 import { FormBlock } from '@/blocks/Form/Component'
+import { Metadata } from 'next'
+import { cache } from 'react'
+import { generateMeta } from '@/utilities/generateMeta'
+import { draftMode } from 'next/headers'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -94,8 +98,8 @@ export default async function Page({ params: paramsPromise }: Args) {
             <div className="px-5 pb-10 pt-20 sm:p-6 sm:pt-6 bg-brand-blue flex flex-col gap-8 sm:gap-10 w-full sm:max-w-96 relative sm:sticky sm:top-24 h-fit">
               <div className="relative pb-[115%] overflow-hidden w-full">
                 <Image
-                  src={(teamMember.featuredImage as Media).url || ''}
-                  alt={(teamMember.featuredImage as Media).alt || ''}
+                  src={(teamMember?.details?.featuredImage as Media).url || ''}
+                  alt={(teamMember?.details?.featuredImage as Media).alt || ''}
                   fill
                   className="w-full h-full object-cover"
                   priority
@@ -108,23 +112,23 @@ export default async function Page({ params: paramsPromise }: Args) {
                     <h1 className="text-brand-navy text-[2rem] font-bold leading-tight inline">
                       {teamMember.title}
                     </h1>
-                    {teamMember.designations && (
+                    {teamMember?.details?.designations && (
                       <span className="inline ml-2 text-brand-navy text-xs font-bold leading-none">
-                        {teamMember.designations}
+                        {teamMember?.details?.designations}
                       </span>
                     )}
                   </div>
                   <div>
                     <h2 className="text-base text-brand-navy font-bold leading-tight tracking-wider uppercase">
-                      {teamMember.jobTitle}
+                      {teamMember?.details?.jobTitle}
                     </h2>
                   </div>
                 </div>
 
                 <div className="flex gap-2 flex-wrap">
-                  {teamMember.email && (
+                  {teamMember?.details?.email && (
                     <Link
-                      href={`mailto:${teamMember.email}`}
+                      href={`mailto:${teamMember?.details?.email}`}
                       className="p-3 rounded-xl bg-white border border-brand-gray-01 flex flex-grow gap-2 items-center justify-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
                     >
                       <FontAwesomeIcon
@@ -134,9 +138,9 @@ export default async function Page({ params: paramsPromise }: Args) {
                       <span className="text-base text-brand-gray-06 font-light">Email</span>
                     </Link>
                   )}
-                  {teamMember.phone && (
+                  {teamMember?.details?.phone && (
                     <Link
-                      href={`tel:${teamMember.phone.replaceAll('-', '')}`}
+                      href={`tel:${teamMember?.details?.phone.replaceAll('-', '')}`}
                       className="p-3 rounded-xl bg-white border border-brand-gray-01 flex flex-grow gap-2 items-center justify-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
                     >
                       <FontAwesomeIcon
@@ -146,9 +150,9 @@ export default async function Page({ params: paramsPromise }: Args) {
                       <span className="text-base text-brand-gray-06 font-light">Phone</span>
                     </Link>
                   )}
-                  {teamMember.socials &&
-                    teamMember.socials.length > 0 &&
-                    teamMember.socials.map((social) => {
+                  {teamMember?.details?.socials &&
+                    teamMember?.details?.socials.length > 0 &&
+                    teamMember?.details?.socials.map((social) => {
                       let icon: IconDefinition | undefined = undefined
                       switch (social.platform) {
                         case 'facebook':
@@ -199,34 +203,34 @@ export default async function Page({ params: paramsPromise }: Args) {
 
             <div className="w-full px-5 md:px-0">
               <div
-                className={`py-16 flex flex-col gap-6 border-t border-brand-gray-04 ${!teamMember.notableTransactions && !teamMember.eductationAndCertifications && 'border-b'}`}
+                className={`py-16 flex flex-col gap-6 border-t border-brand-gray-04 ${!teamMember?.details?.notableTransactions && !teamMember?.details?.eductationAndCertifications && 'border-b'}`}
               >
                 <h2 className="text-[2rem] text-brand-offWhite font-bold leading-tight">About</h2>
                 <RichText
-                  content={teamMember.bio || {}}
+                  content={teamMember?.details?.bio || {}}
                   className="text-brand-offWhite max-w-none p-0 font-light"
                 />
               </div>
-              {teamMember.eductationAndCertifications && (
+              {teamMember?.details?.eductationAndCertifications && (
                 <div
-                  className={`py-16 flex flex-col gap-6 border-t border-brand-gray-04 ${!teamMember.notableTransactions && 'border-b'}`}
+                  className={`py-16 flex flex-col gap-6 border-t border-brand-gray-04 ${!teamMember?.details?.notableTransactions && 'border-b'}`}
                 >
                   <h2 className="text-[2rem] text-brand-offWhite font-bold leading-tight">
                     Education & Certifications
                   </h2>
                   <RichText
-                    content={teamMember.eductationAndCertifications}
+                    content={teamMember?.details?.eductationAndCertifications}
                     className="text-brand-offWhite max-w-none p-0 font-light"
                   />
                 </div>
               )}
-              {teamMember.notableTransactions && (
+              {teamMember?.details?.notableTransactions && (
                 <div className="py-16 flex flex-col gap-6 border-t border-b border-brand-gray-04">
                   <h2 className="text-[2rem] text-brand-offWhite font-bold leading-tight">
                     Notable Transactions
                   </h2>
                   <RichText
-                    content={teamMember.notableTransactions}
+                    content={teamMember?.details?.notableTransactions}
                     className="text-brand-offWhite max-w-none p-0 font-light"
                   />
                 </div>
@@ -238,7 +242,7 @@ export default async function Page({ params: paramsPromise }: Args) {
         {/* TESTIMONIALS  */}
         <div className="w-full">
           <h2 className="sr-only">Testimonials</h2>
-          <TestimonialCarousel testimonials={teamMember.testimonials} />
+          <TestimonialCarousel testimonials={teamMember?.details?.testimonials} />
         </div>
 
         {/* AGENT LISTINGS */}
@@ -289,8 +293,11 @@ export default async function Page({ params: paramsPromise }: Args) {
                 <h2 className="text-brand-gray-06 font-bold">Contact Me</h2>
                 <p className="text-brand-gray-04 font-light">
                   Call me at{' '}
-                  <Link href={`tel:${teamMember.phone?.replaceAll('-', '')}`} className="underline">
-                    {teamMember.phone}
+                  <Link
+                    href={`tel:${teamMember?.details?.phone?.replaceAll('-', '')}`}
+                    className="underline"
+                  >
+                    {teamMember?.details?.phone}
                   </Link>{' '}
                   or fill out this form to get in touch!
                 </p>
@@ -303,3 +310,29 @@ export default async function Page({ params: paramsPromise }: Args) {
     </>
   )
 }
+export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+  const { slug = '' } = await paramsPromise
+  const teamMember = await queryTeamMemberBySlug({ slug })
+
+  return generateMeta({ doc: teamMember })
+}
+
+const queryTeamMemberBySlug = cache(async ({ slug }: { slug: string }) => {
+  const { isEnabled: draft } = await draftMode()
+
+  const payload = await getPayload({ config: configPromise })
+
+  const result = await payload.find({
+    collection: 'team-members',
+    draft,
+    limit: 1,
+    overrideAccess: draft,
+    where: {
+      slug: {
+        equals: slug,
+      },
+    },
+  })
+
+  return result.docs?.[0] || null
+})

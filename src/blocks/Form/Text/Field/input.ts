@@ -82,5 +82,13 @@ export const TextField: Block = {
         },
       ],
     },
+    {
+      name: 'hidden',
+      type: 'checkbox',
+      label: 'Hidden',
+      admin: {
+        description: 'If checked, the field will not be displayed on the frontend.',
+      },
+    },
   ],
 }

@@ -64,6 +64,18 @@ export const ArchiveBlock: React.FC<
     depth: 1,
     limit: limit || 10,
     where: {
+      or: [
+        {
+          _status: {
+            exists: false,
+          },
+        },
+        {
+          _status: {
+            equals: 'published',
+          },
+        },
+      ],
       ...(flattenedTaxonomies &&
         flattenedTaxonomies.length > 0 &&
         relationTo === 'posts' && {

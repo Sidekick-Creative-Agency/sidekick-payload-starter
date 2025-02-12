@@ -7,7 +7,7 @@ export const beforeChangeHook: CollectionBeforeChangeHook = async ({
   originalDoc,
 }) => {
   if (operation !== 'create') return data
-  console.log(data)
+
   const filename = (data.filename as string)?.slice(0, -4)
   const existingAttachmentFilenames = await req.payload.find({
     collection: 'attachments',

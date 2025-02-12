@@ -83,19 +83,6 @@ export const ListingArchiveGrid: React.FC<ListingArchiveGridProps> = ({
         <CarouselPrevious className="border-none w-10 h-10 p-2 flex justify-center items-center hover:bg-transparent hover:text-brand-navy focus-visible:ring-brand-navy focus-visible:ring-offset-2 [&_svg]:max-h-full top-[calc(100%+1rem)] left-auto right-12 translate-y-0 sm:top-1/2 sm:-translate-y-1/2 sm:-left-8 xl:-left-12" />
         <CarouselNext className="border-none w-10 h-10 p-2 flex justify-center items-center hover:bg-transparent hover:text-brand-navy focus-visible:ring-brand-navy focus-visible:ring-offset-2 [&_svg]:max-h-full  top-[calc(100%+1rem)] left-auto right-0 translate-y-0 sm:top-1/2 sm:-translate-y-1/2 sm:-right-8 xl:-right-12" />
       </Carousel>
-      {/* {activeListings?.map((listing, index) => {
-        if (typeof listing === 'object' && listing !== null) {
-          return (
-            <div
-              className={`w-full duration-1000 ${isLoading && 'animate-pulse'}`}
-              key={listing.id}
-            >
-              <ListingCard listing={listing} />
-            </div>
-          )
-        }
-        return null
-      })} */}
       {enableCategoryFilters && (
         <div className="absolute left-0 right-auto -translate-y-1/2 md:right-0 md:left-auto top-0 md:bottom-[calc(100%+2rem)] md:top-auto md:translate-y-0 flex flex-wrap gap-2 sm:gap-6 gap-y-0">
           <Button

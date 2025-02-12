@@ -11,7 +11,6 @@ interface PostCardProps {
   post: Post
 }
 export const PostCard: React.FC<PostCardProps> = ({ post }) => {
-  console.log(post.featuredImage)
   return (
     <Link href={`/posts/${post.slug}`} className="w-full relative flex flex-col">
       <Media

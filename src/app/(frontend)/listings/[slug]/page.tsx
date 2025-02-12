@@ -54,8 +54,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import { ContactForm } from '@/components/Listings/ContactForm'
+import { SidebarForm } from '@/components/Listings/SidebarForm'
 import { notFound, redirect } from 'next/navigation'
+import { FormBlock } from '@/blocks/Form/Component'
+import Image from 'next/image'
+import { FooterForm } from '@/components/Listings/FooterForm'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -84,9 +87,13 @@ export default async function Listing({ params: paramsPromise }: Args) {
   const listing = await queryListingBySlug({ slug })
   const payload = await getPayload({ config: configPromise })
 
-  const generalContactForm = await payload.findByID({
+  const footerContactForm = await payload.findByID({
     collection: 'forms',
     id: 1,
+  })
+  const sidebarForm = await payload.findByID({
+    collection: 'forms',
+    id: 5,
   })
 
   if (!listing) return <PayloadRedirects url={url} />
@@ -346,7 +353,8 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   <h2 className="text-2xl font-bold text-brand-navy">Get in Touch</h2>
                 </div>
               </div>
-              <ContactForm listing={listing} />
+
+              <SidebarForm listing={listing} payloadForm={sidebarForm} />
             </div>
           </div>
         </div>
@@ -359,8 +367,33 @@ export default async function Listing({ params: paramsPromise }: Args) {
         relationTo={'listings'}
         propertyTypes={listing.propertyType}
       />
+      <div className="w-full flex flex-col md:flex-row">
+        <Media
+          className="w-full min-h-full aspect-[5/4] relative px-5 sm:px-10 lg:px-20"
+          imgClassName="object-cover"
+          fill
+          resource={listing.featuredImage}
+        />
+        <div className="relative w-full px-5 py-20 sm:px-10 sm:py-32 lg:px-20 border-t-[.625rem] border-brand-blue flex flex-col justify-center items-stretch sm:items-start bg-brand-offWhite">
+          <Image
+            className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none z-0"
+            fill
+            src="/pattern-geometric-general.png"
+            alt=""
+          />
+          <div className="relative z-10 flex flex-col gap-10">
+            <div className="flex flex-col gap-4">
+              <h2 className="font-bold text-brand-gray-06">Contact Us</h2>
+              <p className="text-brand-gray-04 font-light">
+                Get in touch today and let us help you find your perfect property!
+              </p>
+            </div>
+            <FooterForm payloadForm={footerContactForm} listing={listing} />
+          </div>
+        </div>
+      </div>
 
-      <ColumnsBlock
+      {/* <ColumnsBlock
         blockType="columnsBlock"
         columns={[
           {
@@ -421,7 +454,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     fields: {
                       blockName: 'formBlock',
                       blockType: 'formBlock',
-                      form: generalContactForm,
+                      form: footerContactForm,
                       styles: {
                         global: {},
                         resp: {},
@@ -456,7 +489,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
           },
           resp: {},
         }}
-      />
+      /> */}
     </article>
   )
 }

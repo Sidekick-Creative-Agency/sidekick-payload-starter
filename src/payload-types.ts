@@ -397,73 +397,83 @@ export interface Attachment {
 export interface TeamMember {
   id: number;
   title: string;
-  jobTitle: string;
-  bio?: {
-    root: {
-      type: string;
-      children: {
+  details: {
+    jobTitle: string;
+    bio?: {
+      root: {
         type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
         version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  featuredImage: number | Media;
-  designations?: string | null;
-  email?: string | null;
-  phone?: string | null;
-  socials?:
-    | {
-        platform?: ('facebook' | 'instagram' | 'linkedin' | 'twitter' | 'youtube') | null;
-        url?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  eductationAndCertifications?: {
-    root: {
-      type: string;
-      children: {
+      };
+      [k: string]: unknown;
+    } | null;
+    featuredImage: number | Media;
+    designations?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    socials?:
+      | {
+          platform?: ('facebook' | 'instagram' | 'linkedin' | 'twitter' | 'youtube') | null;
+          url?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    eductationAndCertifications?: {
+      root: {
         type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
         version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  notableTransactions?: {
-    root: {
-      type: string;
-      children: {
+      };
+      [k: string]: unknown;
+    } | null;
+    notableTransactions?: {
+      root: {
         type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
         version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  testimonials?:
-    | {
-        name: string;
-        testimonial: string;
-        rating: number;
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
-  isLeadership?: boolean | null;
+      };
+      [k: string]: unknown;
+    } | null;
+    testimonials?:
+      | {
+          name: string;
+          testimonial: string;
+          rating: number;
+          image: number | Media;
+          id?: string | null;
+        }[]
+      | null;
+    isLeadership?: boolean | null;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
   relatedListings?: {
     docs?: (number | Listing)[] | null;
     hasNextPage?: boolean | null;
@@ -630,6 +640,10 @@ export interface Form {
             defaultValue?: string | null;
             placeholder?: string | null;
             required?: boolean | null;
+            /**
+             * If checked, the field will not be displayed on the frontend.
+             */
+            hidden?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'text';
@@ -2063,31 +2077,42 @@ export interface ReviewsSelect<T extends boolean = true> {
  */
 export interface TeamMembersSelect<T extends boolean = true> {
   title?: T;
-  jobTitle?: T;
-  bio?: T;
-  featuredImage?: T;
-  designations?: T;
-  email?: T;
-  phone?: T;
-  socials?:
+  details?:
     | T
     | {
-        platform?: T;
-        url?: T;
-        id?: T;
+        jobTitle?: T;
+        bio?: T;
+        featuredImage?: T;
+        designations?: T;
+        email?: T;
+        phone?: T;
+        socials?:
+          | T
+          | {
+              platform?: T;
+              url?: T;
+              id?: T;
+            };
+        eductationAndCertifications?: T;
+        notableTransactions?: T;
+        testimonials?:
+          | T
+          | {
+              name?: T;
+              testimonial?: T;
+              rating?: T;
+              image?: T;
+              id?: T;
+            };
+        isLeadership?: T;
       };
-  eductationAndCertifications?: T;
-  notableTransactions?: T;
-  testimonials?:
+  meta?:
     | T
     | {
-        name?: T;
-        testimonial?: T;
-        rating?: T;
+        title?: T;
         image?: T;
-        id?: T;
+        description?: T;
       };
-  isLeadership?: T;
   relatedListings?: T;
   slug?: T;
   slugLock?: T;
@@ -2220,6 +2245,7 @@ export interface FormsSelect<T extends boolean = true> {
               defaultValue?: T;
               placeholder?: T;
               required?: T;
+              hidden?: T;
               id?: T;
               blockName?: T;
             };

@@ -11,6 +11,8 @@ import { buildInitialFormState } from './buildInitialFormState'
 import { fields } from './fields'
 import { PhoneNumberField } from './PhoneNumber/Field'
 import defaultTheme from 'tailwindcss/defaultTheme'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 export type Value = unknown
 
 export interface Property {
@@ -29,9 +31,8 @@ export type FormBlockType = {
   introContent?: {
     [k: string]: unknown
   }[]
-  theme?: 'default' | 'thin'
   styles?: {
-    global: { width?: string }
+    global: { width?: string; theme?: 'default' | 'thin' }
     resp: {
       padVertDeskVal?: number
       padVertDeskUnit?: string
@@ -50,11 +51,17 @@ export type FormBlockType = {
   elementId?: string
 }
 
-export const fieldWidthClasses = {
-  oneThird: 'col-span-12 sm:col-span-4',
-  half: 'col-span-12 sm:col-span-6',
-  twoThirds: 'col-span-12 sm:col-span-8',
-  full: 'col-span-12',
+export const fieldWidthClassesDefault = {
+  oneThird: 'max-w-full sm:max-w-[calc(33.33%-.5rem)]',
+  half: 'max-w-full sm:max-w-[calc(50%-.5rem)] ',
+  twoThirds: 'max-w-full sm:max-w-[calc(66.66%-.5rem)]',
+  full: 'max-w-full',
+}
+export const fieldWidthClassesThin = {
+  oneThird: 'max-w-full sm:max-w-[calc(33.33%-1.25rem)]',
+  half: 'max-w-full sm:max-w-[calc(50%-1.25rem)] ',
+  twoThirds: 'max-w-full sm:max-w-[calc(66.66%-1.25rem)]',
+  full: 'max-w-full',
 }
 
 export const FormBlock: React.FC<
@@ -121,19 +128,16 @@ export const FormBlock: React.FC<
 
   const onSubmit = useCallback(
     (data: Data) => {
-      let loadingTimerID: ReturnType<typeof setTimeout>
       const submitForm = async () => {
+        setIsLoading(true)
         setError(undefined)
 
         const dataToSend = Object.entries(data).map(([name, value]) => ({
           field: name,
           value,
         }))
-
-        // delay loading indicator by 1s
-        loadingTimerID = setTimeout(() => {
-          setIsLoading(true)
-        }, 1000)
+        console.log(data)
+        console.log(dataToSend)
 
         try {
           const req = await fetch(
@@ -151,8 +155,6 @@ export const FormBlock: React.FC<
           )
 
           const res = await req.json()
-
-          clearTimeout(loadingTimerID)
 
           if (req.status >= 400) {
             setIsLoading(false)
@@ -216,18 +218,19 @@ export const FormBlock: React.FC<
             <RichText className="mb-10" content={introContent} enableGutter={false} />
           )}
           {!isLoading && hasSubmitted && confirmationType === 'message' && (
-            <RichText content={confirmationMessage} />
+            <RichText content={confirmationMessage} enableGutter={false} />
           )}
           {isLoading && !hasSubmitted && <p>Loading, please wait...</p>}
           {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
           {!hasSubmitted && (
             <form id={formID} onSubmit={handleSubmit(onSubmit)}>
-              <div className={`mb-4 grid grid-cols-12 ${theme === 'default' ? 'gap-4' : 'gap-10'}`}>
+              <div className={`mb-4 flex flex-wrap ${theme === 'default' ? 'gap-4' : 'gap-10'}`}>
                 {formFromProps &&
                   formFromProps.fields &&
                   formFromProps.fields?.map((field, index) => {
                     const Field: React.FC<any> = fields?.[field.blockType]
                     if (Field) {
+                      console.log(theme)
                       return (
                         <Field
                           form={formFromProps}
@@ -236,8 +239,8 @@ export const FormBlock: React.FC<
                           control={control}
                           errors={errors}
                           register={register}
-                          className={`inline-block ${'width' in field ? fieldWidthClasses[field.width || 'full'] : ''} ${'name' in field && field.name && !errors[field.name] && 'mb-0'} relative transition-[margin] duration-300 ${'name' in field && field.name && errors[field.name] && 'mb-6'} `}
-                          fieldClassName={`${theme === 'thin' && 'border-t-0 border-r-0 border-l-0 border-b text-lg font-light focus-visible:border-b-brand-navy focus-visible:ring-0'} `}
+                          className={`inline-block w-full ${'width' in field ? (theme === 'default' ? fieldWidthClassesDefault[field.width || 'full'] : fieldWidthClassesThin[field.width || 'full']) : ''} ${'name' in field && field.name && !errors[field.name] ? 'mb-0' : 'mb-6'} relative transition-[margin] duration-300 ${field.hidden ? 'hidden' : ''} `}
+                          fieldClassName={`${theme === 'thin' ? 'border-t-0 border-r-0 border-l-0 border-b text-lg font-light focus-visible:border-b-brand-navy focus-visible:ring-0' : ''} `}
                           setValue={setValue}
                           key={index}
                         />
@@ -253,7 +256,11 @@ export const FormBlock: React.FC<
                 variant="default"
                 className="mt-6 w-full sm:w-auto"
               >
-                {submitButtonLabel}
+                {!isLoading ? (
+                  submitButtonLabel
+                ) : (
+                  <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />
+                )}
               </Button>
             </form>
           )}

@@ -45,10 +45,13 @@ export default async function Post({ params: paramsPromise }: Args) {
   const relatedPostsResult = await payload.find({
     collection: 'posts',
     where: {
+      _status: {
+        equals: 'published',
+      },
       slug: {
         not_equals: slug,
       },
-      ...(post.category
+      ...(post?.category
         ? {
             'category.id': {
               equals: (post?.category as Category)?.id,
@@ -58,7 +61,7 @@ export default async function Post({ params: paramsPromise }: Args) {
     },
   })
   const relatedPosts = relatedPostsResult.docs
-  console.log(relatedPosts)
+
   if (!post) return <PayloadRedirects url={url} />
 
   return (
@@ -74,15 +77,16 @@ export default async function Post({ params: paramsPromise }: Args) {
         <div className="container max-w-6xl">
           <RichText className="max-w-none p-0" content={post.content} enableGutter={false} />
         </div>
-
-        <div className="py-20 w-full">
-          <div className="container w-full max-w-6xl flex flex-col gap-10">
-            <div>
-              <h2 className="font-bold">Related Posts</h2>
+        {relatedPosts && relatedPosts.length > 0 && (
+          <div className="py-20 w-full">
+            <div className="container w-full max-w-6xl flex flex-col gap-10">
+              <div>
+                <h2 className="font-bold">Related Posts</h2>
+              </div>
+              <PostArchiveGrid data={relatedPosts} />
             </div>
-            <PostArchiveGrid data={relatedPosts} />
           </div>
-        </div>
+        )}
       </div>
     </article>
   )
