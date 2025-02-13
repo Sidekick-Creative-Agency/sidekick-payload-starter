@@ -10,6 +10,7 @@ import {
 
 import { linkGroup } from '@/fields/linkGroup'
 import { ColumnsBlock } from '@/blocks/ColumnsBlock/config'
+import { link } from '@/fields/link'
 
 export const hero: Field = {
   name: 'hero',
@@ -102,6 +103,36 @@ export const hero: Field = {
       },
       relationTo: 'media',
       required: false,
+    },
+    {
+      type: 'array',
+      name: 'heroLogos',
+      fields: [
+        {
+          name: 'logo',
+          type: 'upload',
+          relationTo: 'media',
+        },
+      ],
+      maxRows: 2,
+      admin: {
+        condition: (_, { type } = {}) => type === 'home',
+      },
+    },
+    {
+      type: 'array',
+      name: 'homeHeroLinks',
+      fields: [
+        {
+          name: 'beforeLabelText',
+          type: 'text',
+        },
+        link(),
+      ],
+      maxRows: 3,
+      admin: {
+        condition: (_, { type } = {}) => type === 'home',
+      },
     },
   ],
   label: false,

@@ -58,12 +58,15 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
         {width && width <= parseInt(defaultTheme.screens.lg) && <div className="pr-6"></div>}
         {header.logo && (
           <Link href="/" className=" md:col-start-2 md:justify-self-center">
-            {!header.logoAlt && <Media resource={header.logo} imgClassName={`max-w-[9.375rem]`} />}
-            {!isScrolled && headerTheme === 'transparent' && header.logoAlt && (
-              <Media resource={header.logo} imgClassName={`max-w-[9.375rem]`} />
-            )}
-            {(isScrolled || headerTheme === 'filled') && header.logoAlt && (
-              <Media resource={header.logoAlt} imgClassName={`max-w-[9.375rem]`} />
+            <Media
+              resource={header.logo}
+              imgClassName={`max-w-[9.375rem] ${header.logoAlt && (isScrolled || headerTheme === 'filled') ? 'hidden' : ''}`}
+            />
+            {header.logoAlt && (
+              <Media
+                resource={header.logoAlt}
+                imgClassName={`max-w-[9.375rem] ${isScrolled || headerTheme === 'filled' ? '' : 'hidden'}`}
+              />
             )}
           </Link>
         )}

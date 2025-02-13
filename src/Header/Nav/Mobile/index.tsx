@@ -98,6 +98,13 @@ export const HeaderMobileNav: React.FC<{ header: HeaderType }> = ({ header }) =>
                         {navItem?.label}
                       </AccordionTrigger>
                       <AccordionContent className="flex flex-col gap-2 px-4">
+                        {navItem?.enableParentLink && navItem.parentLink && (
+                          <CMSLink
+                            {...navItem.parentLink}
+                            label={navItem.parentLinkMobileLabel || navItem.label}
+                            className="w-full text-brand-gray-06 uppercase tracking-wide font-bold py-1"
+                          />
+                        )}
                         {navItem?.childrenLinks?.map((childLink, i) => {
                           return (
                             <CMSLink

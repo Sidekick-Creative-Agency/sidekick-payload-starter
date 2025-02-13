@@ -75,6 +75,17 @@ const NavItemField: Field = {
       },
     }),
     {
+      name: 'parentLinkMobileLabel',
+      type: 'text',
+      admin: {
+        condition: (_, { enableParentLink, type }) => {
+          return enableParentLink && type === 'parent'
+        },
+        description:
+          'Label for the parent link in the mobile menu dropdown. (i.e. All, Overview, etc.)',
+      },
+    },
+    {
       name: 'childrenLinks',
       type: 'array',
       labels: {

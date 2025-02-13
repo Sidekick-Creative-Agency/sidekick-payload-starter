@@ -135,6 +135,35 @@ export interface Page {
         }[]
       | null;
     media?: (number | null) | Media;
+    heroLogos?:
+      | {
+          logo?: (number | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+    homeHeroLinks?:
+      | {
+          beforeLabelText?: string | null;
+          link: {
+            type?: ('reference' | 'custom') | null;
+            newTab?: boolean | null;
+            reference?: {
+              relationTo: 'pages';
+              value: number | Page;
+            } | null;
+            url?: string | null;
+            label: string;
+            /**
+             * Choose how the link should be rendered.
+             */
+            appearance?: ('default' | 'outline') | null;
+            backgroundColor?: string | null;
+            borderColor?: string | null;
+            textColor?: string | null;
+          };
+          id?: string | null;
+        }[]
+      | null;
   };
   layout: (
     | ArchiveBlock
@@ -1464,6 +1493,31 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
             };
         media?: T;
+        heroLogos?:
+          | T
+          | {
+              logo?: T;
+              id?: T;
+            };
+        homeHeroLinks?:
+          | T
+          | {
+              beforeLabelText?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                    appearance?: T;
+                    backgroundColor?: T;
+                    borderColor?: T;
+                    textColor?: T;
+                  };
+              id?: T;
+            };
       };
   layout?:
     | T
@@ -2426,6 +2480,10 @@ export interface Header {
             url?: string | null;
             label: string;
           };
+          /**
+           * Label for the parent link in the mobile menu dropdown. (i.e. All, Overview, etc.)
+           */
+          parentLinkMobileLabel?: string | null;
           childrenLinks?:
             | {
                 link: {
@@ -2521,6 +2579,7 @@ export interface HeaderSelect<T extends boolean = true> {
                     url?: T;
                     label?: T;
                   };
+              parentLinkMobileLabel?: T;
               childrenLinks?:
                 | T
                 | {

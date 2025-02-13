@@ -354,7 +354,6 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 </div>
               </div>
               {/* @ts-ignore */}
-              {/* <SidebarForm listing={listing} payloadForm={sidebarForm} /> */}
               <FormBlock form={sidebarForm} styles={{ global: { theme: 'thin' }, resp: {} }} />
             </div>
           </div>
@@ -390,109 +389,10 @@ export default async function Listing({ params: paramsPromise }: Args) {
               </p>
             </div>
             {/* @ts-ignore */}
-            {/* <FooterForm payloadForm={footerContactForm} listing={listing} /> */}
             <FormBlock form={footerContactForm} styles={{ global: {}, resp: {} }} />
           </div>
         </div>
       </div>
-
-      {/* <ColumnsBlock
-        blockType="columnsBlock"
-        columns={[
-          {
-            type: 'media',
-            media: listing.featuredImage,
-            size: 'half',
-          },
-          {
-            type: 'text',
-            richText: {
-              root: {
-                type: '',
-                direction: 'ltr',
-                format: 'left',
-                indent: 0,
-                version: 2,
-
-                children: [
-                  {
-                    type: 'heading',
-                    tag: 'h2',
-                    indent: 0,
-                    format: '',
-                    version: 1,
-                    direction: 'ltr',
-                    children: [
-                      {
-                        detail: 0,
-                        format: 0,
-                        mode: 'normal',
-                        style: '',
-                        text: 'Contact Us',
-                        type: 'text',
-                        version: 1,
-                      },
-                    ],
-                  },
-                  {
-                    type: 'paragraph',
-                    textFormat: 0,
-                    indent: 0,
-                    format: '',
-                    version: 1,
-                    direction: 'ltr',
-                    children: [
-                      {
-                        detail: 0,
-                        format: 0,
-                        mode: 'normal',
-                        style: 'color: #757575',
-                        text: 'Get in touch today and let us help you find your perfect property!',
-                        type: 'text',
-                        version: 1,
-                      },
-                    ],
-                  },
-                  {
-                    fields: {
-                      blockName: 'formBlock',
-                      blockType: 'formBlock',
-                      form: footerContactForm,
-                      styles: {
-                        global: {},
-                        resp: {},
-                      },
-                    },
-                    type: 'block',
-                    version: 2,
-                  },
-                ],
-              },
-            },
-            size: 'half',
-            styles: {
-              enableTopBorder: true,
-              borderColor: BRAND_COLORS.find((color) => color.label === 'blue')?.label,
-            },
-            backgroundColor: BRAND_COLORS.find((color) => color.label === 'offWhite')?.label,
-            backgroundImage: {
-              url: '/pattern-geometric-general.png',
-              alt: '',
-              width: 400,
-              height: 400,
-              id: -1,
-              createdAt: '',
-              updatedAt: '',
-            },
-          },
-        ]}
-        styles={{
-          global: {
-            width: 'full',
-          },
-          resp: {},
-        }}
-      /> */}
     </article>
   )
 }

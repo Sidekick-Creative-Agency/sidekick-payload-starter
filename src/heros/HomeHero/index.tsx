@@ -29,11 +29,12 @@ const SearchFormSchema = z.object({
 })
 
 export const HomeHero: React.FC<Page['hero'] & { title: string }> = ({
-  links,
   media,
   enableOverrideTitle,
   overrideTitle,
   title,
+  heroLogos,
+  homeHeroLinks,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -77,70 +78,53 @@ export const HomeHero: React.FC<Page['hero'] & { title: string }> = ({
             </span>
           )}
         </div>
-        <div className="flex flex-wrap gap-y-8 gap-x-20 justify-center items-center">
-          <Image
-            src="/api/media/file/Frame.svg"
-            alt="KW Commercial logo"
-            width={144}
-            height={64}
-            className="w-56 h-auto"
-          ></Image>
-          <Image
-            src="/api/media/file/Layer_2.svg"
-            alt="KW Advantage logo"
-            width={144}
-            height={64}
-            className="w-40 h-auto"
-          ></Image>
+        {heroLogos && (
+          <div className="flex flex-wrap gap-y-8 gap-x-20 justify-center items-center">
+            {heroLogos.map((logo, index) => {
+              console.log(logo.logo)
+              return <Media key={index} resource={logo.logo || ''} className="h-auto" priority />
+            })}
+          </div>
+        )}
+      </div>
+      {homeHeroLinks && (
+        <div className="container p-0 min-[888px]:px-10 min-[888px]:pt-40 relative z-10 flex flex-wrap flex-col min-[888px]:flex-row gap-0 min-[888px]:gap-6 justify-between items-center w-full bg-white min-[888px]:bg-transparent">
+          {homeHeroLinks.map((link, index) => {
+            const href =
+              link.link.type === 'reference' && typeof link.link.reference?.value === 'object'
+                ? link.link.reference?.relationTo === 'pages'
+                  ? `${(link.link.reference?.value as Page)?.url}`
+                  : `${link.link.reference?.relationTo}/${link.link.reference.value.slug}`
+                : link.link.url
+
+            if (!href) return null
+
+            const newTabProps = link.link.newTab
+              ? { rel: 'noopener noreferrer', target: '_blank' }
+              : {}
+            return (
+              <Button
+                key={index}
+                className="bg-transparent w-full p-10 min-[888px]:p-4 min-[888px]:w-auto flex flex-col gap-2 items-start border-0 border-b border-brand-gray-01 min-[888px]:border-white hover:bg-transparent focus-visible:bg-transparent group text-brand-navy min-[888px]:text-white "
+                asChild
+              >
+                <Link href={href} {...newTabProps}>
+                  <span className="text-[.625rem] font-light tracking-wider uppercase">
+                    {link.beforeLabelText}
+                  </span>
+                  <div className="flex items-center gap-4 font-bold w-full justify-between">
+                    <span>{link.link.label}</span>
+                    <FontAwesomeIcon
+                      icon={faChevronRight}
+                      className="w-3 min-[888px]:w-2 h-auto ml-0 transition-transform group-hover:translate-x-2 "
+                    />
+                  </div>
+                </Link>
+              </Button>
+            )
+          })}
         </div>
-      </div>
-      <div className="container p-0 min-[888px]:px-10 min-[888px]:pt-40 relative z-10 flex flex-wrap flex-col min-[888px]:flex-row gap-0 min-[888px]:gap-6 justify-between items-center w-full bg-white min-[888px]:bg-transparent">
-        <Button
-          className="bg-transparent w-full p-10 min-[888px]:p-4 min-[888px]:w-auto flex flex-col gap-2 items-start border-0 border-b border-brand-gray-01 min-[888px]:border-white hover:bg-transparent focus-visible:bg-transparent group text-brand-navy min-[888px]:text-white "
-          asChild
-        >
-          <Link href="/listings/map?category=commercial">
-            <span className="text-[.625rem] font-light tracking-wider uppercase">Go To</span>
-            <div className="flex items-center gap-4 font-bold w-full justify-between">
-              <span>Commercial Properties</span>
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                className="w-3 min-[888px]:w-2 h-auto ml-0 transition-transform group-hover:translate-x-2 "
-              />
-            </div>
-          </Link>
-        </Button>
-        <Button
-          className="bg-transparent w-full p-10 min-[888px]:p-4 min-[888px]:w-auto flex flex-col gap-2 items-start border-0 border-b border-brand-gray-01 min-[888px]:border-white hover:bg-transparent focus-visible:bg-transparent group text-brand-navy min-[888px]:text-white "
-          asChild
-        >
-          <Link href="/listings/map?category=residential">
-            <span className="text-[.625rem] font-light tracking-wider uppercase">Go To</span>
-            <div className="flex items-center gap-4 font-bold w-full justify-between">
-              <span>Residential Properties</span>
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                className="w-3 min-[888px]:w-2 h-auto ml-0 transition-transform group-hover:translate-x-2 "
-              />
-            </div>
-          </Link>
-        </Button>
-        <Button
-          className="bg-transparent w-full p-10 min-[888px]:p-4 min-[888px]:w-auto flex flex-col gap-2 items-start border-0 border-b border-brand-gray-01 min-[888px]:border-white hover:bg-transparent focus-visible:bg-transparent group text-brand-navy min-[888px]:text-white "
-          asChild
-        >
-          <Link href="/">
-            <span className="text-[.625rem] font-light tracking-wider uppercase">Become An</span>
-            <div className="flex items-center gap-4 font-bold w-full justify-between">
-              <span>Onward Agent</span>
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                className="w-3 min-[888px]:w-2 h-auto ml-0 transition-transform group-hover:translate-x-2 "
-              />
-            </div>
-          </Link>
-        </Button>
-      </div>
+      )}
       {media && typeof media === 'object' && (
         <div className="absolute top-0 left-0 w-full h-3/4 min-[888px]:h-full">
           <Image
