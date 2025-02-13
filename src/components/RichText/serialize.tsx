@@ -27,6 +27,10 @@ import {
   CheckmarkListLexicalBlock,
 } from '@/blocks/Lexical/CheckmarkList/Component'
 import { SpacerLexicalBlock, SpacerLexicalBlockProps } from '@/blocks/Lexical/Spacer/Component'
+import {
+  MediaGridLexicalBlock,
+  MediaGridLexicalBlockProps,
+} from '@/blocks/Lexical/MediaGrid/Component'
 
 export type NodeTypes =
   | DefaultNodeTypes
@@ -37,6 +41,7 @@ export type NodeTypes =
       | CarouselLexicalBlockProps
       | CheckmarkListLexicalBlockProps
       | SpacerLexicalBlockProps
+      | MediaGridLexicalBlockProps
     >
 
 type Props = {
@@ -159,6 +164,8 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
               return <CheckmarkListLexicalBlock key={index} {...block} />
             case 'spacer':
               return <SpacerLexicalBlock key={index} {...block} />
+            case 'mediaGrid':
+              return <MediaGridLexicalBlock key={index} {...block} />
             default:
               return null
           }

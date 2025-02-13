@@ -354,7 +354,8 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 </div>
               </div>
               {/* @ts-ignore */}
-              <SidebarForm listing={listing} payloadForm={sidebarForm} />
+              {/* <SidebarForm listing={listing} payloadForm={sidebarForm} /> */}
+              <FormBlock form={sidebarForm} styles={{ global: { theme: 'thin' }, resp: {} }} />
             </div>
           </div>
         </div>
@@ -389,7 +390,8 @@ export default async function Listing({ params: paramsPromise }: Args) {
               </p>
             </div>
             {/* @ts-ignore */}
-            <FooterForm payloadForm={footerContactForm} listing={listing} />
+            {/* <FooterForm payloadForm={footerContactForm} listing={listing} /> */}
+            <FormBlock form={footerContactForm} styles={{ global: {}, resp: {} }} />
           </div>
         </div>
       </div>

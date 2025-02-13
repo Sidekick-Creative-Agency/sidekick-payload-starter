@@ -671,6 +671,13 @@ export interface Form {
             blockName?: string | null;
             blockType: 'phoneNumber';
           }
+        | {
+            name?: string | null;
+            title?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pageTitle';
+          }
       )[]
     | null;
   submitButtonLabel?: string | null;
@@ -2275,6 +2282,14 @@ export interface FormsSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        pageTitle?:
+          | T
+          | {
+              name?: T;
+              title?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   submitButtonLabel?: T;
   confirmationType?: T;
@@ -2618,6 +2633,22 @@ export interface SpacerLexicalBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'spacer';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaGridBlock".
+ */
+export interface MediaGridBlock {
+  items?:
+    | {
+        media?: (number | null) | Media;
+        aspectRatio?: ('auto' | 'video' | 'square') | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaGrid';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

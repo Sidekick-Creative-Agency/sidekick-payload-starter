@@ -48,6 +48,9 @@ import { Reviews } from './collections/Reviews'
 import { TeamMembers } from './collections/TeamMembers'
 import { JobListings } from './collections/JobListings'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { resendAdapter } from '@payloadcms/email-resend'
+
+import { PageTitle } from './blocks/Form/PageTitle/Field/input'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -107,6 +110,11 @@ export default buildConfig({
       ],
     },
   },
+  email: resendAdapter({
+    defaultFromAddress: 'dev@payloadcms.com',
+    defaultFromName: 'Onward Real Estate Team',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
   // This config helps us configure global or default features that the other editors can inherit
   editor: lexicalEditor({
     features: () => {
@@ -192,6 +200,11 @@ export default buildConfig({
       generateURL,
     }),
     formBuilderPlugin({
+      beforeEmail: async (emails, beforeChangeParams) => {
+        console.log(emails[0])
+        return emails
+      },
+      defaultToEmail: 'delivered@resend.dev',
       fields: {
         payment: false,
         phoneNumber: PhoneNumber,
@@ -202,6 +215,7 @@ export default buildConfig({
         number: NumberField,
         state: StateField,
         textarea: TextAreaField,
+        pageTitle: PageTitle,
       },
       formOverrides: {
         fields: ({ defaultFields }) => {

@@ -13,6 +13,7 @@ import { PhoneNumberField } from './PhoneNumber/Field'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
+import { PageTitleField } from './PageTitle/Field/input'
 export type Value = unknown
 
 export interface Property {
@@ -27,7 +28,7 @@ export type FormBlockType = {
   blockName?: string
   blockType?: 'formBlock'
   enableIntro: boolean
-  form: FormType & { fields: (FormFieldBlock | PhoneNumberField)[] }
+  form: FormType & { fields: (FormFieldBlock | PhoneNumberField | PageTitleField)[] }
   introContent?: {
     [k: string]: unknown
   }[]
@@ -189,10 +190,6 @@ export const FormBlock: React.FC<
     [router, formID, redirect, confirmationType],
   )
 
-  useEffect(() => {
-    console.log(errors)
-  }, [errors])
-
   return (
     <>
       <style>
@@ -226,6 +223,7 @@ export const FormBlock: React.FC<
                 {formFromProps &&
                   formFromProps.fields &&
                   formFromProps.fields?.map((field, index) => {
+                    console.log(field)
                     const Field: React.FC<any> = fields?.[field.blockType]
                     if (Field) {
                       return (

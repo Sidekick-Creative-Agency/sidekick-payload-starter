@@ -3,6 +3,8 @@ import { Country } from './Country'
 import { Email } from './Email'
 import { Message } from './Message'
 import { Number } from './Number'
+import { PageTitle } from './PageTitle'
+
 import { PhoneNumber } from './PhoneNumber'
 import { Select } from './Select'
 import { State } from './State'
@@ -20,4 +22,5 @@ export const fields = {
   text: Text,
   textarea: Textarea,
   phoneNumber: PhoneNumber,
+  pageTitle: PageTitle,
 }

@@ -1,5 +1,4 @@
 import { formatFormFieldName } from '@/utilities/validateFieldName'
-import { Block } from 'payload'
 
 const validatePhoneNumber = (value: string) => {
   return !value || value === '' || Boolean(/^\d{10}$/.test(value))

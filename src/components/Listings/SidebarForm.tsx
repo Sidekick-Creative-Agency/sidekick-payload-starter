@@ -45,6 +45,7 @@ export const SidebarForm: React.FC<SidebarFormProps> = ({ listing, payloadForm }
   const form = useForm<z.infer<typeof ListingContactFormSchema>>({
     resolver: zodResolver(ListingContactFormSchema),
   })
+  console.log(payloadForm)
 
   const onSubmit = (data: Data) => {
     const submitForm = async () => {

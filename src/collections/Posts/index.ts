@@ -28,6 +28,9 @@ import {
 import { slugField } from '@/fields/Slug'
 import { ColumnsBlock } from '@/blocks/ColumnsBlock/config'
 import { MediaCarouselBlock } from '@/blocks/MediaCarouselBlock/config'
+import { MediaGridLexicalBlock } from '@/blocks/Lexical/MediaGrid/config'
+import { SpacerLexicalBlock } from '@/blocks/Lexical/Spacer/config'
+import { CheckmarkListLexicalBlock } from '@/blocks/Lexical/CheckmarkList/config'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -87,7 +90,15 @@ export const Posts: CollectionConfig = {
                     UnorderedListFeature(),
                     OrderedListFeature(),
                     LinkFeature(),
-                    BlocksFeature({ blocks: [ColumnsBlock, MediaCarouselBlock] }),
+                    BlocksFeature({
+                      blocks: [
+                        ColumnsBlock,
+                        MediaCarouselBlock,
+                        MediaGridLexicalBlock,
+                        SpacerLexicalBlock,
+                        CheckmarkListLexicalBlock,
+                      ],
+                    }),
                   ]
                 },
               }),
