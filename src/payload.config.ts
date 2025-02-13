@@ -200,10 +200,6 @@ export default buildConfig({
       generateURL,
     }),
     formBuilderPlugin({
-      beforeEmail: async (emails, beforeChangeParams) => {
-        console.log(emails[0])
-        return emails
-      },
       defaultToEmail: 'delivered@resend.dev',
       fields: {
         payment: false,

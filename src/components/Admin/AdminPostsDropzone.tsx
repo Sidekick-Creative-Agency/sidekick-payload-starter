@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Dropzone, Table, toast } from '@payloadcms/ui'
+import { Button, Dropzone, NumberField, Table, TextInput, toast } from '@payloadcms/ui'
 import React, { useRef, useState } from 'react'
 import Papa from 'papaparse'
 import { $generateNodesFromDOM } from '@lexical/html'
@@ -9,8 +9,8 @@ import { $getRoot, LexicalNode, SerializedEditor, SerializedEditorState } from '
 import { PropertyType } from '@/payload-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
-import { useRouter } from 'next/navigation'
 import { $getSelection } from '@payloadcms/richtext-lexical/lexical'
+import { Input } from '../ui/input'
 
 interface AdminPostsDropzoneProps {
   collectionSlug: string
@@ -19,7 +19,8 @@ export const AdminPostsDropzone: React.FC<AdminPostsDropzoneProps> = ({ collecti
   const [file, setFile] = useState<File | null>(null)
   const [data, setData] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+  const [importAmount, setImportAmount] = useState(-1)
+  const [importOffset, setImportOffset] = useState(0)
 
   const handleUpload = async () => {
     try {
@@ -36,7 +37,7 @@ export const AdminPostsDropzone: React.FC<AdminPostsDropzoneProps> = ({ collecti
       let failedImportCount = 0
       let skippedImportCount = 0
       const uploadPromises = data.map(async (item, index) => {
-        if (index < 11) {
+        if (index >= importOffset && importAmount ? index <= importOffset + importAmount : true) {
           if (!item.title) {
             toast.error(`Skipping import on line ${index + 2}. Title is required`)
             return
@@ -194,6 +195,7 @@ export const AdminPostsDropzone: React.FC<AdminPostsDropzoneProps> = ({ collecti
             )
           }
         }
+        return
       })
       await Promise.all(uploadPromises)
 
@@ -226,7 +228,6 @@ export const AdminPostsDropzone: React.FC<AdminPostsDropzoneProps> = ({ collecti
     <div>
       <Dropzone
         onChange={(fileList) => {
-          console.log(fileList)
           if (fileList.length > 0) {
             const firstFile = fileList[0]
             const firstFileType = firstFile.type
@@ -236,7 +237,6 @@ export const AdminPostsDropzone: React.FC<AdminPostsDropzoneProps> = ({ collecti
               Papa.parse(firstFile, {
                 header: true,
                 complete: (results) => {
-                  console.log(results)
                   const errors = results.errors
                   const errorIndices: number[] = []
                   if (errors.length > 0) {
@@ -269,6 +269,42 @@ export const AdminPostsDropzone: React.FC<AdminPostsDropzoneProps> = ({ collecti
       >
         <span>{file?.name ? file.name : 'Drag or Drop CSV file here'}</span>
       </Dropzone>
+
+      <div className="flex gap-2 mt-4">
+        {/* <NumberField path="" field={{ name: 'importAmount' }} /> */}
+        <div className="field-type number" style={{ flex: '1 1 auto' }}>
+          <div className="field-type__wrap">
+            <div>
+              <input
+                type="number"
+                placeholder="Number of posts to import"
+                min={0}
+                max={data.length}
+                onChange={(e) => {
+                  setImportAmount(parseInt(e.target.value))
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="field-type number" style={{ flex: '1 1 auto' }}>
+          <div className="field-type__wrap">
+            <div>
+              <input
+                type="number"
+                placeholder="Number of posts to skip"
+                min={0}
+                max={data.length}
+                onChange={(e) => {
+                  setImportOffset(parseInt(e.target.value))
+                  console.log(e.target.value)
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {file && (
         <Button
           onClick={() => {

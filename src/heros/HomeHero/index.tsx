@@ -81,7 +81,6 @@ export const HomeHero: React.FC<Page['hero'] & { title: string }> = ({
         {heroLogos && (
           <div className="flex flex-wrap gap-y-8 gap-x-20 justify-center items-center">
             {heroLogos.map((logo, index) => {
-              console.log(logo.logo)
               return <Media key={index} resource={logo.logo || ''} className="h-auto" priority />
             })}
           </div>

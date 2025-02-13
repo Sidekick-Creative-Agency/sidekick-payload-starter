@@ -274,6 +274,8 @@ export interface ArchiveBlock {
   limit?: number | null;
   enablePropertyCategoryFilters?: boolean | null;
   defaultCategoryFilter?: ('commercial' | 'residential') | null;
+  layout?: ('grid' | 'carousel') | null;
+  enablePostCategoryFilter?: boolean | null;
   /**
    * The HTML ID attribute of this block.
    */
@@ -1575,6 +1577,8 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   limit?: T;
   enablePropertyCategoryFilters?: T;
   defaultCategoryFilter?: T;
+  layout?: T;
+  enablePostCategoryFilter?: T;
   elementId?: T;
   id?: T;
   blockName?: T;

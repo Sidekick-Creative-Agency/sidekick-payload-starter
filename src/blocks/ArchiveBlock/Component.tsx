@@ -4,7 +4,8 @@ import { DataFromCollectionSlug, getPayload } from 'payload'
 import React from 'react'
 import { TeamMemberArchiveGrid } from '@/components/Archive/TeamMemberArchive'
 import { ListingArchiveGrid } from '@/components/Archive/ListingArchive'
-import { PostArchiveGrid } from '@/components/Archive/PostArchive'
+import { PostArchiveCarousel } from '@/components/Archive/PostArchive/Carousel'
+import { PostArchiveGrid } from '@/components/Archive/PostArchive/Grid'
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
@@ -23,6 +24,8 @@ export const ArchiveBlock: React.FC<
     defaultCategoryFilter,
     elementId,
     propertyTypes,
+    layout,
+    enablePostCategoryFilter,
   } = props
 
   const limit = limitFromProps || 3
@@ -102,7 +105,16 @@ export const ArchiveBlock: React.FC<
           />
         )
       case 'posts':
-        return <PostArchiveGrid data={archive as Post[]} />
+        return layout === 'grid' ? (
+          <PostArchiveGrid
+            data={archive as Post[]}
+            limit={limit}
+            hasNextPage={fetchedDocs.hasNextPage}
+            enableFilter={enablePostCategoryFilter}
+          />
+        ) : (
+          <PostArchiveCarousel data={archive as Post[]} />
+        )
       default:
         return null
     }

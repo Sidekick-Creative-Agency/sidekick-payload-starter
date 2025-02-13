@@ -13,7 +13,7 @@ import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { notFound, redirect } from 'next/navigation'
-import { PostArchiveGrid } from '@/components/Archive/PostArchive'
+import { PostArchiveCarousel } from '@/components/Archive/PostArchive/Carousel'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -83,7 +83,7 @@ export default async function Post({ params: paramsPromise }: Args) {
               <div>
                 <h2 className="font-bold">Related Posts</h2>
               </div>
-              <PostArchiveGrid data={relatedPosts} />
+              <PostArchiveCarousel data={relatedPosts} />
             </div>
           </div>
         )}

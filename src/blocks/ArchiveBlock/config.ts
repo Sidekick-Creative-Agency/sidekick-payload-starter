@@ -106,6 +106,32 @@ export const ArchiveBlock: Block = {
           siblingData.relationTo === 'listings' && siblingData.enablePropertyCategoryFilters,
       },
     },
+    {
+      name: 'layout',
+      type: 'select',
+      defaultValue: 'grid',
+      options: [
+        {
+          value: 'grid',
+          label: 'Grid',
+        },
+        {
+          value: 'carousel',
+          label: 'Carousel',
+        },
+      ],
+      admin: {
+        condition: (_, siblingData) => siblingData.relationTo === 'posts',
+      },
+    },
+    {
+      name: 'enablePostCategoryFilter',
+      label: 'Enable Category Filter',
+      type: 'checkbox',
+      admin: {
+        condition: (_, siblingData) => siblingData.relationTo === 'posts',
+      },
+    },
     AdvancedFields,
   ],
   labels: {

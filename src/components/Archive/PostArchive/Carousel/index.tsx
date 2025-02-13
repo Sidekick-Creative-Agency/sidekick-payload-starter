@@ -10,11 +10,11 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 
-interface PostArchiveGridProps {
+interface PostArchiveCarouselProps {
   data: DataFromCollectionSlug<'posts'>[]
 }
 
-export const PostArchiveGrid: React.FC<PostArchiveGridProps> = (props) => {
+export const PostArchiveCarousel: React.FC<PostArchiveCarouselProps> = (props) => {
   const { data } = props
   return (
     <div className="relative w-full">
