@@ -161,7 +161,6 @@ export const AdminPostsDropzone: React.FC<AdminPostsDropzoneProps> = ({ collecti
               image: featuredImageId,
             },
           }
-          console.log(postData)
           const postResponse = await fetch('/api/posts', {
             method: 'POST',
             credentials: 'include',
@@ -271,7 +270,6 @@ export const AdminPostsDropzone: React.FC<AdminPostsDropzoneProps> = ({ collecti
       </Dropzone>
 
       <div className="flex gap-2 mt-4">
-        {/* <NumberField path="" field={{ name: 'importAmount' }} /> */}
         <div className="field-type number" style={{ flex: '1 1 auto' }}>
           <div className="field-type__wrap">
             <div>

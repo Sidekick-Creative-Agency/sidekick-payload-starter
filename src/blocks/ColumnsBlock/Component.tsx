@@ -17,6 +17,7 @@ import {
   BRAND_TEXT_COLOR_HOVER_CLASSES,
   SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS,
 } from '@/utilities/constants'
+import * as motion from 'motion/react-client'
 
 type Props = Extract<Page['layout'][0], { blockType: 'columnsBlock' }>
 
@@ -134,11 +135,14 @@ export const ColumnsBlock: React.FC<
                       className={`relative mx-auto ${width !== 'full' ? `${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}` : 'w-[40rem] max-w-full mx-auto'}  `}
                     >
                       {enableSubtitle && subtitle && (
-                        <span
+                        <motion.span
                           className={`inline-block w-full uppercase tracking-widest leading-none text-base font-basic-sans font-bold mb-2 z-10 relative ${subtitleAlignClasses[subtitleAlign || 'left']} ${BRAND_TEXT_COLOR_CLASSES[subtitleColor || 'tan']}`}
+                          initial={{ y: 20, opacity: 0 }}
+                          whileInView={{ y: 0, opacity: 1 }}
+                          viewport={{ once: true, amount: 'all' }}
                         >
                           {subtitle}
-                        </span>
+                        </motion.span>
                       )}
                       {richText && (
                         <RichText

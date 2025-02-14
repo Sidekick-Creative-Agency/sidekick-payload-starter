@@ -1,7 +1,7 @@
 'use client'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { Listing, Media as MediaType } from '@/payload-types'
-import { useEffect, useRef, useState } from 'react'
+import { createRef, RefObject, useEffect, useRef, useState } from 'react'
 import mapboxgl, { LngLatBoundsLike, LngLatLike, Map, Marker } from 'mapbox-gl'
 import { Card } from '../../../../components/ui/card'
 import { Media } from '../../../../components/Media'
@@ -40,6 +40,8 @@ import useWindowDimensions from '@/utilities/useWindowDimensions'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import { MAP_PAGINATION_LIMIT } from '@/utilities/constants'
 import { faXmark } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
+import './styles.scss'
+import { useDebounce } from '@/utilities/useDebounce'
 
 interface MapPageClientProps {
   listingsCount?: number
@@ -115,6 +117,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const [nextPage, setNextPage] = useState<number | null | undefined>(undefined)
   const [prevPage, setPrevPage] = useState<number | null | undefined>(undefined)
   const [isSortOpen, setIsSortOpen] = useState(false)
+  const [focusedListing, setFocusedListing] = useState<Listing | null>(null)
+  const [cardRefs, setCardRefs] = useState<RefObject<HTMLDivElement | null>[]>([])
   const { setHeaderTheme } = useHeaderTheme()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -139,26 +143,63 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       })
     }
   }
-
-  const handleCardMouseEnter = (listing: Listing) => {
-    if (mapRef.current) {
-      mapRef.current.flyTo({
-        center: [listing.coordinates[0], listing.coordinates[1]],
-        speed: 0.5,
-      })
-      activeMarkers.forEach((marker) => {
-        if (
-          marker.getLngLat().lng === listing.coordinates[0] &&
-          marker.getLngLat().lat === listing.coordinates[1] &&
-          !marker.getPopup()?.isOpen()
-        ) {
-          marker.togglePopup()
-        } else if (marker.getPopup()?.isOpen()) {
-          marker.togglePopup()
+  const debouncedFocusedListing = useDebounce(focusedListing, 500)
+  // const handleCardMouseEnter = (listing: Listing) => {
+  //   setFocusedListing(listing)
+  //   if (debouncedFocusedListing?.id === listing.id) {
+  //     if (mapRef.current) {
+  //       mapRef.current.flyTo({
+  //         center: [listing.coordinates[0], listing.coordinates[1]],
+  //         speed: 0.5,
+  //       })
+  //       activeMarkers.forEach((marker) => {
+  //         if (
+  //           marker.getLngLat().lng === listing.coordinates[0] &&
+  //           marker.getLngLat().lat === listing.coordinates[1] &&
+  //           !marker.getPopup()?.isOpen()
+  //         ) {
+  //           marker.togglePopup()
+  //         } else if (marker.getPopup()?.isOpen()) {
+  //           marker.togglePopup()
+  //         }
+  //       })
+  //     }
+  //   }
+  // }
+  useEffect(() => {
+    console.log(debouncedFocusedListing)
+    // if (!debouncedFocusedListing) {
+    //   if (mapRef.current) {
+    //     activeMarkers.forEach((marker) => {
+    //       if (marker.getPopup()?.isOpen()) {
+    //         marker.togglePopup()
+    //       }
+    //     })
+    //   }
+    // }
+    activeListings.forEach((listing) => {
+      if (listing.id === debouncedFocusedListing?.id) {
+        if (mapRef.current) {
+          mapRef.current.flyTo({
+            center: [listing.coordinates[0], listing.coordinates[1]],
+            speed: 0.5,
+          })
+          activeMarkers.forEach((marker) => {
+            if (
+              marker.getLngLat().lng === listing.coordinates[0] &&
+              marker.getLngLat().lat === listing.coordinates[1]
+            ) {
+              if (!marker.getPopup()?.isOpen()) {
+                marker.togglePopup()
+              }
+            } else if (marker.getPopup()?.isOpen()) {
+              marker.togglePopup()
+            }
+          })
         }
-      })
-    }
-  }
+      }
+    })
+  }, [debouncedFocusedListing])
 
   const handleFetchListings = async (
     filterData?: MapFilters,
@@ -167,6 +208,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   ) => {
     setIsLoading(true)
     setActiveListings([])
+    setCardRefs([])
     if (filterData || page || sort) {
       filterData && setFilters(filterData)
       sort
@@ -248,6 +290,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     setHasNextPage(response.hasNextPage)
     setActiveListings(response.docs)
     setTotalListings(response.totalDocs)
+    setCardRefs(response.docs.map(() => createRef()))
     setIsLoading(false)
   }
 
@@ -264,7 +307,10 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             properties: {
               title: listing.title,
               address: listing.streetAddress,
-              price: listing.price ? formatPrice(listing.price) : '',
+              price:
+                typeof listing.price === 'number' && listing.price !== 0
+                  ? formatPrice(listing.price)
+                  : '',
               textAfterPrice: listing.textAfterPrice || '',
               transactionType: listing.transactionType,
               image: listing.featuredImage,
@@ -323,6 +369,13 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             center: coords,
             speed: 0.5,
           })
+          const matchingCardIndex = activeListings.findIndex(
+            (listing) => feature.properties.title === listing.title,
+          )
+          cardRefs[matchingCardIndex].current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          })
         })
       }
     }
@@ -339,6 +392,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       zoom: 10,
       scrollZoom: false,
     })
+    mapRef.current.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-left')
 
     // FETCH PROPERTIES ON FIRST RENDER
     const filterData = {
@@ -375,12 +429,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     try {
       setIsLoading(true)
       router.replace(pathname, { scroll: false })
-      // Object.entries(form.getValues()).forEach(([key, value]) => {
-      //   if (form.getValues()[key]) {
-      //     // @ts-ignore
-      //     form.setValue(key, '')
-      //   }
-      // })
       form.reset()
       setFilters(undefined)
       handleFetchListings()
@@ -514,16 +562,26 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
 
             {activeListings &&
               activeListings.length > 0 &&
-              activeListings.map((listing) => {
+              activeListings.map((listing, index) => {
                 return (
                   <Card
                     key={listing.id}
                     className="rounded-none bg-white border-none shadow-md transition-shadow hover:shadow-xl focus-visible:shadow-xl"
                     onMouseEnter={() => {
-                      // handleCardMouseEnter(listing)
+                      setFocusedListing(listing)
                     }}
+                    onMouseLeave={() => {
+                      setFocusedListing(null)
+                    }}
+                    onFocus={() => {
+                      setFocusedListing(listing)
+                    }}
+                    onBlur={() => {
+                      setFocusedListing(null)
+                    }}
+                    ref={cardRefs[index]}
                   >
-                    <Link href={`/listings/${listing.slug}`}>
+                    <Link href={`/listings/${listing.slug}`} className="h-full block">
                       <div className="relative pb-[66.66%] overflow-hidden w-full">
                         <Media
                           resource={listing.featuredImage}
@@ -537,13 +595,15 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                             <h3 className="sr-only">{listing.title}</h3>
                             <div>
                               <span className="text-2xl text-brand-gray-06 font-bold font-basic-sans leading-none">
-                                {listing.price && listing.price !== 0
+                                {typeof listing.price === 'number' && listing.price !== 0
                                   ? `${formatPrice(listing.price)}`
                                   : 'Contact for price'}
                               </span>
-                              {listing.price && listing.price !== 0 && listing.textAfterPrice && (
-                                <span className="text-sm ml-2">{listing.textAfterPrice}</span>
-                              )}
+                              {typeof listing.price === 'number' &&
+                                listing.price !== 0 &&
+                                listing.textAfterPrice && (
+                                  <span className="text-sm ml-2">{listing.textAfterPrice}</span>
+                                )}
                             </div>
 
                             <span className="text-xl font-light text-brand-gray-06">

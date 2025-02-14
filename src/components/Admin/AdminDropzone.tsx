@@ -44,6 +44,8 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
   const [file, setFile] = useState<File | null>(null)
   const [data, setData] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [importAmount, setImportAmount] = useState<number | undefined>(undefined)
+  const [importOffset, setImportOffset] = useState(0)
   const router = useRouter()
 
   const handleUpload = async () => {
@@ -61,35 +63,35 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
       let failedImportCount = 0
       let skippedImportCount = 0
       const uploadPromises = data.map(async (item, index) => {
-        if (index < 20) {
+        if (index >= importOffset && importAmount ? index <= importOffset + importAmount : true) {
           if (!item.title) {
             toast.error(`Skipping import on line ${index + 2}. Title is required`)
             return
           }
-          if (!item.street_address) {
-            toast.error(`Skipping import on line ${index + 2}. Street Address is required`)
-            return
-          }
-          if (!item.city) {
-            toast.error(`Skipping import on line ${index + 2}. City is required`)
-            return
-          }
-          if (!item.state) {
-            toast.error(`Skipping import on line ${index + 2}. State is required`)
-            return
-          }
-          if (!item.zip_code) {
-            toast.error(`Skipping import on line ${index + 2}. Zip Code is required`)
-            return
-          }
-          if (!item.latitude) {
-            toast.error(`Skipping import on line ${index + 2}. Latitude is required`)
-            return
-          }
-          if (!item.longitude) {
-            toast.error(`Skipping import on line ${index + 2}. Longitude  is required`)
-            return
-          }
+          // if (!item.street_address) {
+          //   toast.error(`Skipping import on line ${index + 2}. Street Address is required`)
+          //   return
+          // }
+          // if (!item.city) {
+          //   toast.error(`Skipping import on line ${index + 2}. City is required`)
+          //   return
+          // }
+          // if (!item.state) {
+          //   toast.error(`Skipping import on line ${index + 2}. State is required`)
+          //   return
+          // }
+          // if (!item.zip_code) {
+          //   toast.error(`Skipping import on line ${index + 2}. Zip Code is required`)
+          //   return
+          // }
+          // if (!item.latitude) {
+          //   toast.error(`Skipping import on line ${index + 2}. Latitude is required`)
+          //   return
+          // }
+          // if (!item.longitude) {
+          //   toast.error(`Skipping import on line ${index + 2}. Longitude  is required`)
+          //   return
+          // }
           const existingListing = await fetch(
             `/api/listings?where[title][like]=${item.title}`,
           ).then((res) => res.json().then((json) => json))
@@ -179,8 +181,6 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
             })
             .filter((filename) => filename)
 
-          console.log(propertyAttachmentFilenames)
-          console.log(attachmentFileNames)
           // GET LISTING DATA VALUES
           const title = item.title || ''
           const category = item.bedrooms || item.bathrooms ? 'residential' : 'commercial'
@@ -262,42 +262,37 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
           if (imageUrls && imageUrls.length > 0) {
             const allImages: { image: number }[] = await Promise.all(
               imageUrls.map(async (imageUrl, _index) => {
-                if (_index < 3) {
-                  const existingImage = await fetch(
-                    `/api/media?where[filename][equals]=${imageFileNames[_index].split('.')[0]}.webp`,
-                  ).then((res) => res.json().then((json) => json))
-                  console.log('EXISTING IMAGE')
-                  if (existingImage.docs && existingImage.docs[0]) {
-                    return { image: existingImage.docs[0].id }
-                  } else {
-                    const imageBlob = await fetch(imageUrl).then((res) =>
-                      res.blob().then((blob) => blob),
-                    )
-                    const formData = new FormData()
-                    formData.append('file', imageBlob, imageFileNames[_index])
-                    formData.append(
-                      '_payload',
-                      JSON.stringify({ alt: imageAltTexts[_index] || '' }),
-                    )
-                    const imageResponse = await fetch('/api/media', {
-                      method: 'POST',
-                      body: formData,
-                      credentials: 'include',
-                    })
-                      .then((response) => response.json().then((json) => json))
-                      .catch((error) => {
-                        console.error('Error creating Media:', error)
-                        return { image: undefined }
-                      })
-                    if (!imageResponse || imageResponse.errors) {
-                      failedImportCount += 1
-                      toast.error(
-                        `Error importing Listing on row ${index + 1}: ${imageResponse.errors[0].message}`,
-                      )
+                const existingImage = await fetch(
+                  `/api/media?where[filename][equals]=${imageFileNames[_index].split('.')[0]}.webp`,
+                ).then((res) => res.json().then((json) => json))
+                console.log('EXISTING IMAGE')
+                if (existingImage.docs && existingImage.docs[0]) {
+                  return { image: existingImage.docs[0].id }
+                } else {
+                  const imageBlob = await fetch(imageUrl).then((res) =>
+                    res.blob().then((blob) => blob),
+                  )
+                  const formData = new FormData()
+                  formData.append('file', imageBlob, imageFileNames[_index])
+                  formData.append('_payload', JSON.stringify({ alt: imageAltTexts[_index] || '' }))
+                  const imageResponse = await fetch('/api/media', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include',
+                  })
+                    .then((response) => response.json().then((json) => json))
+                    .catch((error) => {
+                      console.error('Error creating Media:', error)
                       return { image: undefined }
-                    }
-                    return { image: imageResponse.doc.id }
+                    })
+                  if (!imageResponse || imageResponse.errors) {
+                    failedImportCount += 1
+                    toast.error(
+                      `Error importing Listing on row ${index + 1}: ${imageResponse.errors[0].message}`,
+                    )
+                    return { image: undefined }
                   }
+                  return { image: imageResponse.doc.id }
                 }
                 return { image: undefined }
               }),
@@ -494,6 +489,39 @@ export const AdminDropzone: React.FC<AdminDropzoneProps> = ({ collectionSlug }) 
       >
         <span>{file?.name ? file.name : 'Drag or Drop CSV file here'}</span>
       </Dropzone>
+      <div className="flex gap-2 mt-4">
+        <div className="field-type number" style={{ flex: '1 1 auto' }}>
+          <div className="field-type__wrap">
+            <div>
+              <input
+                type="number"
+                placeholder="Number of posts to import"
+                min={0}
+                max={data.length}
+                onChange={(e) => {
+                  setImportAmount(parseInt(e.target.value))
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="field-type number" style={{ flex: '1 1 auto' }}>
+          <div className="field-type__wrap">
+            <div>
+              <input
+                type="number"
+                placeholder="Number of posts to skip"
+                min={0}
+                max={data.length}
+                onChange={(e) => {
+                  setImportOffset(parseInt(e.target.value))
+                  console.log(e.target.value)
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
       {file && (
         <Button
           onClick={() => {

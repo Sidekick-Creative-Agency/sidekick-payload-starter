@@ -131,9 +131,11 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   {listing.streetAddress}
                 </span>
                 <span className="text-[2.5rem] font-bold text-brand-navy leading-tight md:hidden">
-                  {listing.price ? formatPrice(listing.price) : 'Contact for price'}
+                  {typeof listing.price === 'number' && listing.price !== 0
+                    ? formatPrice(listing.price)
+                    : 'Contact for price'}
                 </span>
-                {listing.price && listing.textAfterPrice && (
+                {typeof listing.price === 'number' && listing.textAfterPrice && (
                   <span className=" inline md:hidden ml-2">{listing.textAfterPrice}</span>
                 )}
                 {listing.availability && (
@@ -154,9 +156,11 @@ export default async function Listing({ params: paramsPromise }: Args) {
             <div className="flex flex-row md:flex-col justify-between md:justify-center items-center md:items-end gap-4">
               <div className="hidden md:block">
                 <span className="text-3xl md:text-[2.5rem] font-bold text-brand-navy hidden md:inline-block text-right">
-                  {listing.price ? formatPrice(listing.price) : 'Contact for price'}
+                  {typeof listing.price === 'number' && listing.price !== 0
+                    ? formatPrice(listing.price)
+                    : 'Contact for price'}
                 </span>
-                {listing.price && listing.textAfterPrice && (
+                {typeof listing.price === 'number' && listing.textAfterPrice && (
                   <span className="hidden md:inline ml-2">{listing.textAfterPrice}</span>
                 )}
               </div>
@@ -176,7 +180,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
           <div className="grid grid-cols-4 grid-rows-2 gap-4">
             <Media
               resource={listing.featuredImage}
-              className="col-span-4 sm:col-span-3 row-span-1 sm:row-span-2 relative aspect-video"
+              className={`${!listing.imageGallery || listing.imageGallery.length === 0 ? 'col-span-full' : 'col-span-4 sm:col-span-3'} row-span-1 sm:row-span-2 relative aspect-video`}
               imgClassName="absolute top-0 left-0 w-full h-full object-cover"
               priority
             />
@@ -242,12 +246,57 @@ export default async function Listing({ params: paramsPromise }: Args) {
               </>
             )}
             {listing.imageGallery && listing.imageGallery[0] && !listing.imageGallery[1] && (
-              <Media
-                resource={listing.imageGallery[0].image as MediaType | number | undefined}
-                className="col-span-1 row-span-2 relative"
-                imgClassName="absolute top-0 left-0 w-full h-full object-cover"
-                priority
-              />
+              <div className="col-span-2 sm:col-span-1 row-span-1 relative">
+                <Media
+                  resource={listing.imageGallery[0].image as MediaType | number | undefined}
+                  className="w-full h-full relative"
+                  imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+                  priority
+                />
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      size={'icon'}
+                      className="absolute bottom-2 right-2 z-10 w-12 h-12 p-3 rounded-md border-none bg-white bg-opacity-50 hover:bg-white hover:bg-opacity-50 focus-visible:bg-white focus-visible:bg-opacity-50 backdrop-blur-sm"
+                    >
+                      <FontAwesomeIcon
+                        icon={faImage}
+                        className="w-full h-auto"
+                        style={{ width: '100%' }}
+                      />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] h-auto max-h-[calc(100vh-2.5rem)] p-0 bg-transparent">
+                    <DialogTitle hidden>Image Gallery</DialogTitle>
+                    <Carousel className="w-full  [&>div]:rounded-md sm:[&>div]:rounded-lg">
+                      <CarouselContent className=" ml-0">
+                        <CarouselItem className="pl-0 basis-full">
+                          <Media
+                            resource={listing.featuredImage}
+                            className="w-full overflow-hidden aspect-video relative"
+                            imgClassName="w-full object-cover"
+                            fill
+                          />
+                        </CarouselItem>
+                        {listing.imageGallery.map((image, index) => {
+                          return (
+                            <CarouselItem key={image.id} className=" pl-0 basis-full rounded-lg">
+                              <Media
+                                resource={image.image as MediaType | number | undefined}
+                                className="w-full overflow-hidden aspect-video relative"
+                                imgClassName="w-full object-cover"
+                                fill
+                              />
+                            </CarouselItem>
+                          )
+                        })}
+                      </CarouselContent>
+                      <CarouselPrevious className="top-[calc(100%+.5rem)] left-auto right-10 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:left-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
+                      <CarouselNext className="top-[calc(100%+.5rem)] left-auto right-0 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:right-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
+                    </Carousel>
+                  </DialogContent>
+                </Dialog>
+              </div>
             )}
           </div>
         </div>
@@ -260,9 +309,11 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 <div className="flex flex-col gap-2">
                   <div>
                     <h2 className="text-[2.5rem] font-bold text-brand-navy inline">
-                      {listing.price ? formatPrice(listing.price) : 'Contact for price'}
+                      {typeof listing.price === 'number' && listing.price !== 0
+                        ? formatPrice(listing.price)
+                        : 'Contact for price'}
                     </h2>
-                    {listing.price && listing.textAfterPrice && (
+                    {typeof listing.price === 'number' && listing.textAfterPrice && (
                       <span className="inline text-sm ml-2">{listing.textAfterPrice}</span>
                     )}
                   </div>
