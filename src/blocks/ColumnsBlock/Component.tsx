@@ -152,7 +152,7 @@ export const ColumnsBlock: React.FC<
                         />
                       )}
                       {enableLinks && links && links.length > 0 && (
-                        <div className="mt-10 flex gap-4 lg:gap-6 flex-wrap justify-stretch">
+                        <div className="mt-10 flex gap-4 lg:gap-6 flex-wrap justify-start">
                           {links.map((link) => {
                             return (
                               <CMSLink
