@@ -51,6 +51,9 @@ import { s3Storage } from '@payloadcms/storage-s3'
 import { resendAdapter } from '@payloadcms/email-resend'
 
 import { PageTitle } from './blocks/Form/PageTitle/Field/input'
+import { TeamMemberEmail } from './blocks/Form/TeamMemberEmail/Field/input'
+import { generateContactFormSubmitterEmail } from './emails/Contact/Submitter'
+import { generateContactFormRecipientEmail } from './emails/Contact/Recipient'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -111,7 +114,7 @@ export default buildConfig({
     },
   },
   email: resendAdapter({
-    defaultFromAddress: 'dev@payloadcms.com',
+    defaultFromAddress: 'onboarding@resend.dev',
     defaultFromName: 'Onward Real Estate Team',
     apiKey: process.env.RESEND_API_KEY || '',
   }),
@@ -200,6 +203,19 @@ export default buildConfig({
       generateURL,
     }),
     formBuilderPlugin({
+      beforeEmail: (emails, { data }) => {
+        if (data.submissionData) {
+          if (emails[0]) {
+            const recipientEmail = generateContactFormRecipientEmail(data.submissionData)
+            emails[0].html = recipientEmail
+          }
+          if (emails[1]) {
+            const submitterEmail = generateContactFormSubmitterEmail(data.submissionData)
+            emails[1].html = submitterEmail
+          }
+        }
+        return emails
+      },
       defaultToEmail: 'delivered@resend.dev',
       fields: {
         payment: false,
@@ -212,6 +228,7 @@ export default buildConfig({
         state: StateField,
         textarea: TextAreaField,
         pageTitle: PageTitle,
+        teamMemberEmail: TeamMemberEmail,
       },
       formOverrides: {
         fields: ({ defaultFields }) => {

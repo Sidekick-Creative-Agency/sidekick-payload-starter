@@ -709,6 +709,13 @@ export interface Form {
             blockName?: string | null;
             blockType: 'pageTitle';
           }
+        | {
+            name?: string | null;
+            title?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'teamMemberEmail';
+          }
       )[]
     | null;
   submitButtonLabel?: string | null;
@@ -2341,6 +2348,14 @@ export interface FormsSelect<T extends boolean = true> {
               blockName?: T;
             };
         pageTitle?:
+          | T
+          | {
+              name?: T;
+              title?: T;
+              id?: T;
+              blockName?: T;
+            };
+        teamMemberEmail?:
           | T
           | {
               name?: T;

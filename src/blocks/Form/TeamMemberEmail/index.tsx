@@ -8,9 +8,10 @@ import type {
 } from 'react-hook-form'
 import { Input } from '@/components/ui/input'
 import React, { useEffect } from 'react'
+import { useParams, usePathname } from 'next/navigation'
 import canUseDOM from '@/utilities/canUseDOM'
 
-export const PageTitle: React.FC<
+export const TeamMemberEmail: React.FC<
   TextField & {
     errors: Partial<
       FieldErrorsImpl<{
@@ -19,14 +20,23 @@ export const PageTitle: React.FC<
     >
     register: UseFormRegister<FieldValues>
     setValue: UseFormSetValue<FieldValues>
-    className?: string
-    fieldClassName?: string
-    placeholder?: string
   }
 > = ({ name, register, setValue }) => {
+  const { slug } = useParams()
+  const pathname = usePathname()
+  const setEmailValue = async () => {
+    const teamMembers = await fetch(`/api/team-members?where[slug][equals]=${slug}`).then((res) =>
+      res.json().then((json) => json),
+    )
+    console.log(teamMembers)
+    if (teamMembers && teamMembers.docs && teamMembers.docs.length > 0) {
+      console.log(teamMembers.docs[0].details.email)
+      setValue(name, teamMembers.docs[0].details.email)
+    }
+  }
   useEffect(() => {
-    if (canUseDOM) {
-      setValue(name, document.title)
+    if (canUseDOM && pathname.includes('team') && slug) {
+      setEmailValue()
     }
   }, [])
   return <Input defaultValue="" id={name} type="hidden" {...register(name)} />

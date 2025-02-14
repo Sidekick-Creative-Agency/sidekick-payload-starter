@@ -302,7 +302,8 @@ export default async function Page({ params: paramsPromise }: Args) {
                   or fill out this form to get in touch!
                 </p>
               </div>
-              <ContactForm teamMember={teamMember} />
+              {/* <ContactForm teamMember={teamMember} /> */}
+              <FormBlock form={teamMemberContactForm} styles={{ global: {}, resp: {} }} />
             </div>
           </div>
         </div>

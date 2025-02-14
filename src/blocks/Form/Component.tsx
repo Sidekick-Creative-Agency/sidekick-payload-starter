@@ -14,6 +14,7 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import { PageTitleField } from './PageTitle/Field/input'
+import { TeamMemberEmailField } from './TeamMemberEmail/Field/input'
 export type Value = unknown
 
 export interface Property {
@@ -28,7 +29,9 @@ export type FormBlockType = {
   blockName?: string
   blockType?: 'formBlock'
   enableIntro: boolean
-  form: FormType & { fields: (FormFieldBlock | PhoneNumberField | PageTitleField)[] }
+  form: FormType & {
+    fields: (FormFieldBlock | PhoneNumberField | PageTitleField | TeamMemberEmailField)[]
+  }
   introContent?: {
     [k: string]: unknown
   }[]
@@ -215,7 +218,6 @@ export const FormBlock: React.FC<
           {!isLoading && hasSubmitted && confirmationType === 'message' && (
             <RichText content={confirmationMessage} enableGutter={false} />
           )}
-          {isLoading && !hasSubmitted && <p>Loading, please wait...</p>}
           {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
           {!hasSubmitted && (
             <form id={formID} onSubmit={handleSubmit(onSubmit)}>
@@ -239,7 +241,7 @@ export const FormBlock: React.FC<
                               // @ts-ignore
                               field.hidden ? 'hidden' : ''
                             } `}
-                          fieldClassName={`${theme === 'thin' ? 'border-t-0 border-r-0 border-l-0 border-b text-lg font-light focus-visible:border-b-brand-navy focus-visible:ring-0' : ''} `}
+                          fieldClassName={`font-light ${theme === 'thin' ? 'border-t-0 border-r-0 border-l-0 border-b text-lg focus-visible:border-b-brand-navy focus-visible:ring-0' : 'text-base'} `}
                           setValue={setValue}
                           key={index}
                         />
@@ -253,7 +255,7 @@ export const FormBlock: React.FC<
                 form={formID}
                 type="submit"
                 variant="default"
-                className="mt-6 w-full sm:w-auto"
+                className="mt-6 w-full sm:w-auto focus-visible:ring focus-visible:ring-brand-navy focus-visible:ring-offset-2 focus-visible:ring-offset-brand-offWhite"
               >
                 {!isLoading ? (
                   submitButtonLabel
