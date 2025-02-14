@@ -303,6 +303,7 @@ export default async function Page({ params: paramsPromise }: Args) {
                 </p>
               </div>
               {/* <ContactForm teamMember={teamMember} /> */}
+              {/* @ts-ignore */}
               <FormBlock form={teamMemberContactForm} styles={{ global: {}, resp: {} }} />
             </div>
           </div>
