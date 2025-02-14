@@ -47,7 +47,6 @@ export const FeaturedListingsBlock: React.FC<
   const fetchedDocs = await payload.find({
     collection: 'listings',
     depth: 1,
-    limit: 3,
     where: {
       and: [
         {
