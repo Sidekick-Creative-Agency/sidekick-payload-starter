@@ -5,6 +5,7 @@ import { DataFromCollectionSlug, getPayload } from 'payload'
 import React from 'react'
 import { ListingArchiveGrid } from '@/components/Archive/ListingArchive'
 import { CMSLink } from '@/components/Link'
+import * as motion from 'motion/react-client'
 
 export const FeaturedListingsBlock: React.FC<
   FeaturedListingsBlockProps & {
@@ -77,17 +78,23 @@ export const FeaturedListingsBlock: React.FC<
         <div
           className={`flex flex-col gap-4 md:gap-4 md:items-center ${headingAlign && flexJustifyClasses[headingAlign]} ${headingAlign && flexDirectionClasses[headingAlign]}`}
         >
-          <h2
+          <motion.h2
             className={`text-[2.5rem] font-bold text-brand-gray-06 flex-1 ${headingAlign && alignClasses[headingAlign]}`}
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true, amount: 'all' }}
           >
             {heading}
-          </h2>
+          </motion.h2>
           {subtitle && (
-            <p
+            <motion.p
               className={`max-w-[30rem] text-brand-gray-04 font-light flex-1 ${headingAlign && headingAlign !== 'right' && alignClasses[headingAlign]}`}
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 'all' }}
             >
               {subtitle}
-            </p>
+            </motion.p>
           )}
         </div>
         <ListingArchiveGrid

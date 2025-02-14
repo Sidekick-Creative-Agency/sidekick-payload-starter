@@ -2,6 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import { BRAND_TEXT_COLOR_CLASSES } from '@/utilities/constants'
+import * as motion from 'motion/react-client'
 
 export type CheckmarkListLexicalBlockProps = {
   items: {
@@ -18,7 +19,13 @@ export const CheckmarkListLexicalBlock: React.FC<CheckmarkListLexicalBlockProps>
       {items &&
         items.map((item, index) => {
           return (
-            <li key={index} className="flex gap-4 m-0">
+            <motion.li
+              key={index}
+              className="flex gap-4 m-0"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 'some', margin: '-128px 0px -16px 0px' }}
+            >
               <FontAwesomeIcon
                 icon={faCheck}
                 className={`w-4 h-auto ${BRAND_TEXT_COLOR_CLASSES[item.iconColor]} `}
@@ -28,7 +35,7 @@ export const CheckmarkListLexicalBlock: React.FC<CheckmarkListLexicalBlockProps>
               >
                 {item.text}
               </span>
-            </li>
+            </motion.li>
           )
         })}
     </ul>

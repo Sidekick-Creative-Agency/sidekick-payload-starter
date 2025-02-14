@@ -1,10 +1,7 @@
 import React from 'react'
-
 import type { Page } from '@/payload-types'
-
-import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
-import RichText from '@/components/RichText'
+import * as motion from 'motion/react-client'
 
 export const MediumImpactHero: React.FC<Page['hero'] & { title: string }> = ({
   media,
@@ -19,12 +16,24 @@ export const MediumImpactHero: React.FC<Page['hero'] & { title: string }> = ({
         <div className="flex flex-col gap-16 md:gap-20">
           <div className="flex flex-col gap-4 md:gap-10 md:flex-row justify-between items-start md:items-center">
             <div className="flex-1">
-              <h1 className="text-white text-[2.5rem] md:text-[4rem] leading-tight font-bold">
+              <motion.h1
+                className="text-white text-[2.5rem] md:text-[4rem] leading-tight font-bold"
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true, amount: 'some', margin: '-128px 0px -16px 0px' }}
+              >
                 {enableOverrideTitle ? overrideTitle : title}
-              </h1>
+              </motion.h1>
             </div>
             <div className="flex-1 md:ml-auto md:max-w-[30rem]">
-              <p className="text-lg md:text-xl font-light text-white">{subtitle}</p>
+              <motion.p
+                className="text-lg md:text-xl font-light text-white"
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true, amount: 'some', margin: '-128px 0px -16px 0px' }}
+              >
+                {subtitle}
+              </motion.p>
             </div>
           </div>
           {media && typeof media === 'object' && (

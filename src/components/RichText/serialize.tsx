@@ -31,6 +31,7 @@ import {
   MediaGridLexicalBlock,
   MediaGridLexicalBlockProps,
 } from '@/blocks/Lexical/MediaGrid/Component'
+import * as motion from 'motion/react-client'
 
 export type NodeTypes =
   | DefaultNodeTypes
@@ -176,12 +177,15 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             }
             case 'paragraph': {
               return (
-                <p
+                <motion.p
                   className={`col-start-2 ${node.format && formatClasses[node.format]} mb-3 mt-0 last:mb-0`}
                   key={index}
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  viewport={{ once: true, amount: 'some', margin: '-128px 0px -16px 0px' }}
                 >
                   {serializedChildren}
-                </p>
+                </motion.p>
               )
             }
             case 'heading': {
@@ -191,7 +195,13 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
                   className={`col-start-2 ${headingSizeClasses[Tag]} ${node.format && `${formatClasses[node.format]}`} `}
                   key={index}
                 >
-                  {serializedChildren}
+                  <motion.span
+                    initial={{ y: 20, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true, amount: 'some', margin: '-128px 0px -16px 0px' }}
+                  >
+                    {serializedChildren}
+                  </motion.span>
                 </Tag>
               )
             }
@@ -206,7 +216,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             case 'listitem': {
               if (node?.checked != null) {
                 return (
-                  <li
+                  <motion.li
                     aria-checked={node.checked ? 'true' : 'false'}
                     className={` ${node.checked ? '' : ''} ${formatClasses[node.format]} `}
                     key={index}
@@ -214,15 +224,24 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
                     role="checkbox"
                     tabIndex={-1}
                     value={node?.value}
+                    initial={{ y: 20, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true, amount: 'some' }}
                   >
                     {serializedChildren}
-                  </li>
+                  </motion.li>
                 )
               } else {
                 return (
-                  <li key={index} value={node?.value}>
+                  <motion.li
+                    key={index}
+                    value={node?.value}
+                    initial={{ y: 20, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true, amount: 'some' }}
+                  >
                     {serializedChildren}
-                  </li>
+                  </motion.li>
                 )
               }
             }

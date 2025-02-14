@@ -6,8 +6,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import defaultTheme from 'tailwindcss/defaultTheme'
+
 import RichText from '@/components/RichText'
+import * as motion from 'motion/react-client'
 
 type Props = Extract<Page['layout'][0], { blockType: 'faqBlock' }>
 
@@ -33,7 +34,14 @@ export const FAQBlock: React.FC<
       >
         <div className="container py-20 sm:py-32 flex flex-col gap-20">
           {enableHeading && heading && (
-            <h2 className="text-center text-[2.5rem] text-brand-gray-06 font-bold">{heading}</h2>
+            <motion.h2
+              className="text-center text-[2.5rem] text-brand-gray-06 font-bold"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 'all' }}
+            >
+              {heading}
+            </motion.h2>
           )}
           <Accordion
             type="single"
@@ -51,7 +59,13 @@ export const FAQBlock: React.FC<
                   <AccordionItem key={faqId} value={faqId}>
                     {question && (
                       <AccordionTrigger className="text-2xl text-brand-navy font-bold text-start hover:no-underline focus-visible:no-underline">
-                        {question}
+                        <motion.span
+                          initial={{ y: 20, opacity: 0 }}
+                          whileInView={{ y: 0, opacity: 1 }}
+                          viewport={{ once: true, amount: 'all' }}
+                        >
+                          {question}
+                        </motion.span>
                       </AccordionTrigger>
                     )}
                     {content && (

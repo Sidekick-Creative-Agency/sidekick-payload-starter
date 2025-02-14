@@ -14,6 +14,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 import useWindowDimensions from '@/utilities/useWindowDimensions'
+import { motion } from 'motion/react'
 
 export type CarouselLexicalBlockProps = {
   items: {
@@ -36,9 +37,14 @@ export const CarouselLexicalBlock: React.FC<CarouselLexicalBlockProps> = ({ item
               return (
                 <CarouselItem key={index} className="basis-full">
                   <div className="p-4 flex flex-col gap-6 items-start">
-                    <span className="font-basic-sans text-brand-tan text-2xl font-light pb-2 border-b-2 border-brand-tan leading-none">
+                    <motion.span
+                      className="font-basic-sans text-brand-tan text-2xl font-light pb-2 border-b-2 border-brand-tan leading-none"
+                      initial={{ y: 20, opacity: 0 }}
+                      whileInView={{ y: 0, opacity: 1 }}
+                      viewport={{ once: true, amount: 'all' }}
+                    >
                       {index < 9 ? `0${index + 1}` : index + 1}
-                    </span>
+                    </motion.span>
                     <div className="flex items-center gap-4">
                       {item.icon && (
                         <Media
@@ -47,10 +53,24 @@ export const CarouselLexicalBlock: React.FC<CarouselLexicalBlockProps> = ({ item
                           imgClassName="w-full h-full object-contain m-0"
                         />
                       )}
-                      <h3 className="text-white">{item.heading}</h3>
+                      <motion.h3
+                        className="text-white"
+                        initial={{ y: 20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true, amount: 'some' }}
+                      >
+                        {item.heading}
+                      </motion.h3>
                     </div>
                     <div>
-                      <p className="m-0 text-brand-offWhite">{item.content}</p>
+                      <motion.p
+                        className="m-0 text-brand-offWhite"
+                        initial={{ y: 20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true, amount: 'some' }}
+                      >
+                        {item.content}
+                      </motion.p>
                     </div>
                   </div>
                 </CarouselItem>

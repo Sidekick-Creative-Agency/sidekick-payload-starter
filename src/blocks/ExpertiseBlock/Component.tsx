@@ -15,6 +15,7 @@ import {
   SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS,
 } from '@/utilities/constants'
 import { CMSLink } from '@/components/Link'
+import * as motion from 'motion/react-client'
 
 type Props = Extract<Page['layout'][0], { blockType: 'expertiseBlock' }>
 
@@ -30,8 +31,22 @@ export const ExpertiseBlock: React.FC<
       <div className="py-32 container">
         <div className="flex flex-col gap-16 md:gap-20">
           <div className="flex flex-col gap-4 md:flex-row md:gap-10 md:justify-between md:items-center">
-            <h2 className="text-[2.5rem] font-bold text-brand-gray-06">{heading}</h2>
-            <p className="max-w-[30rem] text-brand-gray-04 font-light">{description}</p>
+            <motion.h2
+              className="text-[2.5rem] font-bold text-brand-gray-06"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 'all' }}
+            >
+              {heading}
+            </motion.h2>
+            <motion.p
+              className="max-w-[30rem] text-brand-gray-04 font-light"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 'all' }}
+            >
+              {description}
+            </motion.p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-6">
             {expertiseAreas &&
@@ -43,9 +58,14 @@ export const ExpertiseBlock: React.FC<
                     className={`w-full h-[25rem] md:h-[35rem] flex flex-col justify-end gap-4 p-6 md:p-10 relative border-t-[12px] ${BRAND_BORDER_COLOR_CLASSES[borderColor || 'transparent']}`}
                   >
                     <div className="flex flex-col gap-4 relative z-10">
-                      <h3 className="text-white uppercase tracking-[.075rem] font-bold text-2xl">
+                      <motion.h3
+                        className="text-white uppercase tracking-[.075rem] font-bold text-2xl"
+                        initial={{ y: 20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true, amount: 'all' }}
+                      >
                         {title}
-                      </h3>
+                      </motion.h3>
                       {area.link && (
                         <CMSLink
                           {...area.link}

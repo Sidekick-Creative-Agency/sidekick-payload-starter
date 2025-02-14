@@ -1,22 +1,9 @@
-import { TeamMember, Media as MediaType, Listing, PropertyType } from '@/payload-types'
+import { Listing } from '@/payload-types'
 import React from 'react'
 import { Media } from '../Media'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEnvelope, faPhone } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
-import { Button } from '../ui/button'
 import Link from 'next/link'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '../ui/dialog'
-import { faPlus } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
-import RichText from '../RichText'
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { formatPrice } from '../../utilities/formatPrice'
+import * as motion from 'motion/react-client'
 
 interface ListingCardProps {
   listing: Listing
@@ -44,19 +31,42 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
       )}
 
       <div className="flex flex-col gap-2 w-full relative z-10">
-        <h3 className="text-white font-bold uppercase tracking-wider">
+        <motion.h3
+          className="text-white font-bold uppercase tracking-wider"
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 'some', margin: '-128px -16px -16px -16px' }}
+        >
           {listing.city}, {listing.state}
-        </h3>
-        <span className="text-white uppercase text-sm font-bold tracking-wider">
+        </motion.h3>
+        <motion.span
+          className="text-white uppercase text-sm font-bold tracking-wider"
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 'some', margin: '-128px -16px -16px -16px' }}
+        >
           {listing.streetAddress}
-        </span>
-        {listing.price && (
-          <span className="text-xl font-light text-white">
+        </motion.span>
+        {typeof listing.price === 'number' && listing.price !== 0 ? (
+          <motion.span
+            className="text-xl font-light text-white"
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true, amount: 'some', margin: '-128px -16px -16px -16px' }}
+          >
             {formatPrice(listing.price)}{' '}
             {listing.textAfterPrice && <span className="text-sm">{listing.textAfterPrice}</span>}
-          </span>
+          </motion.span>
+        ) : (
+          <motion.span
+            className="text-xl font-light text-white"
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true, amount: 'some', margin: '-128px -16px -16px -16px' }}
+          >
+            Contact for price
+          </motion.span>
         )}
-        {!listing.price && <span className="text-xl font-light text-white">Contact for price</span>}
       </div>
     </Link>
   )

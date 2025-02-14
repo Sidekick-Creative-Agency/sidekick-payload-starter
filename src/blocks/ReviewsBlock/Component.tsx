@@ -1,12 +1,7 @@
 import type { Page, ReviewsBlock as ReviewsBlockProps } from '@/payload-types'
-
-import configPromise from '@payload-config'
-import { DataFromCollectionSlug, getPayload } from 'payload'
 import React from 'react'
-
-import { CollectionArchiveGrid } from '@/components/CollectionArchive/GridArchive'
-import { CollectionArchiveCarousel } from '@/components/CollectionArchive/CarouselArchive'
 import { Media } from '@/components/Media'
+import * as motion from 'motion/react-client'
 
 type Props = Extract<Page['layout'][0], { blockType: 'reviewsBlock' }>
 
@@ -21,8 +16,22 @@ export const ReviewsBlock: React.FC<
     <div className={`reviews-block-${id}`} {...(elementId ? { id: elementId } : {})}>
       <div className="container py-20 md:py-32 flex flex-col gap-16 md:gap-20">
         <div className="flex flex-col gap-4 md:flex-row md:gap-10 md:justify-between md:items-center">
-          <h2 className="text-[2.5rem] font-bold text-brand-gray-06 flex-1">{heading}</h2>
-          <p className="max-w-[30rem] text-brand-gray-04 font-light flex-1">{subtitle}</p>
+          <motion.h2
+            className="text-[2.5rem] font-bold text-brand-gray-06 flex-1"
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true, amount: 'all' }}
+          >
+            {heading}
+          </motion.h2>
+          <motion.p
+            className="max-w-[30rem] text-brand-gray-04 font-light flex-1"
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true, amount: 'all' }}
+          >
+            {subtitle}
+          </motion.p>
         </div>
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
           {reviews &&
@@ -31,7 +40,14 @@ export const ReviewsBlock: React.FC<
               return (
                 <div key={index} className="flex flex-col">
                   <div className="px-6 py-10 md:p-10 bg-brand-offWhite flex-1">
-                    <p className="text-brand-gray-04 font-light">{reviewText}</p>
+                    <motion.p
+                      className="text-brand-gray-04 font-light"
+                      initial={{ y: 20, opacity: 0 }}
+                      whileInView={{ y: 0, opacity: 1 }}
+                      viewport={{ once: true, amount: 'all' }}
+                    >
+                      {reviewText}
+                    </motion.p>
                   </div>
                   <div className="p-6 md:p-10 bg-brand-green flex items-center gap-4">
                     <Media
@@ -40,8 +56,22 @@ export const ReviewsBlock: React.FC<
                       imgClassName="absolute top-0 left-0 w-full h-full object-cover"
                     />
                     <div className="flex flex-col">
-                      <h3 className="text-xl font-bold text-white">{reviewerName}</h3>
-                      <h4 className="text-sm font-normal text-brand-tan">{reviewerTitle}</h4>
+                      <motion.h3
+                        className="text-xl font-bold text-white"
+                        initial={{ y: 20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true, amount: 'all' }}
+                      >
+                        {reviewerName}
+                      </motion.h3>
+                      <motion.h4
+                        className="text-sm font-normal text-brand-tan"
+                        initial={{ y: 20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true, amount: 'all' }}
+                      >
+                        {reviewerTitle}
+                      </motion.h4>
                     </div>
                   </div>
                 </div>
