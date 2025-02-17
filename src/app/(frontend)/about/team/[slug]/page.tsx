@@ -101,7 +101,7 @@ export default async function Page({ params: paramsPromise }: Args) {
                   src={(teamMember?.details?.featuredImage as Media).url || ''}
                   alt={(teamMember?.details?.featuredImage as Media).alt || ''}
                   fill
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-[50%_35%]"
                   priority
                   quality={100}
                 />
@@ -302,7 +302,6 @@ export default async function Page({ params: paramsPromise }: Args) {
                   or fill out this form to get in touch!
                 </p>
               </div>
-              {/* <ContactForm teamMember={teamMember} /> */}
               {/* @ts-ignore */}
               <FormBlock form={teamMemberContactForm} styles={{ global: {}, resp: {} }} />
             </div>

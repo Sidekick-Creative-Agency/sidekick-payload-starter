@@ -39,7 +39,7 @@ export function CopyButton({
       size="icon"
       variant={variant}
       className={cn(
-        'relative z-10 h-12 w-12 text-black bg-white hover:bg-brand-gray-00 rounded-full border border-brand-gray-00 shadow-md p-2 [&_svg]:h-6 [&_svg]:w-6',
+        'relative z-10 h-12 w-12 text-black bg-white hover:bg-brand-gray-00 rounded-full border border-brand-gray-00 shadow-md p-2 [&_svg]:h-6 [&_svg]:w-6 focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2',
         className,
       )}
       onClick={() => {

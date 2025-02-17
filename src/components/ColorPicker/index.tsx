@@ -34,26 +34,6 @@ const ColorPicker = ({ path }: { path: string }) => {
           ></Button>
         )
       })}
-      <Button
-        className={`color-picker-swatch bg-white ${value === 'white' ? 'active' : ''} outline outline-2 outline-offset-2 p-0 w-8 h-8 rounded-full relative overflow-hidden m-0`}
-        onClick={() => {
-          if (value === 'white') {
-            setValue('')
-          } else {
-            setValue('white')
-          }
-        }}
-      ></Button>
-      <Button
-        className={`color-picker-swatch bg-black ${value === 'black' ? 'active' : ''} outline outline-2 outline-offset-2 p-0 w-8 h-8 rounded-full relative overflow-hidden m-0`}
-        onClick={() => {
-          if (value === 'black') {
-            setValue('')
-          } else {
-            setValue('black')
-          }
-        }}
-      ></Button>
     </div>
   )
 }

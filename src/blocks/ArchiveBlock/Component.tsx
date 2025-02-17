@@ -25,7 +25,11 @@ export const ArchiveBlock: React.FC<
     elementId,
     propertyTypes,
     layout,
+    buttonColor,
     enablePostCategoryFilter,
+    enableExcerpt,
+    enableDate,
+    enableGutter,
   } = props
 
   const limit = limitFromProps || 3
@@ -43,9 +47,9 @@ export const ArchiveBlock: React.FC<
   }
 
   const flexDirectionClasses = {
-    left: 'md:flex-row',
-    center: 'md:flex-col',
-    right: 'md:flex-row-reverse',
+    left: 'md:flex-row md:items-end',
+    center: 'md:flex-col md:items-center',
+    right: 'md:flex-row-reverse md:items-end',
   }
   let archive: DataFromCollectionSlug<'posts' | 'team-members' | 'listings'>[] = []
   const taxonomySlug =
@@ -110,10 +114,20 @@ export const ArchiveBlock: React.FC<
             data={archive as Post[]}
             limit={limit}
             hasNextPage={fetchedDocs.hasNextPage}
+            buttonColor={buttonColor}
             enableFilter={enablePostCategoryFilter}
+            enableExcerpt={enableExcerpt}
+            enableDate={enableDate}
+            enableGutter={enableGutter}
           />
         ) : (
-          <PostArchiveCarousel data={archive as Post[]} />
+          <PostArchiveCarousel
+            data={archive as Post[]}
+            buttonColor={buttonColor}
+            enableExcerpt={enableExcerpt}
+            enableDate={enableDate}
+            enableGutter={enableGutter}
+          />
         )
       default:
         return null
@@ -130,7 +144,7 @@ export const ArchiveBlock: React.FC<
     >
       <div className="container flex flex-col gap-16 md:gap-20">
         <div
-          className={`flex flex-col gap-4 md:gap-4 md:items-center ${headingAlign && flexJustifyClasses[headingAlign]} ${headingAlign && flexDirectionClasses[headingAlign]}`}
+          className={`flex flex-col gap-4 md:gap-4 ${headingAlign && flexJustifyClasses[headingAlign]} ${headingAlign && flexDirectionClasses[headingAlign]}`}
         >
           <h2
             className={`text-[2.5rem] font-bold text-brand-gray-06 flex-1 ${headingAlign && alignClasses[headingAlign]}`}
@@ -144,6 +158,7 @@ export const ArchiveBlock: React.FC<
               {subtitle}
             </p>
           )}
+          {enablePostCategoryFilter && <div className="flex-grow hidden md:block"></div>}
         </div>
         {renderArchive()}
       </div>

@@ -13,8 +13,6 @@ import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { getPayload } from 'payload'
-import { notFound, redirect } from 'next/navigation'
-import { queryPageBySlug } from '@/utilities/queryPageBySlug'
 import { queryPageByUrl } from '@/utilities/queryPageByUrl'
 
 export async function generateStaticParams() {

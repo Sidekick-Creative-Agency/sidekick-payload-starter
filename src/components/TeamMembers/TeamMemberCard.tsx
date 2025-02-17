@@ -36,12 +36,15 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
     <div className="flex flex-col gap-6 w-full">
       <Media
         resource={teamMember.details.featuredImage}
-        className="aspect-square relative"
-        imgClassName="absolute top-0 left-0 object-cover w-full h-full"
+        className="aspect-[4/5] relative"
+        imgClassName="absolute top-0 left-0 object-cover object-[50%_35%] w-full h-full"
       />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <Link href={`/about/team/${teamMember.slug}`}>
+          <Link
+            href={`/about/team/${teamMember.slug}`}
+            className="focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2 focus-visible:outline-none"
+          >
             <h3 className="text-2xl text-brand-gray-06 font-bold inline leading-tight">
               {teamMember.title}
             </h3>
@@ -57,19 +60,22 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
         </span>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant={'ghost'} className="flex gap-2 items-center p-4 w-fit rounded-lg">
+            <Button
+              variant={'link'}
+              className="flex gap-2 items-center px-0 py-4 w-fit rounded-none hover:no-underline focus-visible:no-underline focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2"
+            >
               <FontAwesomeIcon icon={faPlus} className="w-full max-w-3" />
               <span>Read Bio</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="w-[60rem] max-w-[calc(100vw-5rem)] p-16 h-fit max-h-screen overflow-scroll">
-            <DialogHeader className="flex flex-row gap-8 items-center">
+          <DialogContent className="w-[60rem] max-w-[calc(100vw-2.5rem)] sm:max-w-[calc(100vw-5rem)] py-16 px-8 sm:p-16 h-fit max-h-screen overflow-scroll gap-6">
+            <DialogHeader className="flex flex-col sm:flex-row gap-4 sm:gap-8 items-start sm:items-center">
               <Media
                 resource={teamMember.details.featuredImage}
                 className="aspect-square rounded-full overflow-hidden relative w-20"
-                imgClassName="absolute top-0 left-0 object-cover w-full h-full"
+                imgClassName="absolute top-0 left-0 object-cover object-[50%_20%] w-full h-full"
               />
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 items-start">
                 <DialogTitle hidden>{teamMember.title}</DialogTitle>
                 <div>
                   <span className="text-[2rem] text-brand-gray-06 font-bold inline leading-tight">
@@ -95,7 +101,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
               {teamMember.details.email && (
                 <Link
                   href={`mailto:${teamMember.details.email}`}
-                  className="py-3 px-4 rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
+                  className="py-3 px-4 h-fit rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
                 >
                   <FontAwesomeIcon icon={faEnvelope} className="w-full max-w-8 text-brand-navy" />
                   <span className="text-base text-brand-gray-06 font-light">Email</span>
@@ -104,7 +110,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
               {teamMember.details.phone && (
                 <Link
                   href={`tel:${teamMember.details.phone.replaceAll('-', '')}`}
-                  className="py-3 px-4 rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
+                  className="py-3 px-4 h-fit rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
                 >
                   <FontAwesomeIcon icon={faPhone} className="w-full max-w-8 text-brand-navy" />
                   <span className="text-base text-brand-gray-06 font-light">Phone</span>
@@ -139,7 +145,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
                       key={social.id}
                       href={social.url || ''}
                       target="_blank"
-                      className="py-3 px-4 rounded-xl w-fit whitespace-nowrap bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
+                      className="py-3 px-4 h-fit rounded-xl w-fit whitespace-nowrap bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
                     >
                       <FontAwesomeIcon icon={icon} className="w-full max-w-8 text-brand-navy" />
                       <span className="text-base text-brand-gray-06 font-light">
@@ -151,7 +157,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
                 })}
               <Link
                 href={`/about/team/${teamMember.slug}`}
-                className="py-3 px-4 rounded-xl w-fit whitespace-nowrap bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
+                className="py-3 px-4 h-fit rounded-xl w-fit whitespace-nowrap bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
               >
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}

@@ -27,7 +27,11 @@ interface PostArchiveGridProps {
   data: DataFromCollectionSlug<'posts'>[]
   limit?: number
   hasNextPage?: boolean
-  enableFilter?: boolean | null
+  buttonColor?: string | null | undefined
+  enableFilter?: boolean | null | undefined
+  enableExcerpt?: boolean | null | undefined
+  enableDate?: boolean | null | undefined
+  enableGutter?: boolean | null | undefined
 }
 
 export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
@@ -35,6 +39,10 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
   limit,
   hasNextPage: _hasNextPage,
   enableFilter,
+  enableExcerpt,
+  enableDate,
+  enableGutter,
+  buttonColor,
 }) => {
   const [posts, setPosts] = useState(data)
   const [currentPage, setCurrentPage] = useState(1)
@@ -58,7 +66,6 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
         if (hasNextPage) {
           setCurrentPage((current) => current + 1)
         }
-        console.log(hasNextPage)
         setHasNextPage(hasNextPage)
       }
     } catch (error: any) {
@@ -110,7 +117,7 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
     <div className="relative w-full flex flex-col gap-10 items-center">
       {enableFilter && (
         <Select onValueChange={(value) => filterPosts(value)} value={activeCategory?.title || ''}>
-          <SelectTrigger className="text-base font-light rounded-none ml-auto w-full sm:w-fit sm:min-w-64">
+          <SelectTrigger className="text-base font-light rounded-none mr-auto w-full sm:w-fit sm:min-w-64 md:min-w-[calc(33.33%-1rem)] md:max-w-[calc(33.33%-1rem)] md:absolute md:bottom-[calc(100%+5rem)] md:right-0 lg:min-w-64">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent className="bg-white rounded-none">
@@ -143,7 +150,13 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
               return (
                 <div key={index} className="w-full">
                   <div className={`w-full duration-1000`}>
-                    <PostCard post={post} />
+                    <PostCard
+                      post={post}
+                      buttonColor={buttonColor}
+                      enableExcerpt={enableExcerpt}
+                      enableDate={enableDate}
+                      enableGutter={enableGutter}
+                    />
                   </div>
                 </div>
               )

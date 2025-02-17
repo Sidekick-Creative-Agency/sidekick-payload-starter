@@ -12,20 +12,33 @@ import {
 
 interface PostArchiveCarouselProps {
   data: DataFromCollectionSlug<'posts'>[]
+  buttonColor?: string | null | undefined
+  enableExcerpt?: boolean | null | undefined
+  enableDate?: boolean | null | undefined
+  enableGutter?: boolean | null | undefined
 }
 
 export const PostArchiveCarousel: React.FC<PostArchiveCarouselProps> = (props) => {
-  const { data } = props
+  const { data, enableExcerpt, enableDate, enableGutter, buttonColor } = props
   return (
     <div className="relative w-full">
-      <Carousel className="flex justify-center [&>div]:w-[calc(100%+2rem)] [&>div]:px-4">
-        <CarouselContent className="flex gap-4 ">
+      <Carousel
+        className="flex justify-center [&>div]:w-full [&>div]:px-4"
+        opts={{ align: 'start' }}
+      >
+        <CarouselContent className="flex gap-4 w-full">
           {data?.map((post, index) => {
             if (typeof post === 'object' && post !== null) {
               return (
                 <CarouselItem key={index} className="basis-full md:basis-1/2 lg:basis-1/3">
                   <div className={`w-full duration-1000`} key={post.id}>
-                    <PostCard post={post} />
+                    <PostCard
+                      post={post}
+                      buttonColor={buttonColor}
+                      enableExcerpt={enableExcerpt}
+                      enableDate={enableDate}
+                      enableGutter={enableGutter}
+                    />
                   </div>
                 </CarouselItem>
               )

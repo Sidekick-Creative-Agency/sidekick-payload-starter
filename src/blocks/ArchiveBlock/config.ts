@@ -1,4 +1,5 @@
 import { AdvancedFields } from '@/fields/Advanced'
+import { ColorField } from '@/fields/Color'
 import type { Block } from 'payload'
 
 export const ArchiveBlock: Block = {
@@ -124,12 +125,46 @@ export const ArchiveBlock: Block = {
         condition: (_, siblingData) => siblingData.relationTo === 'posts',
       },
     },
+    ColorField({
+      name: 'buttonColor',
+      adminOverrides: {
+        condition: (_, siblingData) => {
+          return siblingData.relationTo === 'posts'
+        },
+      },
+    }),
     {
       name: 'enablePostCategoryFilter',
       label: 'Enable Category Filter',
       type: 'checkbox',
       admin: {
+        condition: (_, siblingData) =>
+          siblingData.relationTo === 'posts' && siblingData.layout === 'grid',
+      },
+    },
+    {
+      name: 'enableExcerpt',
+      label: 'Enable Excerpt',
+      type: 'checkbox',
+      admin: {
         condition: (_, siblingData) => siblingData.relationTo === 'posts',
+      },
+    },
+    {
+      name: 'enableDate',
+      label: 'Enable Date',
+      type: 'checkbox',
+      admin: {
+        condition: (_, siblingData) => siblingData.relationTo === 'posts',
+      },
+    },
+    {
+      name: 'enableGutter',
+      label: 'Enable Gutter',
+      type: 'checkbox',
+      admin: {
+        condition: (_, siblingData) => siblingData.relationTo === 'posts',
+        description: 'Adds padding on the sides of the Post Card text',
       },
     },
     AdvancedFields,

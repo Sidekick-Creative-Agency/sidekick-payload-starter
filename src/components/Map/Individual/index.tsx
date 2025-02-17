@@ -84,7 +84,7 @@ export const ListingMap: React.FC<ListingMapProps> = ({ listing }) => {
         <div
           id="map"
           ref={mapContainerRef}
-          style={{ height: '100%', minHeight: 'calc(100vh - 5rem)' }}
+          className="h-1/2 min-h-[35rem] sm:h-full sm:min-h-[calc(100vh-10rem)]"
         ></div>
       </div>
     </div>

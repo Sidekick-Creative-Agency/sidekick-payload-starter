@@ -39,6 +39,7 @@ import {
   faChevronDown,
   faChevronUp,
   faImage,
+  faChevronLeft,
 } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
 import { ListingMap } from '@/components/Map/Individual'
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
@@ -59,6 +60,7 @@ import { notFound, redirect } from 'next/navigation'
 import { FormBlock } from '@/blocks/Form/Component'
 import Image from 'next/image'
 import { FooterForm } from '@/components/Listings/FooterForm'
+import Link from 'next/link'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -109,6 +111,16 @@ export default async function Listing({ params: paramsPromise }: Args) {
       <div className="bg-white pt-10 pb-20">
         <div className="container flex flex-col gap-10">
           <h1 className="sr-only">{listing.title}</h1>
+          <Button
+            variant={'link'}
+            className="w-auto p-0 text-brand-gray-03 flex gap-2 items-center leading-none hover:no-underline focus-visible:no-underline hover:text-brand-gray-06 focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2 focus-visible:text-brand-gray-06"
+            asChild
+          >
+            <Link href="/listings/map" className="w-fit">
+              <FontAwesomeIcon icon={faChevronLeft} className="w-2 h-auto" />
+              Back to Search
+            </Link>
+          </Button>
           <div className="flex flex-col md:flex-row justify-between gap-10">
             <div className="flex flex-col gap-2 md:gap-6">
               <div className="flex gap-x-4 gap-y-0 flex-wrap text-base text-brand-gray-03 uppercase tracking-wider font-bold">
@@ -139,8 +151,8 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   <span className=" inline md:hidden ml-2">{listing.textAfterPrice}</span>
                 )}
                 {listing.availability && (
-                  <div className="py-2 px-3 rounded-lg bg-brand-blue bg-opacity-50 hidden md:block">
-                    <span className="text-xs font-bold text-brand-navy tracking-wider uppercase">
+                  <div className="py-[.6rem] px-3 rounded-lg bg-brand-blue bg-opacity-50 leading-none hidden md:block">
+                    <span className="text-xs font-bold text-brand-navy tracking-wider leading-none uppercase">
                       {listing.availability}
                     </span>
                   </div>
@@ -246,7 +258,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
               </>
             )}
             {listing.imageGallery && listing.imageGallery[0] && !listing.imageGallery[1] && (
-              <div className="col-span-2 sm:col-span-1 row-span-1 relative">
+              <div className="col-span-2 sm:col-span-1 row-span-2 relative">
                 <Media
                   resource={listing.imageGallery[0].image as MediaType | number | undefined}
                   className="w-full h-full relative"

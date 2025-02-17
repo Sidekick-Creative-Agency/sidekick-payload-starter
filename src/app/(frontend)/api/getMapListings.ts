@@ -44,6 +44,11 @@ export const getMapListings = async (data: {
             ? {
                 or: [
                   {
+                    title: {
+                      like: filters.search,
+                    },
+                  },
+                  {
                     streetAddress: {
                       like: filters.search,
                     },

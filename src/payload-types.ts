@@ -275,7 +275,14 @@ export interface ArchiveBlock {
   enablePropertyCategoryFilters?: boolean | null;
   defaultCategoryFilter?: ('commercial' | 'residential') | null;
   layout?: ('grid' | 'carousel') | null;
+  buttonColor?: string | null;
   enablePostCategoryFilter?: boolean | null;
+  enableExcerpt?: boolean | null;
+  enableDate?: boolean | null;
+  /**
+   * Adds padding on the sides of the Post Card text
+   */
+  enableGutter?: boolean | null;
   /**
    * The HTML ID attribute of this block.
    */
@@ -1585,7 +1592,11 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   enablePropertyCategoryFilters?: T;
   defaultCategoryFilter?: T;
   layout?: T;
+  buttonColor?: T;
   enablePostCategoryFilter?: T;
+  enableExcerpt?: T;
+  enableDate?: T;
+  enableGutter?: T;
   elementId?: T;
   id?: T;
   blockName?: T;
