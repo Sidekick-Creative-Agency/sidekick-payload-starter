@@ -62,8 +62,11 @@ export const ListingArchiveGrid: React.FC<ListingArchiveGridProps> = ({
   }
   return (
     <div className={`relative ${enableCategoryFilters && 'pt-20 md:py-0'}`}>
-      <Carousel className="flex justify-center [&>div]:w-[calc(100%+2rem)] [&>div]:px-4">
-        <CarouselContent className="flex gap-4  ">
+      <Carousel
+        className="flex justify-center [&>div]:w-full [&>div]:px-4"
+        opts={{ align: 'start' }}
+      >
+        <CarouselContent className="flex gap-4 w-full ">
           {activeListings?.map((listing, index) => {
             if (typeof listing === 'object' && listing !== null) {
               return (
@@ -84,7 +87,7 @@ export const ListingArchiveGrid: React.FC<ListingArchiveGridProps> = ({
         <CarouselNext className="border-none w-10 h-10 p-2 flex justify-center items-center hover:bg-transparent hover:text-brand-navy focus-visible:ring-brand-navy focus-visible:ring-offset-2 [&_svg]:max-h-full  top-[calc(100%+1rem)] left-auto right-0 translate-y-0 sm:top-1/2 sm:-translate-y-1/2 sm:-right-8 xl:-right-12" />
       </Carousel>
       {enableCategoryFilters && (
-        <div className="absolute left-0 right-auto -translate-y-1/2 md:right-0 md:left-auto top-0 md:bottom-[calc(100%+2rem)] md:top-auto md:translate-y-0 flex flex-wrap gap-2 sm:gap-6 gap-y-0">
+        <div className="absolute left-0 right-auto -translate-y-1/2 md:right-0 md:left-auto top-0 md:bottom-[calc(100%+5rem)] md:top-auto md:translate-y-0 flex flex-wrap gap-2 sm:gap-6 gap-y-0">
           <Button
             onClick={(e) => handleFilterChange('commercial')}
             className={`px-2 py-4 text-lg font-bold tracking-wider bg-transparent hover:bg-transparent focus-visible:bg-transparent border-0 border-b ${activeFilter === 'commercial' ? 'border-brand-tan text-brand-navy' : 'border-brand-gray-01 text-brand-gray-03'} `}

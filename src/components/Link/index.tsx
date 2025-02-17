@@ -1,9 +1,11 @@
+'use client'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { cn } from 'src/utilities/cn'
 import Link from 'next/link'
 import React from 'react'
 
 import type { Page, Post } from '@/payload-types'
+import { usePathname, useRouter } from 'next/navigation'
 
 type CMSLinkType = {
   appearance?: 'inline' | ButtonProps['variant']
@@ -21,6 +23,8 @@ type CMSLinkType = {
 }
 
 export const CMSLink: React.FC<CMSLinkType> = (props) => {
+  const router = useRouter()
+  const pathname = usePathname()
   const {
     type,
     appearance = 'inline',
@@ -64,7 +68,20 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
   }
 
   return (
-    <Button asChild className={className} size={size} variant={appearance}>
+    <Button
+      asChild
+      className={className}
+      size={size}
+      variant={appearance}
+      // onClick={() => {
+      //   console.log(pathname)
+      //   console.log(href)
+      //   if (href.includes(pathname)) {
+      //     // router.refresh()
+      //     window.location.reload()
+      //   }
+      // }}
+    >
       <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
         {label && label}
         {children && children}

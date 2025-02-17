@@ -49,6 +49,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   const searchParams = useSearchParams()
   const [sizeText, setSizeText] = useState('Size')
   const [priceText, setPriceText] = useState('Price')
+  const [needsRefresh, setNeedsRefresh] = useState(true)
   const [propertyTypes, setPropertyTypes] = useState<{ value: string; label: string }[]>([])
   const { width } = useWindowDimensions()
   const formRef = useRef<HTMLFormElement | null>(null)
@@ -58,6 +59,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   )
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setNeedsRefresh(false)
     const filterData = {
       search: data.search,
       category: data.category,
@@ -118,6 +120,40 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       )
     }
   }, [propertyTypesResponse])
+
+  useEffect(() => {
+    if (needsRefresh && form.getValues().propertyType !== searchParams.get('property_type')) {
+      form.setValue('propertyType', searchParams.get('property_type') || '')
+      const filterData = {
+        search: form.getValues().search,
+        category: form.getValues().category,
+        propertyType: form.getValues().propertyType,
+        minPrice: form.getValues().minPrice,
+        maxPrice: form.getValues().maxPrice,
+        minSize: form.getValues().minSize,
+        maxSize: form.getValues().maxSize,
+        sizeType: form.getValues().sizeType,
+        availability: form.getValues().availability,
+        transactionType: form.getValues().transactionType as
+          | 'for-sale'
+          | 'for-lease'
+          | null
+          | undefined,
+      }
+      handleFilter(filterData)
+    } else {
+      setNeedsRefresh(true)
+    }
+  }, [searchParams])
+
+  useEffect(() => {
+    handlePriceChange(searchParams.get('min_price') || '', searchParams.get('max_price') || '')
+    handleSizeChange(
+      searchParams.get('min_size') || '',
+      searchParams.get('max_size') || '',
+      searchParams.get('size_type') || '',
+    )
+  }, [])
 
   return (
     <Form {...form}>
@@ -421,7 +457,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                         defaultValue={
                           propertyTypes
                             ? propertyTypes.find(
-                                (type) => type.value === searchParams.get('property_type'),
+                                (type) => type.value === searchParams.get('property_type') || '',
                               )?.value
                             : ''
                         }

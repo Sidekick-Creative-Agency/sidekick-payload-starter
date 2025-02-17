@@ -149,9 +149,13 @@ body {
   border-radius: 0.5rem !important;
   min-width: 15rem !important;
 }
-.mapboxgl-popup-close-button {
+/* .mapboxgl-popup-close-button {
   top: 0.5rem !important;
   right: 0.5rem !important;
-  font-size: 1.5em !important;
+  font-size: 1rem !important;
   color: #ffffff !important;
-}
+  border-radius: 0 !important;
+  width: 1.25rem;
+  height: 1.25rem;
+  line-height: 0;
+} */

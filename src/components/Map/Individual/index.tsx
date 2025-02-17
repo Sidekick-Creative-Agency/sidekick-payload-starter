@@ -24,28 +24,6 @@ export const ListingMap: React.FC<ListingMapProps> = ({ listing }) => {
   const mapContainerRef = useRef<any>(null)
   const mapRef = useRef<Map>(null)
 
-  const geoJson = {
-    type: 'FeatureCollection',
-    features: [
-      {
-        type: 'Feature',
-        properties: {
-          title: listing.title,
-          address: listing.streetAddress,
-          price: listing.price ? formatPrice(listing.price) : '',
-          image: listing.featuredImage,
-          lat: listing.coordinates[1],
-          lon: listing.coordinates[0],
-          iconSize: 32,
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: [listing.coordinates[0], listing.coordinates[1]],
-        },
-      },
-    ],
-  }
-
   const centerMap = () => {
     mapRef.current?.flyTo({
       center: [listing.coordinates[0], listing.coordinates[1]],
@@ -87,6 +65,9 @@ export const ListingMap: React.FC<ListingMapProps> = ({ listing }) => {
         ),
       )
       .addTo(mapRef.current)
+      .togglePopup()
+
+    scrollTo({ top: 0 })
 
     el.addEventListener('click', (e) => {
       centerMap()
