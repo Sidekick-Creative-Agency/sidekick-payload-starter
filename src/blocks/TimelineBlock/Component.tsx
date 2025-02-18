@@ -95,14 +95,14 @@ export const TimelineBlock: React.FC<
                       <RichText content={richText} className="p-0 max-w-none" />
                       <div className="flex gap-4 justify-between">
                         <button
-                          className="text-brand-navy text-lg tracking-widest uppercase font-light p-2"
+                          className="text-brand-navy text-lg tracking-widest uppercase font-light p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2 focus-visible:ring-offset-brand-offWhite"
                           onClick={handlePrev}
                           aria-label="Previous Timeline Item"
                         >
                           Previous
                         </button>
                         <button
-                          className="text-brand-navy text-lg tracking-widest uppercase font-light p-2"
+                          className="text-brand-navy text-lg tracking-widest uppercase font-light p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2 focus-visible:ring-offset-brand-offWhite"
                           onClick={handleNext}
                           aria-label="Next Timeline Item"
                         >

@@ -17,6 +17,8 @@ import {
   faMap,
   faChevronLeft,
   faChevronRight,
+  faChevronDoubleLeft,
+  faChevronDoubleRight,
 } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
 import { formatNumber } from '@/utilities/formatNumber'
 import { formatPrice } from '@/utilities/formatPrice'
@@ -45,6 +47,28 @@ import { useDebounce } from '@/utilities/useDebounce'
 
 interface MapPageClientProps {
   listingsCount?: number
+}
+
+interface GeoJson {
+  type: string
+  features: {
+    type: string
+    properties: {
+      title: string
+      address: string
+      price: string
+      textAfterPrice: string
+      transactionType: 'for-sale' | 'for-lease' | null | undefined
+      image: number | MediaType
+      lat: number
+      lon: number
+      iconSize: number
+    }
+    geometry: {
+      type: string
+      coordinates: number[]
+    }
+  }[]
 }
 
 export interface MapFilters {
@@ -114,6 +138,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const [hasNextPage, setHasNextPage] = useState<boolean | null | undefined>(undefined)
   const [hasPrevPage, setHasPrevPage] = useState<boolean | null | undefined>(undefined)
   const [currentPage, setCurrentPage] = useState<number | null | undefined>(1)
+  const [totalPages, setTotalPages] = useState<number | null | undefined>(undefined)
   const [nextPage, setNextPage] = useState<number | null | undefined>(undefined)
   const [prevPage, setPrevPage] = useState<number | null | undefined>(undefined)
   const [isSortOpen, setIsSortOpen] = useState(false)
@@ -125,7 +150,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const pathname = usePathname()
   const [isFirstRender, setIsFirstRender] = useState(true)
   const [sortData, setSortData] = useState<{ value: string; label: string } | undefined>(undefined)
-  const limit = MAP_PAGINATION_LIMIT || 10
+  const [limit] = useState(MAP_PAGINATION_LIMIT || 10)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -144,39 +169,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     }
   }
   const debouncedFocusedListing = useDebounce(focusedListing, 500)
-  // const handleCardMouseEnter = (listing: Listing) => {
-  //   setFocusedListing(listing)
-  //   if (debouncedFocusedListing?.id === listing.id) {
-  //     if (mapRef.current) {
-  //       mapRef.current.flyTo({
-  //         center: [listing.coordinates[0], listing.coordinates[1]],
-  //         speed: 0.5,
-  //       })
-  //       activeMarkers.forEach((marker) => {
-  //         if (
-  //           marker.getLngLat().lng === listing.coordinates[0] &&
-  //           marker.getLngLat().lat === listing.coordinates[1] &&
-  //           !marker.getPopup()?.isOpen()
-  //         ) {
-  //           marker.togglePopup()
-  //         } else if (marker.getPopup()?.isOpen()) {
-  //           marker.togglePopup()
-  //         }
-  //       })
-  //     }
-  //   }
-  // }
+
   useEffect(() => {
-    console.log(debouncedFocusedListing)
-    // if (!debouncedFocusedListing) {
-    //   if (mapRef.current) {
-    //     activeMarkers.forEach((marker) => {
-    //       if (marker.getPopup()?.isOpen()) {
-    //         marker.togglePopup()
-    //       }
-    //     })
-    //   }
-    // }
     activeListings.forEach((listing) => {
       if (listing.id === debouncedFocusedListing?.id) {
         if (mapRef.current) {
@@ -199,7 +193,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
         }
       }
     })
-  }, [debouncedFocusedListing])
+  }, [debouncedFocusedListing, activeMarkers, activeListings])
 
   const handleFetchListings = async (
     filterData?: MapFilters,
@@ -209,6 +203,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     setIsLoading(true)
     setActiveListings([])
     setCardRefs([])
+
     if (filterData || page || sort) {
       filterData && setFilters(filterData)
       sort
@@ -283,7 +278,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       page: page,
       sort: sort,
     })
+
     setCurrentPage(response.page)
+    setTotalPages(response.totalPages)
     setPrevPage(response.prevPage)
     setHasPrevPage(response.hasPrevPage)
     setNextPage(response.nextPage)
@@ -298,6 +295,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     activeMarkers.forEach((marker) => marker.remove())
     setActiveMarkers([])
     setBoundingBox([])
+    let geoJsonArr: GeoJson[] = []
     if (activeListings && activeListings.length > 0) {
       const geoJson = {
         type: 'FeatureCollection',
@@ -325,6 +323,61 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           }
         }),
       }
+      // if (mapRef.current?.getSource('geojson')) {
+      //   mapRef.current?.removeSource('geojson')
+      // }
+      // mapRef.current?.addSource('geojson', {
+      //   type: 'geojson',
+      //   data: geoJson,
+      //   cluster: true,
+      //   clusterMaxZoom: 14,
+      //   clusterRadius: 50,
+      // })
+      // mapRef.current?.addLayer({
+      //   id: 'clusters',
+      //   type: 'circle',
+      //   source: 'geojson',
+      //   filter: ['has', 'point_count'],
+      //   paint: {
+      //     'circle-color': [
+      //       'step',
+      //       ['get', 'point_count'],
+      //       '#0B2B37',
+      //       100,
+      //       '#f1f075',
+      //       750,
+      //       '#f28cb1',
+      //     ],
+      //     'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
+      //     'text-color': ['step', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff'],
+      //   },
+      // })
+
+      // mapRef.current?.addLayer({
+      //   id: 'cluster-count',
+      //   type: 'symbol',
+      //   source: 'geojson',
+      //   filter: ['has', 'point_count'],
+      //   layout: {
+      //     'text-field': ['get', 'point_count_abbreviated'],
+      //     'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+      //     'text-size': 12,
+      //   },
+      //   paint: {
+      //     'text-color': '#ffffff',
+      //   },
+      // })
+
+      // mapRef.current?.addLayer({
+      //   id: 'unclustered-point',
+      //   type: 'symbol',
+      //   source: 'geojson',
+      //   filter: ['!', ['has', 'point_count']],
+      // })
+      // const unclusteredPoint = mapRef.current?.queryRenderedFeatures({
+      //   layers: ['unclustered-point'],
+      // })
+      // console.log(unclusteredPoint)
       for (const feature of geoJson.features) {
         setBoundingBox((current) => [...current, feature.geometry.coordinates])
         const el = document.createElement('div')
@@ -339,24 +392,24 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           .setPopup(
             new mapboxgl.Popup({ offset: 25 }).setHTML(
               `
-                <div class="marker-popup rounded-lg overflow-hidden">
-                  <div class="marker-popup_image-container relative aspect-video">
-                    <img src="${(feature.properties.image as MediaType)?.sizes?.medium?.url || null}" alt="${(feature?.properties?.image as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
-                  </div>
-                  <div class="p-6 bg-white flex flex-col-reverse">
-                    <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${feature.properties.address}</h3>
-                    <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${
-                      feature.properties.price
-                        ? `${feature.properties.price}${
-                            feature.properties.textAfterPrice
-                              ? `<span class="text-sm ml-2 font-normal">${feature.properties.textAfterPrice}</span>`
-                              : ''
-                          }`
-                        : 'Contact for price'
-                    }</span>
-                  </div>
+              <div class="marker-popup rounded-lg overflow-hidden">
+                <div class="marker-popup_image-container relative aspect-video">
+                  <img src="${(feature.properties.image as MediaType)?.sizes?.medium?.url || null}" alt="${(feature?.properties?.image as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
                 </div>
-                `,
+                <div class="p-6 bg-white flex flex-col-reverse">
+                  <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${feature.properties.address}</h3>
+                  <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${
+                    feature.properties.price
+                      ? `${feature.properties.price}${
+                          feature.properties.textAfterPrice
+                            ? `<span class="text-sm ml-2 font-normal">${feature.properties.textAfterPrice}</span>`
+                            : ''
+                        }`
+                      : 'Contact for price'
+                  }</span>
+                </div>
+              </div>
+              `,
             ),
           )
         setActiveMarkers((current) => [...current, newMarker])
@@ -429,6 +482,11 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     try {
       setIsLoading(true)
       router.replace(pathname, { scroll: false })
+      Object.entries(form.getValues()).forEach(([key, value]) => {
+        if (form.getValues()[key]) {
+          form.resetField(key)
+        }
+      })
       form.reset()
       setFilters(undefined)
       handleFetchListings()
@@ -646,8 +704,62 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                 )
               })}
             {!isFirstRender && activeListings && activeListings.length > 0 && (
-              <div className="col-span-full flex justify-center gap-4">
+              <div className="col-span-full flex justify-center gap-2 items-center">
                 <Button
+                  className="p-2 text-brand-gray-04"
+                  variant="ghost"
+                  onClick={() => {
+                    if (hasPrevPage && prevPage) {
+                      handleFetchListings(filters, 1)
+                      window.scrollTo({ top: 0 })
+                    }
+                  }}
+                >
+                  <FontAwesomeIcon icon={faChevronDoubleLeft} className="w-4 h-4" />
+                </Button>
+                <Button
+                  className="p-2 text-brand-gray-04"
+                  variant="ghost"
+                  onClick={() => {
+                    if (hasPrevPage && prevPage) {
+                      handleFetchListings(filters, prevPage)
+                      window.scrollTo({ top: 0 })
+                    }
+                  }}
+                >
+                  <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
+                </Button>
+
+                <span className="font-light leading-none text-brand-gray-04">
+                  {currentPage} of {totalPages}
+                </span>
+
+                <Button
+                  className="p-2 text-brand-gray-04"
+                  variant="ghost"
+                  onClick={() => {
+                    if (hasNextPage && nextPage) {
+                      handleFetchListings(filters, nextPage)
+                      window.scrollTo({ top: 0 })
+                    }
+                  }}
+                >
+                  <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
+                </Button>
+                <Button
+                  className="p-2 text-brand-gray-04"
+                  variant="ghost"
+                  onClick={() => {
+                    if (hasNextPage && totalPages) {
+                      handleFetchListings(filters, totalPages)
+                      window.scrollTo({ top: 0 })
+                    }
+                  }}
+                >
+                  <FontAwesomeIcon icon={faChevronDoubleRight} className="w-4 h-4" />
+                </Button>
+
+                {/* <Button
                   variant="outline"
                   className="p-0 w-8 h-8"
                   disabled={!hasPrevPage}
@@ -672,7 +784,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                   }}
                 >
                   <FontAwesomeIcon icon={faChevronRight} />
-                </Button>
+                </Button> */}
               </div>
             )}
 

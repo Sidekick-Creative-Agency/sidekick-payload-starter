@@ -78,14 +78,14 @@ export async function Footer() {
       <div className="grid grid-cols-2 lg:flex justify-between items-center gap-10 lg:gap-20 xl:gap-40 py-10 border-t border-b border-brand-gray-04/50">
         <div className="flex justify-center lg:justify-start gap-10 sm:gap-20 min-w-fit col-span-2">
           <Image
-            src="/kw_advantage.png"
+            src="/api/media/file/kw_advantage_logo.svg"
             alt="KW Advantage logo"
             width={320}
             height={64}
             className="w-28 h-auto object-contain"
           />
           <Image
-            src="/kw_commercial.png"
+            src="/api/media/file/Frame.svg"
             alt="KW Advantage logo"
             width={320}
             height={64}

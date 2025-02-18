@@ -278,7 +278,7 @@ export const SearchBarBlockClient: React.FC<SearchBarClientBlockProps> = ({ cate
                             <DropdownMenuRadioItem
                               value=""
                               id="property_type_r0"
-                              className="text-brand-gray-06 rounded-none hover:bg-brand-blue/25 focus-visible:bg-brand-blue/25"
+                              className="text-brand-gray-06 font-light rounded-none hover:bg-brand-blue/25 focus-visible:bg-brand-blue/25"
                             >
                               All
                             </DropdownMenuRadioItem>
@@ -290,7 +290,7 @@ export const SearchBarBlockClient: React.FC<SearchBarClientBlockProps> = ({ cate
                                   key={propertyType.id}
                                   value={String(propertyType.id)}
                                   id={`property_type_r${propertyType.id}`}
-                                  className="text-brand-gray-06 rounded-none hover:bg-brand-blue/25 focus-visible:bg-brand-blue/25"
+                                  className="text-brand-gray-06 font-light rounded-none hover:bg-brand-blue/25 focus-visible:bg-brand-blue/25"
                                 >
                                   {propertyType.title}
                                 </DropdownMenuRadioItem>

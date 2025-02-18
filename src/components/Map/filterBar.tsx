@@ -122,7 +122,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   }, [propertyTypesResponse])
 
   useEffect(() => {
-    if (needsRefresh && form.getValues().propertyType !== searchParams.get('property_type')) {
+    if (
+      needsRefresh &&
+      searchParams.get('property_type') &&
+      form.getValues().propertyType !== searchParams.get('property_type')
+    ) {
       form.setValue('propertyType', searchParams.get('property_type') || '')
       const filterData = {
         search: form.getValues().search,
@@ -144,16 +148,22 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     } else {
       setNeedsRefresh(true)
     }
-  }, [searchParams])
-
-  useEffect(() => {
     handlePriceChange(searchParams.get('min_price') || '', searchParams.get('max_price') || '')
     handleSizeChange(
       searchParams.get('min_size') || '',
       searchParams.get('max_size') || '',
       searchParams.get('size_type') || '',
     )
-  }, [])
+  }, [searchParams])
+
+  // useEffect(() => {
+  //   handlePriceChange(searchParams.get('min_price') || '', searchParams.get('max_price') || '')
+  //   handleSizeChange(
+  //     searchParams.get('min_size') || '',
+  //     searchParams.get('max_size') || '',
+  //     searchParams.get('size_type') || '',
+  //   )
+  // }, [])
 
   return (
     <Form {...form}>

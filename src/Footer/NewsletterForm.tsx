@@ -103,7 +103,7 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({ form }) => {
           }}
         >
           <Input
-            className="border-none p-0 bg-transparent text-white font-light focus-visible:ring-0 focus-visible:border-none leading-none focus-visible:ring-offset-0 h-auto placeholder-opacity-100"
+            className="border-none p-0 bg-transparent text-white font-light focus-visible:ring-0 focus-visible:border-none leading-none focus-visible:ring-offset-0 h-auto placeholder:text-brand-gray-02"
             // @ts-ignore
             placeholder={form.fields?.at(0)?.placeholder || 'Enter your email address'}
             required

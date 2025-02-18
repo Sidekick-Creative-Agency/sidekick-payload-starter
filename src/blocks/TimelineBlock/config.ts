@@ -1,12 +1,14 @@
 import { AdvancedFields } from '@/fields/Advanced'
 import {
   AlignFeature,
+  BlocksFeature,
   FixedToolbarFeature,
   HeadingFeature,
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 import type { Block, Field } from 'payload'
+import { SpacerLexicalBlock } from '../Lexical/Spacer/config'
 
 const timelineItemFields: Field[] = [
   {
@@ -45,6 +47,7 @@ const timelineItemFields: Field[] = [
               FixedToolbarFeature(),
               InlineToolbarFeature(),
               AlignFeature(),
+              BlocksFeature({ blocks: [SpacerLexicalBlock] }),
             ]
           },
         }),
