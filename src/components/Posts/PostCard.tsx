@@ -22,7 +22,6 @@ export const PostCard: React.FC<PostCardProps> = ({
   enableGutter,
   buttonColor,
 }) => {
-  console.log(enableExcerpt)
   return (
     <Link href={`/posts/${post.slug}`} className="w-full relative flex flex-col pl-4">
       <Media

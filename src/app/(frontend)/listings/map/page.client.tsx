@@ -484,6 +484,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       router.replace(pathname, { scroll: false })
       Object.entries(form.getValues()).forEach(([key, value]) => {
         if (form.getValues()[key]) {
+          // @ts-ignore
           form.resetField(key)
         }
       })

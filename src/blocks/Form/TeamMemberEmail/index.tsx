@@ -28,9 +28,7 @@ export const TeamMemberEmail: React.FC<
     const teamMembers = await fetch(`/api/team-members?where[slug][equals]=${slug}`).then((res) =>
       res.json().then((json) => json),
     )
-    console.log(teamMembers)
     if (teamMembers && teamMembers.docs && teamMembers.docs.length > 0) {
-      console.log(teamMembers.docs[0].details.email)
       setValue(name, teamMembers.docs[0].details.email)
     }
   }

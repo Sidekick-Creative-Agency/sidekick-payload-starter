@@ -510,7 +510,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   disabled={isLoading}
                   onClick={(e) => {
                     e.preventDefault()
-                    console.log(form.formState.errors)
                     if (formRef.current) {
                       formRef.current.requestSubmit()
                     }
