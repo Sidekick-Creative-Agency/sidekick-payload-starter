@@ -32,14 +32,14 @@ export async function Footer() {
   })
   return (
     <footer className="bg-brand-navy text-white px-[1.25rem] md:px-10 2xl:px-20 pt-20 pb-10">
-      <div className=" pb-10  gap-x-8 gap-y-16 flex flex-col items-center md:items-start md:flex-row md:justify-between flex-wrap">
+      <div className=" pb-10 gap-x-8 gap-y-16 flex flex-col items-center md:items-start md:flex-row md:justify-between flex-wrap">
         {footer.logo && (
           <Link href="/">
             <Media resource={footer.logo} imgClassName="max-w-16" />
           </Link>
         )}
 
-        <div className="max-w-5xl m-auto flex flex-1 flex-col items-center justify-around md:flex-row gap-10 md:items-start">
+        <div className="max-w-5xl mx-auto flex flex-1 flex-col items-center justify-around md:flex-row gap-10 md:items-start">
           {navMenus &&
             navMenus.map((navMenu, index) => {
               const title = navMenu?.title
@@ -54,7 +54,7 @@ export async function Footer() {
                     {navItems.map((navItem, index) => {
                       return (
                         <CMSLink
-                          className="text-brand-gray-02 transition-colors hover:text-white focus-visible:text-white text-center md:text-left"
+                          className="text-brand-gray-02 transition-colors hover:text-white focus-visible:text-white text-center md:text-left font-light"
                           key={index}
                           {...navItem.link}
                         />
@@ -66,7 +66,7 @@ export async function Footer() {
             })}
         </div>
         {footerNewsletterForm && (
-          <div className="flex flex-col gap-6 md:max-w-fit lg:max-w-[20rem] md:m-auto lg:m-0">
+          <div className="flex flex-col gap-6 md:max-w-fit lg:max-w-[20rem] md:mx-auto lg:m-0">
             <h2 className="font-bold text-2xl text-white text-center md:text-left">
               Get new properties sent straight to your inbox weekly!
             </h2>
@@ -82,14 +82,14 @@ export async function Footer() {
             alt="KW Advantage logo"
             width={320}
             height={64}
-            className="w-28 h-auto object-contain"
+            className="w-32 h-auto object-contain"
           />
           <Image
             src="/api/media/file/Frame.svg"
             alt="KW Advantage logo"
             width={320}
             height={64}
-            className="w-32 h-auto object-contain"
+            className="w-40 h-auto object-contain"
           />
         </div>
         <div className="mx-auto col-span-2 sm:col-span-1">

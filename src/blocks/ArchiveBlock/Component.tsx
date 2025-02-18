@@ -70,26 +70,33 @@ export const ArchiveBlock: React.FC<
     collection: relationTo || 'posts',
     depth: 1,
     limit: limit || 10,
+    ...(relationTo === 'team-members'
+      ? {
+          sort: ['lastName', 'title'],
+        }
+      : {}),
     where: {
-      ...(flattenedTaxonomies &&
-        flattenedTaxonomies.length > 0 &&
-        relationTo === 'posts' && {
-          category: {
-            in: flattenedTaxonomies,
-          },
-        }),
-      ...(relationTo === 'listings' &&
-        propertyTypes && {
-          category: {
-            equals: defaultCategoryFilter,
-          },
-        }),
-      ...(relationTo === 'listings' &&
-        enablePropertyCategoryFilters && {
-          propertyType: {
-            in: propertyTypes,
-          },
-        }),
+      ...(flattenedTaxonomies && flattenedTaxonomies.length > 0 && relationTo === 'posts'
+        ? {
+            category: {
+              in: flattenedTaxonomies,
+            },
+          }
+        : {}),
+      ...(relationTo === 'listings' && propertyTypes
+        ? {
+            category: {
+              equals: defaultCategoryFilter,
+            },
+          }
+        : {}),
+      ...(relationTo === 'listings' && enablePropertyCategoryFilters
+        ? {
+            propertyType: {
+              in: propertyTypes,
+            },
+          }
+        : {}),
     },
   })
 

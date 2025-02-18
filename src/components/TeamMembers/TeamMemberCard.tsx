@@ -33,7 +33,7 @@ interface TeamMemberCardProps {
 }
 export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) => {
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <Link className="flex flex-col gap-6 w-full" href={`/about/team/${teamMember.slug}`}>
       <Media
         resource={teamMember.details.featuredImage}
         className="aspect-[4/5] relative"
@@ -41,10 +41,11 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
       />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <Link
+          {/* <Link
             href={`/about/team/${teamMember.slug}`}
             className="focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2 focus-visible:outline-none"
-          >
+          > */}
+          <div>
             <h3 className="text-2xl text-brand-gray-06 font-bold inline leading-tight">
               {teamMember.title}
             </h3>
@@ -53,22 +54,23 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
                 {teamMember.details.designations}
               </span>
             )}
-          </Link>
+          </div>
+          {/* </Link> */}
         </div>
         <span className="text-gray-600 text-base font-light leading-tight">
           {teamMember.details.jobTitle}
         </span>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              variant={'link'}
-              className="flex gap-2 items-center px-0 py-4 w-fit rounded-none hover:no-underline focus-visible:no-underline focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2"
-            >
-              <FontAwesomeIcon icon={faPlus} className="w-full max-w-3" />
-              <span>Read Bio</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="w-[60rem] max-w-[calc(100vw-2.5rem)] sm:max-w-[calc(100vw-5rem)] py-16 px-8 sm:p-16 h-fit max-h-screen overflow-scroll gap-6">
+        {/* <Dialog> */}
+        {/* <DialogTrigger asChild> */}
+        <Button
+          variant={'link'}
+          className="flex gap-2 items-center px-0 py-4 w-fit rounded-none hover:no-underline focus-visible:no-underline focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2"
+        >
+          <FontAwesomeIcon icon={faPlus} className="w-full max-w-3" />
+          <span>Learn More</span>
+        </Button>
+        {/* </DialogTrigger> */}
+        {/* <DialogContent className="w-[60rem] max-w-[calc(100vw-2.5rem)] sm:max-w-[calc(100vw-5rem)] py-16 px-8 sm:p-16 h-fit max-h-screen overflow-scroll gap-6">
             <DialogHeader className="flex flex-col sm:flex-row gap-4 sm:gap-8 items-start sm:items-center">
               <Media
                 resource={teamMember.details.featuredImage}
@@ -167,8 +169,8 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
               </Link>
             </div>
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
       </div>
-    </div>
+    </Link>
   )
 }

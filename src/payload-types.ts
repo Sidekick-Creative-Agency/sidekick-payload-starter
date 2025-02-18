@@ -436,6 +436,7 @@ export interface Attachment {
 export interface TeamMember {
   id: number;
   title: string;
+  lastName?: string | null;
   details: {
     jobTitle: string;
     bio?: {
@@ -2162,6 +2163,7 @@ export interface ReviewsSelect<T extends boolean = true> {
  */
 export interface TeamMembersSelect<T extends boolean = true> {
   title?: T;
+  lastName?: T;
   details?:
     | T
     | {

@@ -19,6 +19,7 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { populateLastName } from './hooks/populateLastName'
 
 export const TeamMembers: CollectionConfig = {
   slug: 'team-members',
@@ -38,6 +39,14 @@ export const TeamMembers: CollectionConfig = {
       label: 'Name',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'lastName',
+      type: 'text',
+      admin: {
+        // hidden: true,
+        // position: 'sidebar',
+      },
     },
     {
       type: 'tabs',
@@ -213,7 +222,9 @@ export const TeamMembers: CollectionConfig = {
     ...slugField(),
   ],
   hooks: {
+    // afterRead: [populateLastName],
     afterChange: [revalidateTeamMember],
+    beforeChange: [populateLastName],
   },
   // versions: {
   //   drafts: {
