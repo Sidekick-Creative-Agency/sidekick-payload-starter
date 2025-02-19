@@ -97,18 +97,22 @@ export const ArchiveBlock: React.FC<
             },
           }
         : {}),
-      or: [
-        {
-          _status: {
-            exists: false,
-          },
-        },
-        {
-          _status: {
-            equals: 'published',
-          },
-        },
-      ],
+      ...(relationTo === 'listings' || relationTo === 'posts'
+        ? {
+            or: [
+              {
+                _status: {
+                  exists: false,
+                },
+              },
+              {
+                _status: {
+                  equals: 'published',
+                },
+              },
+            ],
+          }
+        : {}),
     },
   })
 
