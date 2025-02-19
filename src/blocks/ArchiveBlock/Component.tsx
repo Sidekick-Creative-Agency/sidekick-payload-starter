@@ -97,6 +97,18 @@ export const ArchiveBlock: React.FC<
             },
           }
         : {}),
+      or: [
+        {
+          _status: {
+            exists: false,
+          },
+        },
+        {
+          _status: {
+            equals: 'published',
+          },
+        },
+      ],
     },
   })
 

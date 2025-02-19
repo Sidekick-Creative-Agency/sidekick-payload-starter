@@ -7,7 +7,7 @@ import React from 'react'
 import type { Page, Post } from '@/payload-types'
 import { usePathname, useRouter } from 'next/navigation'
 
-type CMSLinkType = {
+export type CMSLinkType = {
   appearance?: 'inline' | ButtonProps['variant']
   children?: React.ReactNode
   className?: string

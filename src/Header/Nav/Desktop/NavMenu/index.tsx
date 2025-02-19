@@ -30,7 +30,7 @@ export const NavMenu: React.FC<{ navItems: Header['navItems']; isScrolled: boole
                   key={i}
                   {...navItem.link}
                   appearance="link"
-                  className={`hover:no-underline focus-visible:no-underline ${isScrolled || headerTheme === 'filled' ? 'text-black' : 'text-white'} uppercase font-bold text-base tracking-[1.6px] py-2`}
+                  className={`hover:no-underline focus-visible:no-underline ${isScrolled || headerTheme === 'filled' ? 'text-black focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2' : 'text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-0'} uppercase font-bold text-base tracking-[1.6px] p-2 `}
                 />
               </li>
             )
@@ -38,17 +38,14 @@ export const NavMenu: React.FC<{ navItems: Header['navItems']; isScrolled: boole
           return (
             <li key={i}>
               <DropdownMenu>
-                <DropdownMenuTrigger>
-                  {navItem?.enableParentLink && navItem?.parentLink ? (
-                    <CMSLink
-                      key={i}
-                      {...navItem.parentLink}
-                      appearance="link"
-                      className={`hover:no-underline focus-visible:no-underline ${isScrolled || headerTheme === 'filled' ? 'text-black' : 'text-white'} uppercase font-bold text-base tracking-[1.6px]`}
-                    />
-                  ) : (
-                    navItem?.label
-                  )}
+                <DropdownMenuTrigger
+                  asLink={navItem?.enableParentLink && navItem?.parentLink ? true : false}
+                  {...(navItem?.enableParentLink && navItem?.parentLink
+                    ? { link: navItem.parentLink }
+                    : {})}
+                  className={`${isScrolled || headerTheme === 'filled' ? 'text-black focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2' : 'text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-0'}`}
+                >
+                  {(!navItem?.enableParentLink || !navItem?.parentLink) && navItem?.label}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   {navItem?.childrenLinks &&

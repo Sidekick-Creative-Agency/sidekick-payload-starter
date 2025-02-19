@@ -75,7 +75,11 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       <div className="flex flex-col items-center gap-4 py-20">
         <div className="container max-w-6xl">
-          <RichText className="max-w-none p-0" content={post.content} enableGutter={false} />
+          <RichText
+            className="max-w-none p-0 [&_h2]:text-2xl [&_h2]:mb-2 [&_h2]:mt-8 [&_h3]:text-xl [&_h3]:mb-2 [&_h3]:mt-6"
+            content={post.content}
+            enableGutter={false}
+          />
         </div>
         {relatedPosts && relatedPosts.length > 0 && (
           <div className="py-20 w-full">

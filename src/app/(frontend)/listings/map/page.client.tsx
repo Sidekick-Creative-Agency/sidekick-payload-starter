@@ -19,6 +19,7 @@ import {
   faChevronRight,
   faChevronDoubleLeft,
   faChevronDoubleRight,
+  faPlus,
 } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
 import { formatNumber } from '@/utilities/formatNumber'
 import { formatPrice } from '@/utilities/formatPrice'
@@ -208,7 +209,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       filterData && setFilters(filterData)
       sort
         ? setSortData(sortOptions.find((option) => option.value === sort))
-        : setSortData(undefined)
+        : searchParams.get('sort')
+          ? setSortData(sortOptions.find((option) => option.value === searchParams.get('sort')))
+          : setSortData(undefined)
       const newSearchParams = new URLSearchParams(searchParams)
       if (filterData?.search) {
         newSearchParams.set('search', filterData.search)
@@ -268,7 +271,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       if (sort) {
         newSearchParams.set('sort', sort)
       } else {
-        newSearchParams.delete('sort')
+        searchParams.get('sort')
+          ? newSearchParams.set('sort', searchParams.get('sort')!)
+          : newSearchParams.delete('sort')
       }
       router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
     }
@@ -276,7 +281,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     const response = await getMapListings({
       filters: filterData || undefined,
       page: page,
-      sort: sort,
+      sort: sort || searchParams.get('sort'),
     })
 
     setCurrentPage(response.page)
@@ -304,6 +309,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             type: 'Feature',
             properties: {
               title: listing.title,
+              slug: listing.slug,
               address: listing.streetAddress,
               price:
                 typeof listing.price === 'number' && listing.price !== 0
@@ -396,17 +402,18 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                 <div class="marker-popup_image-container relative aspect-video">
                   <img src="${(feature.properties.image as MediaType)?.sizes?.medium?.url || null}" alt="${(feature?.properties?.image as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
                 </div>
-                <div class="p-6 bg-white flex flex-col-reverse">
+                <div class="p-6 bg-white flex flex-col">
+                <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${
+                  feature.properties.price
+                    ? `${feature.properties.price}${
+                        feature.properties.textAfterPrice
+                          ? `<span class="text-sm ml-2 font-normal">${feature.properties.textAfterPrice}</span>`
+                          : ''
+                      }`
+                    : 'Contact for price'
+                }</span>
                   <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${feature.properties.address}</h3>
-                  <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${
-                    feature.properties.price
-                      ? `${feature.properties.price}${
-                          feature.properties.textAfterPrice
-                            ? `<span class="text-sm ml-2 font-normal">${feature.properties.textAfterPrice}</span>`
-                            : ''
-                        }`
-                      : 'Contact for price'
-                  }</span>
+                  <a href="/listings/${feature.properties.slug}" class="p-2 w-fit text-sm rounded-sm transition-colors hover:bg-brand-gray-00 focus-visible:bg-brand-gray-00 focus-visible:outline-none font-light flex items-center gap-1 text-brand-gray-04"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-2 h-auto fill-brand-gray-04"><!--!Font Awesome Pro 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2025 Fonticons, Inc.--><path d="M240 64l0-16-32 0 0 16 0 176L32 240l-16 0 0 32 16 0 176 0 0 176 0 16 32 0 0-16 0-176 176 0 16 0 0-32-16 0-176 0 0-176z"/></svg>Learn More</a>
                 </div>
               </div>
               `,
@@ -676,6 +683,11 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                             <Button
                               className="flex justify-center items-center w-12 h-12 p-0 rounded-full border border-brand-gray-00 bg-white text-brand-gray-06 hover:bg-brand-gray-00"
                               style={{ boxShadow: '0px 3px 10px rgba(0,0,0,.1)' }}
+                              onClick={(e) => {
+                                e.preventDefault()
+                                const mailtoLink = `mailto:info@onwardrealestateteam.org?subject=${encodeURIComponent(`Onward Real Estate Property Inquiry: ${listing.streetAddress}, ${listing.city}, ${listing.state} ${listing.zipCode}`)}&body=${encodeURIComponent(`Hello,\n\n I am interested in receiving more information about ${listing.streetAddress}, ${listing.city}, ${listing.state} ${listing.zipCode}`)}.`
+                                window.location.href = mailtoLink
+                              }}
                             >
                               <FontAwesomeIcon icon={faEnvelope} fontWeight={300} size="lg" />
                             </Button>

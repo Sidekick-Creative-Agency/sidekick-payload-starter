@@ -100,7 +100,7 @@ export const ColumnsBlock: React.FC<
 
               return (
                 <div
-                  className={`relative ${colsSpanClasses[size || 'full']} 
+                  className={`relative ${colsSpanClasses[size || 'full']}
                     ${
                       type === 'text'
                         ? width === 'full'
@@ -110,7 +110,7 @@ export const ColumnsBlock: React.FC<
                               ? 'pb-10 sm:pb-0 sm:pr-20'
                               : index === columns.length - 1
                                 ? 'pt-10 sm:pl-20 sm:pt-0'
-                                : 'pt-10 sm:px-10 sm:pt-0'
+                                : 'py-10 sm:px-10 sm:py-0'
                             : size !== 'full'
                               ? index === 0
                                 ? 'sm:pr-12 md:pr-16'
