@@ -66,7 +66,7 @@ export async function Footer() {
             })}
         </div>
         {footerNewsletterForm && (
-          <div className="flex flex-col gap-6 md:max-w-fit lg:max-w-[20rem] md:mx-auto lg:m-0">
+          <div className="flex flex-col gap-6 md:max-w-fit lg:max-w-[21rem] md:mx-auto lg:m-0">
             <h2 className="font-bold text-2xl text-white text-center md:text-left">
               Get new properties sent straight to your inbox weekly!
             </h2>

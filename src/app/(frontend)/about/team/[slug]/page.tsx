@@ -103,7 +103,7 @@ export default async function Page({ params: paramsPromise }: Args) {
                   fill
                   className="w-full h-full object-cover object-[50%_35%]"
                   priority
-                  quality={100}
+                  // quality={100}
                 />
               </div>
               <div className="w-full flex flex-col gap-8 sm:gap-6">
