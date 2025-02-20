@@ -70,11 +70,23 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 
 export default buildConfig({
   admin: {
+    meta: {
+      title: 'Admin',
+      titleSuffix: '- Onward Real Estate Team',
+      icons: [
+        {
+          rel: 'icon',
+          type: 'image/svg+xml',
+          url: '/favicon.svg',
+        },
+      ],
+    },
     components: {
       graphics: {
         Logo: '@/components/LoginLogo',
         Icon: '@/components/AdminLogo',
       },
+      actions: ['@/components/Admin/Actions#Actions'],
       views: {
         importListingsView: {
           Component: '/views/Listings/Import#ImportView',
