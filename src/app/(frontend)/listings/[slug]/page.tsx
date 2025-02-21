@@ -355,7 +355,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                       </span>
                     </div>
                   )}
-                  {listing.area && (
+                  {typeof listing.area === 'number' && listing.area !== 0 && (
                     <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                       <FloorPlanIcon className="w-6" />
                       <span className="text-base text-brand-gray-06 font-light">
@@ -363,7 +363,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                       </span>
                     </div>
                   )}
-                  {listing.acreage && (
+                  {typeof listing.acreage === 'number' && listing.acreage !== 0 && (
                     <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                       <FontAwesomeIcon icon={faFarm} className="w-6 text-brand-navy" />
                       <span className="text-base text-brand-gray-06 font-light fill-brand-navy">
