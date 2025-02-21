@@ -168,7 +168,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   return (
     <Form {...form}>
       <form
-        className="w-full p-10 bg-white flex gap-2 relative"
+        className="w-full py-8 px-5 md:p-10 bg-white flex gap-2 relative"
         onSubmit={form.handleSubmit(onSubmit)}
         ref={formRef}
       >
