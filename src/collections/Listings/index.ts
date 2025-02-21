@@ -57,9 +57,9 @@ export const Listings: CollectionConfig = {
 
       return `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
     },
-    components: {
-      beforeList: ['/components/Admin/LinkToImportView#LinkToImportView'],
-    },
+    // components: {
+    //   beforeList: ['/components/Admin/LinkToImportView#LinkToImportView'],
+    // },
     useAsTitle: 'title',
   },
   fields: [
@@ -78,6 +78,16 @@ export const Listings: CollectionConfig = {
               type: 'upload',
               relationTo: 'media',
               required: true,
+              hooks: {
+                beforeChange: [
+                  ({ data, value }) => {
+                    if (data) {
+                      data.imagesUpdatedAt = new Date().toISOString()
+                    }
+                    return value
+                  },
+                ],
+              },
             },
             {
               name: 'imageGallery',
@@ -93,6 +103,72 @@ export const Listings: CollectionConfig = {
                   relationTo: 'media',
                 },
               ],
+              hooks: {
+                beforeChange: [
+                  ({ data, value }) => {
+                    if (data) {
+                      data.imagesUpdatedAt = new Date().toISOString()
+                    }
+                    return value
+                  },
+                ],
+              },
+            },
+            {
+              name: 'photosChangeTimestamp',
+              type: 'text',
+              admin: {
+                hidden: true,
+                condition: (_, siblingData) => siblingData?.category === 'residential',
+              },
+            },
+            {
+              name: 'majorChangeTimestamp',
+              type: 'text',
+              admin: {
+                hidden: true,
+                condition: (_, siblingData) => siblingData?.category === 'residential',
+              },
+            },
+            {
+              name: 'priceChangeTimestamp',
+              type: 'text',
+              admin: {
+                hidden: true,
+                condition: (_, siblingData) => siblingData?.category === 'residential',
+              },
+            },
+            {
+              name: 'statusChangeTimestamp',
+              type: 'text',
+              admin: {
+                hidden: true,
+                condition: (_, siblingData) => siblingData?.category === 'residential',
+              },
+            },
+            {
+              name: 'videosChangeTimestamp',
+              type: 'text',
+              admin: {
+                hidden: true,
+                condition: (_, siblingData) => siblingData?.category === 'residential',
+              },
+            },
+            {
+              name: 'contractStatusChangeTimestamp',
+              type: 'text',
+              admin: {
+                hidden: true,
+                condition: (_, siblingData) => siblingData?.category === 'residential',
+              },
+            },
+            {
+              name: 'documentsChangeTimestamp',
+              type: 'text',
+              admin: {
+                hidden: true,
+                condition: (_, siblingData) => siblingData?.category === 'residential',
+              },
             },
             {
               name: 'category',
@@ -195,6 +271,14 @@ export const Listings: CollectionConfig = {
                     {
                       label: 'Sold',
                       value: 'sold',
+                    },
+                    {
+                      label: 'Active',
+                      value: 'active',
+                    },
+                    {
+                      label: 'Pending',
+                      value: 'pending',
                     },
                   ],
                 },

@@ -70,6 +70,14 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 
 export default buildConfig({
   admin: {
+    ...(process.env.NODE_ENV === 'development'
+      ? {
+          autoLogin: {
+            email: 'aron@sidekick.agency',
+            password: 'sidekick',
+          },
+        }
+      : {}),
     meta: {
       title: 'Admin',
       titleSuffix: '- Onward Real Estate Team',
@@ -86,7 +94,7 @@ export default buildConfig({
         Logo: '@/components/LoginLogo',
         Icon: '@/components/AdminLogo',
       },
-      actions: ['@/components/Admin/Actions#Actions'],
+      // actions: ['@/components/Admin/Actions#Actions'],
       views: {
         importListingsView: {
           Component: '/views/Listings/Import#ImportView',

@@ -8,7 +8,7 @@ import { Media } from '../../../../components/Media'
 import { Button } from '../../../../components/ui/button'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFarm } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
+import { faBath, faBedFront, faFarm } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
 import {
   faEnvelope,
   faArrowUpArrowDown,
@@ -48,28 +48,6 @@ import { useDebounce } from '@/utilities/useDebounce'
 
 interface MapPageClientProps {
   listingsCount?: number
-}
-
-interface GeoJson {
-  type: string
-  features: {
-    type: string
-    properties: {
-      title: string
-      address: string
-      price: string
-      textAfterPrice: string
-      transactionType: 'for-sale' | 'for-lease' | null | undefined
-      image: number | MediaType
-      lat: number
-      lon: number
-      iconSize: number
-    }
-    geometry: {
-      type: string
-      coordinates: number[]
-    }
-  }[]
 }
 
 export interface MapFilters {
@@ -300,7 +278,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     activeMarkers.forEach((marker) => marker.remove())
     setActiveMarkers([])
     setBoundingBox([])
-    let geoJsonArr: GeoJson[] = []
     if (activeListings && activeListings.length > 0) {
       const geoJson = {
         type: 'FeatureCollection',
@@ -694,6 +671,22 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                           </div>
                         </div>
                         <div className="flex gap-2 justify-start flex-wrap">
+                          {listing.bedrooms && (
+                            <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
+                              <FontAwesomeIcon icon={faBedFront} className="w-6" />
+                              <span className="text-base text-brand-gray-06 font-light">
+                                {formatNumber(listing.bedrooms)}
+                              </span>
+                            </div>
+                          )}
+                          {listing.bathrooms && (
+                            <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
+                              <FontAwesomeIcon icon={faBath} className="w-6" />
+                              <span className="text-base text-brand-gray-06 font-light">
+                                {formatNumber(listing.bathrooms)}
+                              </span>
+                            </div>
+                          )}
                           {listing.area && (
                             <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                               <FloorPlanIcon className="w-6" />

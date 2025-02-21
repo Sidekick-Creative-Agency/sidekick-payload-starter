@@ -16,6 +16,26 @@ export const Media: CollectionConfig = {
       type: 'text',
       required: false,
     },
+    {
+      type: 'join',
+      collection: 'listings',
+      name: 'relatedListingFeaturedImage',
+      on: 'featuredImage',
+      // hooks: {
+      //   beforeChange: [
+      //     ({ data }) => {
+      //       console.log(data)
+      //       return data
+      //     },
+      //   ],
+      // },
+    },
+    {
+      type: 'join',
+      collection: 'listings',
+      name: 'relatedListingImageGallery',
+      on: 'imageGallery.image',
+    },
   ],
   upload: {
     adminThumbnail: 'thumbnail',
@@ -60,5 +80,24 @@ export const Media: CollectionConfig = {
         },
       ],
     },
+  },
+  hooks: {
+    // beforeChange: [
+    //   async ({ data, req, context }) => {
+    //     const existingMedia = await req.payload.find({
+    //       collection: 'media',
+    //       where: {
+    //         filename: {
+    //           equals: data.filename,
+    //         },
+    //       },
+    //     })
+    //     console.log(data.filename)
+    //     if (existingMedia.docs && existingMedia.docs.length > 0) {
+    //       data.filename = `${data.filename.split('.')[0]}-${existingMedia.docs.length}.${data.filename.split('.')[1]}`
+    //     }
+    //     return data
+    //   },
+    // ],
   },
 }

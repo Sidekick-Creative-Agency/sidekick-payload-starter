@@ -1,19 +1,12 @@
 'use client'
-import ReactMapboxGl, { Layer, Feature, GeoJSONLayer, Image } from 'react-mapbox-gl'
+
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '../styles.scss'
 import { Listing, Media as MediaType } from '@/payload-types'
 
-import { useEffect, useRef, useState } from 'react'
-import mapboxgl, { LngLatBoundsLike, LngLatLike, Map, Marker } from 'mapbox-gl'
-import { Card } from '../../ui/card'
-import { Media } from '../../Media'
-import { Button } from '../../ui/button'
-import Link from 'next/link'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFarm } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
-import { faEnvelope } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
-import { formatNumber } from '@/utilities/formatNumber'
+import { useEffect, useRef } from 'react'
+import mapboxgl, { Map } from 'mapbox-gl'
+
 import { formatPrice } from '@/utilities/formatPrice'
 
 interface ListingMapProps {
@@ -39,6 +32,7 @@ export const ListingMap: React.FC<ListingMapProps> = ({ listing }) => {
       zoom: 10,
       scrollZoom: false,
     })
+    mapRef.current.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-left')
 
     const el = document.createElement('div')
     el.className = 'marker'

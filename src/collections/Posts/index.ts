@@ -60,9 +60,9 @@ export const Posts: CollectionConfig = {
 
       return `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
     },
-    components: {
-      beforeList: ['/components/Admin/LinkToImportView#LinkToImportView'],
-    },
+    // components: {
+    //   beforeList: ['/components/Admin/LinkToImportView#LinkToImportView'],
+    // },
     useAsTitle: 'title',
   },
   fields: [

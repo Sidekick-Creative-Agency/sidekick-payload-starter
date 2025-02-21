@@ -31,6 +31,10 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    media: {
+      relatedListingFeaturedImage: 'listings';
+      relatedListingImageGallery: 'listings';
+    };
     attachments: {
       relatedListings: 'listings';
     };
@@ -213,6 +217,14 @@ export interface Page {
 export interface Media {
   id: number;
   alt?: string | null;
+  relatedListingFeaturedImage?: {
+    docs?: (number | Listing)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
+  relatedListingImageGallery?: {
+    docs?: (number | Listing)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -262,70 +274,6 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock".
- */
-export interface ArchiveBlock {
-  heading?: string | null;
-  subtitle?: string | null;
-  headingAlign?: ('center' | 'left' | 'right') | null;
-  relationTo?: ('posts' | 'team-members' | 'listings') | null;
-  categories?: (number | Category)[] | null;
-  propertyTypes?: (number | PropertyType)[] | null;
-  limit?: number | null;
-  enablePropertyCategoryFilters?: boolean | null;
-  defaultCategoryFilter?: ('commercial' | 'residential') | null;
-  layout?: ('grid' | 'carousel') | null;
-  buttonColor?: string | null;
-  enablePostCategoryFilter?: boolean | null;
-  enableExcerpt?: boolean | null;
-  enableDate?: boolean | null;
-  /**
-   * Adds padding on the sides of the Post Card text
-   */
-  enableGutter?: boolean | null;
-  /**
-   * The HTML ID attribute of this block.
-   */
-  elementId?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'archiveBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
- */
-export interface Category {
-  id: number;
-  title: string;
-  parent?: (number | null) | Category;
-  breadcrumbs?:
-    | {
-        doc?: (number | null) | Category;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "property-types".
- */
-export interface PropertyType {
-  id: number;
-  title: string;
-  relatedListings?: {
-    docs?: (number | Listing)[] | null;
-    hasNextPage?: boolean | null;
-  } | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "listings".
  */
 export interface Listing {
@@ -338,6 +286,13 @@ export interface Listing {
         id?: string | null;
       }[]
     | null;
+  photosChangeTimestamp?: string | null;
+  majorChangeTimestamp?: string | null;
+  priceChangeTimestamp?: string | null;
+  statusChangeTimestamp?: string | null;
+  videosChangeTimestamp?: string | null;
+  contractStatusChangeTimestamp?: string | null;
+  documentsChangeTimestamp?: string | null;
   category?: ('commercial' | 'residential') | null;
   bedrooms?: number | null;
   bathrooms?: number | null;
@@ -360,7 +315,7 @@ export interface Listing {
   textAfterPrice?: string | null;
   propertyType?: (number | PropertyType)[] | null;
   transactionType?: ('for-sale' | 'for-lease') | null;
-  availability?: ('available' | 'unavailable' | 'sold') | null;
+  availability?: ('available' | 'unavailable' | 'sold' | 'active' | 'pending') | null;
   /**
    * Square footage of the property
    */
@@ -404,6 +359,20 @@ export interface Listing {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "property-types".
+ */
+export interface PropertyType {
+  id: number;
+  title: string;
+  relatedListings?: {
+    docs?: (number | Listing)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -520,6 +489,56 @@ export interface TeamMember {
   } | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArchiveBlock".
+ */
+export interface ArchiveBlock {
+  heading?: string | null;
+  subtitle?: string | null;
+  headingAlign?: ('center' | 'left' | 'right') | null;
+  relationTo?: ('posts' | 'team-members' | 'listings') | null;
+  categories?: (number | Category)[] | null;
+  propertyTypes?: (number | PropertyType)[] | null;
+  limit?: number | null;
+  enablePropertyCategoryFilters?: boolean | null;
+  defaultCategoryFilter?: ('commercial' | 'residential') | null;
+  layout?: ('grid' | 'carousel') | null;
+  buttonColor?: string | null;
+  enablePostCategoryFilter?: boolean | null;
+  enableExcerpt?: boolean | null;
+  enableDate?: boolean | null;
+  /**
+   * Adds padding on the sides of the Post Card text
+   */
+  enableGutter?: boolean | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'archiveBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  title: string;
+  parent?: (number | null) | Category;
+  breadcrumbs?:
+    | {
+        doc?: (number | null) | Category;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1966,6 +1985,8 @@ export interface PostsSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  relatedListingFeaturedImage?: T;
+  relatedListingImageGallery?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2070,6 +2091,13 @@ export interface ListingsSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
+  photosChangeTimestamp?: T;
+  majorChangeTimestamp?: T;
+  priceChangeTimestamp?: T;
+  statusChangeTimestamp?: T;
+  videosChangeTimestamp?: T;
+  contractStatusChangeTimestamp?: T;
+  documentsChangeTimestamp?: T;
   category?: T;
   bedrooms?: T;
   bathrooms?: T;

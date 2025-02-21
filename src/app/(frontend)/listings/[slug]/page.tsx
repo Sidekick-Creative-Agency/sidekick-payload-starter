@@ -21,7 +21,12 @@ import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { CopyButton } from '@/components/CopyButton'
 import { FloorPlanIcon } from '@/app/(frontend)/listings/map/page.client'
-import { faFarm, faFilePdf } from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
+import {
+  faBath,
+  faBedFront,
+  faFarm,
+  faFilePdf,
+} from '@awesome.me/kit-a7a0dd333d/icons/sharp-duotone/thin'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   Accordion,
@@ -334,6 +339,22 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   </span>
                 </div>
                 <div className="flex gap-2 justify-end flex-wrap">
+                  {listing.bedrooms && (
+                    <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
+                      <FontAwesomeIcon icon={faBedFront} className="w-6" />
+                      <span className="text-base text-brand-gray-06 font-light">
+                        {formatNumber(listing.bedrooms)}
+                      </span>
+                    </div>
+                  )}
+                  {listing.bathrooms && (
+                    <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
+                      <FontAwesomeIcon icon={faBath} className="w-6" />
+                      <span className="text-base text-brand-gray-06 font-light">
+                        {formatNumber(listing.bathrooms)}
+                      </span>
+                    </div>
+                  )}
                   {listing.area && (
                     <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                       <FloorPlanIcon className="w-6" />
@@ -370,44 +391,46 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     />
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="Resources">
-                  <AccordionTrigger
-                    className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
-                    iconClassName="border border-brand-gray-01 w-4 h-4 text-brand-navy fill-brand-navy p-1"
-                    closedIcon={faChevronDown}
-                    openIcon={faChevronUp}
-                  >
-                    Resources
-                  </AccordionTrigger>
+                {listing.attachments && listing.attachments.length > 0 && (
+                  <AccordionItem value="Resources">
+                    <AccordionTrigger
+                      className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
+                      iconClassName="border border-brand-gray-01 w-4 h-4 text-brand-navy fill-brand-navy p-1"
+                      closedIcon={faChevronDown}
+                      openIcon={faChevronUp}
+                    >
+                      Resources
+                    </AccordionTrigger>
 
-                  <AccordionContent className="pb-10">
-                    <div className="flex gap-10 flex-wrap">
-                      {listing.attachments &&
-                        listing.attachments.length > 0 &&
-                        listing.attachments.map((attachment, index) => {
-                          if (typeof attachment.attachment === 'object') {
-                            return (
-                              <a
-                                key={attachment.id}
-                                className="flex items-center gap-2"
-                                href={(attachment.attachment as Attachment).url || ''}
-                                target="_blank"
-                              >
-                                <FontAwesomeIcon
-                                  icon={faFilePdf}
-                                  className="w-6 h-auto text-brand-navy"
-                                />
-                                <span className="text-base font-bold text-brand-gray-04">
-                                  {(attachment.attachment as Attachment).title}
-                                </span>
-                              </a>
-                            )
-                          }
-                          return ''
-                        })}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+                    <AccordionContent className="pb-10">
+                      <div className="flex gap-10 flex-wrap">
+                        {listing.attachments &&
+                          listing.attachments.length > 0 &&
+                          listing.attachments.map((attachment, index) => {
+                            if (typeof attachment.attachment === 'object') {
+                              return (
+                                <a
+                                  key={attachment.id}
+                                  className="flex items-center gap-2"
+                                  href={(attachment.attachment as Attachment).url || ''}
+                                  target="_blank"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faFilePdf}
+                                    className="w-6 h-auto text-brand-navy"
+                                  />
+                                  <span className="text-base font-bold text-brand-gray-04">
+                                    {(attachment.attachment as Attachment).title}
+                                  </span>
+                                </a>
+                              )
+                            }
+                            return ''
+                          })}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
               </Accordion>
             </div>
             <div className="col-span-1 p-4 py-10 sm:p-10 bg-white border-t-[10px] border-brand-navy flex flex-col h-fit sticky top-24">
