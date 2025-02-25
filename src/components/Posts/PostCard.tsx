@@ -28,6 +28,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         resource={post.featuredImage || undefined}
         className="w-full relative pb-[80%] overflow-hidden"
         imgClassName="absolute top-0 left-0 object-cover w-full h-full"
+        size="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (min-width: 1025px) 33.3vw"
       />
       {post.category && (
         <div

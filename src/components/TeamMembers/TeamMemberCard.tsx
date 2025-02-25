@@ -38,13 +38,10 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
         resource={teamMember.details.featuredImage}
         className="aspect-[4/5] relative"
         imgClassName="absolute top-0 left-0 object-cover object-[50%_35%] w-full h-full"
+        size="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (min-width: 1025px) 33.3vw"
       />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          {/* <Link
-            href={`/about/team/${teamMember.slug}`}
-            className="focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2 focus-visible:outline-none"
-          > */}
           <div>
             <h3 className="text-2xl text-brand-gray-06 font-bold inline leading-tight">
               {teamMember.title}
@@ -55,13 +52,10 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
               </span>
             )}
           </div>
-          {/* </Link> */}
         </div>
         <span className="text-gray-600 text-base font-light leading-tight">
           {teamMember.details.jobTitle}
         </span>
-        {/* <Dialog> */}
-        {/* <DialogTrigger asChild> */}
         <Button
           variant={'link'}
           className="flex gap-2 items-center px-0 py-4 w-fit rounded-none hover:no-underline focus-visible:no-underline focus-visible:ring-2 focus-visible:ring-brand-navy focus-visible:ring-offset-2"
@@ -69,107 +63,6 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
           <FontAwesomeIcon icon={faPlus} className="w-full max-w-3" />
           <span>Learn More</span>
         </Button>
-        {/* </DialogTrigger> */}
-        {/* <DialogContent className="w-[60rem] max-w-[calc(100vw-2.5rem)] sm:max-w-[calc(100vw-5rem)] py-16 px-8 sm:p-16 h-fit max-h-screen overflow-scroll gap-6">
-            <DialogHeader className="flex flex-col sm:flex-row gap-4 sm:gap-8 items-start sm:items-center">
-              <Media
-                resource={teamMember.details.featuredImage}
-                className="aspect-square rounded-full overflow-hidden relative w-20"
-                imgClassName="absolute top-0 left-0 object-cover object-[50%_20%] w-full h-full"
-              />
-              <div className="flex flex-col gap-2 items-start">
-                <DialogTitle hidden>{teamMember.title}</DialogTitle>
-                <div>
-                  <span className="text-[2rem] text-brand-gray-06 font-bold inline leading-tight">
-                    {teamMember.title}
-                  </span>
-                  {teamMember.details.designations && (
-                    <span className="inline text-xs text-brand-gray-06 font-bold ml-2">
-                      {teamMember.details.designations}
-                    </span>
-                  )}
-                </div>
-                <span className="text-gray-600 text-base font-light leading-tight">
-                  {teamMember.details.jobTitle}
-                </span>
-              </div>
-            </DialogHeader>
-
-            <RichText
-              content={teamMember?.details.bio || {}}
-              className="text-brand-gray-04 font-light max-w-none p-0"
-            />
-            <div className="flex gap-2 flex-wrap">
-              {teamMember.details.email && (
-                <Link
-                  href={`mailto:${teamMember.details.email}`}
-                  className="py-3 px-4 h-fit rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
-                >
-                  <FontAwesomeIcon icon={faEnvelope} className="w-full max-w-8 text-brand-navy" />
-                  <span className="text-base text-brand-gray-06 font-light">Email</span>
-                </Link>
-              )}
-              {teamMember.details.phone && (
-                <Link
-                  href={`tel:${teamMember.details.phone.replaceAll('-', '')}`}
-                  className="py-3 px-4 h-fit rounded-xl bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
-                >
-                  <FontAwesomeIcon icon={faPhone} className="w-full max-w-8 text-brand-navy" />
-                  <span className="text-base text-brand-gray-06 font-light">Phone</span>
-                </Link>
-              )}
-              {teamMember.details.socials &&
-                teamMember.details.socials.length > 0 &&
-                teamMember.details.socials.map((social) => {
-                  let icon: IconDefinition | undefined = undefined
-                  switch (social.platform) {
-                    case 'facebook':
-                      icon = faFacebookF
-                      break
-                    case 'twitter':
-                      icon = faXTwitter
-                      break
-                    case 'instagram':
-                      icon = faInstagram
-                      break
-                    case 'youtube':
-                      icon = faYoutube
-                      break
-                    case 'linkedin':
-                      icon = faLinkedin
-                      break
-                    default:
-                      icon = undefined
-                  }
-                  if (!icon) return
-                  return (
-                    <Link
-                      key={social.id}
-                      href={social.url || ''}
-                      target="_blank"
-                      className="py-3 px-4 h-fit rounded-xl w-fit whitespace-nowrap bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
-                    >
-                      <FontAwesomeIcon icon={icon} className="w-full max-w-8 text-brand-navy" />
-                      <span className="text-base text-brand-gray-06 font-light">
-                        {social?.platform?.at(0)?.toUpperCase()}
-                        {social.platform?.slice(1)}
-                      </span>
-                    </Link>
-                  )
-                })}
-              <Link
-                href={`/about/team/${teamMember.slug}`}
-                className="py-3 px-4 h-fit rounded-xl w-fit whitespace-nowrap bg-white border border-brand-gray-01 flex gap-2 items-center hover:bg-brand-gray-01 focus-visible:bg-brand-gray-01 transition-colors"
-              >
-                <FontAwesomeIcon
-                  icon={faArrowUpRightFromSquare}
-                  className="w-full max-w-8 text-brand-navy"
-                />
-                <span className="text-base text-brand-gray-06 font-light">Learn More</span>
-              </Link>
-            </div>
-          </DialogContent>
-        </Dialog> */}
       </div>
     </Link>
   )
