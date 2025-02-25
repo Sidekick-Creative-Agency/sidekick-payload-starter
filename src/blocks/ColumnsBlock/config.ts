@@ -160,6 +160,7 @@ const columnFields: Field[] = [
               CheckmarkListLexicalBlock,
               SpacerLexicalBlock,
               MediaGridLexicalBlock,
+              SubtitleLexicalBlock,
             ],
           }),
           TextColorFeature({
