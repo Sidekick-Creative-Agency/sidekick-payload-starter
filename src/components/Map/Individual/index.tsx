@@ -43,7 +43,7 @@ export const ListingMap: React.FC<ListingMapProps> = ({ listing }) => {
     const newMarker = new mapboxgl.Marker(el)
       .setLngLat([listing.coordinates[0], listing.coordinates[1]])
       .setPopup(
-        new mapboxgl.Popup({ offset: 25 }).setHTML(
+        new mapboxgl.Popup({ offset: 25, focusAfterOpen: false }).setHTML(
           `
                 <div class="marker-popup rounded-lg overflow-hidden">
                   <div class="marker-popup_image-container relative aspect-video">

@@ -373,7 +373,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
         const newMarker = new mapboxgl.Marker(el)
           .setLngLat(feature.geometry.coordinates as LngLatLike)
           .setPopup(
-            new mapboxgl.Popup({ offset: 25 }).setHTML(
+            new mapboxgl.Popup({ offset: 25, focusAfterOpen: false }).setHTML(
               `
               <div class="marker-popup rounded-lg overflow-hidden">
                 <div class="marker-popup_image-container relative aspect-video">
