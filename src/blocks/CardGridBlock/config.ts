@@ -70,7 +70,7 @@ export const CardGridBlock: Block = {
       fields: cardFields,
     },
     StylesField({
-      globalOverrides: [BackgroundColorField()],
+      globalFields: [BackgroundColorField()],
     }),
     AdvancedFields,
   ],

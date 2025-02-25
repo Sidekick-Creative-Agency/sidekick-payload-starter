@@ -21,6 +21,8 @@ export type MediaGridLexicalBlockProps = {
     aspectRatio?: string
   }[]
   blockType: 'mediaGrid'
+  elementId?: string
+  customCss?: string
 }
 
 const aspectRatioClasses = {
@@ -29,40 +31,50 @@ const aspectRatioClasses = {
   video: 'aspect-video',
 }
 
-export const MediaGridLexicalBlock: React.FC<MediaGridLexicalBlockProps> = ({ items }) => {
+export const MediaGridLexicalBlock: React.FC<MediaGridLexicalBlockProps> = ({
+  items,
+  elementId,
+  customCss,
+}) => {
   const { width } = useWindowDimensions()
-
+  console.log(customCss)
   return (
-    <div className={`media-grid-lexical-block flex flex-wrap gap-10`}>
-      {items?.map((item, index) => {
-        if (typeof item === 'object' && item !== null) {
-          let maxWidth = ''
-          switch (items.length) {
-            case 1:
-              maxWidth = ''
-              break
-            case 2:
-              maxWidth = 'md:max-w-[calc(50%-1.25rem))]'
-              break
-            default:
-              maxWidth = 'md:max-w-[calc(50%-1.25rem))] md:max-w-[calc(33.33%-.75rem))]'
-              break
+    <>
+      {customCss && <style>{customCss}</style>}
+      <div
+        className={`media-grid-lexical-block flex flex-wrap gap-10`}
+        {...(elementId ? { id: elementId } : {})}
+      >
+        {items?.map((item, index) => {
+          if (typeof item === 'object' && item !== null) {
+            let maxWidth = ''
+            switch (items.length) {
+              case 1:
+                maxWidth = ''
+                break
+              case 2:
+                maxWidth = 'md:max-w-[calc(50%-1.25rem))]'
+                break
+              default:
+                maxWidth = 'md:max-w-[calc(50%-1.25rem))] md:max-w-[calc(33.33%-.75rem))]'
+                break
+            }
+            return (
+              <div key={index} className={`max-w-full ${maxWidth}`}>
+                {item.media && (
+                  <Media
+                    resource={item.media}
+                    className={`w-full `}
+                    imgClassName={`object-cover m-0 ${aspectRatioClasses[item.aspectRatio || 'auto']}`}
+                  />
+                )}
+              </div>
+            )
           }
-          return (
-            <div key={index} className={`max-w-full ${maxWidth}`}>
-              {item.media && (
-                <Media
-                  resource={item.media}
-                  className={`w-full `}
-                  imgClassName={`object-cover m-0 ${aspectRatioClasses[item.aspectRatio || 'auto']}`}
-                />
-              )}
-            </div>
-          )
-        }
 
-        return null
-      })}
-    </div>
+          return null
+        })}
+      </div>
+    </>
   )
 }

@@ -9,15 +9,13 @@ export const DesktopHorizontalPaddingField: Field = {
       name: 'padHorDeskVal', // required
       label: 'Horizontal Padding',
       type: 'number', // required
-      defaultValue: 0,
     },
     {
       name: 'padHorDeskUnit',
-      // enumName: enumName,
+      enumName: 'pdHrDkUnit',
 
       label: 'Unit',
       type: 'select',
-      defaultValue: 'rem',
       options: [
         {
           value: 'rem',

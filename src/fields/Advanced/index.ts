@@ -11,6 +11,15 @@ export const AdvancedFields: Field = {
         description: 'The HTML ID attribute of this block.',
       },
     },
+    {
+      type: 'code',
+      label: 'Custom CSS',
+      name: 'customCss',
+      admin: {
+        language: 'css',
+        description: 'Omit the opening and closing <style> tags',
+      },
+    },
   ],
   admin: {
     initCollapsed: true,

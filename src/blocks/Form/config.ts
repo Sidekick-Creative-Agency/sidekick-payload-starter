@@ -60,7 +60,7 @@ export const FormBlock: Block = {
       label: 'Intro Content',
     },
     StylesField({
-      globalOverrides: [
+      globalFields: [
         {
           name: 'width',
           type: 'select',
@@ -87,9 +87,9 @@ export const FormBlock: Block = {
           ],
         },
       ],
-      desktopOverrides: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
-      tabletOverrides: [TabletHorizontalPaddingField, TabletVerticalPaddingField],
-      mobileOverrides: [MobileHorizontalPaddingField, MobileVerticalPaddingField],
+      desktopFields: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
+      tabletFields: [TabletHorizontalPaddingField, TabletVerticalPaddingField],
+      mobileFields: [MobileHorizontalPaddingField, MobileVerticalPaddingField],
     }),
     AdvancedFields,
   ],

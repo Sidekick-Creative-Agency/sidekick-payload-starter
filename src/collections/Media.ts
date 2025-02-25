@@ -71,6 +71,7 @@ export const Media: CollectionConfig = {
       'image/webp',
       'image/avif',
       'image/svg+xml',
+      'application/pdf',
     ],
     pasteURL: {
       allowList: [

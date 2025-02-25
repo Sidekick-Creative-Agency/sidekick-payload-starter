@@ -1,17 +1,17 @@
 import { Field } from 'payload'
 
 type StylesFieldType = (options?: {
-  globalOverrides?: Field[]
-  desktopOverrides?: Field[]
-  tabletOverrides?: Field[]
-  mobileOverrides?: Field[]
+  globalFields?: Field[]
+  desktopFields?: Field[]
+  tabletFields?: Field[]
+  mobileFields?: Field[]
 }) => Field
 
 export const StylesField: StylesFieldType = ({
-  globalOverrides = [],
-  desktopOverrides = [],
-  tabletOverrides = [],
-  mobileOverrides = [],
+  globalFields = [],
+  desktopFields = [],
+  tabletFields = [],
+  mobileFields = [],
 } = {}) => ({
   type: 'group',
   name: 'styles',
@@ -26,7 +26,7 @@ export const StylesField: StylesFieldType = ({
         {
           type: 'group',
           name: 'global',
-          fields: globalOverrides,
+          fields: globalFields,
         },
         {
           type: 'group',
@@ -38,24 +38,27 @@ export const StylesField: StylesFieldType = ({
               type: 'collapsible',
               admin: {
                 initCollapsed: true,
+                condition: () => desktopFields && desktopFields.length > 0,
               },
-              fields: desktopOverrides || [],
+              fields: desktopFields || [],
             },
             {
               label: 'Tablet',
               type: 'collapsible',
               admin: {
                 initCollapsed: true,
+                condition: () => tabletFields && tabletFields.length > 0,
               },
-              fields: tabletOverrides || [],
+              fields: tabletFields || [],
             },
             {
               label: 'Mobile',
               type: 'collapsible',
               admin: {
                 initCollapsed: true,
+                condition: () => mobileFields && mobileFields.length > 0,
               },
-              fields: mobileOverrides || [],
+              fields: mobileFields || [],
             },
           ],
         },

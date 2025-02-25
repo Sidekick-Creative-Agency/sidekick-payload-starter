@@ -7,14 +7,12 @@ export const MobileVerticalPaddingField: Field = {
       name: 'padVertMbVal', // required
       label: 'Vertical Padding',
       type: 'number', // required
-      defaultValue: 0,
     },
     {
       name: 'padVertMbUnit',
-      // enumName: 'pb_columns_block_style_group_pad_vert_mobile_unit',
+      // enumName: 'pdVtMbUnit',
       label: 'Unit',
       type: 'select',
-      defaultValue: 'rem',
       options: [
         {
           value: 'rem',

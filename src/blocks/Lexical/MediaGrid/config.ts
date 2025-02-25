@@ -1,3 +1,4 @@
+import { AdvancedFields } from '@/fields/Advanced'
 import type { Block, Field } from 'payload'
 
 const mediaGridItemFields: Field[] = [
@@ -36,5 +37,6 @@ export const MediaGridLexicalBlock: Block = {
       type: 'array',
       fields: mediaGridItemFields,
     },
+    AdvancedFields,
   ],
 }

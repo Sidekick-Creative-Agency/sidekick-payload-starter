@@ -30,6 +30,7 @@ import { TextColorFeature } from '@/components/RichText/Color/features/textColor
 import { CheckmarkListLexicalBlock } from '../Lexical/CheckmarkList/config'
 import { AdvancedFields } from '@/fields/Advanced'
 import { SpacerLexicalBlock } from '../Lexical/Spacer/config'
+import { MediaGridLexicalBlock } from '../Lexical/MediaGrid/config'
 
 const columnFields: Field[] = [
   {
@@ -155,24 +156,14 @@ const columnFields: Field[] = [
           BlocksFeature({
             blocks: [
               FormBlock,
-              SubtitleLexicalBlock,
               CarouselLexicalBlock,
               CheckmarkListLexicalBlock,
               SpacerLexicalBlock,
+              MediaGridLexicalBlock,
             ],
           }),
           TextColorFeature({
             colors: [
-              {
-                type: 'button',
-                label: 'White',
-                color: '#FFFFFF',
-              },
-              {
-                type: 'button',
-                label: 'Black',
-                color: '#000000',
-              },
               ...BRAND_COLORS.map((color) => {
                 return {
                   type: 'button' as 'button' | 'palette',
@@ -306,7 +297,7 @@ export const ColumnsBlock: Block = {
     },
 
     StylesField({
-      globalOverrides: [
+      globalFields: [
         {
           name: 'width',
           type: 'select',
@@ -333,9 +324,9 @@ export const ColumnsBlock: Block = {
           },
         }),
       ],
-      // desktopOverrides: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
-      // tabletOverrides: [TabletHorizontalPaddingField, TabletVerticalPaddingField],
-      mobileOverrides: [
+      // desktopFields: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
+      // tabletFields: [TabletHorizontalPaddingField, TabletVerticalPaddingField],
+      mobileFields: [
         // MobileHorizontalPaddingField,
         // MobileVerticalPaddingField,
         {

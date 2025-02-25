@@ -7,14 +7,12 @@ export const DesktopVerticalPaddingField: Field = {
       name: 'padVertDeskVal', // required
       label: 'Vertical Padding',
       type: 'number', // required
-      defaultValue: 0,
     },
     {
       name: 'padVertDeskUnit',
-      // enumName: 'pb_columns_block_style_group_pad_vert_desktop_unit',
+      enumName: 'pdVtDkUnit',
       label: 'Unit',
       type: 'select',
-      defaultValue: 'rem',
       options: [
         {
           value: 'rem',

@@ -26,7 +26,7 @@ export const ColumnsBlock: React.FC<
     id?: string
   } & Props
 > = (props) => {
-  const { id, columns, styles, elementId } = props
+  const { id, columns, styles, elementId, customCss } = props
   const width = styles?.global?.width || 'boxed'
   const blockBgColor = styles?.global?.backgroundColor
   const reverseWrap = styles?.resp?.reverseWrap
@@ -64,43 +64,45 @@ export const ColumnsBlock: React.FC<
   }
   const blockTwBackgroundColor = BRAND_BACKGROUND_COLOR_CLASSES[blockBgColor || 'transparent']
   return (
-    <div
-      className={`columns-block-${id} ${blockTwBackgroundColor} ${elementId && 'scroll-m-10'}`}
-      {...(elementId ? { id: elementId } : {})}
-    >
+    <>
+      {customCss && <style>{customCss}</style>}
       <div
-        className={`${widthClasses[width]} ${width !== 'full' ? 'py-20 md:py-24 lg:py-32 container' : ''}`}
+        className={`columns-block-${id} ${blockTwBackgroundColor} ${elementId && 'scroll-m-10'}`}
+        {...(elementId ? { id: elementId } : {})}
       >
         <div
-          className={cn(
-            `flex ${flexDirectionClasses[flexDirection]} sm:grid sm:grid-cols-4 lg:grid-cols-12  ${width !== 'full' && !enableDivider && 'gap-y-8'}`,
-          )}
+          className={`${widthClasses[width]} ${width !== 'full' ? 'py-20 md:py-24 lg:py-32 container' : ''}`}
         >
-          {columns &&
-            columns.length > 0 &&
-            columns.map((col, index) => {
-              const {
-                enableLinks,
-                links,
-                enableSubtitle,
-                subtitle,
-                subtitleAlign,
-                subtitleColor,
-                richText,
-                size,
-                media,
-                type,
-                mediaBorderRadius,
-                backgroundColor: colBgColor,
-                backgroundImage,
-                styles,
-              } = col
-              const colTwBackgroundColor =
-                BRAND_BACKGROUND_COLOR_CLASSES[colBgColor || 'transparent']
+          <div
+            className={cn(
+              `flex ${flexDirectionClasses[flexDirection]} sm:grid sm:grid-cols-4 lg:grid-cols-12  ${width !== 'full' && !enableDivider && 'gap-y-8'}`,
+            )}
+          >
+            {columns &&
+              columns.length > 0 &&
+              columns.map((col, index) => {
+                const {
+                  enableLinks,
+                  links,
+                  enableSubtitle,
+                  subtitle,
+                  subtitleAlign,
+                  subtitleColor,
+                  richText,
+                  size,
+                  media,
+                  type,
+                  mediaBorderRadius,
+                  backgroundColor: colBgColor,
+                  backgroundImage,
+                  styles,
+                } = col
+                const colTwBackgroundColor =
+                  BRAND_BACKGROUND_COLOR_CLASSES[colBgColor || 'transparent']
 
-              return (
-                <div
-                  className={`relative ${colsSpanClasses[size || 'full']}
+                return (
+                  <div
+                    className={`relative ${colsSpanClasses[size || 'full']}
                     ${
                       type === 'text'
                         ? width === 'full'
@@ -128,74 +130,75 @@ export const ColumnsBlock: React.FC<
                                 : 'sm:px-5'
                             : ''
                     } flex flex-col justify-center items-stretch sm:items-start ${colTwBackgroundColor} ${index !== 0 && enableDivider && `before:absolute before:content-[""] before:left-0 before:top-0 before:h-[1px] sm:before:h-full before:w-full sm:before:w-[1px] ${BRAND_BEFORE_BACKGROUND_COLOR_CLASSES[dividerColor || 'transparent']} before:opacity-50`}`}
-                  key={index}
-                >
-                  {type === 'text' && (
-                    <div
-                      className={`relative mx-auto ${width !== 'full' ? `${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}` : 'w-[40rem] max-w-full mx-auto'}  `}
-                    >
-                      {enableSubtitle && subtitle && (
-                        <motion.span
-                          className={`inline-block w-full uppercase tracking-widest leading-none text-base font-basic-sans font-bold mb-2 z-10 relative ${subtitleAlignClasses[subtitleAlign || 'left']} ${BRAND_TEXT_COLOR_CLASSES[subtitleColor || 'tan']}`}
-                          initial={{ y: 20, opacity: 0 }}
-                          whileInView={{ y: 0, opacity: 1 }}
-                          viewport={{ once: true, amount: 'all' }}
-                        >
-                          {subtitle}
-                        </motion.span>
-                      )}
-                      {richText && (
-                        <RichText
-                          content={richText}
-                          enableGutter={false}
-                          className="z-10 relative [&_a]:no-underline"
-                        />
-                      )}
-                      {enableLinks && links && links.length > 0 && (
-                        <div className="mt-10 flex gap-4 lg:gap-6 flex-wrap justify-start">
-                          {links.map((link) => {
-                            return (
-                              <CMSLink
-                                key={link.id}
-                                {...link.link}
-                                className={`z-10 relative w-full lg:w-auto ${BRAND_TEXT_COLOR_CLASSES[link.link.textColor || 'white']} ${
-                                  link.link.appearance === 'default'
-                                    ? `${BRAND_BACKGROUND_COLOR_CLASSES[link.link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[link.link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[link.link.backgroundColor || 'navy']} hover:bg-opacity-90 focus-visible:bg-opacity-90 ${BRAND_BORDER_COLOR_CLASSES[link.link.backgroundColor || 'navy']}`
-                                    : `${BRAND_BORDER_COLOR_CLASSES[link.link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[link.link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[link.link.borderColor || 'navy']} ${link.link.borderColor && BRAND_TEXT_COLOR_HOVER_CLASSES[SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS.includes(link.link.borderColor) ? 'navy' : 'white']}`
-                                }`}
-                              />
-                            )
-                          })}
-                        </div>
-                      )}
-                      {backgroundImage && width !== 'full' && (
-                        <Media
-                          resource={backgroundImage}
-                          className={`absolute top-0 left-0 w-full h-full pointer-events-none z-0 `}
-                          imgClassName="w-full h-full object-cover"
-                        />
-                      )}
-                    </div>
-                  )}
-                  {backgroundImage && width === 'full' && (
-                    <Media
-                      resource={backgroundImage}
-                      className={`absolute top-0 left-0 w-full h-full pointer-events-none z-0 `}
-                      imgClassName="w-full h-full object-cover"
-                    />
-                  )}
-                  {type === 'media' && media && (
-                    <Media
-                      resource={media}
-                      className={`relative aspect-[5/4] overflow-hidden w-full h-auto z-0 ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']} ${width !== 'full' ? `sm:aspect-square ${mediaBorderRadiusClasses[mediaBorderRadius || 'none']}` : 'sm:aspect-auto sm:h-full'}`}
-                      imgClassName="absolute top-0 left-0 w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-              )
-            })}
+                    key={index}
+                  >
+                    {type === 'text' && (
+                      <div
+                        className={`relative mx-auto ${width !== 'full' ? `${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}` : 'w-[40rem] max-w-full mx-auto'}  `}
+                      >
+                        {enableSubtitle && subtitle && (
+                          <motion.span
+                            className={`inline-block w-full uppercase tracking-widest leading-none text-base font-basic-sans font-bold mb-2 z-10 relative ${subtitleAlignClasses[subtitleAlign || 'left']} ${BRAND_TEXT_COLOR_CLASSES[subtitleColor || 'tan']}`}
+                            initial={{ y: 20, opacity: 0 }}
+                            whileInView={{ y: 0, opacity: 1 }}
+                            viewport={{ once: true, amount: 'all' }}
+                          >
+                            {subtitle}
+                          </motion.span>
+                        )}
+                        {richText && (
+                          <RichText
+                            content={richText}
+                            enableGutter={false}
+                            className="z-10 relative [&_a]:no-underline"
+                          />
+                        )}
+                        {enableLinks && links && links.length > 0 && (
+                          <div className="mt-10 flex gap-4 lg:gap-6 flex-wrap justify-start">
+                            {links.map((link) => {
+                              return (
+                                <CMSLink
+                                  key={link.id}
+                                  {...link.link}
+                                  className={`z-10 relative w-full lg:w-auto ${BRAND_TEXT_COLOR_CLASSES[link.link.textColor || 'white']} ${
+                                    link.link.appearance === 'default'
+                                      ? `${BRAND_BACKGROUND_COLOR_CLASSES[link.link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[link.link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[link.link.backgroundColor || 'navy']} hover:bg-opacity-90 focus-visible:bg-opacity-90 ${BRAND_BORDER_COLOR_CLASSES[link.link.backgroundColor || 'navy']}`
+                                      : `${BRAND_BORDER_COLOR_CLASSES[link.link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[link.link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[link.link.borderColor || 'navy']} ${link.link.borderColor && BRAND_TEXT_COLOR_HOVER_CLASSES[SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS.includes(link.link.borderColor) ? 'navy' : 'white']}`
+                                  }`}
+                                />
+                              )
+                            })}
+                          </div>
+                        )}
+                        {backgroundImage && width !== 'full' && (
+                          <Media
+                            resource={backgroundImage}
+                            className={`absolute top-0 left-0 w-full h-full pointer-events-none z-0 `}
+                            imgClassName="w-full h-full object-cover"
+                          />
+                        )}
+                      </div>
+                    )}
+                    {backgroundImage && width === 'full' && (
+                      <Media
+                        resource={backgroundImage}
+                        className={`absolute top-0 left-0 w-full h-full pointer-events-none z-0 `}
+                        imgClassName="w-full h-full object-cover"
+                      />
+                    )}
+                    {type === 'media' && media && (
+                      <Media
+                        resource={media}
+                        className={`relative aspect-[5/4] overflow-hidden w-full h-auto z-0 ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']} ${width !== 'full' ? `sm:aspect-square ${mediaBorderRadiusClasses[mediaBorderRadius || 'none']}` : 'sm:aspect-auto sm:h-full'}`}
+                        imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                )
+              })}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

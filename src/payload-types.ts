@@ -519,6 +519,10 @@ export interface ArchiveBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'archiveBlock';
@@ -588,6 +592,10 @@ export interface FormBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'formBlock';
@@ -880,6 +888,10 @@ export interface ColumnsBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'columnsBlock';
@@ -917,6 +929,10 @@ export interface FAQBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'faqBlock';
@@ -939,6 +955,10 @@ export interface NumberCountersBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'numberCountersBlock';
@@ -979,6 +999,10 @@ export interface ExpertiseBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'expertiseBlock';
@@ -1020,6 +1044,10 @@ export interface TimelineBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'timelineBlock';
@@ -1044,6 +1072,10 @@ export interface ReviewsBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'reviewsBlock';
@@ -1073,6 +1105,10 @@ export interface JobListingsBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'jobListingsBlock';
@@ -1094,6 +1130,10 @@ export interface SocialProofCarouselBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'socialProofCarouselBlock';
@@ -1114,6 +1154,10 @@ export interface MediaCarouselBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaCarouselBlock';
@@ -1157,6 +1201,10 @@ export interface CardGridBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'cardGridBlock';
@@ -1185,6 +1233,10 @@ export interface FeaturedListingsBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'featuredListingsBlock';
@@ -1199,6 +1251,10 @@ export interface SearchBarBlock {
    * The HTML ID attribute of this block.
    */
   elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'searchBarBlock';
@@ -1618,6 +1674,7 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   enableDate?: T;
   enableGutter?: T;
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1656,6 +1713,7 @@ export interface FormBlockSelect<T extends boolean = true> {
             };
       };
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1723,6 +1781,7 @@ export interface ColumnsBlockSelect<T extends boolean = true> {
             };
       };
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1742,6 +1801,7 @@ export interface FAQBlockSelect<T extends boolean = true> {
       };
   size?: T;
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1760,6 +1820,7 @@ export interface NumberCountersBlockSelect<T extends boolean = true> {
         id?: T;
       };
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1792,6 +1853,7 @@ export interface ExpertiseBlockSelect<T extends boolean = true> {
         id?: T;
       };
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1819,6 +1881,7 @@ export interface TimelineBlockSelect<T extends boolean = true> {
         id?: T;
       };
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1839,6 +1902,7 @@ export interface ReviewsBlockSelect<T extends boolean = true> {
         id?: T;
       };
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1850,6 +1914,7 @@ export interface JobListingsBlockSelect<T extends boolean = true> {
   heading?: T;
   subtitle?: T;
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1867,6 +1932,7 @@ export interface SocialProofCarouselBlockSelect<T extends boolean = true> {
         id?: T;
       };
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1883,6 +1949,7 @@ export interface MediaCarouselBlockSelect<T extends boolean = true> {
         id?: T;
       };
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1912,6 +1979,7 @@ export interface CardGridBlockSelect<T extends boolean = true> {
         resp?: T | {};
       };
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1935,6 +2003,7 @@ export interface FeaturedListingsBlockSelect<T extends boolean = true> {
         label?: T;
       };
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -1945,6 +2014,7 @@ export interface FeaturedListingsBlockSelect<T extends boolean = true> {
 export interface SearchBarBlockSelect<T extends boolean = true> {
   category?: T;
   elementId?: T;
+  customCss?: T;
   id?: T;
   blockName?: T;
 }
@@ -2700,17 +2770,6 @@ export interface FooterSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "subtitleLexicalBlock".
- */
-export interface SubtitleLexicalBlock {
-  subtitle?: string | null;
-  textColor?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'subtitle';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "carouselLexicalBlock".
  */
 export interface CarouselLexicalBlock {
@@ -2765,6 +2824,14 @@ export interface MediaGridBlock {
         id?: string | null;
       }[]
     | null;
+  /**
+   * The HTML ID attribute of this block.
+   */
+  elementId?: string | null;
+  /**
+   * Omit the opening and closing <style> tags
+   */
+  customCss?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaGrid';

@@ -7,14 +7,12 @@ export const TabletVerticalPaddingField: Field = {
       name: 'padVertTabVal', // required
       label: 'Vertical Padding',
       type: 'number', // required
-      defaultValue: 0,
     },
     {
       name: 'padVertTabUnit',
-      // enumName: 'pb_columns_block_style_group_pad_vert_tablet_unit',
+      enumName: 'pdVtTbUnit',
       label: 'Unit',
       type: 'select',
-      defaultValue: 'rem',
       options: [
         {
           value: 'rem',

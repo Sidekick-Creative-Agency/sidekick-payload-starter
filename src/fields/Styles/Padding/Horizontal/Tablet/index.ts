@@ -7,14 +7,12 @@ export const TabletHorizontalPaddingField: Field = {
       name: 'padHorTabVal', // required
       label: 'Horizontal Padding',
       type: 'number', // required
-      defaultValue: 0,
     },
     {
       name: 'padHorTabUnit',
       // enumName: 'pb_columns_block_style_group_pad_horiz_tablet_unit',
       label: 'Unit',
       type: 'select',
-      defaultValue: 'rem',
       options: [
         {
           value: 'rem',
