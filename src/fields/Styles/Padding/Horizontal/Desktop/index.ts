@@ -1,7 +1,5 @@
 import { Field } from 'payload'
 
-type StyleFieldType = (options?: { enumName?: string }) => Field
-
 export const DesktopHorizontalPaddingField: Field = {
   type: 'row',
   fields: [
@@ -12,7 +10,7 @@ export const DesktopHorizontalPaddingField: Field = {
     },
     {
       name: 'padHorDeskUnit',
-      enumName: 'pdHrDkUnit',
+      // enumName: 'pdHrDkUnit',
 
       label: 'Unit',
       type: 'select',

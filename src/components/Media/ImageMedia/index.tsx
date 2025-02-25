@@ -19,6 +19,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     resource,
     size: sizeFromProps,
     src: srcFromProps,
+    quality = 80,
   } = props
 
   const [isLoading, setIsLoading] = useState(true)
@@ -84,10 +85,13 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         }
       }}
       priority={priority}
-      // quality={100}
+      quality={quality}
       sizes={sizes}
       src={src}
       width={!fill ? width : undefined}
+      {...(typeof resource === 'object' && resource.focalX && resource.focalY
+        ? { style: { objectPosition: `${resource.focalX}% ${resource.focalY}%` } }
+        : {})}
     />
   )
 }

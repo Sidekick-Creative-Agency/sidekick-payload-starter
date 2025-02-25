@@ -36,8 +36,10 @@ export const MediaCarouselBlock: React.FC<Props> = (props) => {
               {item.image && (
                 <Media
                   resource={item.image}
-                  className="absolute top-0 left-0 w-full h-full"
-                  imgClassName="w-full h-full object-cover"
+                  className="relative w-full h-full"
+                  imgClassName="w-full h-full object-cover top-0 left-0"
+                  fill
+                  size="(max-width: 768px) 100vw, (min-width: 769px) 33vw"
                 />
               )}
             </CarouselItem>

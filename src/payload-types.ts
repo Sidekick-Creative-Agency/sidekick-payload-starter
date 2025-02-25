@@ -2838,6 +2838,17 @@ export interface MediaGridBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subtitleLexicalBlock".
+ */
+export interface SubtitleLexicalBlock {
+  subtitle?: string | null;
+  textColor?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'subtitle';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {

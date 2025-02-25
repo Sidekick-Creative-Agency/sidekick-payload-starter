@@ -43,6 +43,7 @@ export const MediumImpactHero: React.FC<Page['hero'] & { title: string }> = ({
                 imgClassName="object-cover absolute inset-0 w-full h-full"
                 priority
                 resource={media}
+                size="100vw"
               />
             </div>
           )}

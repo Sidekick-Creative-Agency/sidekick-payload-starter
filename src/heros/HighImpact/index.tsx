@@ -54,7 +54,7 @@ export const HighImpactHero: React.FC<Page['hero'] & { title: string }> = ({
       <div className="h-[25rem] md:h-[35rem] 2xl:min-h-[60vh] max-h-screen select-none">
         {media && typeof media === 'object' && (
           <React.Fragment>
-            <Media fill imgClassName="-z-10 object-cover" priority resource={media} />
+            <Media fill imgClassName="-z-10 object-cover" priority resource={media} size="100vw" />
             <div className="absolute pointer-events-none left-0 bottom-0 w-full h-full bg-black opacity-50" />
           </React.Fragment>
         )}

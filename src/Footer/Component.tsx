@@ -111,7 +111,15 @@ export async function Footer() {
             The Texas Real Estate Commission (TREC) regulates real estate brokers and sales agents,
             real estate inspectors, home warranty companies, easement and right-of-way agents, and
             timeshare interest providers. You can find more information and check the status of a
-            license holder at TREC.Texas.gov.
+            license holder at{' '}
+            <Link
+              href="https://www.trec.texas.gov/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              TREC.Texas.gov.
+            </Link>
           </p>
         </div>
       </div>

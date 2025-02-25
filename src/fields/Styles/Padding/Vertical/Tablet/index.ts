@@ -10,7 +10,7 @@ export const TabletVerticalPaddingField: Field = {
     },
     {
       name: 'padVertTabUnit',
-      enumName: 'pdVtTbUnit',
+      // enumName: 'pdVtTbUnit',
       label: 'Unit',
       type: 'select',
       options: [

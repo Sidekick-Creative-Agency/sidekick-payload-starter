@@ -36,8 +36,6 @@ export const MediaGridLexicalBlock: React.FC<MediaGridLexicalBlockProps> = ({
   elementId,
   customCss,
 }) => {
-  const { width } = useWindowDimensions()
-  console.log(customCss)
   return (
     <>
       {customCss && <style>{customCss}</style>}

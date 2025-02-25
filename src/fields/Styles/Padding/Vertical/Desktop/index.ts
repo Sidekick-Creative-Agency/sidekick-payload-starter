@@ -10,7 +10,7 @@ export const DesktopVerticalPaddingField: Field = {
     },
     {
       name: 'padVertDeskUnit',
-      enumName: 'pdVtDkUnit',
+      // enumName: 'pdVtDkUnit',
       label: 'Unit',
       type: 'select',
       options: [

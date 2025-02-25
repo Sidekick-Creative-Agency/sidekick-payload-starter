@@ -17,7 +17,7 @@ import {
 import RichText from '@/components/RichText'
 import { PageClient } from './page.client'
 import { TestimonialCarousel } from '@/components/TeamMembers/TestimonialCarousel'
-import { Listing, Media } from '@/payload-types'
+import { Listing, Media as MediaType } from '@/payload-types'
 import { ListingArchiveGrid } from '@/components/Archive/ListingArchive'
 import {
   Carousel,
@@ -33,6 +33,7 @@ import { Metadata } from 'next'
 import { cache } from 'react'
 import { generateMeta } from '@/utilities/generateMeta'
 import { draftMode } from 'next/headers'
+import { Media } from '@/components/Media'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -96,16 +97,16 @@ export default async function Page({ params: paramsPromise }: Args) {
               </Link>
             </Button>
             <div className="px-5 pb-10 pt-20 sm:p-6 sm:pt-6 bg-brand-blue flex flex-col gap-8 sm:gap-10 w-full sm:max-w-96 relative sm:sticky sm:top-24 h-fit">
-              <div className="relative pb-[115%] overflow-hidden w-full">
-                <Image
-                  src={(teamMember?.details?.featuredImage as Media).url || ''}
-                  alt={(teamMember?.details?.featuredImage as Media).alt || ''}
-                  fill
-                  className="w-full h-full object-cover object-[50%_35%]"
-                  priority
-                  // quality={100}
-                />
-              </div>
+              {/* <div className="relative pb-[115%] overflow-hidden w-full"> */}
+              <Media
+                resource={teamMember?.details?.featuredImage}
+                priority
+                size="(max-width: 767px) 100vw, (min-width: 768px) 33vw"
+                className="relative pb-[115%] overflow-hidden w-full"
+                fill
+                imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+              />
+              {/* </div> */}
               <div className="w-full flex flex-col gap-8 sm:gap-6">
                 <div className="flex flex-col gap-4 sm:gap-6">
                   <div>
