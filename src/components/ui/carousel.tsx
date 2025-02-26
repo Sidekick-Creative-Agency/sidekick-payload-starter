@@ -244,7 +244,12 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         onClick={scrollPrev}
         {...props}
       >
-        <FontAwesomeIcon icon={faChevronLeft} className="w-full h-auto" />
+        {!props.children ? (
+          <FontAwesomeIcon icon={faChevronLeft} className="w-full h-auto max-h-full" />
+        ) : (
+          props.children
+        )}
+
         <span className="sr-only">Previous slide</span>
       </Button>
     )
@@ -272,7 +277,12 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
         onClick={scrollNext}
         {...props}
       >
-        <FontAwesomeIcon icon={faChevronRight} className="w-full h-auto" />
+        {!props.children ? (
+          <FontAwesomeIcon icon={faChevronRight} className="w-full h-auto max-h-full" />
+        ) : (
+          props.children
+        )}
+
         <span className="sr-only">Next slide</span>
       </Button>
     )

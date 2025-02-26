@@ -93,7 +93,7 @@ export const CarouselLexicalBlock: React.FC<CarouselLexicalBlockProps> = ({ item
 
         <CarouselDots
           className="flex gap-2"
-          dotClassName="h-[2px] w-full bg-brand-tan rounded-none hover:bg-brand-tan focus-visible:bg-brand-tan"
+          dotClassName="pt-[2px] h-0 w-full bg-brand-tan rounded-none hover:bg-brand-tan focus-visible:bg-brand-tan"
         />
       </Carousel>
     </div>
