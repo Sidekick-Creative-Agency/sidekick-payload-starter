@@ -198,7 +198,7 @@ export const FormBlock: React.FC<
       <style>
         {`.form-block-${formID} {
         padding: ${pyMobile} ${pxMobile};
-       
+
 
        @media screen and (min-width: ${defaultTheme.screens.md}) {
        padding: ${pyTablet} ${pxTablet};
@@ -235,13 +235,13 @@ export const FormBlock: React.FC<
                           control={control}
                           errors={errors}
                           register={register}
-                          className={`inline-block w-full ${'width' in field ? (theme === 'default' ? fieldWidthClassesDefault[field.width || 'full'] : fieldWidthClassesThin[field.width || 'full']) : ''} ${'name' in field && field.name && !errors[field.name] ? 'mb-0' : 'mb-6'} relative transition-[margin] duration-300 
+                          className={`inline-block w-full ${'width' in field ? (theme === 'default' ? fieldWidthClassesDefault[field.width || 'full'] : fieldWidthClassesThin[field.width || 'full']) : ''} ${'name' in field && field.name && !errors[field.name] ? 'mb-0' : 'mb-6'} relative transition-[margin] duration-300
 
                             ${
                               // @ts-ignore
                               field.hidden ? 'hidden' : ''
                             } `}
-                          fieldClassName={`font-light ${theme === 'thin' ? 'border-t-0 border-r-0 border-l-0 border-b text-lg focus-visible:border-b-brand-navy focus-visible:ring-0' : 'text-base'} `}
+                          fieldClassName={`font-light rounded-none ${theme === 'thin' ? 'border-t-0 border-r-0 border-l-0 border-b text-lg focus-visible:border-b-brand-navy focus-visible:ring-0' : 'text-base'} `}
                           setValue={setValue}
                           key={index}
                         />

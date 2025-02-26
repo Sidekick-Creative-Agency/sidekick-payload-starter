@@ -106,7 +106,7 @@ export const TimelineBlock: React.FC<
                       <CarouselItem key={index} className="basis-full">
                         <div
                           key={index}
-                          className={`w-full h-full grid grid-cols-1 md:grid-cols-5`}
+                          className={`w-full h-full flex flex-col sm:grid grid-cols-1 md:grid-cols-5`}
                         >
                           {image && typeof image === 'object' && (
                             <Media

@@ -134,7 +134,7 @@ export const ColumnsBlock: React.FC<
                   >
                     {type === 'text' && (
                       <div
-                        className={`relative mx-auto ${width !== 'full' ? `${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}` : 'w-[40rem] max-w-full mx-auto'}  `}
+                        className={`relative ${width !== 'full' ? `${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}` : 'w-[40rem] max-w-full mx-auto'}  `}
                       >
                         {enableSubtitle && subtitle && (
                           <motion.span

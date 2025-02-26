@@ -340,7 +340,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     {listing.streetAddress}, {listing.city}, {listing.state} {listing.zipCode}
                   </span>
                 </div>
-                <div className="flex gap-2 justify-end flex-wrap">
+                <div className="flex gap-2 justify-start sm:justify-end flex-wrap">
                   {listing.bedrooms && (
                     <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                       <FontAwesomeIcon icon={faBedFront} className="w-6" />

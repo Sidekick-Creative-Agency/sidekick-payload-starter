@@ -16,7 +16,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
     >
       <Media
         resource={listing.featuredImage}
-        className="absolute top-0 left-4 w-calc(100%-1rem) h-full overflow-hidden z-0"
+        className="absolute top-0 left-4 w-[calc(100%-1rem)] h-full overflow-hidden z-0"
         imgClassName="object-cover w-full h-full relative"
         size="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (min-width: 1025px) 33.3vw"
       />
