@@ -229,10 +229,10 @@ export default async function Listing({ params: paramsPromise }: Args) {
                         />
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] h-auto max-h-[calc(100vh-2.5rem)] p-0 bg-transparent">
+                    <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] max-h-[calc(100vh-2.5rem)] p-0 bg-transparent justify-stretch h-auto">
                       <DialogTitle hidden>Image Gallery</DialogTitle>
-                      <Carousel className="w-full  [&>div]:rounded-md sm:[&>div]:rounded-lg">
-                        <CarouselContent className=" ml-0">
+                      <Carousel className="[&>div]:rounded-md sm:[&>div]:rounded-lg [&>div]:w-full">
+                        <CarouselContent className="ml-0 max-h-[calc(100vh-2.5rem)]">
                           <CarouselItem className="pl-0 basis-full">
                             <Media
                               resource={listing.featuredImage}
@@ -285,14 +285,15 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   </DialogTrigger>
                   <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] h-auto max-h-[calc(100vh-2.5rem)] p-0 bg-transparent">
                     <DialogTitle hidden>Image Gallery</DialogTitle>
-                    <Carousel className="w-full  [&>div]:rounded-md sm:[&>div]:rounded-lg">
+                    <Carousel className="w-full [&>div]:rounded-md sm:[&>div]:rounded-lg max-h-screen">
                       <CarouselContent className=" ml-0">
                         <CarouselItem className="pl-0 basis-full">
                           <Media
                             resource={listing.featuredImage}
-                            className="w-full overflow-hidden aspect-video relative"
+                            className="w-full overflow-hidden aspect-video relative max-h-screen"
                             imgClassName="w-full object-cover"
                             fill
+                            size="100vw"
                           />
                         </CarouselItem>
                         {listing.imageGallery.map((image, index) => {
@@ -300,9 +301,10 @@ export default async function Listing({ params: paramsPromise }: Args) {
                             <CarouselItem key={image.id} className=" pl-0 basis-full rounded-lg">
                               <Media
                                 resource={image.image as MediaType | number | undefined}
-                                className="w-full overflow-hidden aspect-video relative"
+                                className="w-full overflow-hidden aspect-video relative max-h-screen"
                                 imgClassName="w-full object-cover"
                                 fill
+                                size="100vw"
                               />
                             </CarouselItem>
                           )
