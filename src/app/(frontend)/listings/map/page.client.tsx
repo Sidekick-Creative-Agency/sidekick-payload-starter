@@ -450,6 +450,16 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     }
     const page = searchParams.get('page') ? Number(searchParams.get('page')) : undefined
     const sort = searchParams.get('sort')
+    form.setValue('search', filterData.search || '')
+    form.setValue('category', filterData.category || '')
+    form.setValue('propertyType', filterData.propertyType || '')
+    form.setValue('minPrice', filterData.minPrice || '')
+    form.setValue('maxPrice', filterData.maxPrice || '')
+    form.setValue('sizeType', filterData.sizeType || '')
+    form.setValue('minSize', filterData.minSize || '')
+    form.setValue('maxSize', filterData.maxSize || '')
+    form.setValue('availability', filterData.availability || '')
+    form.setValue('transactionType', filterData.transactionType || '')
 
     handleFetchListings(filterData, page, sort)
 
@@ -466,13 +476,16 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     try {
       setIsLoading(true)
       router.replace(pathname, { scroll: false })
-      Object.entries(form.getValues()).forEach(([key, value]) => {
-        if (form.getValues()[key]) {
-          // @ts-ignore
-          form.resetField(key)
-        }
-      })
-      form.reset()
+      form.setValue('search', '')
+      form.setValue('category', '')
+      form.setValue('propertyType', '')
+      form.setValue('minPrice', '')
+      form.setValue('maxPrice', '')
+      form.setValue('sizeType', '')
+      form.setValue('minSize', '')
+      form.setValue('maxSize', '')
+      form.setValue('availability', '')
+      form.setValue('transactionType', '')
       setFilters(undefined)
       handleFetchListings()
     } catch (error: any) {

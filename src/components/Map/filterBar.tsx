@@ -649,7 +649,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                               onChange={(event) => {
                                 field.onChange(event)
                                 handlePriceChange(
-                                  form.getValues().minPrice,
+                                  event.currentTarget.value,
                                   form.getValues().maxPrice,
                                 )
                               }}
@@ -673,10 +673,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                               {...field}
                               className="h-full text-lg font-light text-brand-navy"
                               onChange={(event) => {
+                                console.log(event.currentTarget.value)
                                 field.onChange(event)
                                 handlePriceChange(
                                   form.getValues().minPrice,
-                                  form.getValues().maxPrice,
+                                  event.currentTarget.value,
                                 )
                               }}
                             />
@@ -686,7 +687,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                     }}
                   />
                 </div>
-                {(form.getValues().minPrice !== '' || form.getValues().maxPrice !== '') && (
+                {((form.getValues().minPrice && form.getValues().minPrice !== '') ||
+                  (form.getValues().maxPrice && form.getValues().maxPrice !== '')) && (
                   <Button
                     className="w-full flex gap-2 mt-4"
                     onClick={() => {
