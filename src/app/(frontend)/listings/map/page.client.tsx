@@ -684,7 +684,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                           </div>
                         </div>
                         <div className="flex gap-2 justify-start flex-wrap">
-                          {listing.bedrooms && (
+                          {typeof listing.bedrooms === 'number' && listing.bedrooms > 0 && (
                             <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                               <FontAwesomeIcon icon={faBedFront} className="w-6" />
                               <span className="text-base text-brand-gray-06 font-light">
@@ -692,7 +692,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                               </span>
                             </div>
                           )}
-                          {listing.bathrooms && (
+                          {typeof listing.bathrooms === 'number' && listing.bathrooms > 0 && (
                             <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                               <FontAwesomeIcon icon={faBath} className="w-6" />
                               <span className="text-base text-brand-gray-06 font-light">
@@ -700,7 +700,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                               </span>
                             </div>
                           )}
-                          {listing.area && (
+                          {typeof listing.area === 'number' && listing.area > 0 && (
                             <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                               <FloorPlanIcon className="w-6" />
                               <span className="text-base text-brand-gray-06 font-light">
@@ -708,7 +708,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                               </span>
                             </div>
                           )}
-                          {listing.acreage && (
+                          {typeof listing.acreage === 'number' && listing.acreage > 0 && (
                             <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                               <FontAwesomeIcon icon={faFarm} className="w-6 text-brand-navy" />
                               <span className="text-base text-brand-gray-06 font-light fill-brand-navy">

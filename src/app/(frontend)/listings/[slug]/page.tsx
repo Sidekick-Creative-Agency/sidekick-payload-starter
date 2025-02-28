@@ -341,7 +341,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   </span>
                 </div>
                 <div className="flex gap-2 justify-start sm:justify-end flex-wrap">
-                  {listing.bedrooms && (
+                  {typeof listing.bedrooms === 'number' && listing.bedrooms > 0 && (
                     <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                       <FontAwesomeIcon icon={faBedFront} className="w-6" />
                       <span className="text-base text-brand-gray-06 font-light">
@@ -349,7 +349,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                       </span>
                     </div>
                   )}
-                  {listing.bathrooms && (
+                  {typeof listing.bathrooms === 'number' && listing.bathrooms > 0 && (
                     <div className="p-2 rounded-xl border border-brand-gray-01 flex gap-2 items-center">
                       <FontAwesomeIcon icon={faBath} className="w-6" />
                       <span className="text-base text-brand-gray-06 font-light">
