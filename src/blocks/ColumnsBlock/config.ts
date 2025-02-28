@@ -8,6 +8,8 @@ import {
   HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
+  OrderedListFeature,
+  UnorderedListFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { link } from '@/fields/link'
@@ -153,6 +155,8 @@ const columnFields: Field[] = [
           FixedToolbarFeature(),
           InlineToolbarFeature(),
           AlignFeature(),
+          UnorderedListFeature(),
+          OrderedListFeature(),
           BlocksFeature({
             blocks: [
               FormBlock,
