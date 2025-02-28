@@ -5,29 +5,21 @@ import {
   BlocksFeature,
   FixedToolbarFeature,
   HeadingFeature,
-  HorizontalRuleFeature,
+  IndentFeature,
   InlineToolbarFeature,
   lexicalEditor,
   OrderedListFeature,
+  TreeViewFeature,
   UnorderedListFeature,
 } from '@payloadcms/richtext-lexical'
-
 import { link } from '@/fields/link'
 import { StylesField } from '@/fields/Styles'
-import { DesktopVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Desktop'
-import { TabletVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Tablet'
-import { MobileVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Mobile'
-import { TabletHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Tablet'
-import { DesktopHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Desktop'
-import { MobileHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Mobile'
 import { FormBlock } from '../Form/config'
 import { BackgroundColorField } from '@/fields/Color/Background'
 import { SubtitleLexicalBlock } from '../Lexical/Subtitle/config'
 import { CarouselLexicalBlock } from '../Lexical/Carousel/config'
-import { TextColorField } from '@/fields/Color/Text'
 import { ColorField } from '@/fields/Color'
 import { BRAND_COLORS } from '@/utilities/constants'
-import { color } from 'framer-motion'
 import { TextColorFeature } from '@/components/RichText/Color/features/textColor/feature.server'
 import { CheckmarkListLexicalBlock } from '../Lexical/CheckmarkList/config'
 import { AdvancedFields } from '@/fields/Advanced'
@@ -157,6 +149,8 @@ const columnFields: Field[] = [
           AlignFeature(),
           UnorderedListFeature(),
           OrderedListFeature(),
+
+          IndentFeature(),
           BlocksFeature({
             blocks: [
               FormBlock,
