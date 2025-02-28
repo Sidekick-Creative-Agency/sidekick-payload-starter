@@ -218,7 +218,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
                 return (
                   <motion.li
                     aria-checked={node.checked ? 'true' : 'false'}
-                    className={` ${node.checked ? '' : ''} ${formatClasses[node.format]} `}
+                    className={`has-[ul]:list-none has-[ol]:list-none ${node.checked ? '' : ''} ${formatClasses[node.format]}`}
                     key={index}
                     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
                     role="checkbox"
@@ -239,6 +239,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
                     initial={{ y: 20, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
                     viewport={{ once: true, amount: 'some' }}
+                    className="has-[ul]:list-none has-[ol]:list-none"
                   >
                     {serializedChildren}
                   </motion.li>
