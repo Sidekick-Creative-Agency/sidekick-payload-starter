@@ -11,8 +11,13 @@ const redirects = async () => {
     permanent: false,
     source: '/:path((?!ie-incompatible.html$).*)', // all pages except the incompatibility page
   }
+  const emailSignaturesRedirect = {
+    destination: '/email-signatures.html',
+    source: '/email-signatures',
+    permanent: true,
+  }
 
-  const redirects = [internetExplorerRedirect]
+  const redirects = [internetExplorerRedirect, emailSignaturesRedirect]
 
   return redirects
 }

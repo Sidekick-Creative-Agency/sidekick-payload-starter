@@ -40,6 +40,9 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                       padding: '0 24px 0 0',
                       border: '0px solid transparent',
                       lineHeight: 1,
+                      width: '152px',
+                      minWidth: '152px',
+                      maxWidth: '152px',
                     }}
                   >
                     <img
@@ -47,7 +50,15 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                       width="128px"
                       height="128px"
                       alt={`${name} Headshot`}
-                      style={{ width: '128px', height: '128px', objectFit: 'cover' }}
+                      style={{
+                        width: '128px',
+                        height: '128px',
+                        objectFit: 'cover',
+                        objectPosition: '50% 15%',
+                        borderRadius: '50%',
+                        minWidth: '128px',
+                        maxWidth: '128px',
+                      }}
                     />
                   </td>
                   <td
@@ -105,27 +116,7 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                             </h2>
                           </td>
                         </tr>
-                        <tr
-                          style={{
-                            margin: 0,
-                            padding: 0,
-                            border: '0px solid transparent',
-                            lineHeight: 1,
-                            height: 0,
-                          }}
-                        >
-                          <td
-                            style={{
-                              margin: 0,
-                              padding: 0,
-                              border: '0px solid transparent',
-                              lineHeight: 1,
-                              height: 0,
-                            }}
-                          >
-                            <p style={{ fontSize: '0px', lineHeight: '4px', color: '#FFF' }}>a</p>
-                          </td>
-                        </tr>
+
                         <tr
                           style={{
                             margin: 0,
@@ -137,7 +128,7 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                           <td
                             style={{
                               margin: 0,
-                              padding: 0,
+                              padding: '8px 0px',
                               border: '0px solid transparent',
                               lineHeight: 1,
                             }}
@@ -149,32 +140,14 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                 lineHeight: 1,
                                 fontSize: '11px',
                                 color: '#0b2a35',
-                                fontWeight: 500,
+                                fontWeight: 700,
                               }}
                             >
                               {title}
                             </p>
                           </td>
                         </tr>
-                        <tr
-                          style={{
-                            margin: 0,
-                            padding: 0,
-                            border: '0px solid transparent',
-                            lineHeight: 1,
-                          }}
-                        >
-                          <td
-                            style={{
-                              margin: 0,
-                              padding: 0,
-                              border: '0px solid transparent',
-                              lineHeight: 1,
-                            }}
-                          >
-                            <p style={{ fontSize: '0px', lineHeight: '4px', color: '#FFF' }}>a</p>
-                          </td>
-                        </tr>
+
                         <tr
                           style={{
                             margin: 0,
@@ -215,36 +188,14 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                     lineHeight: 1,
                                   }}
                                 >
-                                  <td
-                                    style={{
-                                      margin: 0,
-                                      padding: 0,
-                                      border: '0px solid transparent',
-                                      lineHeight: 1,
-                                    }}
-                                  >
-                                    <p
-                                      style={{ fontSize: '0px', lineHeight: '4px', color: '#FFF' }}
-                                    >
-                                      a
-                                    </p>
-                                  </td>
-                                </tr>
-                                <tr
-                                  style={{
-                                    margin: 0,
-                                    padding: 0,
-                                    border: '0px solid transparent',
-                                    lineHeight: 1,
-                                  }}
-                                >
                                   {isRealtor ? (
                                     <td
                                       style={{
                                         margin: 0,
                                         border: '0px solid transparent',
                                         lineHeight: 1,
-                                        padding: '2px 8px',
+                                        padding: '4px 8px',
+                                        display: 'flex',
                                         backgroundColor: '#ccb6a6',
                                       }}
                                     >
@@ -271,56 +222,17 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                         lineHeight: 1,
                                       }}
                                     >
-                                      <p
-                                        style={{
-                                          fontSize: '0px',
-                                          lineHeight: '6px',
-                                          color: '#FFF',
-                                        }}
-                                      >
-                                        a
-                                      </p>
                                       <hr
                                         style={{
                                           border: 'none',
                                           borderTop: '2px solid #ccb6a6',
                                           width: '72px',
+                                          margin: 0,
+                                          padding: 0,
                                         }}
                                       />
-                                      <p
-                                        style={{
-                                          fontSize: '0px',
-                                          lineHeight: '6px',
-                                          color: '#FFF',
-                                        }}
-                                      >
-                                        a
-                                      </p>
                                     </td>
                                   )}
-                                </tr>
-                                <tr
-                                  style={{
-                                    margin: 0,
-                                    padding: 0,
-                                    border: '0px solid transparent',
-                                    lineHeight: 1,
-                                  }}
-                                >
-                                  <td
-                                    style={{
-                                      margin: 0,
-                                      padding: 0,
-                                      border: '0px solid transparent',
-                                      lineHeight: 1,
-                                    }}
-                                  >
-                                    <p
-                                      style={{ fontSize: '0px', lineHeight: '8px', color: '#FFF' }}
-                                    >
-                                      a
-                                    </p>
-                                  </td>
                                 </tr>
                               </tbody>
                             </table>
@@ -337,7 +249,7 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                           <td
                             style={{
                               margin: 0,
-                              padding: 0,
+                              padding: '12px 0px 0px 0px',
                               border: '0px solid transparent',
                               lineHeight: 1,
                             }}
@@ -396,12 +308,17 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                             padding: 0,
                                             border: '0px solid transparent',
                                             lineHeight: 1,
+                                            display: 'flex',
+                                            alignItems: 'center',
                                           }}
                                         >
                                           <td
                                             style={{
                                               margin: 0,
                                               padding: '0 4px 0 0',
+                                              width: '16px',
+                                              minWidth: '16px',
+                                              maxWidth: '16px',
                                               border: '0px solid transparent',
                                               lineHeight: 1,
                                             }}
@@ -409,9 +326,11 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                             <img
                                               style={{
                                                 width: '12px',
-
+                                                minWidth: '12px',
+                                                maxWidth: '12px',
                                                 lineHeight: 1,
                                                 verticalAlign: 'middle',
+                                                objectFit: 'contain',
                                               }}
                                               width="12"
                                               src="https://onward-real-estate.vercel.app/api/media/file/envelope-duotone-solid.webp"
@@ -424,7 +343,6 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                               padding: 0,
                                               border: '0px solid transparent',
                                               lineHeight: 1,
-                                              //   paddingLeft: '2px',
                                             }}
                                           >
                                             <a
@@ -449,7 +367,7 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                   <td
                                     style={{
                                       margin: 0,
-                                      padding: '0 0 0 6px',
+                                      padding: '0 0 0 8px',
                                       border: '0px solid transparent',
                                       lineHeight: 1,
                                     }}
@@ -476,12 +394,17 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                             padding: 0,
                                             border: '0px solid transparent',
                                             lineHeight: 1,
+                                            display: 'flex',
+                                            alignItems: 'center',
                                           }}
                                         >
                                           <td
                                             style={{
                                               margin: 0,
                                               padding: '0 4px 0 0',
+                                              width: '16px',
+                                              minWidth: '16px',
+                                              maxWidth: '16px',
                                               border: '0px solid transparent',
                                               lineHeight: 1,
                                             }}
@@ -490,6 +413,8 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                               style={{
                                                 display: 'inline',
                                                 width: '12px',
+                                                minWidth: '12px',
+                                                maxWidth: '12px',
                                                 lineHeight: 1,
                                                 verticalAlign: 'middle',
                                               }}
@@ -504,7 +429,6 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                               padding: 0,
                                               border: '0px solid transparent',
                                               lineHeight: 1,
-                                              //   paddingLeft: '2px',
                                             }}
                                           >
                                             <a
@@ -531,10 +455,9 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                     <td
                                       style={{
                                         margin: 0,
-                                        padding: 0,
+                                        padding: '0px 0px 0px 8px',
                                         border: '0px solid transparent',
                                         lineHeight: 1,
-                                        paddingLeft: '6px',
                                       }}
                                     >
                                       <table
@@ -559,12 +482,17 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                               padding: 0,
                                               border: '0px solid transparent',
                                               lineHeight: 1,
+                                              display: 'flex',
+                                              alignItems: 'center',
                                             }}
                                           >
                                             <td
                                               style={{
                                                 margin: 0,
                                                 padding: '0 4px 0 0',
+                                                width: '14px',
+                                                minWidth: '14px',
+                                                maxWidth: '14px',
                                                 border: '0px solid transparent',
                                                 lineHeight: 1,
                                               }}
@@ -573,6 +501,8 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                                 style={{
                                                   display: 'inline',
                                                   width: '10px',
+                                                  minWidth: '10px',
+                                                  maxWidth: '10px',
                                                   lineHeight: 1,
                                                   verticalAlign: 'middle',
                                                 }}
@@ -615,7 +545,7 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                   <td
                                     style={{
                                       margin: 0,
-                                      padding: '0 0 0 6px',
+                                      padding: '0 0 0 8px',
                                       border: '0px solid transparent',
                                       lineHeight: 1,
                                     }}
@@ -642,12 +572,17 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                             padding: 0,
                                             border: '0px solid transparent',
                                             lineHeight: 1,
+                                            display: 'flex',
+                                            alignItems: 'center',
                                           }}
                                         >
                                           <td
                                             style={{
                                               margin: 0,
                                               padding: '0 4px 0 0',
+                                              width: '12px',
+                                              minWidth: '12px',
+                                              maxWidth: '12px',
                                               border: '0px solid transparent',
                                               lineHeight: 1,
                                             }}
@@ -656,6 +591,8 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                               style={{
                                                 display: 'inline',
                                                 width: '8px',
+                                                minWidth: '8px',
+                                                maxWidth: '8px',
                                                 lineHeight: 1,
                                                 verticalAlign: 'middle',
                                               }}
@@ -706,35 +643,20 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
             </table>
           </td>
         </tr>
+
         <tr style={{ margin: 0, padding: 0, border: '0px solid transparent', lineHeight: 1 }}>
           <td
             style={{
               margin: 0,
-              padding: 0,
+              padding: '24px 0px',
               border: '0px solid transparent',
               lineHeight: 1,
             }}
           >
-            <p style={{ fontSize: '0px', lineHeight: '24px', color: '#FFF' }}>a</p>
+            <hr style={{ border: '0px solid transparent', borderTop: '1px solid #ddd' }} />
           </td>
         </tr>
-        <tr style={{ margin: 0, padding: 0, border: '0px solid transparent', lineHeight: 1 }}>
-          <td style={{ margin: 0, padding: 0, border: '0px solid transparent', lineHeight: 1 }}>
-            <hr style={{ border: '0px solid transparent', borderTop: '1px solid #ccc' }} />
-          </td>
-        </tr>
-        <tr style={{ margin: 0, padding: 0, border: '0px solid transparent', lineHeight: 1 }}>
-          <td
-            style={{
-              margin: 0,
-              padding: 0,
-              border: '0px solid transparent',
-              lineHeight: 1,
-            }}
-          >
-            <p style={{ fontSize: '0px', lineHeight: '24px', color: '#FFF' }}>a</p>
-          </td>
-        </tr>
+
         <tr style={{ margin: 0, padding: 0, border: '0px solid transparent', lineHeight: 1 }}>
           <td style={{ margin: 0, padding: 0, border: '0px solid transparent', lineHeight: 1 }}>
             <table
@@ -816,6 +738,9 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                       padding: 0,
                                       border: '0px solid transparent',
                                       lineHeight: 1,
+                                      width: '160px',
+                                      minWidth: '160px',
+                                      maxWidth: '160px',
                                     }}
                                   >
                                     {isAlliance ? (
@@ -826,17 +751,21 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                         style={{
                                           objectFit: 'contain',
                                           width: '160px',
+                                          minWidth: '160px',
+                                          maxWidth: '160px',
                                           height: 'auto',
                                         }}
                                         alt="Onward Real Estate Logo"
                                       />
                                     ) : (
                                       <img
-                                        src="https://onward-real-estate.vercel.app/api/media/file/onward-logoprimary-color-dark%20copy.webp"
+                                        src="https://onward-real-estate.vercel.app/api/media/file/onward-logoprimary-color-dark%20copy.png"
                                         width="160"
                                         style={{
                                           objectFit: 'contain',
                                           width: '160px',
+                                          minWidth: '160px',
+                                          maxWidth: '160px',
                                           height: 'auto',
                                         }}
                                         alt="Onward Real Estate Logo"
@@ -908,6 +837,7 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                               </p>
                             </td>
                           </tr>
+
                           <tr
                             style={{
                               margin: 0,
@@ -919,26 +849,7 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                             <td
                               style={{
                                 margin: 0,
-                                padding: 0,
-                                border: '0px solid transparent',
-                                lineHeight: 1,
-                              }}
-                            >
-                              <p style={{ fontSize: '0px', lineHeight: '4px', color: '#FFF' }}>a</p>
-                            </td>
-                          </tr>
-                          <tr
-                            style={{
-                              margin: 0,
-                              padding: 0,
-                              border: '0px solid transparent',
-                              lineHeight: 1,
-                            }}
-                          >
-                            <td
-                              style={{
-                                margin: 0,
-                                padding: 0,
+                                padding: '8px 0px 0px 0px',
                                 border: '0px solid transparent',
                                 lineHeight: 1,
                               }}
@@ -973,43 +884,17 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                         padding: 0,
                                         border: '0px solid transparent',
                                         lineHeight: 1,
-                                      }}
-                                    >
-                                      <p
-                                        style={{
-                                          fontSize: '0px',
-                                          lineHeight: '4px',
-                                          color: '#FFFFFF',
-                                        }}
-                                      >
-                                        a
-                                      </p>
-                                    </td>
-                                  </tr>
-                                  <tr
-                                    style={{
-                                      margin: 0,
-                                      padding: 0,
-                                      border: '0px solid transparent',
-                                      lineHeight: 1,
-                                    }}
-                                  >
-                                    <td
-                                      style={{
-                                        margin: 0,
-                                        padding: 0,
-                                        border: '0px solid transparent',
-                                        lineHeight: 1,
                                         width: 'fit-content',
                                       }}
                                     >
                                       <a
                                         style={{
-                                          fontSize: '12px',
+                                          fontSize: '10px',
                                           fontFamily:
                                             "'Helvetica Neue', Helvetica, Arial, sans-serif",
                                           color: '#ccb6a6',
                                           textDecoration: 'none',
+                                          fontWeight: 600,
                                         }}
                                         href={`${process.env.NEXT_PUBLIC_SERVER_URL}/brokerage-services/`}
                                         target="_blank"
@@ -1028,11 +913,12 @@ export const EmailSignature: React.FC<EmailSignatureProps> = ({
                                     >
                                       <a
                                         style={{
-                                          fontSize: '12px',
+                                          fontSize: '10px',
                                           fontFamily:
                                             "'Helvetica Neue', Helvetica, Arial, sans-serif",
                                           color: '#ccb6a6',
                                           textDecoration: 'none',
+                                          fontWeight: 600,
                                         }}
                                         href={`${process.env.NEXT_PUBLIC_SERVER_URL}/consumer-protection/`}
                                         target="_blank"
