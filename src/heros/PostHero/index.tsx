@@ -11,7 +11,7 @@ export const PostHero: React.FC<{
   const { category, featuredImage = {}, populatedAuthors, publishedAt, title } = post
 
   return (
-    <div className="relative -mt-[114px] flex items-end">
+    <div className="relative -mt-[125px] flex items-end">
       <div className="container max-w-6xl z-10 relative text-white pb-8">
         <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
           <div className="uppercase text-sm mb-6">

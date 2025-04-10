@@ -9,6 +9,7 @@ import {
 } from '@payloadcms/richtext-lexical'
 import type { Block, Field } from 'payload'
 import { SpacerLexicalBlock } from '../Lexical/Spacer/config'
+import { LinkGroupLexicalBlock } from '../Lexical/LinkGroup/config'
 
 const timelineItemFields: Field[] = [
   {
@@ -47,7 +48,7 @@ const timelineItemFields: Field[] = [
               FixedToolbarFeature(),
               InlineToolbarFeature(),
               AlignFeature(),
-              BlocksFeature({ blocks: [SpacerLexicalBlock] }),
+              BlocksFeature({ blocks: [SpacerLexicalBlock, LinkGroupLexicalBlock] }),
             ]
           },
         }),

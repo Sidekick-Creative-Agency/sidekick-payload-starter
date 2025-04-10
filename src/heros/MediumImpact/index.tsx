@@ -11,7 +11,7 @@ export const MediumImpactHero: React.FC<Page['hero'] & { title: string }> = ({
   subtitle,
 }) => {
   return (
-    <div className="relative -mt-[114px] bg-brand-navy">
+    <div className="relative -mt-[125px] bg-brand-navy">
       <div className="container relative z-10 pt-40 pb-20 md:pt-48 md:pb-32">
         <div className="flex flex-col gap-16 md:gap-20">
           <div className="flex flex-col gap-4 md:gap-10 md:flex-row justify-between items-start md:items-center">

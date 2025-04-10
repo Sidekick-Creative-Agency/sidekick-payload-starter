@@ -68,20 +68,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
   }
 
   return (
-    <Button
-      asChild
-      className={className}
-      size={size}
-      variant={appearance}
-      // onClick={() => {
-      //   console.log(pathname)
-      //   console.log(href)
-      //   if (href.includes(pathname)) {
-      //     // router.refresh()
-      //     window.location.reload()
-      //   }
-      // }}
-    >
+    <Button asChild className={className} size={size} variant={appearance}>
       <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
         {label && label}
         {children && children}

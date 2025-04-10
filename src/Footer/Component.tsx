@@ -100,7 +100,14 @@ export async function Footer() {
             Texas law requires all real estate license holders to give the following information
             about brokerage services to prospective buyers, tenants, sellers and landlords. A broker
             is responsible for all brokerage activities, including acts performed by sales agents
-            sponsored by the broker.
+            sponsored by the broker.{' '}
+            <Link
+              href="/api/media/file/onward-IABS.pdf"
+              target="_blank"
+              className="text-white underline"
+            >
+              IABS Document
+            </Link>
           </p>
         </div>
         <div className=" mx-auto col-span-2 sm:col-span-1">
@@ -110,15 +117,13 @@ export async function Footer() {
           <p className="text-sm text-center sm:text-left font-light leading-tight text-brand-gray-02">
             The Texas Real Estate Commission (TREC) regulates real estate brokers and sales agents,
             real estate inspectors, home warranty companies, easement and right-of-way agents, and
-            timeshare interest providers. You can find more information and check the status of a
-            license holder at{' '}
+            timeshare interest providers.{' '}
             <Link
-              href="https://www.trec.texas.gov/"
+              href="/api/media/file/TREC-CPN-09-2023.pdf"
               target="_blank"
-              rel="noopener noreferrer"
-              className="underline"
+              className="text-white underline"
             >
-              TREC.Texas.gov.
+              TREC Document
             </Link>
           </p>
         </div>

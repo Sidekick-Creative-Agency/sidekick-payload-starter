@@ -19,12 +19,15 @@ const buttonVariants = cva(
         sm: 'py-2 px-4',
       },
       variant: {
-        default: 'border border-brand-navy bg-brand-navy text-white hover:bg-brand-navy/90',
-        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        ghost: 'hover:bg-card hover:text-accent-foreground',
+        default:
+          'border border-brand-navy bg-brand-navy text-white hover:bg-brand-navy/90 no-underline',
+        destructive:
+          'bg-destructive text-destructive-foreground hover:bg-destructive/90 no-underline',
+        ghost: 'hover:bg-card hover:text-accent-foreground no-underline',
         link: 'text-primary items-start justify-start underline-offset-4 hover:underline',
-        outline: 'border border-brand-navy bg-transparent hover:bg-brand-navy hover:text-white',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        outline:
+          'border border-brand-navy bg-transparent hover:bg-brand-navy hover:text-white no-underline',
+        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 no-underline',
       },
     },
   },

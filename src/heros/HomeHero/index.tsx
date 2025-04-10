@@ -53,7 +53,7 @@ export const HomeHero: React.FC<Page['hero'] & { title: string }> = ({
     }
   }
   return (
-    <div className="relative flex flex-col items-center -mt-[114px] pt-40 pb-0 md:pt-48 md:pb-20 min-h-[25rem] md:min-h-[35rem] 2xl:min-h-[50rem]">
+    <div className="relative flex flex-col items-center -mt-[125px] pt-40 pb-0 md:pt-48 md:pb-20 min-h-[25rem] md:min-h-[35rem] 2xl:min-h-[50rem]">
       <div className="container max-w-5xl z-10 relative flex flex-col items-center justify-center gap-16 pb-20 min-[888px]:pb-0">
         <h1 className="text-white text-center text-[2.5rem] sm:text-5xl md:text-[4rem] leading-tight sm:leading-tight font-bold">
           {enableOverrideTitle ? overrideTitle : title}

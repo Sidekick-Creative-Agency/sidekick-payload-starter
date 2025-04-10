@@ -32,6 +32,10 @@ import {
   MediaGridLexicalBlockProps,
 } from '@/blocks/Lexical/MediaGrid/Component'
 import * as motion from 'motion/react-client'
+import {
+  LinkGroupLexicalBlock,
+  LinkGroupLexicalBlockProps,
+} from '@/blocks/Lexical/LinkGroup/Component'
 
 export type NodeTypes =
   | DefaultNodeTypes
@@ -43,6 +47,7 @@ export type NodeTypes =
       | CheckmarkListLexicalBlockProps
       | SpacerLexicalBlockProps
       | MediaGridLexicalBlockProps
+      | LinkGroupLexicalBlockProps
     >
 
 type Props = {
@@ -167,6 +172,8 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
               return <SpacerLexicalBlock key={index} {...block} />
             case 'mediaGrid':
               return <MediaGridLexicalBlock key={index} {...block} />
+            case 'linkGroup':
+              return <LinkGroupLexicalBlock key={index} {...block} />
             default:
               return null
           }
