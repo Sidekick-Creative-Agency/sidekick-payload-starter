@@ -5,6 +5,7 @@ import NextImage from 'next/image'
 import React, { useEffect, useState } from 'react'
 import type { Props as MediaProps } from '../types'
 import cssVariables from '@/cssVariables'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const { breakpoints } = cssVariables
 
@@ -27,6 +28,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   const [height, setHeight] = useState<number | undefined>(undefined)
   const [alt, setAlt] = useState<string | undefined>(altFromProps || '')
   const [src, setSrc] = useState<StaticImageData | string>(srcFromProps || '')
+  const [blurhash, setBlurhash] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     if (!src && resource && typeof resource === 'number') {
@@ -38,12 +40,14 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
             height: fullHeight,
             url,
             width: fullWidth,
+            blurhash,
           } = json
 
           setWidth(fullWidth!)
           setHeight(fullHeight!)
           setAlt(altFromResource || '')
           setSrc(`${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${url}`)
+          setBlurhash(blurhash || undefined)
         }),
       )
     } else if (!src && resource && typeof resource === 'object') {
@@ -53,14 +57,22 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         height: fullHeight,
         url,
         width: fullWidth,
+        blurhash,
       } = resource
 
       setWidth(fullWidth!)
       setHeight(fullHeight!)
       setAlt(altFromResource || '')
       setSrc(`${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${url}`)
+      setBlurhash(blurhash || undefined)
     }
   }, [resource])
+
+  useEffect(() => {
+    if (src) {
+      setIsLoading(false)
+    }
+  }, [src])
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
   const sizes = sizeFromProps
@@ -69,7 +81,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         .map(([, value]) => `(max-width: ${value}px) ${value}px`)
         .join(', ')
 
-  if (!src) return
+  if (!src) return <Skeleton className="w-full h-full rounded-none" />
 
   return (
     <NextImage
@@ -89,9 +101,14 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
       sizes={sizes}
       src={src}
       width={!fill ? width : undefined}
-      {...(typeof resource === 'object' && resource.focalX && resource.focalY
-        ? { style: { objectPosition: `${resource.focalX}% ${resource.focalY}%` } }
-        : {})}
+      placeholder={blurhash ? 'blur' : 'empty'}
+      blurDataURL={blurhash || undefined}
+      style={{
+        objectPosition:
+          typeof resource === 'object' && resource.focalX && resource.focalY
+            ? `${resource.focalX}% ${resource.focalY}%`
+            : 'center',
+      }}
     />
   )
 }

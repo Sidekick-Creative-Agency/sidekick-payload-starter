@@ -225,6 +225,7 @@ export interface Media {
     docs?: (number | Listing)[] | null;
     hasNextPage?: boolean | null;
   } | null;
+  blurhash?: string | null;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -2057,6 +2058,7 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   relatedListingFeaturedImage?: T;
   relatedListingImageGallery?: T;
+  blurhash?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -12,7 +12,7 @@ const nextConfig = {
 
         return {
           hostname: url.hostname,
-          protocol: url.protocol.replace(':', ''),
+          protocol: url.protocol.replace(':', '') as 'http' | 'https' | undefined,
         }
       }),
     ],

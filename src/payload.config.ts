@@ -21,7 +21,7 @@ import { Block, buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
 import Categories from './collections/Categories'
-import { Media } from './collections/Media'
+import { Media } from './collections/Media/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import Users from './collections/Users'
