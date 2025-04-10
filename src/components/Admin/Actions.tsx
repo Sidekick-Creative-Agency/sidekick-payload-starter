@@ -1,5 +1,6 @@
 'use client'
 import { syncResidentialListings } from '@/app/(frontend)/api/residential/syncResidentialListings'
+import { saveAllMedia } from '@/utilities/saveAllMedia'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Gutter, NavGroup } from '@payloadcms/ui'
 import { ExternalLink } from 'lucide-react'
@@ -12,13 +13,20 @@ export const Actions: React.FC<ServerComponentProps> = (props) => {
       <Link href="/" target="_blank" aria-label="Go to live site">
         <ExternalLink className="w-6 text-white" />
       </Link>
-      <Button
+      {/* <Button
         onClick={() => {
           syncResidentialListings()
         }}
       >
         Sync
-      </Button>
+      </Button> */}
+      {/* <Button
+        onClick={() => {
+          saveAllMedia()
+        }}
+      >
+        Save Media
+      </Button> */}
     </div>
   )
 }
