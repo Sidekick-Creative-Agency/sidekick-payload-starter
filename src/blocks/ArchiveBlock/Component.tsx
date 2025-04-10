@@ -14,6 +14,8 @@ export const ArchiveBlock: React.FC<
 > = async (props) => {
   const {
     id,
+    selectionType,
+    manualSelection,
     categories,
     limit: limitFromProps,
     headingAlign = 'left',
@@ -66,6 +68,7 @@ export const ArchiveBlock: React.FC<
           else return category
         })
       : undefined
+
   const fetchedDocs = await payload.find({
     collection: relationTo || 'posts',
     depth: 1,
@@ -111,6 +114,13 @@ export const ArchiveBlock: React.FC<
                 },
               },
             ],
+          }
+        : {}),
+      ...(relationTo === 'posts' || (selectionType === 'manual' && manualSelection)
+        ? {
+            id: {
+              in: manualSelection?.map((post) => (post as Post).id),
+            },
           }
         : {}),
     },

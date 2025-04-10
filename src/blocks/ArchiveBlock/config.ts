@@ -54,10 +54,36 @@ export const ArchiveBlock: Block = {
       ],
     },
     {
+      name: 'selectionType',
+      type: 'select',
+      defaultValue: 'categories',
+      options: [
+        {
+          label: 'Manual',
+          value: 'manual',
+        },
+        {
+          label: 'Categories',
+          value: 'categories',
+        },
+      ],
+    },
+    {
+      name: 'manualSelection',
+      type: 'relationship',
+      relationTo: 'posts',
+      admin: {
+        condition: (_, siblingData) =>
+          siblingData.relationTo === 'posts' && siblingData.selectionType === 'manual',
+      },
+      hasMany: true,
+    },
+    {
       name: 'categories',
       type: 'relationship',
       admin: {
-        condition: (_, siblingData) => siblingData.relationTo === 'posts',
+        condition: (_, siblingData) =>
+          siblingData.relationTo === 'posts' && siblingData.selectionType === 'categories',
       },
       hasMany: true,
       label: 'Categories To Show',
