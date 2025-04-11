@@ -9,6 +9,7 @@ import { draftMode } from 'next/headers'
 
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
+import { AdminBar } from '@/components/AdminBar'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
@@ -23,12 +24,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <Providers>
-          {/* <AdminBar
+          <AdminBar
             adminBarProps={{
               preview: isEnabled,
             }}
-            
-          /> */}
+          />
           <LivePreviewListener />
 
           <Header />

@@ -13,9 +13,18 @@ export default async function Page({ searchParams }) {
   const listingsCount = await payload.count({
     collection: 'listings',
     where: {
-      _status: {
-        equals: 'published',
-      },
+      and: [
+        {
+          _status: {
+            equals: 'published',
+          },
+        },
+        {
+          availability: {
+            in: ['available', 'active'],
+          },
+        },
+      ],
     },
   })
   return (

@@ -14,7 +14,7 @@ interface Filterfilters {
   minSize: number | string | null | undefined
   maxSize: number | string | null | undefined
   sizeType: string | null | undefined
-  availability: string | null | undefined
+  // availability: string | null | undefined
   transactionType: string | null | undefined
 }
 
@@ -37,7 +37,12 @@ export const getMapListings = async (data: {
             equals: 'published',
           },
         },
-
+        // AVAILABILITY STATUS
+        {
+          availability: {
+            in: ['available', 'active'],
+          },
+        },
         // SEARCH
         {
           ...(filters?.search
@@ -155,16 +160,16 @@ export const getMapListings = async (data: {
             : {}),
         },
 
-        // AVAILABILITY
-        {
-          ...(filters?.availability
-            ? {
-                availability: {
-                  equals: filters.availability,
-                },
-              }
-            : {}),
-        },
+        // // AVAILABILITY
+        // {
+        //   ...(filters?.availability
+        //     ? {
+        //         availability: {
+        //           equals: filters.availability,
+        //         },
+        //       }
+        //     : {}),
+        // },
 
         // CATEGORY
         {

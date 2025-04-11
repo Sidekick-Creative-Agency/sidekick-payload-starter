@@ -124,9 +124,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   useEffect(() => {
     if (
       needsRefresh &&
-      searchParams.get('property_type') &&
-      form.getValues().propertyType !== searchParams.get('property_type')
+      ((searchParams.get('category') &&
+        form.getValues().category !== searchParams.get('category')) ||
+        (searchParams.get('property_type') &&
+          form.getValues().propertyType !== searchParams.get('property_type')))
     ) {
+      form.setValue('category', searchParams.get('category') || '')
       form.setValue('propertyType', searchParams.get('property_type') || '')
       const filterData = {
         search: form.getValues().search,
