@@ -1,6 +1,7 @@
 import { default as default_55a7d1ebef7afeed563b856ae2e2cbf4 } from '@/components/ColorPicker'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
+import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { default as default_8bc41448e6f9800c935f8d6219575eae } from '@/components/RichText/Color/features/textColor/feature.client'
 import { InlineToolbarFeatureClient as InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { FixedToolbarFeatureClient as FixedToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
@@ -30,13 +31,15 @@ import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from 
 import { default as default_aa0a2d19d38a4839dbd373417e210b89 } from '@/components/AdminLogo'
 import { default as default_23cade6f0f915ee2a7bd9bceb0c04941 } from '@/components/LoginLogo'
 import { Actions as Actions_8a2900ac8f5913205117ba0684c31e0c } from '@/components/Admin/Actions'
-import { ImportView as ImportView_62e6c67a6b8c11d9572ce4c5307a39fa } from 'src/views/Listings/Import'
-import { ImportView as ImportView_24bdc7c68b1ec1593b048688d4d42f3b } from 'src/views/Posts/Import'
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
+import { ImportView as ImportView_62e6c67a6b8c11d9572ce4c5307a39fa } from '../../../views/Listings/Import'
+import { ImportView as ImportView_24bdc7c68b1ec1593b048688d4d42f3b } from '../../../views/Posts/Import'
 
 export const importMap = {
   "@/components/ColorPicker#default": default_55a7d1ebef7afeed563b856ae2e2cbf4,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
+  "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,
   "@/components/RichText/Color/features/textColor/feature.client#default": default_8bc41448e6f9800c935f8d6219575eae,
   "@payloadcms/richtext-lexical/client#InlineToolbarFeatureClient": InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#FixedToolbarFeatureClient": FixedToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
@@ -66,6 +69,7 @@ export const importMap = {
   "@/components/AdminLogo#default": default_aa0a2d19d38a4839dbd373417e210b89,
   "@/components/LoginLogo#default": default_23cade6f0f915ee2a7bd9bceb0c04941,
   "@/components/Admin/Actions#Actions": Actions_8a2900ac8f5913205117ba0684c31e0c,
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "/views/Listings/Import#ImportView": ImportView_62e6c67a6b8c11d9572ce4c5307a39fa,
   "/views/Posts/Import#ImportView": ImportView_24bdc7c68b1ec1593b048688d4d42f3b
 }
