@@ -3,8 +3,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { FormControl, Form, FormField, FormItem, FormLabel } from '../ui/form'
 import { z } from 'zod'
-
-import { useToast } from '@/hooks/use-toast'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -17,14 +15,11 @@ import {
 } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '../ui/dropdown-menu'
-
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { formatNumber } from '@/utilities/formatNumber'
 import { usePayloadAPI } from '@payloadcms/ui'
 import { formatPrice } from '@/utilities/formatPrice'
-import { getMapListings } from '@/app/(frontend)/api/getMapListings'
-import { Listing } from '@/payload-types'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { FormSchema, MapFilters } from '@/app/(frontend)/listings/map/page.client'
 import useWindowDimensions from '@/utilities/useWindowDimensions'
 import defaultTheme from 'tailwindcss/defaultTheme'
@@ -158,15 +153,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       searchParams.get('size_type') || '',
     )
   }, [searchParams])
-
-  // useEffect(() => {
-  //   handlePriceChange(searchParams.get('min_price') || '', searchParams.get('max_price') || '')
-  //   handleSizeChange(
-  //     searchParams.get('min_size') || '',
-  //     searchParams.get('max_size') || '',
-  //     searchParams.get('size_type') || '',
-  //   )
-  // }, [])
 
   return (
     <Form {...form}>
@@ -470,8 +456,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                         defaultValue={
                           propertyTypes
                             ? propertyTypes.find(
-                                (type) => type.value === searchParams.get('property_type') || '',
-                              )?.value
+                              (type) => type.value === searchParams.get('property_type') || '',
+                            )?.value
                             : ''
                         }
                         render={({ field }) => {
@@ -692,18 +678,18 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 </div>
                 {((form.getValues().minPrice && form.getValues().minPrice !== '') ||
                   (form.getValues().maxPrice && form.getValues().maxPrice !== '')) && (
-                  <Button
-                    className="w-full flex gap-2 mt-4"
-                    onClick={() => {
-                      form.setValue('minPrice', '')
-                      form.setValue('maxPrice', '')
-                      handlePriceChange(form.getValues().minPrice, form.getValues().maxPrice)
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faXmark} />
-                    Reset
-                  </Button>
-                )}
+                    <Button
+                      className="w-full flex gap-2 mt-4"
+                      onClick={() => {
+                        form.setValue('minPrice', '')
+                        form.setValue('maxPrice', '')
+                        handlePriceChange(form.getValues().minPrice, form.getValues().maxPrice)
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faXmark} />
+                      Reset
+                    </Button>
+                  )}
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -814,18 +800,18 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 {((form.getValues().sizeType && form.getValues().sizeType !== 'all') ||
                   form.getValues().minSize ||
                   form.getValues().maxSize) && (
-                  <Button
-                    className="w-full mt-4 flex gap-2"
-                    onClick={() => {
-                      form.resetField('sizeType')
-                      form.setValue('minSize', '')
-                      form.setValue('maxSize', '')
-                      handleSizeChange(form.getValues().minSize, form.getValues().maxSize, '')
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faXmark} /> Reset
-                  </Button>
-                )}
+                    <Button
+                      className="w-full mt-4 flex gap-2"
+                      onClick={() => {
+                        form.resetField('sizeType')
+                        form.setValue('minSize', '')
+                        form.setValue('maxSize', '')
+                        handleSizeChange(form.getValues().minSize, form.getValues().maxSize, '')
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faXmark} /> Reset
+                    </Button>
+                  )}
               </DropdownMenuContent>
             </DropdownMenu>
             <FormField
@@ -900,17 +886,17 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           form.getValues().search ||
           form.getValues().sizeType ||
           form.getValues().transactionType) && (
-          <Button
-            variant={'link'}
-            className="absolute bottom-2 right-10  flex gap-1 items-center text-sm normal-case tracking-normal leading-none p-1 hover:no-underline focus-visible:no-underline"
-            onClick={() => {
-              handleReset()
-            }}
-          >
-            <FontAwesomeIcon icon={faXmark} />
-            Clear Filters
-          </Button>
-        )}
+            <Button
+              variant={'link'}
+              className="absolute bottom-2 right-10  flex gap-1 items-center text-sm normal-case tracking-normal leading-none p-1 hover:no-underline focus-visible:no-underline"
+              onClick={() => {
+                handleReset()
+              }}
+            >
+              <FontAwesomeIcon icon={faXmark} />
+              Clear Filters
+            </Button>
+          )}
       </form>
     </Form>
   )

@@ -1,5 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: [
     './pages/**/*.{ts,tsx}',
@@ -8,7 +9,11 @@ export default {
     './src/**/*.{ts,tsx}',
   ],
   darkMode: ['selector', '[data-theme="dark"]'],
-  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/container-queries'),
+  ],
   prefix: '',
   safelist: [
     'lg:col-span-4',

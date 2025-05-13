@@ -135,43 +135,67 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     resolver: zodResolver(FormSchema),
   })
 
-  const centerMap = () => {
-    if (boundingBox.length > 1) {
-      mapRef.current?.fitBounds(calcBoundsFromCoordinates(boundingBox) as LngLatBoundsLike, {
-        padding: { top: 128, bottom: 128, left: 128, right: 128 },
-      })
-    } else if (boundingBox.length === 1) {
-      mapRef.current?.flyTo({
-        center: boundingBox[0] as LngLatLike,
-        speed: 0.5,
-      })
-    }
-  }
+  // const centerMap = () => {
+  //   if (boundingBox.length > 1) {
+  //     mapRef.current?.fitBounds(calcBoundsFromCoordinates(boundingBox) as LngLatBoundsLike, {
+  //       padding: { top: 128, bottom: 128, left: 128, right: 128 },
+  //     })
+  //   } else if (boundingBox.length === 1) {
+  //     mapRef.current?.flyTo({
+  //       center: boundingBox[0] as LngLatLike,
+  //       speed: 0.5,
+  //     })
+  //   }
+  // }
   const debouncedFocusedListing = useDebounce(focusedListing, 500)
 
   useEffect(() => {
-    activeListings.forEach((listing) => {
-      if (listing.id === debouncedFocusedListing?.id) {
-        if (mapRef.current) {
-          mapRef.current.flyTo({
-            center: [listing.coordinates[0], listing.coordinates[1]],
-            speed: 0.5,
-          })
-          activeMarkers.forEach((marker) => {
-            if (
-              marker.getLngLat().lng === listing.coordinates[0] &&
-              marker.getLngLat().lat === listing.coordinates[1]
-            ) {
-              if (!marker.getPopup()?.isOpen()) {
-                marker.togglePopup()
-              }
-            } else if (marker.getPopup()?.isOpen()) {
-              marker.togglePopup()
-            }
-          })
-        }
+    if (debouncedFocusedListing) {
+      clearPopups()
+      const listing = activeListings.find((_listing) => _listing.id === debouncedFocusedListing.id)
+      if (!listing) return
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: [listing.coordinates[0], listing.coordinates[1]],
+          speed: 0.75,
+          zoom: 20
+        })
+        new mapboxgl.Popup({ offset: 25, focusAfterOpen: false })
+          .setLngLat(listing.coordinates)
+          .setHTML(
+            `
+              <div class="marker-popup rounded-lg overflow-hidden">
+                <div class="marker-popup_image-container relative aspect-video bg-white">
+                <div class="animate-pulse absolute inset-0 bg-brand-gray-01"></div>
+                  <img src="${(listing?.featuredImage as MediaType)?.sizes?.medium?.url || null}" alt="${(listing?.featuredImage as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
+                </div>
+                <div class="p-6 bg-white flex flex-col">
+                <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${listing.price
+              ? `${listing.price}${listing.textAfterPrice
+                ? `<span class="text-sm ml-2 font-normal">${listing.textAfterPrice}</span>`
+                : ''
+              }`
+              : 'Contact for price'
+            }</span>
+                  <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${listing.streetAddress}</h3>
+                  <a href="/listings/${listing.slug}" class="p-2 w-fit text-sm rounded-sm transition-colors hover:bg-brand-gray-00 focus-visible:bg-brand-gray-00 focus-visible:outline-none font-light flex items-center gap-1 text-brand-gray-04"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-2 h-auto fill-brand-gray-04"><!--!Font Awesome Pro 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2025 Fonticons, Inc.--><path d="M240 64l0-16-32 0 0 16 0 176L32 240l-16 0 0 32 16 0 176 0 0 176 0 16 32 0 0-16 0-176 176 0 16 0 0-32-16 0-176 0 0-176z"/></svg>Learn More</a>
+                </div>
+              </div>
+              `,
+          )
+
+          .addTo(mapRef.current);
+        mapRef.current?.flyTo({
+          center: listing.coordinates,
+          speed: 0.5,
+        })
       }
-    })
+    }
+
+
+
+
+
   }, [debouncedFocusedListing, activeMarkers, activeListings])
 
   const handleFetchListings = async (
@@ -182,7 +206,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     setIsLoading(true)
     setActiveListings([])
     setCardRefs([])
-
     if (filterData || page || sort) {
       filterData && setFilters(filterData)
       sort
@@ -255,11 +278,10 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       }
       router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
     }
-
     const response = await getMapListings({
       filters: filterData || undefined,
-      page: page,
-      sort: sort || searchParams.get('sort'),
+      page: page || undefined,
+      sort: sort || searchParams.get('sort') || undefined,
     })
 
     setCurrentPage(response.page)
@@ -270,12 +292,19 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     setHasNextPage(response.hasNextPage)
     setActiveListings(response.docs)
     setTotalListings(response.totalDocs)
-    setCardRefs(response.docs.map(() => createRef()))
     setIsLoading(false)
+  }
+
+  const clearPopups = () => {
+    if (mapRef.current) {
+      mapRef.current._popups.forEach((popup) => popup.remove())
+    }
   }
 
   useEffect(() => {
     activeMarkers.forEach((marker) => marker.remove())
+    const newCardRefs = activeMarkers.map(() => createRef<HTMLDivElement>())
+    setCardRefs(newCardRefs)
     setActiveMarkers([])
     setBoundingBox([])
     if (activeListings && activeListings.length > 0) {
@@ -306,117 +335,242 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           }
         }),
       }
-      // if (mapRef.current?.getSource('geojson')) {
-      //   mapRef.current?.removeSource('geojson')
-      // }
-      // mapRef.current?.addSource('geojson', {
-      //   type: 'geojson',
-      //   data: geoJson,
-      //   cluster: true,
-      //   clusterMaxZoom: 14,
-      //   clusterRadius: 50,
-      // })
-      // mapRef.current?.addLayer({
-      //   id: 'clusters',
-      //   type: 'circle',
-      //   source: 'geojson',
-      //   filter: ['has', 'point_count'],
-      //   paint: {
-      //     'circle-color': [
-      //       'step',
-      //       ['get', 'point_count'],
-      //       '#0B2B37',
-      //       100,
-      //       '#f1f075',
-      //       750,
-      //       '#f28cb1',
-      //     ],
-      //     'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
-      //     'text-color': ['step', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff'],
-      //   },
-      // })
+      if (mapRef.current) {
 
-      // mapRef.current?.addLayer({
-      //   id: 'cluster-count',
-      //   type: 'symbol',
-      //   source: 'geojson',
-      //   filter: ['has', 'point_count'],
-      //   layout: {
-      //     'text-field': ['get', 'point_count_abbreviated'],
-      //     'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-      //     'text-size': 12,
-      //   },
-      //   paint: {
-      //     'text-color': '#ffffff',
-      //   },
-      // })
+        mapRef.current.addSource('listings', {
+          type: 'geojson',
+          data: geoJson as GeoJSON.GeoJSON,
+          cluster: true,
+          clusterMaxZoom: 14,
+          clusterRadius: 40
+        });
 
-      // mapRef.current?.addLayer({
-      //   id: 'unclustered-point',
-      //   type: 'symbol',
-      //   source: 'geojson',
-      //   filter: ['!', ['has', 'point_count']],
-      // })
-      // const unclusteredPoint = mapRef.current?.queryRenderedFeatures({
-      //   layers: ['unclustered-point'],
-      // })
-      // console.log(unclusteredPoint)
-      for (const feature of geoJson.features) {
-        setBoundingBox((current) => [...current, feature.geometry.coordinates])
-        const el = document.createElement('div')
-        const size = feature.properties.iconSize
-        el.className = 'marker'
-        el.style.maxWidth = `${size}px`
+        mapRef.current.addLayer({
+          id: 'clusters',
+          type: 'circle',
+          source: 'listings',
+          filter: ['has', 'point_count'],
+          paint: {
+            'circle-radius': [
+              'step',
+              ['get', 'point_count'],
+              18,
+              5,
+              24
+            ],
+            "circle-opacity": 0
+          }
+        });
 
-        el.innerHTML = mapMarkerIcon
+        mapRef.current.addLayer({
+          id: 'clusters-inner',
+          type: 'circle',
+          source: 'listings',
+          filter: ['has', 'point_count'],
+          paint: {
+            'circle-color': [
+              'step',
+              ['get', 'point_count'],
+              '#A9C1C9',
+              5,
+              '#0B2A35',
+            ],
+            'circle-radius': [
+              'step',
+              ['get', 'point_count'],
+              12,
+              5,
+              14
+            ]
+          },
+          layout: {
+            'circle-sort-key': 2
+          }
+        });
+        mapRef.current.addLayer({
+          id: 'clusters-outer',
+          type: 'circle',
+          source: 'listings',
+          filter: ['has', 'point_count'],
+          paint: {
+            'circle-color': [
+              'step',
+              ['get', 'point_count'],
+              '#A9C1C9',
+              5,
+              '#0B2A35',
+            ],
+            'circle-radius': [
+              'step',
+              ['get', 'point_count'],
+              18,
+              5,
+              20
+            ],
+            'circle-opacity': .5
+          },
+          layout: {
+            'circle-sort-key': 0
+          }
+        });
 
-        const newMarker = new mapboxgl.Marker(el)
-          .setLngLat(feature.geometry.coordinates as LngLatLike)
-          .setPopup(
-            new mapboxgl.Popup({ offset: 25, focusAfterOpen: false }).setHTML(
+
+        mapRef.current.addLayer({
+          id: 'cluster-count',
+          type: 'symbol',
+          source: 'listings',
+          filter: ['has', 'point_count'],
+          layout: {
+            'text-field': ['get', 'point_count_abbreviated'],
+            'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+            'text-size': 12
+          },
+          paint: {
+            'text-color': [
+              'step',
+              ['get', 'point_count'],
+              '#0B2A35',
+              5,
+              '#FFFFFF'
+            ]
+          }
+        });
+
+
+        mapRef.current.addLayer({
+          id: 'unclustered-point',
+          type: 'symbol',
+          source: 'listings',
+          filter: ['!', ['has', 'point_count']],
+          layout: {
+            'icon-image': 'map-marker',
+            'icon-size': .075
+          }
+        });
+
+        mapRef.current.on('click', 'clusters', function (e) {
+          const features = mapRef.current?.queryRenderedFeatures(e.point, {
+            layers: ['clusters']
+          });
+          if (features && typeof features === 'object') {
+            const clusterId = features[0].properties?.cluster_id;
+            // @ts-expect-error
+            mapRef.current?.getSource('listings')?.getClusterExpansionZoom(clusterId, (err, zoom) => {
+              if (err) return;
+              mapRef.current?.easeTo({
+                // @ts-expect-error
+                center: features[0].geometry.coordinates,
+                zoom: zoom
+              });
+            })
+          }
+        });
+
+        mapRef.current.on('click', 'unclustered-point', (e) => {
+          const feature = e.features?.at(0)
+          clearPopups()
+          if (!feature) return
+          // @ts-expect-error
+          const coordinates = feature.geometry.coordinates;
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+          new mapboxgl.Popup({ offset: 25, focusAfterOpen: false })
+            .setLngLat(coordinates)
+            .setHTML(
               `
               <div class="marker-popup rounded-lg overflow-hidden">
-                <div class="marker-popup_image-container relative aspect-video">
-                  <img src="${(feature.properties.image as MediaType)?.sizes?.medium?.url || null}" alt="${(feature?.properties?.image as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
+                <div class="marker-popup_image-container relative aspect-video bg-white">
+                <div class="animate-pulse absolute inset-0 bg-brand-gray-01"></div>
+                  <img src="${JSON.parse(feature.properties?.image)?.sizes?.medium?.url || null}" alt="${JSON.parse(feature?.properties?.image)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
                 </div>
                 <div class="p-6 bg-white flex flex-col">
-                <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${
-                  feature.properties.price
-                    ? `${feature.properties.price}${
-                        feature.properties.textAfterPrice
-                          ? `<span class="text-sm ml-2 font-normal">${feature.properties.textAfterPrice}</span>`
-                          : ''
-                      }`
-                    : 'Contact for price'
-                }</span>
-                  <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${feature.properties.address}</h3>
-                  <a href="/listings/${feature.properties.slug}" class="p-2 w-fit text-sm rounded-sm transition-colors hover:bg-brand-gray-00 focus-visible:bg-brand-gray-00 focus-visible:outline-none font-light flex items-center gap-1 text-brand-gray-04"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-2 h-auto fill-brand-gray-04"><!--!Font Awesome Pro 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2025 Fonticons, Inc.--><path d="M240 64l0-16-32 0 0 16 0 176L32 240l-16 0 0 32 16 0 176 0 0 176 0 16 32 0 0-16 0-176 176 0 16 0 0-32-16 0-176 0 0-176z"/></svg>Learn More</a>
+                <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${feature.properties?.price
+                ? `${feature.properties?.price}${feature.properties?.textAfterPrice
+                  ? `<span class="text-sm ml-2 font-normal">${feature.properties?.textAfterPrice}</span>`
+                  : ''
+                }`
+                : 'Contact for price'
+              }</span>
+                  <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${feature.properties?.address}</h3>
+                  <a href="/listings/${feature.properties?.slug}" class="p-2 w-fit text-sm rounded-sm transition-colors hover:bg-brand-gray-00 focus-visible:bg-brand-gray-00 focus-visible:outline-none font-light flex items-center gap-1 text-brand-gray-04"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-2 h-auto fill-brand-gray-04"><!--!Font Awesome Pro 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2025 Fonticons, Inc.--><path d="M240 64l0-16-32 0 0 16 0 176L32 240l-16 0 0 32 16 0 176 0 0 176 0 16 32 0 0-16 0-176 176 0 16 0 0-32-16 0-176 0 0-176z"/></svg>Learn More</a>
                 </div>
               </div>
               `,
-            ),
-          )
-        setActiveMarkers((current) => [...current, newMarker])
-        if (mapRef.current) {
-          newMarker.addTo(mapRef.current)
-        }
-        el.addEventListener('click', (e) => {
-          const coords = newMarker.getLngLat()
+            )
+            // @ts-expect-error
+            .addTo(mapRef.current);
           mapRef.current?.flyTo({
-            center: coords,
+            center: coordinates,
             speed: 0.5,
           })
-          const matchingCardIndex = activeListings.findIndex(
-            (listing) => feature.properties.title === listing.title,
-          )
-          cardRefs[matchingCardIndex].current?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
+        });
+
+        mapRef.current.on('mouseenter', 'clusters', () => {
+          // @ts-expect-error
+          mapRef.current.getCanvas().style.cursor = 'pointer';
+        });
+
+        mapRef.current.on('mouseleave', 'clusters', () => {
+          // @ts-expect-error
+          mapRef.current.getCanvas().style.cursor = '';
+        });
+      }
+
+
+      //     const matchingCardIndex = activeListings.findIndex(
+      //       (listing) => feature.properties.title === listing.title,
+      //     )
+      //     cardRefs[matchingCardIndex].current?.scrollIntoView({
+      //       behavior: 'smooth',
+      //       block: 'center',
+      //     })
+      //   })
+      // }
+    }
+
+    return () => {
+      mapRef.current?.off('click', 'clusters', function (e) {
+        const features = mapRef.current?.queryRenderedFeatures(e.point, {
+          layers: ['clusters']
+        });
+        if (features && typeof features === 'object') {
+          const clusterId = features[0].properties?.cluster_id;
+          // @ts-expect-error
+          mapRef.current?.getSource('listings')?.getClusterExpansionZoom(clusterId, (err, zoom) => {
+            if (err) return;
+            mapRef.current?.easeTo({
+              // @ts-expect-error
+              center: features[0].geometry.coordinates,
+              zoom: zoom
+            });
           })
-        })
+        }
+      });
+      if (mapRef.current?.getSource('listings')) {
+        if (mapRef.current?.getLayer('clusters')) {
+          mapRef.current?.removeLayer('clusters')
+        }
+        if (mapRef.current?.getLayer('clusters-inner')) {
+          mapRef.current?.removeLayer('clusters-inner')
+        }
+        if (mapRef.current?.getLayer('clusters-mid')) {
+          mapRef.current?.removeLayer('clusters-mid')
+        }
+        if (mapRef.current?.getLayer('clusters-outer')) {
+          mapRef.current?.removeLayer('clusters-outer')
+        }
+        if (mapRef.current?.getLayer('cluster-count')) {
+          mapRef.current?.removeLayer('cluster-count')
+        }
+        if (mapRef.current?.getLayer('unclustered-point')) {
+          mapRef.current?.removeLayer('unclustered-point')
+        }
+        mapRef.current?.removeSource('listings')
       }
     }
-  }, [activeListings])
+  }, [activeListings, isFirstRender])
 
   useEffect(() => {
     setHeaderTheme('filled')
@@ -430,26 +584,36 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       scrollZoom: false,
     })
     mapRef.current.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-left')
+    mapRef.current.on('load', () => {
+      mapRef.current?.loadImage(
+        '/map/map-marker.png',
+        (error, image) => {
+          if (error) throw error;
+          if (image) mapRef.current?.addImage('map-marker', image);
+        })
+    })
 
     // FETCH PROPERTIES ON FIRST RENDER
     const filterData = {
-      search: searchParams.get('search'),
-      category: searchParams.get('category'),
-      propertyType: searchParams.get('property_type'),
-      minPrice: searchParams.get('min_price'),
-      maxPrice: searchParams.get('max_price'),
-      sizeType: searchParams.get('size_type'),
-      minSize: searchParams.get('min_size'),
-      maxSize: searchParams.get('max_size'),
-      availability: searchParams.get('availability'),
-      transactionType: searchParams.get('transaction_type') as
+      search: searchParams.get('search') || '',
+      category: searchParams.get('category') || '',
+      propertyType: searchParams.get('property_type') || '',
+      minPrice: searchParams.get('min_price') || '',
+      maxPrice: searchParams.get('max_price') || '',
+      sizeType: searchParams.get('size_type') || '',
+      minSize: searchParams.get('min_size') || '',
+      maxSize: searchParams.get('max_size') || '',
+      availability: searchParams.get('availability') || '',
+      transactionType: (searchParams.get('transaction_type') || '') as
         | 'for-sale'
         | 'for-lease'
         | null
         | undefined,
     }
     const page = searchParams.get('page') ? Number(searchParams.get('page')) : undefined
-    const sort = searchParams.get('sort')
+    const sort = searchParams.get('sort') || undefined
+
+
     form.setValue('search', filterData.search || '')
     form.setValue('category', filterData.category || '')
     form.setValue('propertyType', filterData.propertyType || '')
@@ -462,15 +626,16 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     form.setValue('transactionType', filterData.transactionType || '')
 
     handleFetchListings(filterData, page, sort)
-
     return () => {
       mapRef.current?.remove()
     }
   }, [])
 
-  useEffect(() => {
-    centerMap()
-  }, [boundingBox])
+
+
+  // useEffect(() => {
+  //   centerMap()
+  // }, [boundingBox])
 
   const handleReset = async () => {
     try {
@@ -495,13 +660,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     }
   }
 
-  const handleSort = async () => {
-    try {
-    } catch (error: any) {
-      console.log(error.message)
-      router.push(pathname)
-    }
-  }
   return (
     <div>
       <FilterBar
@@ -646,7 +804,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                         />
                       </div>
                       <div className="p-6 flex flex-col gap-4">
-                        <div className="flex justify-between gap-4">
+                        <div className="flex justify-between gap-4 flex-wrap">
                           <div className="flex flex-col gap-2 flex-1">
                             <h3 className="sr-only">{listing.title}</h3>
                             <div>
