@@ -2,8 +2,6 @@ import rets from 'rets-client'
 
 const photoSourceId = '58025682'
 const clientSettings = {
-  username: 'SidekickIDX',
-  password: 'Y-kPb6r!',
   loginUrl: 'https://ntrdd.mlsmatrix.com/rets/login.ashx',
   userAgent: 'RETS node-client/5.2.4',
   version: 'RETS/1.7.2',
