@@ -1,32 +1,28 @@
 'use client'
-import { syncResidentialListings } from '@/app/(frontend)/api/residential/syncResidentialListings'
-import { saveAllMedia } from '@/utilities/saveAllMedia'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Gutter, NavGroup } from '@payloadcms/ui'
+import { revalidateSite } from '@/app/(frontend)/api/revalidateSite'
+
+import { Button, toast } from '@payloadcms/ui'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
-import { ServerComponentProps } from 'payload'
+import { ClientComponentProps } from 'payload'
+import { useState } from 'react'
 
-export const Actions: React.FC<ServerComponentProps> = (props) => {
+export const Actions: React.FC<ClientComponentProps> = (props) => {
+  const [isRevalidating, setIsRevalidating] = useState(false);
+  const handleRevalidateSite = async () => {
+    setIsRevalidating(true)
+    await revalidateSite();
+    toast.success('Site revalidated!')
+    setIsRevalidating(false)
+  }
+
   return (
-    <div className="flex-grow flex items-end">
+    <div className="flex-grow flex items-center gap-[var(--base)]">
+      <Button onClick={handleRevalidateSite}>{isRevalidating ? 'Revalidating...' : 'Revalidate Site'}</Button>
+
       <Link href="/" target="_blank" aria-label="Go to live site">
         <ExternalLink className="w-6 text-white" />
       </Link>
-      {/* <Button
-        onClick={() => {
-          syncResidentialListings()
-        }}
-      >
-        Sync
-      </Button> */}
-      {/* <Button
-        onClick={() => {
-          saveAllMedia()
-        }}
-      >
-        Save Media
-      </Button> */}
     </div>
   )
 }

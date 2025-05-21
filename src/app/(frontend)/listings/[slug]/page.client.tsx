@@ -14,7 +14,7 @@ const PageClient: React.FC = () => {
         'message',
       ) as HTMLTextAreaElement | null
       if (sidebarFormMessageField) {
-        sidebarFormMessageField.placeholder = 'I would like to know more about ' + document.title
+        sidebarFormMessageField.placeholder = 'I would like to know more about ' + document.title.split(' | ')[0]
         sidebarFormMessageField.rows = 4
       }
     }

@@ -415,6 +415,28 @@ export interface Listing {
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  /**
+   * This is used for Residential listings imported from NTREIS
+   */
+  MLS?: {
+    ListingKeyNumeric?: number | null;
+    MlsStatus?: string | null;
+    ListAgentKeyNumeric?: number | null;
+    ListAgentFullName?: string | null;
+    ListOfficeKeyNumeric?: number | null;
+    ListOfficeName?: string | null;
+    ModificationTimestamp?: string | null;
+    PhotosChangeTimestamp?: string | null;
+    PhotosCount?: number | null;
+    PropertySubType?: string | null;
+    FeaturedImageUrl?: string | null;
+    ImageGalleryUrls?:
+      | {
+          url?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -2277,6 +2299,27 @@ export interface ListingsSelect<T extends boolean = true> {
   publishedAt?: T;
   slug?: T;
   slugLock?: T;
+  MLS?:
+    | T
+    | {
+        ListingKeyNumeric?: T;
+        MlsStatus?: T;
+        ListAgentKeyNumeric?: T;
+        ListAgentFullName?: T;
+        ListOfficeKeyNumeric?: T;
+        ListOfficeName?: T;
+        ModificationTimestamp?: T;
+        PhotosChangeTimestamp?: T;
+        PhotosCount?: T;
+        PropertySubType?: T;
+        FeaturedImageUrl?: T;
+        ImageGalleryUrls?:
+          | T
+          | {
+              url?: T;
+              id?: T;
+            };
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

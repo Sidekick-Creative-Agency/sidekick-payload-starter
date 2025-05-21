@@ -24,6 +24,7 @@ import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { SlugComponent as SlugComponent_311c6d7b8ff1b150e4c0938742fd4baa } from '@/fields/Slug/SlugComponent'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { LinkToImportView as LinkToImportView_3a4810d23e9e9d7672441e06323d5b45 } from '../../../components/Admin/LinkToImportView'
 import { FieldMessage as FieldMessage_3185027efecf19811e43743295be0c12 } from '@/blocks/Form/PageTitle/FieldMessage/index'
 import { FieldMessage as FieldMessage_045f0cc8bbddec66d1cb40c788e8a718 } from '@/blocks/Form/TeamMemberEmail/FieldMessage/index'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
@@ -62,6 +63,7 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@/fields/Slug/SlugComponent#SlugComponent": SlugComponent_311c6d7b8ff1b150e4c0938742fd4baa,
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "/components/Admin/LinkToImportView#LinkToImportView": LinkToImportView_3a4810d23e9e9d7672441e06323d5b45,
   "@/blocks/Form/PageTitle/FieldMessage/index#FieldMessage": FieldMessage_3185027efecf19811e43743295be0c12,
   "@/blocks/Form/TeamMemberEmail/FieldMessage/index#FieldMessage": FieldMessage_045f0cc8bbddec66d1cb40c788e8a718,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,

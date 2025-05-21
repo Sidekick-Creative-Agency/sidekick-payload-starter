@@ -2,7 +2,6 @@
 import type { CardGridBlock as CardGridBlockProps } from '@/payload-types'
 
 import RichText from '@/components/RichText'
-import { BRAND_BACKGROUND_COLOR_CLASSES } from '@/utilities/constants'
 import { Media } from '@/components/Media'
 import useWindowDimensions from '../../utilities/useWindowDimensions'
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'

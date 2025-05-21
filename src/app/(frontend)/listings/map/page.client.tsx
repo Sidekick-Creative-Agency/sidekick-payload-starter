@@ -110,7 +110,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const [activeListings, setActiveListings] = useState<Listing[]>([])
   const [totalListings, setTotalListings] = useState<number | undefined>(listingsCount)
   const [boundingBox, setBoundingBox] = useState<number[][]>([])
-  const [activeMarkers, setActiveMarkers] = useState<Marker[]>([])
+
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('map')
   const [filters, setFilters] = useState<MapFilters | undefined>(undefined)
@@ -170,8 +170,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                   <img src="${(listing?.featuredImage as MediaType)?.sizes?.medium?.url || null}" alt="${(listing?.featuredImage as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
                 </div>
                 <div class="p-6 bg-white flex flex-col">
-                <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${listing.price
-              ? `${listing.price}${listing.textAfterPrice
+                <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06"> ${listing.price
+              ? `${formatPrice(listing.price)}${listing.textAfterPrice
                 ? `<span class="text-sm ml-2 font-normal">${listing.textAfterPrice}</span>`
                 : ''
               }`
@@ -182,21 +182,14 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                 </div>
               </div>
               `,
-          )
-
-          .addTo(mapRef.current);
+          ).addTo(mapRef.current)
         mapRef.current?.flyTo({
           center: listing.coordinates,
           speed: 0.5,
         })
       }
     }
-
-
-
-
-
-  }, [debouncedFocusedListing, activeMarkers, activeListings])
+  }, [debouncedFocusedListing, activeListings])
 
   const handleFetchListings = async (
     filterData?: MapFilters,
@@ -293,6 +286,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     setActiveListings(response.docs)
     setTotalListings(response.totalDocs)
     setIsLoading(false)
+    const newCardRefs = response.docs.map(() => createRef<HTMLDivElement>())
+    setCardRefs(newCardRefs)
   }
 
   const clearPopups = () => {
@@ -302,11 +297,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   }
 
   useEffect(() => {
-    activeMarkers.forEach((marker) => marker.remove())
-    const newCardRefs = activeMarkers.map(() => createRef<HTMLDivElement>())
-    setCardRefs(newCardRefs)
-    setActiveMarkers([])
-    setBoundingBox([])
+
     if (activeListings && activeListings.length > 0) {
       const geoJson = {
         type: 'FeatureCollection',
@@ -487,7 +478,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                 </div>
                 <div class="p-6 bg-white flex flex-col">
                 <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${feature.properties?.price
-                ? `${feature.properties?.price}${feature.properties?.textAfterPrice
+                ? `${formatPrice(feature.properties?.price)}${feature.properties?.textAfterPrice
                   ? `<span class="text-sm ml-2 font-normal">${feature.properties?.textAfterPrice}</span>`
                   : ''
                 }`
@@ -505,6 +496,14 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             center: coordinates,
             speed: 0.5,
           })
+          const cardIndex = activeListings.findIndex((listing) => listing.slug === feature.properties?.slug)
+          console.log(cardIndex)
+          if (cardIndex !== -1 && cardRefs[cardIndex].current) {
+            cardRefs[cardIndex].current?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center'
+            })
+          }
         });
 
         mapRef.current.on('mouseenter', 'clusters', () => {
@@ -517,17 +516,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           mapRef.current.getCanvas().style.cursor = '';
         });
       }
-
-
-      //     const matchingCardIndex = activeListings.findIndex(
-      //       (listing) => feature.properties.title === listing.title,
-      //     )
-      //     cardRefs[matchingCardIndex].current?.scrollIntoView({
-      //       behavior: 'smooth',
-      //       block: 'center',
-      //     })
-      //   })
-      // }
     }
 
     return () => {
@@ -582,6 +570,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       center: [-97.2753695, 31.5532499],
       zoom: 10,
       scrollZoom: false,
+      maxZoom: 20
     })
     mapRef.current.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-left')
     mapRef.current.on('load', () => {
@@ -880,90 +869,90 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                   </Card>
                 )
               })}
-            {!isFirstRender && activeListings && activeListings.length > 0 && (
-              <div className="col-span-full flex justify-center gap-2 items-center">
-                <Button
-                  className="p-2 text-brand-gray-04"
-                  variant="ghost"
-                  onClick={() => {
-                    if (hasPrevPage && prevPage) {
-                      handleFetchListings(filters, 1)
-                      window.scrollTo({ top: 0 })
-                    }
-                  }}
-                >
-                  <FontAwesomeIcon icon={faChevronDoubleLeft} className="w-4 h-4" />
-                </Button>
-                <Button
-                  className="p-2 text-brand-gray-04"
-                  variant="ghost"
-                  onClick={() => {
-                    if (hasPrevPage && prevPage) {
-                      handleFetchListings(filters, prevPage)
-                      window.scrollTo({ top: 0 })
-                    }
-                  }}
-                >
-                  <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
-                </Button>
+            {/* {!isFirstRender && activeListings && activeListings.length > 0 && ( */}
+            {/* <div className="col-span-full flex justify-center gap-2 items-center">
+                 <Button
+                    className="p-2 text-brand-gray-04"
+                    variant="ghost"
+                    onClick={() => {
+                      if (hasPrevPage && prevPage) {
+                        handleFetchListings(filters, 1)
+                        window.scrollTo({ top: 0 })
+                      }
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faChevronDoubleLeft} className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    className="p-2 text-brand-gray-04"
+                    variant="ghost"
+                    onClick={() => {
+                      if (hasPrevPage && prevPage) {
+                        handleFetchListings(filters, prevPage)
+                        window.scrollTo({ top: 0 })
+                      }
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
+                  </Button>
 
-                <span className="font-light leading-none text-brand-gray-04">
-                  {currentPage} of {totalPages}
-                </span>
+                  <span className="font-light leading-none text-brand-gray-04">
+                    {currentPage} of {totalPages}
+                  </span>
 
-                <Button
-                  className="p-2 text-brand-gray-04"
-                  variant="ghost"
-                  onClick={() => {
-                    if (hasNextPage && nextPage) {
-                      handleFetchListings(filters, nextPage)
-                      window.scrollTo({ top: 0 })
-                    }
-                  }}
-                >
-                  <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
-                </Button>
-                <Button
-                  className="p-2 text-brand-gray-04"
-                  variant="ghost"
-                  onClick={() => {
-                    if (hasNextPage && totalPages) {
-                      handleFetchListings(filters, totalPages)
-                      window.scrollTo({ top: 0 })
-                    }
-                  }}
-                >
-                  <FontAwesomeIcon icon={faChevronDoubleRight} className="w-4 h-4" />
-                </Button>
+                  <Button
+                    className="p-2 text-brand-gray-04"
+                    variant="ghost"
+                    onClick={() => {
+                      if (hasNextPage && nextPage) {
+                        handleFetchListings(filters, nextPage)
+                        window.scrollTo({ top: 0 })
+                      }
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    className="p-2 text-brand-gray-04"
+                    variant="ghost"
+                    onClick={() => {
+                      if (hasNextPage && totalPages) {
+                        handleFetchListings(filters, totalPages)
+                        window.scrollTo({ top: 0 })
+                      }
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faChevronDoubleRight} className="w-4 h-4" />
+                  </Button>
 
-                {/* <Button
-                  variant="outline"
-                  className="p-0 w-8 h-8"
-                  disabled={!hasPrevPage}
-                  onClick={() => {
-                    if (hasPrevPage && prevPage) {
-                      handleFetchListings(filters, prevPage)
-                      window.scrollTo({ top: 0 })
-                    }
-                  }}
-                >
-                  <FontAwesomeIcon icon={faChevronLeft} />
-                </Button>
-                <Button
-                  variant="outline"
-                  className="p-0 w-8 h-8"
-                  disabled={!hasNextPage}
-                  onClick={() => {
-                    if (hasNextPage && nextPage) {
-                      handleFetchListings(filters, nextPage)
-                      window.scrollTo({ top: 0 })
-                    }
-                  }}
-                >
-                  <FontAwesomeIcon icon={faChevronRight} />
-                </Button> */}
-              </div>
-            )}
+                   <Button
+                    variant="outline"
+                    className="p-0 w-8 h-8"
+                    disabled={!hasPrevPage}
+                    onClick={() => {
+                      if (hasPrevPage && prevPage) {
+                        handleFetchListings(filters, prevPage)
+                        window.scrollTo({ top: 0 })
+                      }
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="p-0 w-8 h-8"
+                    disabled={!hasNextPage}
+                    onClick={() => {
+                      if (hasNextPage && nextPage) {
+                        handleFetchListings(filters, nextPage)
+                        window.scrollTo({ top: 0 })
+                      }
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  </Button>
+                </div> */}
+            {/* )} */}
 
             {!isFirstRender &&
               !isLoading &&
@@ -988,8 +977,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
 }
 
 const mapMarkerIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="37" height="48" viewBox="0 0 37 48" fill="none" style="width: 100%">
-  <path d="M18.1622 48C18.1622 48 36.3243 28.5 36.3243 18C36.3243 8.0625 28.1892 0 18.1622 0C8.13514 0 0 8.0625 0 18C0 28.5 18.1622 48 18.1622 48ZM18.1622 12C19.7678 12 21.3077 12.6321 22.443 13.7574C23.5784 14.8826 24.2162 16.4087 24.2162 18C24.2162 19.5913 23.5784 21.1174 22.443 22.2426C21.3077 23.3679 19.7678 24 18.1622 24C16.5565 24 15.0167 23.3679 13.8813 22.2426C12.7459 21.1174 12.1081 19.5913 12.1081 18C12.1081 16.4087 12.7459 14.8826 13.8813 13.7574C15.0167 12.6321 16.5565 12 18.1622 12Z" fill="#0B2A35"/>
-</svg>`
+        <path d="M18.1622 48C18.1622 48 36.3243 28.5 36.3243 18C36.3243 8.0625 28.1892 0 18.1622 0C8.13514 0 0 8.0625 0 18C0 28.5 18.1622 48 18.1622 48ZM18.1622 12C19.7678 12 21.3077 12.6321 22.443 13.7574C23.5784 14.8826 24.2162 16.4087 24.2162 18C24.2162 19.5913 23.5784 21.1174 22.443 22.2426C21.3077 23.3679 19.7678 24 18.1622 24C16.5565 24 15.0167 23.3679 13.8813 22.2426C12.7459 21.1174 12.1081 19.5913 12.1081 18C12.1081 16.4087 12.7459 14.8826 13.8813 13.7574C15.0167 12.6321 16.5565 12 18.1622 12Z" fill="#0B2A35" />
+      </svg>`
 
 function getSWCoordinates(coordinatesCollection: number[][]) {
   const lowestLng = Math.min(...coordinatesCollection.map((coordinates) => coordinates[0]))

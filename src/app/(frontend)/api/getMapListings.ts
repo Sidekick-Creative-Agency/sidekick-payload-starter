@@ -23,7 +23,6 @@ export const getMapListings = async (data: {
   page?: number | null | undefined
   sort?: string | null | undefined
 }) => {
-  console.log('hi')
   try {
     const payload = await getPayload({ config: configPromise })
     let listings: PaginatedDocs<Listing> | undefined = undefined

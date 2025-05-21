@@ -57,9 +57,9 @@ export const Listings: CollectionConfig = {
 
       return `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
     },
-    // components: {
-    //   beforeList: ['/components/Admin/LinkToImportView#LinkToImportView'],
-    // },
+    components: {
+      beforeList: ['/components/Admin/LinkToImportView#LinkToImportView'],
+    },
     useAsTitle: 'title',
   },
   fields: [
@@ -412,6 +412,71 @@ export const Listings: CollectionConfig = {
       },
     },
     ...slugField(),
+    {
+      name: 'MLS',
+      type: 'group',
+      admin: {
+        hidden: true,
+        description: 'This is used for Residential listings imported from NTREIS',
+        condition: (_, siblingData) => siblingData?.category === 'residential',
+      },
+      fields: [
+        {
+          name: 'ListingKeyNumeric',
+          type: 'number',
+        },
+        {
+          name: 'MlsStatus',
+          type: 'text',
+        },
+        {
+          name: 'ListAgentKeyNumeric',
+          type: 'number',
+        },
+        {
+          name: 'ListAgentFullName',
+          type: 'text',
+        },
+        {
+          name: 'ListOfficeKeyNumeric',
+          type: 'number',
+        },
+        {
+          name: 'ListOfficeName',
+          type: 'text',
+        },
+        {
+          name: 'ModificationTimestamp',
+          type: 'text',
+        },
+        {
+          name: 'PhotosChangeTimestamp',
+          type: 'text',
+        },
+        {
+          name: 'PhotosCount',
+          type: 'number',
+        },
+        {
+          name: 'PropertySubType',
+          type: 'text',
+        },
+        {
+          name: 'FeaturedImageUrl',
+          type: 'text',
+        },
+        {
+          name: 'ImageGalleryUrls',
+          type: 'array',
+          fields: [
+            {
+              name: 'url',
+              type: 'text',
+            },
+          ],
+        },
+      ],
+    },
   ],
   hooks: {
     afterChange: [revalidateListing],
