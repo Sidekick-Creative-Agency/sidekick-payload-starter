@@ -1,10 +1,10 @@
+'use client'
 import { Listing } from '@/payload-types'
 import React, { useEffect, useRef } from 'react'
 import { Media } from '../Media'
 import Link from 'next/link'
 import { formatPrice } from '../../utilities/formatPrice'
 import { useAnimate, useInView } from 'framer-motion'
-import * as motion from 'motion/react-client'
 
 interface ListingCardProps {
   listing: Listing
