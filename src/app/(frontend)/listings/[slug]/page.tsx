@@ -131,7 +131,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
               <div className="flex gap-x-4 gap-y-0 flex-wrap text-base text-brand-gray-03 uppercase tracking-wider font-bold">
                 <span>{listing.transactionType}</span>|
                 <span>
-                  {listing.propertyType &&
+                  {listing.category === 'commercial' ? listing.propertyType &&
                     typeof listing.propertyType === 'object' &&
                     listing.propertyType.map((propertyType, index) => {
                       if (listing.propertyType) {
@@ -140,7 +140,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                           : (propertyType as PropertyType).title
                       }
                       return ''
-                    })}
+                    }) : 'Residential'}
                 </span>
               </div>
               <div className="md:flex md:gap-4 md:items-center">
@@ -194,129 +194,97 @@ export default async function Listing({ params: paramsPromise }: Args) {
               />
             </div>
           </div>
-          <div className="grid grid-cols-4 grid-rows-2 gap-4">
+          <div className="grid grid-cols-4 grid-rows-2 gap-4 relative">
             <Media
               resource={listing.featuredImage}
-              className={`${!listing.imageGallery || listing.imageGallery.length === 0 ? 'col-span-full' : 'col-span-4 sm:col-span-3'} row-span-1 sm:row-span-2 relative aspect-video`}
+              className={`${(!listing.imageGallery || listing.imageGallery.length === 0) && (!listing.MLS?.ImageGalleryUrls || listing.MLS?.ImageGalleryUrls.length === 0) ? 'col-span-full' : 'col-span-4 sm:col-span-3'} row-span-1 sm:row-span-2 relative aspect-video`}
               imgClassName="absolute top-0 left-0 w-full h-full object-cover"
               priority
             />
-            {listing.imageGallery && listing.imageGallery[0] && listing.imageGallery[1] && (
+            {listing.imageGallery && listing.imageGallery.length > 1 && (
               <>
                 <Media
                   resource={listing?.imageGallery[0]?.image as MediaType | number | undefined}
-                  className="col-span-2 sm:col-span-1 row-span-1 relative"
+                  className={`col-span-2 sm:col-span-1 ${listing.imageGallery.length > 1 ? 'row-span-1' : 'row-span-2'} relative`}
                   imgClassName="absolute top-0 left-0 w-full h-full object-cover"
                   priority
                 />
-                <div className="col-span-2 sm:col-span-1 row-span-1 relative">
+                {listing.imageGallery.length > 1 && (
                   <Media
                     resource={listing.imageGallery[1].image as MediaType | number | undefined}
-                    className="w-full h-full relative"
+                    className="col-span-2 sm:col-span-1 row-span-1 relative"
                     imgClassName="absolute top-0 left-0 w-full h-full object-cover"
                     priority
                   />
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        size={'icon'}
-                        className="absolute bottom-2 right-2 z-10 w-12 h-12 p-3 rounded-md border-none bg-white bg-opacity-50 hover:bg-white hover:bg-opacity-50 focus-visible:bg-white focus-visible:bg-opacity-50 backdrop-blur-sm"
-                      >
-                        <FontAwesomeIcon
-                          icon={faImage}
-                          className="w-full h-auto"
-                          style={{ width: '100%' }}
-                        />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] max-h-[calc(100vh-2.5rem)] p-0 bg-transparent justify-stretch h-auto">
-                      <DialogTitle hidden>Image Gallery</DialogTitle>
-                      <Carousel className="[&>div]:rounded-md sm:[&>div]:rounded-lg [&>div]:w-full">
-                        <CarouselContent className="ml-0 max-h-[calc(100vh-2.5rem)]">
-                          <CarouselItem className="pl-0 basis-full">
-                            <Media
-                              resource={listing.featuredImage}
-                              className="w-full overflow-hidden aspect-video relative"
-                              imgClassName="w-full object-cover"
-                              fill
-                            />
-                          </CarouselItem>
-                          {listing.imageGallery.map((image, index) => {
-                            return (
-                              <CarouselItem key={image.id} className=" pl-0 basis-full rounded-lg">
-                                <Media
-                                  resource={image.image as MediaType | number | undefined}
-                                  className="w-full overflow-hidden aspect-video relative"
-                                  imgClassName="w-full object-cover"
-                                  fill
-                                />
-                              </CarouselItem>
-                            )
-                          })}
-                        </CarouselContent>
-                        <CarouselPrevious className="top-[calc(100%+.5rem)] left-auto right-10 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:left-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
-                        <CarouselNext className="top-[calc(100%+.5rem)] left-auto right-0 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:right-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
-                      </Carousel>
-                    </DialogContent>
-                  </Dialog>
-                </div>
+                )}
+
               </>
             )}
-            {listing.imageGallery && listing.imageGallery[0] && !listing.imageGallery[1] && (
-              <div className="col-span-2 sm:col-span-1 row-span-2 relative">
-                <Media
-                  resource={listing.imageGallery[0].image as MediaType | number | undefined}
-                  className="w-full h-full relative"
-                  imgClassName="absolute top-0 left-0 w-full h-full object-cover"
-                  priority
-                />
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      size={'icon'}
-                      className="absolute bottom-2 right-2 z-10 w-12 h-12 p-3 rounded-md border-none bg-white bg-opacity-50 hover:bg-white hover:bg-opacity-50 focus-visible:bg-white focus-visible:bg-opacity-50 backdrop-blur-sm"
-                    >
-                      <FontAwesomeIcon
-                        icon={faImage}
-                        className="w-full h-auto"
-                        style={{ width: '100%' }}
+            {(!listing.imageGallery || listing.imageGallery.length === 0) && listing.MLS?.ImageGalleryUrls && listing.MLS?.ImageGalleryUrls.length > 0 && (
+              <>
+                <div className={`col-span-2 sm:col-span-1 ${listing.MLS.ImageGalleryUrls.length > 1 ? 'row-span-1' : 'row-span-2'} relative`}>
+                  <Image src={listing.MLS?.ImageGalleryUrls[0].url || ''} alt="" fill className='object-cover' />
+                </div>
+                {listing.MLS.ImageGalleryUrls.length > 1 && (
+                  <div className='col-span-2 sm:col-span-1 row-span-1 relative'>
+                    <Image src={listing.MLS?.ImageGalleryUrls[1].url || ''} alt="" fill className='object-cover' />
+                  </div>
+                )}
+              </>
+            )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  size={'icon'}
+                  className="absolute bottom-2 right-2 z-10 w-12 h-12 p-3 rounded-md border-none bg-white bg-opacity-50 hover:bg-white hover:bg-opacity-50 focus-visible:bg-white focus-visible:bg-opacity-50 backdrop-blur-sm"
+                >
+                  <FontAwesomeIcon
+                    icon={faImage}
+                    className="w-full h-auto"
+                    style={{ width: '100%' }}
+                  />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] max-h-[calc(100vh-2.5rem)] p-0 bg-transparent justify-stretch h-auto">
+                <DialogTitle hidden>Image Gallery</DialogTitle>
+                <Carousel className="[&>div]:rounded-md sm:[&>div]:rounded-lg [&>div]:w-full">
+                  <CarouselContent className="ml-0 max-h-[calc(100vh-2.5rem)]">
+                    <CarouselItem className="pl-0 basis-full">
+                      <Media
+                        resource={listing.featuredImage}
+                        className="w-full overflow-hidden aspect-video relative"
+                        imgClassName="w-full object-cover"
+                        fill
                       />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] h-auto max-h-[calc(100vh-2.5rem)] p-0 bg-transparent">
-                    <DialogTitle hidden>Image Gallery</DialogTitle>
-                    <Carousel className="w-full [&>div]:rounded-md sm:[&>div]:rounded-lg max-h-screen">
-                      <CarouselContent className=" ml-0">
-                        <CarouselItem className="pl-0 basis-full">
+                    </CarouselItem>
+                    {listing.imageGallery && listing.imageGallery.length > 0 && listing.imageGallery.map((image, index) => {
+                      return (
+                        <CarouselItem key={image.id} className=" pl-0 basis-full rounded-lg">
                           <Media
-                            resource={listing.featuredImage}
-                            className="w-full overflow-hidden aspect-video relative max-h-screen"
+                            resource={image.image as MediaType | number | undefined}
+                            className="w-full overflow-hidden aspect-video relative"
                             imgClassName="w-full object-cover"
                             fill
-                            size="100vw"
                           />
                         </CarouselItem>
-                        {listing.imageGallery.map((image, index) => {
-                          return (
-                            <CarouselItem key={image.id} className=" pl-0 basis-full rounded-lg">
-                              <Media
-                                resource={image.image as MediaType | number | undefined}
-                                className="w-full overflow-hidden aspect-video relative max-h-screen"
-                                imgClassName="w-full object-cover"
-                                fill
-                                size="100vw"
-                              />
-                            </CarouselItem>
-                          )
-                        })}
-                      </CarouselContent>
-                      <CarouselPrevious className="top-[calc(100%+.5rem)] left-auto right-10 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:left-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
-                      <CarouselNext className="top-[calc(100%+.5rem)] left-auto right-0 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:right-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
-                    </Carousel>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            )}
+                      )
+                    })}
+                    {(!listing.imageGallery || listing.imageGallery.length === 0) && listing.MLS?.ImageGalleryUrls && listing.MLS?.ImageGalleryUrls.length > 0 && listing.MLS?.ImageGalleryUrls.map((item, index) => {
+                      console.log(item)
+                      return (
+                        <CarouselItem key={item.id} className=" pl-0 basis-full rounded-lg">
+                          <div className="w-full overflow-hidden aspect-video relative">
+                            <Image src={item.url || ''} alt="" fill className='object-cover' />
+                          </div>
+                        </CarouselItem>
+                      )
+                    })}
+                  </CarouselContent>
+                  <CarouselPrevious className="top-[calc(100%+.5rem)] left-auto right-10 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:left-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
+                  <CarouselNext className="top-[calc(100%+.5rem)] left-auto right-0 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:right-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
+                </Carousel>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>

@@ -414,9 +414,9 @@ export const Listings: CollectionConfig = {
     ...slugField(),
     {
       name: 'MLS',
+      label: 'MLS',
       type: 'group',
       admin: {
-        hidden: true,
         description: 'This is used for Residential listings imported from NTREIS',
         condition: (_, siblingData) => siblingData?.category === 'residential',
       },
