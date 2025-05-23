@@ -2776,6 +2776,46 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  middleRow?: {
+    logos?:
+      | {
+          logo?: (number | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+    brokerageServicesHeading?: string | null;
+    brokerageServicesText?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    consumerProtectionHeading?: string | null;
+    consumerProtectionText?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
   socials?:
     | {
         platform?: ('facebook' | 'instagram' | 'linkedin' | 'twitter' | 'youtube' | 'pinterest') | null;
@@ -2868,6 +2908,20 @@ export interface FooterSelect<T extends boolean = true> {
               id?: T;
             };
         id?: T;
+      };
+  middleRow?:
+    | T
+    | {
+        logos?:
+          | T
+          | {
+              logo?: T;
+              id?: T;
+            };
+        brokerageServicesHeading?: T;
+        brokerageServicesText?: T;
+        consumerProtectionHeading?: T;
+        consumerProtectionText?: T;
       };
   socials?:
     | T

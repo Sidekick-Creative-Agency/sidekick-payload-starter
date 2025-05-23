@@ -109,17 +109,15 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const { width } = useWindowDimensions()
   const [activeListings, setActiveListings] = useState<Listing[]>([])
   const [totalListings, setTotalListings] = useState<number | undefined>(listingsCount)
-  const [boundingBox, setBoundingBox] = useState<number[][]>([])
-
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('map')
   const [filters, setFilters] = useState<MapFilters | undefined>(undefined)
   const [hasNextPage, setHasNextPage] = useState<boolean | null | undefined>(undefined)
   const [hasPrevPage, setHasPrevPage] = useState<boolean | null | undefined>(undefined)
   const [currentPage, setCurrentPage] = useState<number | null | undefined>(1)
-  const [totalPages, setTotalPages] = useState<number | null | undefined>(undefined)
-  const [nextPage, setNextPage] = useState<number | null | undefined>(undefined)
-  const [prevPage, setPrevPage] = useState<number | null | undefined>(undefined)
+  // const [totalPages, setTotalPages] = useState<number | null | undefined>(undefined)
+  // const [nextPage, setNextPage] = useState<number | null | undefined>(undefined)
+  // const [prevPage, setPrevPage] = useState<number | null | undefined>(undefined)
   const [isSortOpen, setIsSortOpen] = useState(false)
   const [focusedListing, setFocusedListing] = useState<Listing | null>(null)
   const [cardRefs, setCardRefs] = useState<RefObject<HTMLDivElement | null>[]>([])
@@ -135,18 +133,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     resolver: zodResolver(FormSchema),
   })
 
-  // const centerMap = () => {
-  //   if (boundingBox.length > 1) {
-  //     mapRef.current?.fitBounds(calcBoundsFromCoordinates(boundingBox) as LngLatBoundsLike, {
-  //       padding: { top: 128, bottom: 128, left: 128, right: 128 },
-  //     })
-  //   } else if (boundingBox.length === 1) {
-  //     mapRef.current?.flyTo({
-  //       center: boundingBox[0] as LngLatLike,
-  //       speed: 0.5,
-  //     })
-  //   }
-  // }
   const debouncedFocusedListing = useDebounce(focusedListing, 500)
 
   useEffect(() => {
@@ -278,10 +264,10 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     })
 
     setCurrentPage(response.page)
-    setTotalPages(response.totalPages)
-    setPrevPage(response.prevPage)
+    // setTotalPages(response.totalPages)
+    // setPrevPage(response.prevPage)
     setHasPrevPage(response.hasPrevPage)
-    setNextPage(response.nextPage)
+    // setNextPage(response.nextPage)
     setHasNextPage(response.hasNextPage)
     setActiveListings(response.docs)
     setTotalListings(response.totalDocs)
@@ -318,6 +304,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
               lat: listing.coordinates[1],
               lon: listing.coordinates[0],
               iconSize: 32,
+              category: listing.category,
+              listOfficeName: listing.MLS?.ListOfficeName,
             },
             geometry: {
               type: 'Point',
@@ -432,10 +420,10 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           id: 'unclustered-point',
           type: 'symbol',
           source: 'listings',
-          filter: ['!', ['has', 'point_count']],
+          filter: ["all", ['!', ['has', 'point_count']],],
           layout: {
-            'icon-image': 'map-marker',
-            'icon-size': .075
+            'icon-image': ["case", ["all", ["==", ["get", "category"], 'residential'], ["!=", ["get", "listOfficeName"], process.env.NEXT_PUBLIC_RETS_LIST_OFFICE_NAME]], 'default-marker', 'onward-marker'],
+            'icon-size': ["case", ["all", ["==", ["get", "category"], 'residential'], ["!=", ["get", "listOfficeName"], process.env.NEXT_PUBLIC_RETS_LIST_OFFICE_NAME]], .07, .225],
           }
         });
 
@@ -578,7 +566,13 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
         '/map/map-marker.png',
         (error, image) => {
           if (error) throw error;
-          if (image) mapRef.current?.addImage('map-marker', image);
+          if (image) mapRef.current?.addImage('default-marker', image);
+        })
+      mapRef.current?.loadImage(
+        '/map/onward-map-marker.png',
+        (error, image) => {
+          if (error) throw error;
+          if (image) mapRef.current?.addImage('onward-marker', image);
         })
     })
 

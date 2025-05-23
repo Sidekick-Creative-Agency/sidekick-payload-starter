@@ -95,7 +95,7 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({ form }) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       {!hasSubmitted && (
         <div
-          className="p-2 sm:pl-6 bg-white/25 flex gap-6 group has-[input:focus]:ring-white has-[input:focus]:ring-2 has-[input:focus]:ring-offset-2 has-[input:focus]:ring-offset-brand-navy"
+          className="p-2 pl-4 sm:pl-6 bg-white/25 flex gap-6 group has-[input:focus]:ring-white has-[input:focus]:ring-2 has-[input:focus]:ring-offset-2 has-[input:focus]:ring-offset-brand-navy"
           onClick={(e) => {
             if (e.target !== submitRef.current) {
               setFocus('email')

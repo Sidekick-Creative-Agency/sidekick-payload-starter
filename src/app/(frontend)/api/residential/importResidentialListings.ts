@@ -176,7 +176,12 @@ export const importResidentialListings = async () => {
   const listings = await fetchRETSListings()
   const createdListings = await Promise.all(
     listings.map(async (listing, index) => {
-      if (listing.ListingKeyNumeric && listing.PhotosCount && index < 25) {
+      console.log(listing.ListOfficeName)
+      if (
+        listing.ListingKeyNumeric &&
+        listing.PhotosCount &&
+        listing.ListOfficeName === process.env.NEXT_PUBLIC_RETS_LIST_OFFICE_NAME
+      ) {
         const matchingListing = await payload.find({
           collection: 'listings',
           limit: 1,

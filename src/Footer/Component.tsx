@@ -21,10 +21,17 @@ import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { NewsletterForm } from './NewsletterForm'
+import { Media as MediaType } from '@/payload-types'
+import RichText from '@/components/RichText'
 
 export async function Footer() {
   const footer: Footer = (await getCachedGlobal('footer', 1)()) as Footer
   const navMenus = footer?.navMenus
+  const logos = footer?.middleRow?.logos
+  const brokerageServicesHeading = footer?.middleRow?.brokerageServicesHeading
+  const brokerageServicesText = footer?.middleRow?.brokerageServicesText
+  const consumerProtectionHeading = footer?.middleRow?.consumerProtectionHeading
+  const consumerProtectionText = footer?.middleRow?.consumerProtectionText
   const payload = await getPayload({ config: configPromise })
   const footerNewsletterForm = await payload.findByID({
     collection: 'forms',
@@ -76,8 +83,13 @@ export async function Footer() {
         )}
       </div>
       <div className="grid grid-cols-2 lg:flex justify-between items-center gap-10 lg:gap-20 xl:gap-40 py-10 border-t border-b border-brand-gray-04/50">
-        <div className="flex justify-center lg:justify-start gap-10 sm:gap-20 min-w-fit col-span-2">
-          <Image
+        <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-10 sm:gap-20 min-w-fit col-span-2">
+          {logos && logos.length > 0 && logos.map(({ logo, id }) => {
+            return <Media resource={logo as number | MediaType} key={id} className='flex items-center' imgClassName="w-full max-w-[10rem] max-h-[3rem] h-auto object-contain" />
+          })
+
+          }
+          {/* <Image
             src="/api/media/file/kw_advantage_logo.svg"
             alt="KW Advantage logo"
             width={320}
@@ -90,42 +102,19 @@ export async function Footer() {
             width={320}
             height={64}
             className="w-40 h-auto object-contain"
-          />
+          /> */}
         </div>
-        <div className="mx-auto col-span-2 sm:col-span-1">
-          <span className="block text-center sm:text-left mb-1 text-sm font-white font-bold leading-none uppercase tracking-wide">
-            Brokerage Services
+        <div className="mx-auto col-span-2 sm:col-span-1 lg:flex-1">
+          <span className="block text-center sm:text-left mb-2 text-sm font-white font-bold leading-none uppercase tracking-wide">
+            {brokerageServicesHeading ? brokerageServicesHeading : 'Brokerage Services'}
           </span>
-          <p className="text-sm text-center sm:text-left font-light leading-tight text-brand-gray-02">
-            Texas law requires all real estate license holders to give the following information
-            about brokerage services to prospective buyers, tenants, sellers and landlords. A broker
-            is responsible for all brokerage activities, including acts performed by sales agents
-            sponsored by the broker.{' '}
-            <Link
-              href="/api/media/file/onward-IABS.pdf"
-              target="_blank"
-              className="text-white underline"
-            >
-              IABS Document
-            </Link>
-          </p>
+          {brokerageServicesText && <RichText content={brokerageServicesText} className="text-sm text-center sm:text-left font-light leading-tight text-brand-gray-02 [&_a]:text-white [&_a]:underline" enableProse={false} enableGutter={false} />}
         </div>
-        <div className=" mx-auto col-span-2 sm:col-span-1">
-          <span className="block text-center sm:text-left mb-1 text-sm font-white font-bold leading-none uppercase tracking-wide">
-            Consumer Protection
+        <div className=" mx-auto col-span-2 sm:col-span-1 lg:flex-1">
+          <span className="block text-center sm:text-left mb-2 text-sm font-white font-bold leading-none uppercase tracking-wide">
+            {consumerProtectionHeading ? consumerProtectionHeading : 'Consumer Protection'}
           </span>
-          <p className="text-sm text-center sm:text-left font-light leading-tight text-brand-gray-02">
-            The Texas Real Estate Commission (TREC) regulates real estate brokers and sales agents,
-            real estate inspectors, home warranty companies, easement and right-of-way agents, and
-            timeshare interest providers.{' '}
-            <Link
-              href="/api/media/file/TREC-CPN-09-2023.pdf"
-              target="_blank"
-              className="text-white underline"
-            >
-              TREC Document
-            </Link>
-          </p>
+          {consumerProtectionText && <RichText content={consumerProtectionText} className="text-sm text-center sm:text-left font-light leading-tight text-brand-gray-02 [&_a]:text-white [&_a]:underline" enableProse={false} enableGutter={false} />}
         </div>
       </div>
       <div className="w-full flex flex-col-reverse gap-10 md:flex-row justify-between items-center pt-10">

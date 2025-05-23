@@ -2,6 +2,12 @@ import type { GlobalConfig } from 'payload'
 
 import { link } from '@/fields/link'
 import { revalidateFooter } from './hooks/revalidateFooter'
+import {
+  FixedToolbarFeature,
+  InlineToolbarFeature,
+  lexicalEditor,
+  LinkFeature,
+} from '@payloadcms/richtext-lexical'
 
 export const Footer: GlobalConfig = {
   slug: 'footer',
@@ -30,6 +36,49 @@ export const Footer: GlobalConfig = {
               appearances: false,
             }),
           ],
+        },
+      ],
+    },
+    {
+      type: 'group',
+      name: 'middleRow',
+      fields: [
+        {
+          name: 'logos',
+          type: 'array',
+          fields: [
+            {
+              name: 'logo',
+              type: 'upload',
+              relationTo: 'media',
+            },
+          ],
+        },
+        {
+          name: 'brokerageServicesHeading',
+          type: 'text',
+        },
+        {
+          name: 'brokerageServicesText',
+          type: 'richText',
+          editor: lexicalEditor({
+            features: ({ rootFeatures }) => {
+              return [...rootFeatures, LinkFeature(), FixedToolbarFeature(), InlineToolbarFeature()]
+            },
+          }),
+        },
+        {
+          name: 'consumerProtectionHeading',
+          type: 'text',
+        },
+        {
+          name: 'consumerProtectionText',
+          type: 'richText',
+          editor: lexicalEditor({
+            features: ({ rootFeatures }) => {
+              return [...rootFeatures, LinkFeature(), FixedToolbarFeature(), InlineToolbarFeature()]
+            },
+          }),
         },
       ],
     },

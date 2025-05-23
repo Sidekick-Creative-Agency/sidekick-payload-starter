@@ -64,9 +64,9 @@ export const ArchiveBlock: React.FC<
   const flattenedTaxonomies =
     taxonomySlug === 'categories'
       ? categories?.map((category) => {
-          if (typeof category === 'object') return category.id
-          else return category
-        })
+        if (typeof category === 'object') return category.id
+        else return category
+      })
       : undefined
 
   const fetchedDocs = await payload.find({
@@ -75,59 +75,70 @@ export const ArchiveBlock: React.FC<
     limit: limit || 10,
     ...(relationTo === 'team-members'
       ? {
-          sort: ['lastName', 'title'],
-        }
+        sort: ['lastName', 'title'],
+      }
       : {}),
     where: {
-      ...(flattenedTaxonomies && flattenedTaxonomies.length > 0 && relationTo === 'posts'
+      ...((flattenedTaxonomies && flattenedTaxonomies.length > 0 && relationTo === 'posts')
         ? {
-            category: {
-              in: flattenedTaxonomies,
-            },
-          }
+          category: {
+            in: flattenedTaxonomies,
+          },
+        }
+        : {}),
+      ...(relationTo === 'listings'
+        ? {
+          availability: {
+            in: ['available', 'active'],
+          },
+        }
         : {}),
       ...(relationTo === 'listings' && propertyTypes
         ? {
-            category: {
-              equals: defaultCategoryFilter,
-            },
-          }
+          category: {
+            equals: defaultCategoryFilter,
+          },
+        }
         : {}),
       ...(relationTo === 'listings' && enablePropertyCategoryFilters
         ? {
-            propertyType: {
-              in: propertyTypes,
-            },
-          }
+          category: {
+            equals: defaultCategoryFilter,
+          },
+        }
         : {}),
+      ...((relationTo === 'listings' && defaultCategoryFilter === 'residential') && {
+        'MLS.ListOfficeName': {
+          equals: process.env.NEXT_PUBLIC_RETS_LIST_OFFICE_NAME || ''
+        }
+      }),
       ...(relationTo === 'listings' || relationTo === 'posts'
         ? {
-            or: [
-              {
-                _status: {
-                  exists: false,
-                },
+          or: [
+            {
+              _status: {
+                exists: false,
               },
-              {
-                _status: {
-                  equals: 'published',
-                },
-              },
-            ],
-          }
-        : {}),
-      ...(relationTo === 'posts' || (selectionType === 'manual' && manualSelection)
-        ? {
-            id: {
-              in: manualSelection?.map((post) => (post as Post).id),
             },
-          }
+            {
+              _status: {
+                equals: 'published',
+              },
+            },
+          ],
+        }
+        : {}),
+      ...((relationTo === 'posts' && selectionType === 'manual' && manualSelection)
+        ? {
+          id: {
+            in: manualSelection?.map((post) => (post as Post).id),
+          },
+        }
         : {}),
     },
   })
 
   archive = fetchedDocs.docs
-
   const renderArchive = () => {
     switch (relationTo) {
       case 'team-members':
