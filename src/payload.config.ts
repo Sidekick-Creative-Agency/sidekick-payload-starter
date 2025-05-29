@@ -54,6 +54,7 @@ import { PageTitle } from './blocks/Form/PageTitle/Field/input'
 import { TeamMemberEmail } from './blocks/Form/TeamMemberEmail/Field/input'
 import { generateContactFormSubmitterEmail } from './emails/Contact/Submitter'
 import { generateContactFormRecipientEmail } from './emails/Contact/Recipient'
+import { CookieBanner } from './CookieBanner/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -190,7 +191,7 @@ export default buildConfig({
     JobListings,
   ],
   cors: [process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'].filter(Boolean),
-  globals: [Header, Footer],
+  globals: [Header, Footer, CookieBanner],
   plugins: [
     redirectsPlugin({
       collections: ['pages', 'posts', 'listings'],

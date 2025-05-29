@@ -10,6 +10,7 @@ import { draftMode } from 'next/headers'
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
 import { AdminBar } from '@/components/AdminBar'
+import { CookieBanner } from '@/CookieBanner/Component'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
@@ -34,6 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Header />
           {children}
           <Footer />
+          <CookieBanner />
         </Providers>
         <Toaster />
       </body>
