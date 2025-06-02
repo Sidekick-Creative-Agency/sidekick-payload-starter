@@ -1,13 +1,11 @@
-import type { CollectionBeforeChangeHook } from 'payload'
+import { FieldHook } from 'payload'
 
-// The `user` collection has access control locked so that users are not publicly accessible
-// This means that we need to populate the authors manually here to protect user privacy
-// GraphQL will not return mutated user data that differs from the underlying schema
-// So we use an alternative `populatedAuthors` field to populate the user data, hidden from the admin UI
-export const populateLastName: CollectionBeforeChangeHook = async ({ data }) => {
-  if (data?.title) {
-    data.lastName = data.title.split(' ')[data.title.split(' ').length - 1]
+export const populateLastName: FieldHook = async ({ siblingData, req: { payload } }) => {
+  if (siblingData?.title?.split(' ').length > 1) {
+    const lastName = siblingData.title.split(' ')[siblingData.title.split(' ').length - 1]
+    payload.logger.info(`Populating Last Name: ${lastName}`)
+    return lastName
   }
-
-  return data
+  payload.logger.info('No last name found. Skipping population of last name.')
+  return ''
 }

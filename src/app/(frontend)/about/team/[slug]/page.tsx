@@ -18,7 +18,6 @@ import RichText from '@/components/RichText'
 import { PageClient } from './page.client'
 import { TestimonialCarousel } from '@/components/TeamMembers/TestimonialCarousel'
 import { Listing, Media as MediaType } from '@/payload-types'
-import { ListingArchiveGrid } from '@/components/Archive/ListingArchive'
 import {
   Carousel,
   CarouselContent,
@@ -27,7 +26,6 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 import { ListingCard } from '@/components/Listings/ListingCard'
-import { ContactForm } from '@/components/TeamMembers/ContactForm'
 import { FormBlock } from '@/blocks/Form/Component'
 import { Metadata } from 'next'
 import { cache } from 'react'
@@ -293,14 +291,18 @@ export default async function Page({ params: paramsPromise }: Args) {
               <div className="flex flex-col gap-4">
                 <h2 className="text-brand-gray-06 font-bold">Contact Me</h2>
                 <p className="text-brand-gray-04 font-light">
-                  Call me at{' '}
-                  <Link
-                    href={`tel:${teamMember?.details?.phone?.replaceAll('-', '')}`}
-                    className="underline"
-                  >
-                    {teamMember?.details?.phone}
-                  </Link>{' '}
-                  or fill out this form to get in touch!
+                  {teamMember?.details?.phone ? (
+                    <>Call me at <Link
+                      href={`tel:${teamMember?.details?.phone?.replaceAll('-', '')}`}
+                      className="underline"
+                    >
+                      {teamMember?.details?.phone}
+                    </Link> or fill </>
+                  ) : (
+                    'Fill '
+                  )
+                  }
+                  out this form to get in touch!
                 </p>
               </div>
               {/* @ts-ignore */}

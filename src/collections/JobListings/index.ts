@@ -12,6 +12,7 @@ import {
   LinkFeature,
 } from '@payloadcms/richtext-lexical'
 import { TextColorFeature } from '@/components/RichText/Color/features/textColor/feature.server'
+import { revalidateCareersPage } from './hooks/revalidateCareersPage'
 
 export const JobListings: CollectionConfig = {
   slug: 'job-listings',
@@ -50,13 +51,24 @@ export const JobListings: CollectionConfig = {
       }),
       required: true,
     },
-    {
-      name: 'active',
-      type: 'checkbox',
-      admin: {
-        description:
-          'If unchecked, this Job Listing will not show up on the front end of the website.',
+    // {
+    //   name: 'active',
+    //   type: 'checkbox',
+    //   admin: {
+    //     description:
+    //       'If unchecked, this Job Listing will not show up on the front end of the website.',
+    //   },
+    // },
+  ],
+  hooks: {
+    afterChange: [revalidateCareersPage],
+  },
+  versions: {
+    drafts: {
+      autosave: {
+        interval: 100, // We set this interval for optimal live preview
       },
     },
-  ],
+    maxPerDoc: 50,
+  },
 }

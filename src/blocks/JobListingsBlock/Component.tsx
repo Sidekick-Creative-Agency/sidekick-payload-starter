@@ -24,8 +24,8 @@ export const JobListingsBlock: React.FC<
   const jobListingsDocs = await payload.find({
     collection: 'job-listings',
     where: {
-      active: {
-        equals: true,
+      _status: {
+        equals: 'published',
       },
     },
   })

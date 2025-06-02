@@ -18,7 +18,7 @@ export const Actions: React.FC<ClientComponentProps> = (props) => {
 
   return (
     <div className="flex-grow flex items-center gap-[var(--base)]">
-      <Button onClick={handleRevalidateSite}>{isRevalidating ? 'Revalidating...' : 'Revalidate Site'}</Button>
+      <Button onClick={handleRevalidateSite} buttonStyle={'secondary'} size={'medium'} tooltip='This will clear the server cache. Use with caution.'>{isRevalidating ? 'Revalidating...' : 'Revalidate Site'}</Button>
 
       <Link href="/" target="_blank" aria-label="Go to live site">
         <ExternalLink className="w-6 text-white" />

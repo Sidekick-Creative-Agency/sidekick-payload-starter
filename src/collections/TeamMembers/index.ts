@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, FieldHook } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
@@ -20,6 +20,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { populateLastName } from './hooks/populateLastName'
+import { revalidateTeamPage } from './hooks/revalidateTeamPage'
 
 export const TeamMembers: CollectionConfig = {
   slug: 'team-members',
@@ -44,8 +45,10 @@ export const TeamMembers: CollectionConfig = {
       name: 'lastName',
       type: 'text',
       admin: {
-        // hidden: true,
-        // position: 'sidebar',
+        hidden: true,
+      },
+      hooks: {
+        afterRead: [populateLastName],
       },
     },
     {
@@ -215,23 +218,10 @@ export const TeamMembers: CollectionConfig = {
       type: 'join',
       collection: 'listings',
       on: 'agents',
-      admin: {
-        position: 'sidebar',
-      },
     },
     ...slugField(),
   ],
   hooks: {
-    // afterRead: [populateLastName],
-    afterChange: [revalidateTeamMember],
-    beforeChange: [populateLastName],
+    afterChange: [revalidateTeamMember, revalidateTeamPage],
   },
-  // versions: {
-  //   drafts: {
-  //     autosave: {
-  //       interval: 100, // We set this interval for optimal live preview
-  //     },
-  //   },
-  //   maxPerDoc: 50,
-  // },
 }

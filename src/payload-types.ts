@@ -1448,12 +1448,9 @@ export interface JobListing {
     };
     [k: string]: unknown;
   };
-  /**
-   * If unchecked, this Job Listing will not show up on the front end of the website.
-   */
-  active?: boolean | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2424,9 +2421,9 @@ export interface TeamMembersSelect<T extends boolean = true> {
 export interface JobListingsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
-  active?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
