@@ -184,6 +184,20 @@ export const TeamMembers: CollectionConfig = {
               type: 'checkbox',
               defaultValue: false,
             },
+            {
+              name: 'isRealtor',
+              type: 'checkbox',
+              defaultValue: true,
+            },
+            {
+              name: 'company',
+              type: 'select',
+              defaultValue: 'onward',
+              options: [
+                { label: 'Onward', value: 'onward' },
+                { label: 'Alliance', value: 'alliance' },
+              ],
+            },
           ],
         },
         {
