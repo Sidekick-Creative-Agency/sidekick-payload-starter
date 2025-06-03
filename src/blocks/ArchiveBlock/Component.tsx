@@ -32,6 +32,7 @@ export const ArchiveBlock: React.FC<
     enableExcerpt,
     enableDate,
     enableGutter,
+    enableCategoryBanner
   } = props
 
   const limit = limitFromProps || 3
@@ -163,6 +164,7 @@ export const ArchiveBlock: React.FC<
             enableExcerpt={enableExcerpt}
             enableDate={enableDate}
             enableGutter={enableGutter}
+            enableBanner={enableCategoryBanner}
           />
         ) : (
           <PostArchiveCarousel

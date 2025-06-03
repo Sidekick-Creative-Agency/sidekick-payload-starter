@@ -79,6 +79,14 @@ export const ArchiveBlock: Block = {
       hasMany: true,
     },
     {
+      name: 'enableCategoryBanner',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: {
+        condition: (_, siblingData) => siblingData.relationTo === 'posts',
+      },
+    },
+    {
       name: 'categories',
       type: 'relationship',
       admin: {
@@ -105,6 +113,7 @@ export const ArchiveBlock: Block = {
       defaultValue: 10,
       label: 'Limit',
     },
+
     {
       name: 'enablePropertyCategoryFilters',
       label: 'Enable Category Filters',

@@ -32,6 +32,7 @@ interface PostArchiveGridProps {
   enableExcerpt?: boolean | null | undefined
   enableDate?: boolean | null | undefined
   enableGutter?: boolean | null | undefined
+  enableBanner?: boolean | null | undefined
 }
 
 export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
@@ -43,6 +44,7 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
   enableDate,
   enableGutter,
   buttonColor,
+  enableBanner
 }) => {
   const [posts, setPosts] = useState(data)
   const [currentPage, setCurrentPage] = useState(1)
@@ -157,6 +159,7 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
                       enableExcerpt={enableExcerpt}
                       enableDate={enableDate}
                       enableGutter={enableGutter}
+                      enableBanner={enableBanner}
                     />
                   </div>
                 </div>

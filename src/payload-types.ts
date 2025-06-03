@@ -589,6 +589,7 @@ export interface ArchiveBlock {
   relationTo?: ('posts' | 'team-members' | 'listings') | null;
   selectionType?: ('manual' | 'categories') | null;
   manualSelection?: (number | Post)[] | null;
+  enableCategoryBanner?: boolean | null;
   categories?: (number | Category)[] | null;
   propertyTypes?: (number | PropertyType)[] | null;
   limit?: number | null;
@@ -1750,6 +1751,7 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   relationTo?: T;
   selectionType?: T;
   manualSelection?: T;
+  enableCategoryBanner?: T;
   categories?: T;
   propertyTypes?: T;
   limit?: T;

@@ -14,6 +14,7 @@ interface PostCardProps {
   enableExcerpt?: boolean | null | undefined
   enableDate?: boolean | null | undefined
   enableGutter?: boolean | null | undefined
+  enableBanner?: boolean | null | undefined
 }
 export const PostCard: React.FC<PostCardProps> = ({
   post,
@@ -21,6 +22,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   enableDate,
   enableGutter,
   buttonColor,
+  enableBanner
 }) => {
   return (
     <Link href={`/posts/${post.slug}`} className="w-full relative flex flex-col pl-4">
@@ -30,7 +32,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         imgClassName="absolute top-0 left-0 object-cover w-full h-full"
         size="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (min-width: 1025px) 33.3vw"
       />
-      {post.category && (
+      {enableBanner && post.category && (
         <div
           className={`absolute top-4 left-0 py-2 px-6 bg-brand-navy before:border-l-brand-navy before:content-[''] before:absolute before:top-full before:left-0 before:w-0 before:h-0 before:border-[.725rem] before:border-transparent  before:opacity-50 before:-rotate-45 before:origin-top-left`}
         >
