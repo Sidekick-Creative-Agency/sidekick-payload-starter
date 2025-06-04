@@ -27,6 +27,7 @@ type RETSListing = {
   ListOfficeKeyNumeric: number | undefined
   ListOfficeName: string | undefined
   ListPrice: number | undefined
+  LivingArea: number | undefined
   Longitude: number | undefined
   ModificationTimestamp: string | undefined
   PhotosChangeTimestamp: string | undefined
@@ -55,7 +56,7 @@ const fetchRETSListings = async () => {
   searchParams.append('format', 'COMPACT')
   searchParams.append(
     'select',
-    'ListingKeyNumeric,City,Latitude,ListAgentFullName,ListAgentKeyNumeric,ListOfficeKeyNumeric,ListOfficeName,ListPrice,Longitude,ModificationTimestamp,PhotosChangeTimestamp,PhotosCount,PostalCode,PropertySubType,PropertyType,PublicRemarks,StateOrProvince,StreetName,StreetNumber,StreetSuffix,LotSizeAcres,LotSizeArea,LotSizeSquareFeet,LotSizeUnits,BedroomsTotal,BathroomsTotalInteger',
+    'ListingKeyNumeric,City,Latitude,ListAgentFullName,ListAgentKeyNumeric,ListOfficeKeyNumeric,ListOfficeName,ListPrice,LivingArea,Longitude,ModificationTimestamp,PhotosChangeTimestamp,PhotosCount,PostalCode,PropertySubType,PropertyType,PublicRemarks,StateOrProvince,StreetName,StreetNumber,StreetSuffix,LotSizeAcres,LotSizeArea,LotSizeSquareFeet,LotSizeUnits,BedroomsTotal,BathroomsTotalInteger',
   )
 
   const client = new DigestClient(process.env.RETS_USERNAME, process.env.RETS_PASSWORD, {
@@ -91,6 +92,9 @@ const fetchRETSListings = async () => {
             ListOfficeName: listingData[columns.indexOf('ListOfficeName')] || undefined,
             ListPrice: listingData[columns.indexOf('ListPrice')]
               ? Number(listingData[columns.indexOf('ListPrice')])
+              : undefined,
+            LivingArea: listingData[columns.indexOf('LivingArea')]
+              ? Number(listingData[columns.indexOf('LivingArea')])
               : undefined,
             Longitude: listingData[columns.indexOf('Longitude')]
               ? Number(listingData[columns.indexOf('Longitude')])
@@ -193,6 +197,21 @@ export const importResidentialListings = async () => {
         })
         if (matchingListing.docs && matchingListing.docs[0]) {
           console.log('LISTING ALREADY EXISTS: ' + matchingListing.docs[0].title)
+          if (matchingListing.docs[0].area !== listing.LivingArea) {
+            console.log(
+              `UPDATING AREA FOR LISTING: ${matchingListing.docs[0].title} to ${listing.LivingArea}`,
+            )
+            await payload.update({
+              collection: 'listings',
+              id: matchingListing.docs[0].id,
+              data: {
+                area: listing.LivingArea,
+              },
+            })
+            console.log(
+              `UPDATED AREA FOR LISTING: ${matchingListing.docs[0].title} to ${listing.LivingArea}`,
+            )
+          }
           return
         }
         const urls = await fetchRETSPhotos(listing.ListingKeyNumeric, listing.PhotosCount)
@@ -265,7 +284,7 @@ export const importResidentialListings = async () => {
             })
           if (!createMediaResponse || createMediaResponse?.errors) {
             console.error(createMediaResponse)
-            console.error('Error creating Media:', createMediaResponse?.errors[0].data)
+            console.error('Error creating Media:', createMediaResponse?.err.message)
             return
           } else {
             console.log(
@@ -289,7 +308,7 @@ export const importResidentialListings = async () => {
               ? 'residential'
               : 'commercial',
             price: listing.ListPrice,
-            area: listing.LotSizeSquareFeet,
+            area: listing.LivingArea,
             acreage: listing.LotSizeAcres,
             // Default to Waco coordinates if not provided
             coordinates: [listing.Longitude || -97.2753695, listing.Latitude || 31.5532499],
@@ -329,6 +348,7 @@ export const importResidentialListings = async () => {
               FeaturedImageUrl: urls[0] || undefined,
               ImageGalleryUrls: urls.slice(1).map((url) => ({ url: url })),
             },
+            _status: 'published',
           },
         })
       }

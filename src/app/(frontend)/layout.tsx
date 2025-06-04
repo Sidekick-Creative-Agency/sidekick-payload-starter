@@ -9,8 +9,9 @@ import { draftMode } from 'next/headers'
 
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
-import { AdminBar } from '@/components/AdminBar'
+
 import { CookieBanner } from '@/CookieBanner/Component'
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
@@ -39,6 +40,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </Providers>
         <Toaster />
       </body>
+      <GoogleAnalytics gaId={process.env.GOOGLE_ANALYTICS_ID || ''} />
     </html>
   )
 }
