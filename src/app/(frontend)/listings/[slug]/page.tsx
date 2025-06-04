@@ -9,8 +9,6 @@ import React, { cache } from 'react'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
@@ -35,12 +33,9 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import RichText from '@/components/RichText'
-import { TeamMemberCard } from '@/components/TeamMembers/TeamMemberCard'
 import { formatPrice } from '@/utilities/formatPrice'
 import { formatNumber } from '@/utilities/formatNumber'
 import {
-  faChevronSquareUp,
-  faChevronSquareDown,
   faChevronDown,
   faChevronUp,
   faImage,
@@ -48,8 +43,6 @@ import {
 } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
 import { ListingMap } from '@/components/Map/Individual'
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
-import { ColumnsBlock } from '@/blocks/ColumnsBlock/Component'
-import { BRAND_COLORS } from '@/utilities/constants'
 import { Media } from '@/components/Media'
 import { Button } from '@/components/ui/button'
 import { Media as MediaType } from '@/payload-types'
@@ -60,11 +53,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import { SidebarForm } from '@/components/Listings/SidebarForm'
 import { notFound, redirect } from 'next/navigation'
 import { FormBlock } from '@/blocks/Form/Component'
 import Image from 'next/image'
-import { FooterForm } from '@/components/Listings/FooterForm'
 import Link from 'next/link'
 
 export async function generateStaticParams() {
@@ -72,12 +63,12 @@ export async function generateStaticParams() {
   const listings = await payload.find({
     collection: 'listings',
     draft: false,
-    limit: 1000,
+    pagination: false,
     overrideAccess: false,
   })
 
-  const params = listings.docs.map(({ slug }) => {
-    return { slug }
+  const params = listings.docs.map(({ slug, title }, index) => {
+    return { slug: String(slug) }
   })
   return params
 }
