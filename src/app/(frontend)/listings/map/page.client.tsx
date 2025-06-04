@@ -687,11 +687,13 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
               {(isFirstRender || isLoading) && (
                 <FontAwesomeIcon icon={faCircleNotch} className="animate-spin w-4 h-auto inline" />
               )}
+              {/* `${currentPage * limit - limit + 1 !== totalListings ? `${currentPage * limit - limit + 1}-${hasNextPage ? currentPage * limit : totalListings}` : totalListings}`}{' '}
+              // of {totalListings} Listings */}
               {!isFirstRender &&
                 !isLoading &&
                 currentPage &&
-                `${currentPage * limit - limit + 1 !== totalListings ? `${currentPage * limit - limit + 1}-${hasNextPage ? currentPage * limit : totalListings}` : totalListings}`}{' '}
-              of {totalListings} Listings
+
+                `${totalListings} Listings`}
             </span>
             <DropdownMenu open={isSortOpen} onOpenChange={setIsSortOpen}>
               <DropdownMenuTrigger className="text-lg text-brand-gray-03 font-medium tracking-normal flex items-center gap-2 rounded-none focus:outline-none focus:ring-2 focus:ring-brand-navy focus:ring-offset-2">

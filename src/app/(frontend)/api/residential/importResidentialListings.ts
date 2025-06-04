@@ -1,7 +1,6 @@
 'use server'
 import DigestClient from 'digest-fetch'
 import { XMLParser } from 'fast-xml-parser'
-import fs from 'fs'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { $getRoot, $getSelection, SerializedEditorState } from 'lexical'
@@ -108,9 +107,9 @@ const fetchRETSListings = async () => {
             PropertyType: listingData[columns.indexOf('PropertyType')] || undefined,
             PublicRemarks: listingData[columns.indexOf('PublicRemarks')] || undefined,
             StateOrProvince: listingData[columns.indexOf('StateOrProvince')] || undefined,
-            StreetName: listingData[columns.indexOf('StreetName')] || undefined,
-            StreetNumber: listingData[columns.indexOf('StreetNumber')] || undefined,
-            StreetSuffix: listingData[columns.indexOf('StreetSuffix')] || undefined,
+            StreetName: listingData[columns.indexOf('StreetName')] || '',
+            StreetNumber: listingData[columns.indexOf('StreetNumber')] || '',
+            StreetSuffix: listingData[columns.indexOf('StreetSuffix')] || '',
             LotSizeAcres: listingData[columns.indexOf('LotSizeAcres')]
               ? Number(listingData[columns.indexOf('LotSizeAcres')])
               : undefined,
@@ -132,10 +131,15 @@ const fetchRETSListings = async () => {
         })
       }),
     )
+  console.log(`Fetched ${listings.length} listings from RETS`)
   return listings
 }
 
-const fetchRETSPhotos = async (listingKeyNumeric: number, photosCount: number) => {
+const fetchRETSPhotos = async (listingKeyNumeric: number, photosCount: number | undefined) => {
+  if (!photosCount || photosCount === 0) {
+    console.log('NO PHOTOS COUNT PROVIDED OR ZERO PHOTOS COUNT')
+    return []
+  }
   const searchParams = new URLSearchParams()
   searchParams.append('type', 'HighRes')
   searchParams.append('resource', 'Property')
@@ -176,18 +180,14 @@ export const importResidentialListings = async () => {
   const listings = await fetchRETSListings()
   const createdListings = await Promise.all(
     listings.map(async (listing, index) => {
-      console.log(listing.ListOfficeName)
-      if (
-        listing.ListingKeyNumeric &&
-        listing.PhotosCount &&
-        listing.ListOfficeName === process.env.NEXT_PUBLIC_RETS_LIST_OFFICE_NAME
-      ) {
+      console.log(index)
+      if (listing.ListingKeyNumeric) {
         const matchingListing = await payload.find({
           collection: 'listings',
           limit: 1,
           where: {
             title: {
-              equals: `${listing.StreetNumber} ${listing.StreetName} ${listing.StreetSuffix}, ${listing.City}, ${listing.StateOrProvince} ${listing.PostalCode}`,
+              equals: `${listing.StreetNumber} ${listing.StreetName}${listing.StreetSuffix && ` ${listing.StreetSuffix}`}, Waco, ${listing.StateOrProvince} ${listing.PostalCode}`,
             },
           },
         })
@@ -280,16 +280,19 @@ export const importResidentialListings = async () => {
         return await payload.create({
           collection: 'listings',
           data: {
-            title: `${listing.StreetNumber} ${listing.StreetName} ${listing.StreetSuffix}, ${listing.City}, ${listing.StateOrProvince} ${listing.PostalCode}`,
+            title: `${listing.StreetNumber} ${listing.StreetName}${listing.StreetSuffix && ` ${listing.StreetSuffix}`}, Waco, ${listing.StateOrProvince} ${listing.PostalCode}`,
             streetAddress: `${listing.StreetNumber} ${listing.StreetName} ${listing.StreetSuffix}`,
             city: 'Waco',
             state: listing.StateOrProvince || '',
             zipCode: listing.PostalCode || '',
-            category: 'residential',
+            category: ['RESI', 'RINC', 'RLSE'].includes(listing?.PropertyType || '')
+              ? 'residential'
+              : 'commercial',
             price: listing.ListPrice,
             area: listing.LotSizeSquareFeet,
             acreage: listing.LotSizeAcres,
-            coordinates: [listing.Longitude || 0, listing.Latitude || 0],
+            // Default to Waco coordinates if not provided
+            coordinates: [listing.Longitude || -97.2753695, listing.Latitude || 31.5532499],
             bedrooms: listing.BedroomsTotal,
             bathrooms: listing.BathroomsTotalInteger,
             featuredImage: featuredImageId || 0,
