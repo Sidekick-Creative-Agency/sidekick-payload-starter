@@ -135,7 +135,7 @@ export default buildConfig({
     },
   },
   email: resendAdapter({
-    defaultFromAddress: 'onboarding@resend.dev',
+    defaultFromAddress: process.env.RESEND_DEFAULT_FROM_ADDRESS || 'info@onwardret.com',
     defaultFromName: 'Onward Real Estate Team',
     apiKey: process.env.RESEND_API_KEY || '',
   }),

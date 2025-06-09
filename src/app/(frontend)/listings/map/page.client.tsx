@@ -574,6 +574,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           if (error) throw error;
           if (image) mapRef.current?.addImage('onward-marker', image);
         })
+      mapRef.current?.on('moveend', () => {
+        console.log(mapRef.current?.getBounds())
+      })
     })
 
     // FETCH PROPERTIES ON FIRST RENDER
