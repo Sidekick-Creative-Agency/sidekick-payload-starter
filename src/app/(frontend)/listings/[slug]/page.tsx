@@ -96,7 +96,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
 
   if (!listing) return <PayloadRedirects url={url} />
   // if (!listing) notFound()
-  if (!listing) redirect('/listings')
+  // if (!listing) redirect('/listings')
 
   return (
     <article>
