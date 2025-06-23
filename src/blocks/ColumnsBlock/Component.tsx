@@ -7,6 +7,17 @@ import type { Page } from '@/payload-types'
 
 import { CMSLink } from '../../components/Link'
 import { Media } from '@/components/Media'
+import {
+  BRAND_BORDER_COLOR_CLASSES,
+  BRAND_BACKGROUND_COLOR_CLASSES,
+  BRAND_BEFORE_BACKGROUND_COLOR_CLASSES,
+  BRAND_TEXT_COLOR_CLASSES,
+  BRAND_BACKGROUND_COLOR_HOVER_CLASSES,
+  BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES,
+  BRAND_TEXT_COLOR_HOVER_CLASSES,
+  SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS,
+} from '@/utilities/constants'
+import * as motion from 'motion/react-client'
 
 type Props = Extract<Page['layout'][0], { blockType: 'columnsBlock' }>
 
@@ -15,23 +26,23 @@ export const ColumnsBlock: React.FC<
     id?: string
   } & Props
 > = (props) => {
-  const {
-    id,
-    columns,
-    reverseWrap,
-    paddingVerticalDesktopValue: pyDesktopVal,
-    paddingVerticalDesktopUnit: pyDesktopUnit,
-    paddingVerticalTabletValue: pyTabletVal,
-    paddingVerticalTabletUnit: pyTabletUnit,
-    paddingVerticalMobileValue: pyMobileVal,
-    paddingVerticalMobileUnit: pyMobileUnit,
-  } = props
+  const { id, columns, styles, elementId, customCss } = props
+  const width = styles?.global?.width || 'boxed'
+  const blockBgColor = styles?.global?.backgroundColor
+  const reverseWrap = styles?.resp?.reverseWrap
+  const enableDivider = styles?.global?.enableDivider
+  const dividerColor = styles?.global?.dividerColor
+
+  const widthClasses = {
+    full: 'max-w-full',
+    boxed: '',
+  }
   const flexDirection = reverseWrap ? 'columnReverse' : 'column'
   const colsSpanClasses = {
-    full: '12',
-    half: '6',
-    oneThird: '4',
-    twoThirds: '8',
+    full: 'w-full sm:col-span-4 lg:col-span-12',
+    half: 'w-full sm:col-span-2 lg:col-span-6',
+    oneThird: 'w-full sm:col-span-2 lg:col-span-4',
+    twoThirds: 'w-full sm:col-span-2 lg:col-span-8',
   }
   const flexDirectionClasses = {
     column: 'flex-col',
@@ -46,65 +57,148 @@ export const ColumnsBlock: React.FC<
     xxl: 'rounded-media2Xl',
     full: 'rounded-full',
   }
-  const pyDesktop = pyDesktopVal && pyDesktopUnit ? `${pyDesktopVal}${pyDesktopUnit}` : ''
-  const pyTablet = pyTabletVal && pyTabletUnit ? `${pyTabletVal}${pyTabletUnit}` : ''
-  const pyMobile = pyMobileVal && pyMobileUnit ? `${pyMobileVal}${pyMobileUnit}` : ''
-
+  const subtitleAlignClasses = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
+  }
+  const blockTwBackgroundColor = BRAND_BACKGROUND_COLOR_CLASSES[blockBgColor || 'transparent']
   return (
     <>
-      <style>
-        {`.columns-block-${id} {
-       padding-top: ${pyMobile};
-       padding-bottom: ${pyMobile};
-
-       @media screen and (min-width: ${defaultTheme.screens.md}) {
-          padding-top: ${pyTablet};
-          padding-bottom: ${pyTablet};
-       }
-          @media screen and (min-width: ${defaultTheme.screens.lg}) {
-          padding-top: ${pyDesktop};
-          padding-bottom: ${pyDesktop};
-       }
-      }`}
-      </style>
-      <div className={`container columns-block-${id}`}>
+      {customCss && <style>{customCss}</style>}
+      <div
+        className={`columns-block-${id} ${blockTwBackgroundColor} ${elementId && 'scroll-m-10'}`}
+        {...(elementId ? { id: elementId } : {})}
+      >
         <div
-          className={cn(
-            `flex ${flexDirectionClasses[flexDirection]} sm:grid sm:grid-cols-4 lg:grid-cols-12 gap-y-8 gap-x-16`,
-          )}
+          className={`${widthClasses[width]} ${width !== 'full' ? 'py-20 md:py-24 lg:py-32 container' : ''}`}
         >
-          {columns &&
-            columns.length > 0 &&
-            columns.map((col, index) => {
-              const { enableLink, link, richText, size, media, type, mediaBorderRadius } = col
+          <div
+            className={cn(
+              `flex ${flexDirectionClasses[flexDirection]} sm:grid sm:grid-cols-4 lg:grid-cols-12  ${width !== 'full' && !enableDivider && 'gap-y-8'}`,
+            )}
+          >
+            {columns &&
+              columns.length > 0 &&
+              columns.map((col, index) => {
+                const {
+                  enableLinks,
+                  links,
+                  enableSubtitle,
+                  subtitle,
+                  subtitleAlign,
+                  subtitleColor,
+                  richText,
+                  size,
+                  media,
+                  type,
+                  mediaBorderRadius,
+                  backgroundColor: colBgColor,
+                  backgroundImage,
+                  styles,
+                } = col
+                const colTwBackgroundColor =
+                  BRAND_BACKGROUND_COLOR_CLASSES[colBgColor || 'transparent']
 
-              return (
-                <div
-                  className={cn(
-                    `lg:col-span-${colsSpanClasses[size || 'full']} flex flex-col justify-center items-stretch sm:items-start gap-4`,
-                    {
-                      'sm:col-span-2': size !== 'full',
-                    },
-                  )}
-                  key={index}
-                >
-                  {type === 'text' && (
-                    <>
-                      {richText && <RichText content={richText} enableGutter={false} />}
-                      {enableLink && <CMSLink {...link} />}
-                    </>
-                  )}
-                  {type === 'media' && media && (
-                    <Media
-                      resource={media}
-                      className={cn(
-                        `${mediaBorderRadiusClasses[mediaBorderRadius || 'none']} overflow-hidden`,
-                      )}
-                    />
-                  )}
-                </div>
-              )
-            })}
+                return (
+                  <div
+                    className={`relative ${colsSpanClasses[size || 'full']}
+                    ${
+                      type === 'text'
+                        ? width === 'full'
+                          ? `px-5 py-20 sm:px-10 sm:py-32 lg:px-20 ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}`
+                          : enableDivider
+                            ? index === 0
+                              ? 'pb-10 sm:pb-0 sm:pr-20'
+                              : index === columns.length - 1
+                                ? 'pt-10 sm:pl-20 sm:pt-0'
+                                : 'py-10 sm:px-10 sm:py-0'
+                            : size !== 'full'
+                              ? index === 0
+                                ? 'sm:pr-12 md:pr-16'
+                                : index === columns.length - 1
+                                  ? 'sm:pl-12 md:pl-16'
+                                  : 'sm:px-5'
+                              : ''
+                        : width === 'full'
+                          ? `${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}`
+                          : size !== 'full'
+                            ? index === 0
+                              ? 'sm:pr-12 md:pr-16'
+                              : index === columns.length - 1
+                                ? 'sm:pl-12 md:pl-16'
+                                : 'sm:px-5'
+                            : ''
+                    } flex flex-col justify-center items-stretch sm:items-start ${colTwBackgroundColor} ${index !== 0 && enableDivider && `before:absolute before:content-[""] before:left-0 before:top-0 before:h-[1px] sm:before:h-full before:w-full sm:before:w-[1px] ${BRAND_BEFORE_BACKGROUND_COLOR_CLASSES[dividerColor || 'transparent']} before:opacity-50`}`}
+                    key={index}
+                  >
+                    {type === 'text' && (
+                      <div
+                        className={`relative ${width !== 'full' ? `${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']}` : 'w-[40rem] max-w-full mx-auto'}  `}
+                      >
+                        {enableSubtitle && subtitle && (
+                          <motion.span
+                            className={`inline-block w-full uppercase tracking-widest leading-none text-base font-basic-sans font-bold mb-2 z-10 relative ${subtitleAlignClasses[subtitleAlign || 'left']} ${BRAND_TEXT_COLOR_CLASSES[subtitleColor || 'tan']}`}
+                            initial={{ y: 20, opacity: 0 }}
+                            whileInView={{ y: 0, opacity: 1 }}
+                            viewport={{ once: true, amount: 'all' }}
+                          >
+                            {subtitle}
+                          </motion.span>
+                        )}
+                        {richText && (
+                          <RichText
+                            content={richText}
+                            enableGutter={false}
+                            className="z-10 relative [&_a]:no-underline"
+                          />
+                        )}
+                        {enableLinks && links && links.length > 0 && (
+                          <div className="mt-10 flex gap-4 lg:gap-6 flex-wrap justify-start">
+                            {links.map((link) => {
+                              return (
+                                <CMSLink
+                                  key={link.id}
+                                  {...link.link}
+                                  className={`z-10 relative w-full lg:w-auto ${BRAND_TEXT_COLOR_CLASSES[link.link.textColor || 'white']} ${
+                                    link.link.appearance === 'default'
+                                      ? `${BRAND_BACKGROUND_COLOR_CLASSES[link.link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[link.link.backgroundColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[link.link.backgroundColor || 'navy']} hover:bg-opacity-90 focus-visible:bg-opacity-90 ${BRAND_BORDER_COLOR_CLASSES[link.link.backgroundColor || 'navy']}`
+                                      : `${BRAND_BORDER_COLOR_CLASSES[link.link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_HOVER_CLASSES[link.link.borderColor || 'navy']} ${BRAND_BACKGROUND_COLOR_FOCUS_VISIBLE_CLASSES[link.link.borderColor || 'navy']} ${link.link.borderColor && BRAND_TEXT_COLOR_HOVER_CLASSES[SHOULD_USE_DARK_TEXT_BACKGROUND_COLORS.includes(link.link.borderColor) ? 'navy' : 'white']}`
+                                  }`}
+                                />
+                              )
+                            })}
+                          </div>
+                        )}
+                        {backgroundImage && width !== 'full' && (
+                          <Media
+                            resource={backgroundImage}
+                            className={`absolute top-0 left-0 w-full h-full pointer-events-none z-0 `}
+                            imgClassName="w-full h-full object-cover"
+                            size="(max-width: 768px) 100vw, (min-width:769px) 50vw"
+                          />
+                        )}
+                      </div>
+                    )}
+                    {backgroundImage && width === 'full' && (
+                      <Media
+                        resource={backgroundImage}
+                        className={`absolute top-0 left-0 w-full h-full pointer-events-none z-0 `}
+                        imgClassName="w-full h-full object-cover"
+                      />
+                    )}
+                    {type === 'media' && media && (
+                      <Media
+                        resource={media}
+                        className={`relative aspect-[5/4] overflow-hidden w-full h-auto z-0 ${styles && styles.enableTopBorder && styles.borderColor && `border-t-[.625rem]`} ${BRAND_BORDER_COLOR_CLASSES[styles?.borderColor || 'transparent']} ${width !== 'full' ? `sm:aspect-square ${mediaBorderRadiusClasses[mediaBorderRadius || 'none']}` : 'sm:aspect-auto sm:h-full'}`}
+                        imgClassName="absolute top-0 left-0 w-full h-full object-cover"
+                        size="(max-width: 768px) 100vw, (min-width:769px) 50vw"
+                      />
+                    )}
+                  </div>
+                )
+              })}
+          </div>
         </div>
       </div>
     </>

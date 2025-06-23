@@ -25,11 +25,14 @@ export const State: React.FC<
       }>
     >
     className?: string
+    placeholder?: string
+    fieldClassName?: string
   }
-> = ({ name, control, errors, label, required, width, className }) => {
+> = ({ name, control, errors, label, required, width, className, placeholder, fieldClassName }) => {
   return (
     <div className={className}>
-      <Label htmlFor={name}>{label}</Label>
+      {label && <Label htmlFor={name}>{label}</Label>}
+
       <Controller
         control={control}
         defaultValue=""
@@ -39,13 +42,13 @@ export const State: React.FC<
 
           return (
             <Select onValueChange={(val) => onChange(val)} value={controlledValue?.value}>
-              <SelectTrigger className="w-full" id={name}>
-                <SelectValue placeholder={label} />
+              <SelectTrigger className={`w-full rounded-none text-sm ${fieldClassName}`} id={name}>
+                <SelectValue placeholder={placeholder} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white rounded-none">
                 {stateOptions.map(({ label, value }) => {
                   return (
-                    <SelectItem key={value} value={value}>
+                    <SelectItem key={value} value={value} className="rounded-none">
                       {label}
                     </SelectItem>
                   )
@@ -56,7 +59,7 @@ export const State: React.FC<
         }}
         rules={{ required }}
       />
-      {required && errors[name] && <Error />}
+      {required && errors[name] && <Error error={errors[name]} />}
     </div>
   )
 }

@@ -62,9 +62,25 @@ export const TextAreaField: Block = {
       ],
     },
     {
-      name: 'required',
-      type: 'checkbox',
-      label: 'Required',
+      type: 'row',
+      fields: [
+        {
+          name: 'placeholder',
+          type: 'text',
+          admin: {
+            width: '50%',
+          },
+          localized: true,
+        },
+        {
+          name: 'required',
+          type: 'checkbox',
+          label: 'Required',
+          admin: {
+            width: '50%',
+          },
+        },
+      ],
     },
   ],
 }

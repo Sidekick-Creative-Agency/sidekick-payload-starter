@@ -36,12 +36,40 @@ export const searchFields: Field[] = [
       },
     ],
   },
+  // {
+  //   label: 'Categories',
+  //   name: 'categories',
+  //   type: 'array',
+  //   admin: {
+  //     readOnly: true,
+  //     condition: (props) => {
+  //       return props.doc.relationTo === 'posts'
+  //     },
+  //   },
+  //   fields: [
+  //     {
+  //       name: 'relationTo',
+  //       type: 'text',
+  //     },
+  //     {
+  //       name: '_id',
+  //       type: 'text',
+  //     },
+  //     {
+  //       name: 'title',
+  //       type: 'text',
+  //     },
+  //   ],
+  // },
   {
-    label: 'Categories',
-    name: 'categories',
+    label: 'Property Types',
+    name: 'propertyTypes',
     type: 'array',
     admin: {
       readOnly: true,
+      condition: (props) => {
+        return props.doc.relationTo === 'property-types'
+      },
     },
     fields: [
       {

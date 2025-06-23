@@ -6,6 +6,16 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import { DesktopHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Desktop'
+import { DesktopVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Desktop'
+import { TabletHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Tablet'
+import { TabletVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Tablet'
+import { MobileHorizontalPaddingField } from '@/fields/Styles/Padding/Horizontal/Mobile'
+import { MobileVerticalPaddingField } from '@/fields/Styles/Padding/Vertical/Mobile'
+import { StylesField } from '@/fields/Styles'
+import { TextColorFeature } from '@/components/RichText/Color/features/textColor/feature.server'
+import { BRAND_COLORS } from '@/utilities/constants'
+import { AdvancedFields } from '@/fields/Advanced'
 
 export const FormBlock: Block = {
   slug: 'formBlock',
@@ -16,11 +26,6 @@ export const FormBlock: Block = {
       type: 'relationship',
       relationTo: 'forms',
       required: true,
-      defaultValue: async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/forms`)
-        const data: PaginatedDocs<{ id: string }> = await response.json()
-        return data?.docs?.at(0)?.id
-      },
     },
     {
       name: 'enableIntro',
@@ -40,11 +45,53 @@ export const FormBlock: Block = {
             HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
             FixedToolbarFeature(),
             InlineToolbarFeature(),
+            TextColorFeature({
+              colors: BRAND_COLORS.map((color) => {
+                return {
+                  type: 'button',
+                  label: color.label,
+                  color: color.value,
+                }
+              }),
+            }),
           ]
         },
       }),
       label: 'Intro Content',
     },
+    StylesField({
+      globalFields: [
+        {
+          name: 'width',
+          type: 'select',
+          defaultValue: 'boxed',
+          options: [
+            { label: 'Full Width', value: 'full' },
+            { label: 'Boxed', value: 'boxed' },
+            { label: 'Narrow', value: 'narrow' },
+          ],
+        },
+        {
+          name: 'theme',
+          type: 'select',
+          defaultValue: 'default',
+          options: [
+            {
+              label: 'Default',
+              value: 'default',
+            },
+            {
+              label: 'Thin',
+              value: 'thin',
+            },
+          ],
+        },
+      ],
+      desktopFields: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
+      tabletFields: [TabletHorizontalPaddingField, TabletVerticalPaddingField],
+      mobileFields: [MobileHorizontalPaddingField, MobileVerticalPaddingField],
+    }),
+    AdvancedFields,
   ],
   graphQL: {
     singularName: 'FormBlock',

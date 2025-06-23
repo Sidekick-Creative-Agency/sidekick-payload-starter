@@ -1,26 +1,20 @@
 'use client'
 
-import { BRAND_COLORS } from '@/utilities/constants'
+import { BRAND_COLORS, BRAND_BACKGROUND_COLOR_CLASSES } from '@/utilities/constants'
 import { Button, useField } from '@payloadcms/ui'
+import './styles.scss'
 
-import { useEffect } from 'react'
-
-const colorClasses = BRAND_COLORS.reduce(
-  (prev, current) => ({ ...prev, [current]: `bg-brand-${current}` }),
-  {},
-)
-
-export const ColorPicker = () => {
-  const { value, setValue } = useField({ path: 'backgroundColor' })
+const ColorPicker = ({ path }: { path: string }) => {
+  const { value, setValue } = useField({ path })
 
   return (
-    <div className="flex gap-2 background-color-picker">
+    <div className="flex gap-2 color-picker flex-wrap mt-4">
       <style>
-        {`.background-color-picker {
+        {`.color-picker {
         ${BRAND_COLORS.map(
           (color) => `
             & .bg-${color} {
-                background-color: hsl(var(--brand-${color}));
+                background-color: var(--brand-${color});
             }`,
         ).join('\n')}
         }`}
@@ -28,12 +22,20 @@ export const ColorPicker = () => {
       {BRAND_COLORS.map((color) => {
         return (
           <Button
-            key={color}
-            className={`bg-${color} p-0 w-8 h-8 rounded-full `}
-            onClick={() => setValue(color)}
+            key={color.label}
+            className={`color-picker-swatch ${BRAND_BACKGROUND_COLOR_CLASSES[color.label]} ${value === color.label ? 'active' : ''} outline outline-2 outline-offset-2 p-0 w-8 h-8 rounded-full relative overflow-hidden m-0`}
+            onClick={() => {
+              if (value === color.label) {
+                setValue('')
+              } else {
+                setValue(color.label)
+              }
+            }}
           ></Button>
         )
       })}
     </div>
   )
 }
+
+export default ColorPicker

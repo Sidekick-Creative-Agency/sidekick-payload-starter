@@ -34,14 +34,27 @@ export const CountryField: Block = {
       ],
     },
     {
-      name: 'width',
-      type: 'select',
-      label: 'Field Width',
-      options: [
-        { label: 'One Third', value: 'oneThird' },
-        { label: 'Half', value: 'half' },
-        { label: 'Two Thirds', value: 'twoThirds' },
-        { label: 'Full', value: 'full' },
+      type: 'row',
+      fields: [
+        {
+          name: 'placeholder',
+          type: 'text',
+          admin: {
+            width: '50%',
+          },
+          localized: true,
+        },
+        {
+          name: 'width',
+          type: 'select',
+          label: 'Field Width',
+          options: [
+            { label: 'One Third', value: 'oneThird' },
+            { label: 'Half', value: 'half' },
+            { label: 'Two Thirds', value: 'twoThirds' },
+            { label: 'Full', value: 'full' },
+          ],
+        },
       ],
     },
     {

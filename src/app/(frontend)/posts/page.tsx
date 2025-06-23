@@ -39,7 +39,7 @@ export default async function Page() {
         />
       </div>
 
-      <CollectionArchiveGrid posts={posts.docs} />
+      {/* <CollectionArchiveGrid posts={posts.docs} /> */}
 
       <div className="container">
         {posts.totalPages > 1 && posts.page && (
@@ -52,6 +52,6 @@ export default async function Page() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Payload Website Template Posts`,
+    title: `Posts | Onward Real Estate Team`,
   }
 }

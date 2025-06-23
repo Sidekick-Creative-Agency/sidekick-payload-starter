@@ -25,14 +25,18 @@ export const Country: React.FC<
       }>
     >
     className?: string
-    width?: string
+    fieldClassName?: string
+    placeholder?: string
   }
-> = ({ name, control, errors, label, required, width, className }) => {
+> = ({ name, control, errors, label, required, className, placeholder, fieldClassName }) => {
   return (
     <div className={className}>
-      <Label className="" htmlFor={name}>
-        {label}
-      </Label>
+      {label && (
+        <Label className="" htmlFor={name}>
+          {label}
+        </Label>
+      )}
+
       <Controller
         control={control}
         defaultValue=""
@@ -42,13 +46,13 @@ export const Country: React.FC<
 
           return (
             <Select onValueChange={(val) => onChange(val)} value={controlledValue?.value}>
-              <SelectTrigger className="w-full" id={name}>
-                <SelectValue placeholder={label} />
+              <SelectTrigger className={`w-full rounded-none text-sm ${fieldClassName}`} id={name}>
+                <SelectValue placeholder={placeholder} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white rounded-none">
                 {countryOptions.map(({ label, value }) => {
                   return (
-                    <SelectItem key={value} value={value}>
+                    <SelectItem key={value} value={value} className="rounded-none">
                       {label}
                     </SelectItem>
                   )
@@ -59,7 +63,7 @@ export const Country: React.FC<
         }}
         rules={{ required }}
       />
-      {required && errors[name] && <Error />}
+      {required && errors[name] && <Error error={errors[name]} />}
     </div>
   )
 }

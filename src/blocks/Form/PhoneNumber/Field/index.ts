@@ -1,5 +1,4 @@
 import { formatFormFieldName } from '@/utilities/validateFieldName'
-import { Block } from 'payload'
 
 const validatePhoneNumber = (value: string) => {
   return !value || value === '' || Boolean(/^\d{10}$/.test(value))
@@ -68,9 +67,25 @@ export const PhoneNumber = {
       ],
     },
     {
-      name: 'required',
-      type: 'checkbox',
-      label: 'Required',
+      type: 'row',
+      fields: [
+        {
+          name: 'placeholder',
+          type: 'text',
+          admin: {
+            width: '50%',
+          },
+          localized: true,
+        },
+        {
+          name: 'required',
+          type: 'checkbox',
+          label: 'Required',
+          admin: {
+            width: '50%',
+          },
+        },
+      ],
     },
   ],
 }

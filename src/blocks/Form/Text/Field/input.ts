@@ -62,9 +62,33 @@ export const TextField: Block = {
       ],
     },
     {
-      name: 'required',
+      type: 'row',
+      fields: [
+        {
+          name: 'placeholder',
+          type: 'text',
+          admin: {
+            width: '50%',
+          },
+          localized: true,
+        },
+        {
+          name: 'required',
+          type: 'checkbox',
+          label: 'Required',
+          admin: {
+            width: '50%',
+          },
+        },
+      ],
+    },
+    {
+      name: 'hidden',
       type: 'checkbox',
-      label: 'Required',
+      label: 'Hidden',
+      admin: {
+        description: 'If checked, the field will not be displayed on the frontend.',
+      },
     },
   ],
 }

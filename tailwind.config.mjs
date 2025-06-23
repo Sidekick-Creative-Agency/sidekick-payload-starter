@@ -1,5 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: [
     './pages/**/*.{ts,tsx}',
@@ -8,7 +9,11 @@ export default {
     './src/**/*.{ts,tsx}',
   ],
   darkMode: ['selector', '[data-theme="dark"]'],
-  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/container-queries'),
+  ],
   prefix: '',
   safelist: [
     'lg:col-span-4',
@@ -36,7 +41,7 @@ export default {
         sm: '2.5rem',
       },
       screens: {
-        '2xl': '86rem',
+        '2xl': '92rem',
         xl: '80rem',
         lg: '64rem',
         md: '48rem',
@@ -93,10 +98,18 @@ export default {
           foreground: 'hsl(var(--secondary-foreground))',
         },
         brand: {
-          red: 'hsl(var(--brand-red))',
-          blue: 'hsl(var(--brand-blue))',
-          grey: 'hsl(var(--brand-grey))',
-          lightGrey: 'hsl(var(--brand-light-grey))',
+          navy: 'hsl(var(--brand-navy) / <alpha-value>)',
+          offWhite: 'hsl(var(--brand-off-white) / <alpha-value>)',
+          tan: 'hsl(var(--brand-tan) / <alpha-value>)',
+          blue: 'hsl(var(--brand-blue) / <alpha-value>)',
+          brown: 'hsl(var(--brand-brown) / <alpha-value>)',
+          green: 'hsl(var(--brand-green) / <alpha-value>)',
+          'gray-00': 'hsl(var(--brand-gray-00) / <alpha-value>)',
+          'gray-01': 'hsl(var(--brand-gray-01) / <alpha-value>)',
+          'gray-02': 'hsl(var(--brand-gray-02) / <alpha-value>)',
+          'gray-03': 'hsl(var(--brand-gray-03) / <alpha-value>)',
+          'gray-04': 'hsl(var(--brand-gray-04) / <alpha-value>)',
+          'gray-06': 'hsl(var(--brand-gray-06) / <alpha-value>)',
         },
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
@@ -105,6 +118,7 @@ export default {
       fontFamily: {
         mono: ['var(--font-geist-mono)'],
         sans: ['var(--font-geist-sans)'],
+        'basic-sans': ['basic-sans', 'sans-serif'],
       },
       keyframes: {
         'accordion-down': {
@@ -123,27 +137,32 @@ export default {
             '--tw-prose-headings': 'var(--text)',
             h1: {
               fontSize: '4rem',
-              fontWeight: '500',
+              fontWeight: '700',
               marginBottom: 0,
               marginTop: 0,
             },
             h2: {
               fontSize: '2.5rem',
-              fontWeight: '500',
+              fontWeight: '700',
               marginBottom: 0,
               marginTop: 0,
             },
             h3: {
-              fontWeight: '500',
+              fontSize: '2rem',
+              fontWeight: '700',
               lineHeight: 1.25,
               marginBottom: 0,
               marginTop: 0,
             },
             h4: {
-              fontWeight: '500',
+              fontWeight: '700',
               lineHeight: 1.25,
               marginBottom: 0,
               marginTop: 0,
+            },
+            p: {
+              fontWeight: '300',
+              lineHeight: 1.8,
             },
           },
         },

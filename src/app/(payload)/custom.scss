@@ -2,10 +2,25 @@
 @tailwind utilities;
 
 :root {
-  --brand-red: 3 75% 53%;
-  --brand-blue: 207 54% 51%;
-  --brand-grey: 240 2% 86%;
-  --brand-lightGrey: 210 4% 95%;
+  --brand-navy: 196 66% 13%;
+  --brand-off-white: 36 38% 95%;
+  --brand-tan: 25 27% 73%;
+  --brand-blue: 195 23% 73%;
+  --brand-brown: 23 14% 44%;
+  --brand-green: 69 19% 47%;
+  --brand-gray-00: 240 5% 96%;
+  --brand-gray-01: 0 0% 87%;
+  --brand-gray-02: 0 0% 75%;
+  --brand-gray-03: 0 0% 58%;
+  --brand-gray-04: 0 0% 46%;
+  --brand-gray-06: 0 0% 16%;
+  --tw-ring-inset: 0px;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
 }
 
 [data-theme='dark'] {

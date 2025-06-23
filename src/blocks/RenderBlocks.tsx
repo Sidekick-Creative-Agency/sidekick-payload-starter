@@ -1,24 +1,35 @@
-import { cn } from 'src/utilities/cn'
 import React, { Fragment } from 'react'
-
 import type { Page } from '@/payload-types'
-
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
-import { CallToActionBlock } from '@/blocks/CallToAction/Component'
-import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
-import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { FAQBlock } from './FAQBlock/Component'
 import { ColumnsBlock } from './ColumnsBlock/Component'
+import { NumberCountersBlock } from './NumberCounterBlock/Component'
+import { ExpertiseBlock } from './ExpertiseBlock/Component'
+import { TimelineBlock } from './TimelineBlock/Component'
+import { ReviewsBlock } from './ReviewsBlock/Component'
+import { JobListingsBlock } from './JobListingsBlock/Component'
+import { SocialProofCarouselBlock } from './SocialProofCarouselBlock/Component'
+import { MediaCarouselBlock } from './MediaCarouselBlock/Component'
+import { CardGridBlock } from './CardGridBlock/Component'
+import { FeaturedListingsBlock } from './FeaturedListingsBlock/Component'
+import { SearchBarBlock } from './SearchBarBlock/Component'
 
 const blockComponents = {
-  archive: ArchiveBlock,
-  content: ContentBlock,
-  cta: CallToActionBlock,
+  archiveBlock: ArchiveBlock,
   formBlock: FormBlock,
-  mediaBlock: MediaBlock,
   faqBlock: FAQBlock,
   columnsBlock: ColumnsBlock,
+  numberCountersBlock: NumberCountersBlock,
+  expertiseBlock: ExpertiseBlock,
+  timelineBlock: TimelineBlock,
+  reviewsBlock: ReviewsBlock,
+  jobListingsBlock: JobListingsBlock,
+  socialProofCarouselBlock: SocialProofCarouselBlock,
+  mediaCarouselBlock: MediaCarouselBlock,
+  cardGridBlock: CardGridBlock,
+  featuredListingsBlock: FeaturedListingsBlock,
+  searchBarBlock: SearchBarBlock,
 }
 
 export const RenderBlocks: React.FC<{
@@ -40,7 +51,7 @@ export const RenderBlocks: React.FC<{
             if (Block) {
               return (
                 <div key={index}>
-                  {/* @ts-expect-error */}
+                  {/* @ts-ignore */}
                   <Block {...block} />
                 </div>
               )

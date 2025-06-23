@@ -6,8 +6,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import defaultTheme from 'tailwindcss/defaultTheme'
+
 import RichText from '@/components/RichText'
+import * as motion from 'motion/react-client'
 
 type Props = Extract<Page['layout'][0], { blockType: 'faqBlock' }>
 
@@ -16,25 +17,7 @@ export const FAQBlock: React.FC<
     id?: string
   } & Props
 > = (props) => {
-  const {
-    id,
-    enableHeading,
-    heading,
-    headingAlign,
-    headingSpacingValue,
-    headingSpacingUnit,
-    faqs,
-    size,
-    paddingVerticalDesktopValue: pyDesktopVal,
-    paddingVerticalDesktopUnit: pyDesktopUnit,
-    paddingVerticalTabletValue: pyTabletVal,
-    paddingVerticalTabletUnit: pyTabletUnit,
-    paddingVerticalMobileValue: pyMobileVal,
-    paddingVerticalMobileUnit: pyMobileUnit,
-  } = props
-  const pyDesktop = pyDesktopVal && pyDesktopUnit ? `${pyDesktopVal}${pyDesktopUnit}` : ''
-  const pyTablet = pyTabletVal && pyTabletUnit ? `${pyTabletVal}${pyTabletUnit}` : ''
-  const pyMobile = pyMobileVal && pyMobileUnit ? `${pyMobileVal}${pyMobileUnit}` : ''
+  const { id, enableHeading, heading, faqs, size, elementId } = props
 
   const maxWidthClasses = {
     sm: 'max-w-4xl',
@@ -42,63 +25,63 @@ export const FAQBlock: React.FC<
     lg: 'max-w-7xl',
     full: 'max-w-full',
   }
-  const headingAlignClasses = {
-    left: 'text-left',
-    center: 'text-center',
-    right: 'text-right',
-    justify: 'text-justify',
-  }
 
   return (
     <>
-      <style>
-        {`.faq-block-${id} {
-       padding-top: ${pyMobile};
-       padding-bottom: ${pyMobile};
-      ${headingSpacingValue && headingSpacingUnit && `gap: ${headingSpacingValue}${headingSpacingUnit};`}
-
-       @media screen and (min-width: ${defaultTheme.screens.md}) {
-          padding-top: ${pyTablet};
-          padding-bottom: ${pyTablet};
-       }
-          @media screen and (min-width: ${defaultTheme.screens.lg}) {
-          padding-top: ${pyDesktop};
-          padding-bottom: ${pyDesktop};
-       }
-      }`}
-      </style>
-      <div className={`container faq-block-${id} flex flex-col items-stretch`}>
-        {enableHeading && heading && (
-          <h2
-            className={`${headingAlignClasses[headingAlign || 'left']} ${maxWidthClasses[size || 'full']} w-full mx-auto`}
+      <div
+        className={`faq-block-${id} flex flex-col items-stretch`}
+        {...(elementId ? { id: elementId } : {})}
+      >
+        <div className="container py-20 sm:py-32 flex flex-col gap-20">
+          {enableHeading && heading && (
+            <motion.h2
+              className="text-center text-[2.5rem] text-brand-gray-06 font-bold"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 'all' }}
+            >
+              {heading}
+            </motion.h2>
+          )}
+          <Accordion
+            type="single"
+            collapsible
+            className={`${maxWidthClasses[size || 'full']} w-full mx-auto`}
           >
-            {heading}
-          </h2>
-        )}
-        <Accordion
-          type="single"
-          collapsible
-          className={`${maxWidthClasses[size || 'full']} w-full mx-auto`}
-        >
-          {faqs &&
-            faqs.length > 0 &&
-            faqs.map((faq, index) => {
-              const { question, content, id: faqId } = faq
-              if (!faqId) {
-                return
-              }
-              return (
-                <AccordionItem key={faqId} value={faqId}>
-                  {question && <AccordionTrigger>{question}</AccordionTrigger>}
-                  {content && (
-                    <AccordionContent>
-                      <RichText content={content} enableGutter={false} />
-                    </AccordionContent>
-                  )}
-                </AccordionItem>
-              )
-            })}
-        </Accordion>
+            {faqs &&
+              faqs.length > 0 &&
+              faqs.map((faq, index) => {
+                const { question, content, id: faqId } = faq
+                if (!faqId) {
+                  return
+                }
+                return (
+                  <AccordionItem key={faqId} value={faqId}>
+                    {question && (
+                      <AccordionTrigger className="text-2xl text-brand-navy font-bold text-start hover:no-underline focus-visible:no-underline">
+                        <motion.span
+                          initial={{ y: 20, opacity: 0 }}
+                          whileInView={{ y: 0, opacity: 1 }}
+                          viewport={{ once: true, amount: 'all' }}
+                        >
+                          {question}
+                        </motion.span>
+                      </AccordionTrigger>
+                    )}
+                    {content && (
+                      <AccordionContent>
+                        <RichText
+                          content={content}
+                          enableGutter={false}
+                          className="text-base font-light text-brand-gray-04"
+                        />
+                      </AccordionContent>
+                    )}
+                  </AccordionItem>
+                )
+              })}
+          </Accordion>
+        </div>
       </div>
     </>
   )

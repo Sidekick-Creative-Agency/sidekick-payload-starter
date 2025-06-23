@@ -1,6 +1,3 @@
-import { CallToActionBlock } from '@/blocks/CallToAction/Component'
-import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
-import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import React, { Fragment, JSX } from 'react'
 import { CMSLink } from '@/components/Link'
 import { DefaultNodeTypes, SerializedBlockNode } from '@payloadcms/richtext-lexical'
@@ -15,14 +12,42 @@ import {
   IS_UNDERLINE,
 } from './nodeFormat'
 import type { Page } from '@/payload-types'
+import { FormBlock } from '@/blocks/Form/Component'
+import { ColumnsBlock } from '@/blocks/ColumnsBlock/Component'
+import {
+  SubtitleLexicalBlockProps,
+  SubtitleLexicalBlock,
+} from '@/blocks/Lexical/Subtitle/Component'
+import {
+  CarouselLexicalBlockProps,
+  CarouselLexicalBlock,
+} from '@/blocks/Lexical/Carousel/Component'
+import {
+  CheckmarkListLexicalBlockProps,
+  CheckmarkListLexicalBlock,
+} from '@/blocks/Lexical/CheckmarkList/Component'
+import { SpacerLexicalBlock, SpacerLexicalBlockProps } from '@/blocks/Lexical/Spacer/Component'
+import {
+  MediaGridLexicalBlock,
+  MediaGridLexicalBlockProps,
+} from '@/blocks/Lexical/MediaGrid/Component'
+import * as motion from 'motion/react-client'
+import {
+  LinkGroupLexicalBlock,
+  LinkGroupLexicalBlockProps,
+} from '@/blocks/Lexical/LinkGroup/Component'
 
 export type NodeTypes =
   | DefaultNodeTypes
   | SerializedBlockNode<
-      // @ts-ignore // TODO: Fix this
-      | Extract<Page['layout'][0], { blockType: 'cta' }>
-      | Extract<Page['layout'][0], { blockType: 'mediaBlock' }>
-      | CodeBlockProps
+      | Extract<Page['layout'][0], { blockType: 'formBlock' }>
+      | Extract<Page['layout'][0], { blockType: 'columnsBlock' }>
+      | SubtitleLexicalBlockProps
+      | CarouselLexicalBlockProps
+      | CheckmarkListLexicalBlockProps
+      | SpacerLexicalBlockProps
+      | MediaGridLexicalBlockProps
+      | LinkGroupLexicalBlockProps
     >
 
 type Props = {
@@ -38,7 +63,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
   }
   const headingSizeClasses = {
     h1: 'text-[2.5rem] md:text-[3.5rem] lg:text-[4rem]',
-    h2: 'text-[2rem] md:text-[2.5rem]',
+    h2: 'text-[2rem] md:text-[2.5rem] mb-4',
     h3: 'text-[1.5rem] md:text-[2rem]',
     h4: 'text-[1rem] md:text-[1.5rem]',
   }
@@ -80,6 +105,21 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
           if (node.format & IS_SUPERSCRIPT) {
             text = <sup key={index}>{text}</sup>
           }
+          if (node.style) {
+            const style: React.CSSProperties = {}
+
+            let match = node.style.match(/background-color: ([^;]+)/)
+            match && (style.backgroundColor = match[1])
+
+            match = node.style.match(/color: ([^;]+)/)
+            match && (style.color = match[1])
+
+            text = (
+              <span style={style} key={index}>
+                {text}
+              </span>
+            )
+          }
 
           return text
         }
@@ -114,24 +154,26 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
           if (!block || !blockType) {
             return null
           }
-
           switch (blockType) {
-            case 'cta':
-              return <CallToActionBlock key={index} {...block} />
-            case 'mediaBlock':
-              return (
-                <MediaBlock
-                  className="col-start-1 col-span-3"
-                  imgClassName="m-0"
-                  key={index}
-                  {...block}
-                  captionClassName="mx-auto max-w-[48rem]"
-                  enableGutter={false}
-                  disableInnerContainer={true}
-                />
-              )
-            case 'code':
-              return <CodeBlock className="col-start-2" key={index} {...block} />
+            case 'formBlock':
+              return typeof block.form !== 'number' ? (
+                // @ts-ignore
+                <FormBlock key={index} {...block} enableIntro={block.enableIntro || false} />
+              ) : null
+            case 'columnsBlock':
+              return <ColumnsBlock key={index} {...block} />
+            case 'subtitle':
+              return <SubtitleLexicalBlock key={index} {...block} />
+            case 'carousel':
+              return <CarouselLexicalBlock key={index} {...block} />
+            case 'checkmarkList':
+              return <CheckmarkListLexicalBlock key={index} {...block} />
+            case 'spacer':
+              return <SpacerLexicalBlock key={index} {...block} />
+            case 'mediaGrid':
+              return <MediaGridLexicalBlock key={index} {...block} />
+            case 'linkGroup':
+              return <LinkGroupLexicalBlock key={index} {...block} />
             default:
               return null
           }
@@ -142,9 +184,15 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             }
             case 'paragraph': {
               return (
-                <p className={`col-start-2 ${formatClasses[node.format]} `} key={index}>
+                <motion.p
+                  className={`col-start-2 ${node.format && formatClasses[node.format]} mb-3 mt-0 last:mb-0`}
+                  key={index}
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  viewport={{ once: true, amount: 'some', margin: '-128px 0px -16px 0px' }}
+                >
                   {serializedChildren}
-                </p>
+                </motion.p>
               )
             }
             case 'heading': {
@@ -154,7 +202,13 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
                   className={`col-start-2 ${headingSizeClasses[Tag]} ${node.format && `${formatClasses[node.format]}`} `}
                   key={index}
                 >
-                  {serializedChildren}
+                  <motion.span
+                    initial={{ y: 20, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true, amount: 'some', margin: '-128px 0px -16px 0px' }}
+                  >
+                    {serializedChildren}
+                  </motion.span>
                 </Tag>
               )
             }
@@ -169,23 +223,33 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             case 'listitem': {
               if (node?.checked != null) {
                 return (
-                  <li
+                  <motion.li
                     aria-checked={node.checked ? 'true' : 'false'}
-                    className={` ${node.checked ? '' : ''} ${formatClasses[node.format]} `}
+                    className={`has-[ul]:list-none has-[ol]:list-none ${node.checked ? '' : ''} ${formatClasses[node.format]}`}
                     key={index}
                     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
                     role="checkbox"
                     tabIndex={-1}
                     value={node?.value}
+                    initial={{ y: 20, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true, amount: 'some' }}
                   >
                     {serializedChildren}
-                  </li>
+                  </motion.li>
                 )
               } else {
                 return (
-                  <li key={index} value={node?.value}>
+                  <motion.li
+                    key={index}
+                    value={node?.value}
+                    initial={{ y: 20, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true, amount: 'some' }}
+                    className="has-[ul]:list-none has-[ol]:list-none"
+                  >
                     {serializedChildren}
-                  </li>
+                  </motion.li>
                 )
               }
             }

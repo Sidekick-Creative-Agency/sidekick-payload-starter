@@ -2,10 +2,12 @@
 
 import * as React from 'react'
 import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { cn } from 'src/utilities/cn'
 import { Button } from '@/components/ui/button'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronLeft, faChevronRight } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
@@ -147,25 +149,22 @@ const Carousel = React.forwardRef<
 })
 Carousel.displayName = 'Carousel'
 
-const CarouselContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => {
-    const { carouselRef, orientation } = useCarousel()
+const CarouselContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & { showOverflow?: boolean }
+>(({ className, showOverflow, ...props }, ref) => {
+  const { carouselRef, orientation } = useCarousel()
 
-    return (
-      <div ref={carouselRef} className="overflow-hidden">
-        <div
-          ref={ref}
-          className={cn(
-            'flex',
-            orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col',
-            className,
-          )}
-          {...props}
-        />
-      </div>
-    )
-  },
-)
+  return (
+    <div ref={carouselRef} className={`${!showOverflow && 'overflow-hidden'}`}>
+      <div
+        ref={ref}
+        className={cn('flex', orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col', className)}
+        {...props}
+      />
+    </div>
+  )
+})
 CarouselContent.displayName = 'CarouselContent'
 
 const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
@@ -179,7 +178,7 @@ const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
         aria-roledescription="slide"
         className={cn(
           'min-w-0 shrink-0 grow-0 basis-full',
-          orientation === 'horizontal' ? 'pl-4' : 'pt-4',
+          // orientation === 'horizontal' ? 'pl-4' : 'pt-4',
           className,
         )}
         {...props}
@@ -214,7 +213,7 @@ const CarouselDots = React.forwardRef<
             key={index}
             className={cn(
               'embla__dot p-0 h-3 w-3 rounded-full ',
-              index === selectedIndex ? 'embla__dot--selected ' : 'bg-primary-foreground',
+              index === selectedIndex ? 'embla__dot--selected' : 'bg-primary-foreground opacity-50',
               dotClassName,
             )}
             onClick={() => scrollTo(index)}
@@ -235,7 +234,7 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         variant={variant}
         size={size}
         className={cn(
-          'absolute  h-8 w-8 rounded-full',
+          'absolute h-8 w-8 ',
           orientation === 'horizontal'
             ? '-left-12 top-1/2 -translate-y-1/2'
             : '-top-12 left-1/2 -translate-x-1/2 rotate-90',
@@ -245,7 +244,12 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         onClick={scrollPrev}
         {...props}
       >
-        <ArrowLeft className="h-4 w-4" />
+        {!props.children ? (
+          <FontAwesomeIcon icon={faChevronLeft} className="w-full h-auto max-h-full" />
+        ) : (
+          props.children
+        )}
+
         <span className="sr-only">Previous slide</span>
       </Button>
     )
@@ -263,7 +267,7 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
         variant={variant}
         size={size}
         className={cn(
-          'absolute h-8 w-8 rounded-full',
+          'absolute h-8 w-8',
           orientation === 'horizontal'
             ? '-right-12 top-1/2 -translate-y-1/2'
             : '-bottom-12 left-1/2 -translate-x-1/2 rotate-90',
@@ -273,7 +277,12 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
         onClick={scrollNext}
         {...props}
       >
-        <ArrowRight className="h-4 w-4" />
+        {!props.children ? (
+          <FontAwesomeIcon icon={faChevronRight} className="w-full h-auto max-h-full" />
+        ) : (
+          props.children
+        )}
+
         <span className="sr-only">Next slide</span>
       </Button>
     )

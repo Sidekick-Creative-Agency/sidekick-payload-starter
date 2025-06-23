@@ -36,6 +36,9 @@
       "@/*": [
         "./src/*"
       ],
+      "@fontawesome-kit/*": [
+        "@awesome.me/kit-a7a0dd333d/*"
+      ]
     }
   },
   "include": [
@@ -43,8 +46,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "redirects.js",
-    "next.config.js"
-  ],
+    "next.config.ts"
+, "src/saveAllMedia.js"  ],
   "exclude": [
     "node_modules"
   ]

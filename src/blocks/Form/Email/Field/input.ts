@@ -34,21 +34,41 @@ export const EmailField: Block = {
       ],
     },
     {
-      name: 'width',
-      type: 'select',
-      label: 'Field Width',
-      options: [
-        { label: 'One Third', value: 'oneThird' },
-        { label: 'Half', value: 'half' },
-        { label: 'Two Thirds', value: 'twoThirds' },
-        { label: 'Full', value: 'full' },
+      type: 'row',
+      fields: [
+        {
+          name: 'width',
+          type: 'select',
+          label: 'Field Width',
+          options: [
+            { label: 'One Third', value: 'oneThird' },
+            { label: 'Half', value: 'half' },
+            { label: 'Two Thirds', value: 'twoThirds' },
+            { label: 'Full', value: 'full' },
+          ],
+        },
+        {
+          name: 'placeholder',
+          type: 'text',
+          admin: {
+            width: '50%',
+          },
+          localized: true,
+        },
       ],
     },
-
     {
       name: 'required',
       type: 'checkbox',
       label: 'Required',
+    },
+    {
+      name: 'hidden',
+      type: 'checkbox',
+      label: 'Hidden',
+      admin: {
+        description: 'If checked, the field will not be displayed in the form.',
+      },
     },
   ],
 }

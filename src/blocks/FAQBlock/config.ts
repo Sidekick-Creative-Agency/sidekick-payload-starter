@@ -5,6 +5,7 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import { AdvancedFields } from '@/fields/Advanced'
 
 const faqFields: Field[] = [
   {
@@ -38,69 +39,6 @@ export const FAQBlock: Block = {
     {
       name: 'heading',
       type: 'text',
-      admin: {
-        condition: (_, { enableHeading }) => {
-          return Boolean(enableHeading) ? true : false
-        },
-      },
-    },
-    {
-      name: 'headingAlign',
-      type: 'radio',
-      options: [
-        {
-          value: 'left',
-          label: 'Left',
-        },
-        {
-          value: 'center',
-          label: 'Center',
-        },
-        {
-          value: 'right',
-          label: 'Right',
-        },
-        {
-          value: 'justify',
-          label: 'Justify',
-        },
-      ],
-      admin: {
-        condition: (_, { enableHeading }) => {
-          return Boolean(enableHeading) ? true : false
-        },
-      },
-    },
-    {
-      type: 'row',
-      fields: [
-        {
-          name: 'headingSpacingValue',
-          type: 'number',
-          min: 0,
-          label: 'Spacing',
-        },
-        {
-          name: 'headingSpacingUnit',
-          label: 'Unit',
-          type: 'select',
-          defaultValue: 'rem',
-          options: [
-            {
-              value: 'rem',
-              label: 'rem',
-            },
-            {
-              value: 'px',
-              label: 'px',
-            },
-            {
-              value: '%',
-              label: '%',
-            },
-          ],
-        },
-      ],
       admin: {
         condition: (_, { enableHeading }) => {
           return Boolean(enableHeading) ? true : false
@@ -144,130 +82,8 @@ export const FAQBlock: Block = {
             },
           ],
         },
-        {
-          label: 'Desktop',
-          type: 'collapsible',
-          admin: {
-            initCollapsed: true,
-          },
-          fields: [
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'paddingVerticalDesktopValue', // required
-                  label: 'Vertical Padding',
-                  type: 'number', // required
-                  defaultValue: '5',
-                },
-                {
-                  name: 'paddingVerticalDesktopUnit',
-
-                  label: 'Unit',
-                  type: 'select',
-                  defaultValue: 'rem',
-                  options: [
-                    {
-                      value: 'rem',
-                      label: 'rem',
-                    },
-                    {
-                      value: 'px',
-                      label: 'px',
-                    },
-                    {
-                      value: '%',
-                      label: '%',
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'Tablet',
-          type: 'collapsible',
-          admin: {
-            initCollapsed: true,
-          },
-          fields: [
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'paddingVerticalTabletValue', // required
-                  label: 'Vertical Padding',
-                  type: 'number', // required
-                  defaultValue: 5,
-                },
-                {
-                  name: 'paddingVerticalTabletUnit',
-
-                  label: 'Unit',
-                  type: 'select',
-                  defaultValue: 'rem',
-                  options: [
-                    {
-                      value: 'rem',
-                      label: 'rem',
-                    },
-                    {
-                      value: 'px',
-                      label: 'px',
-                    },
-                    {
-                      value: '%',
-                      label: '%',
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'Mobile',
-          type: 'collapsible',
-          admin: {
-            initCollapsed: true,
-          },
-          fields: [
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'paddingVerticalMobileValue', // required
-                  label: 'Vertical Padding',
-                  type: 'number', // required
-                  defaultValue: 4,
-                },
-                {
-                  name: 'paddingVerticalMobileUnit',
-
-                  label: 'Unit',
-                  type: 'select',
-                  defaultValue: 'rem',
-                  options: [
-                    {
-                      value: 'rem',
-                      label: 'rem',
-                    },
-                    {
-                      value: 'px',
-                      label: 'px',
-                    },
-                    {
-                      value: '%',
-                      label: '%',
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
       ],
     },
+    AdvancedFields,
   ],
 }

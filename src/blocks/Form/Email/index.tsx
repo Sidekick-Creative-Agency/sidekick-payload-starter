@@ -17,6 +17,9 @@ export const Email: React.FC<
     >
     register: UseFormRegister<FieldValues>
     className?: string
+    fieldClassName?: string
+    placeholder?: string
+    hidden?: boolean
   }
 > = ({
   name,
@@ -25,20 +28,23 @@ export const Email: React.FC<
   label,
   register,
   required: requiredFromProps,
-  width,
+  placeholder,
   className,
+  fieldClassName,
+  hidden,
 }) => {
   return (
     <div className={className}>
-      <Label htmlFor={name}>{label}</Label>
+      {label && <Label htmlFor={name}>{label}</Label>}
       <Input
         defaultValue={defaultValue}
         id={name}
-        type="text"
+        type={hidden ? 'hidden' : 'email'}
+        placeholder={placeholder}
+        className={fieldClassName}
         {...register(name, { pattern: /^\S[^\s@]*@\S+$/, required: requiredFromProps })}
       />
-
-      {requiredFromProps && errors[name] && <Error />}
+      {requiredFromProps && errors[name] && <Error error={errors[name]} />}
     </div>
   )
 }

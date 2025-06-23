@@ -5,7 +5,7 @@ const LoginLogo: React.FC = () => {
   return (
     <div>
       <img
-        src="/sidekick-logo-login.webp"
+        src="/onward-logoprimary-color-light.webp"
         alt="custom logo"
         width={256}
         height={256}

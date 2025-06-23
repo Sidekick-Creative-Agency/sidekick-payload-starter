@@ -1,14 +1,11 @@
 'use client'
-
 import type { StaticImageData } from 'next/image'
-
 import { cn } from 'src/utilities/cn'
 import NextImage from 'next/image'
-import React from 'react'
-
+import React, { useEffect, useState } from 'react'
 import type { Props as MediaProps } from '../types'
-
 import cssVariables from '@/cssVariables'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const { breakpoints } = cssVariables
 
@@ -23,30 +20,59 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     resource,
     size: sizeFromProps,
     src: srcFromProps,
+    quality = 80,
   } = props
 
-  const [isLoading, setIsLoading] = React.useState(true)
+  const [isLoading, setIsLoading] = useState(true)
+  const [width, setWidth] = useState<number | undefined>(undefined)
+  const [height, setHeight] = useState<number | undefined>(undefined)
+  const [alt, setAlt] = useState<string | undefined>(altFromProps || '')
+  const [src, setSrc] = useState<StaticImageData | string>(srcFromProps || '')
+  const [blurhash, setBlurhash] = useState<string | undefined>(undefined)
 
-  let width: number | undefined
-  let height: number | undefined
-  let alt = altFromProps
-  let src: StaticImageData | string = srcFromProps || ''
+  useEffect(() => {
+    if (!src && resource && typeof resource === 'number') {
+      fetch(`/api/media/${resource}`).then((response) =>
+        response.json().then((json) => {
+          const {
+            alt: altFromResource,
+            filename: fullFilename,
+            height: fullHeight,
+            url,
+            width: fullWidth,
+            blurhash,
+          } = json
 
-  if (!src && resource && typeof resource === 'object') {
-    const {
-      alt: altFromResource,
-      filename: fullFilename,
-      height: fullHeight,
-      url,
-      width: fullWidth,
-    } = resource
+          setWidth(fullWidth!)
+          setHeight(fullHeight!)
+          setAlt(altFromResource || '')
+          setSrc(`${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${url}`)
+          setBlurhash(blurhash || undefined)
+        }),
+      )
+    } else if (!src && resource && typeof resource === 'object') {
+      const {
+        alt: altFromResource,
+        filename: fullFilename,
+        height: fullHeight,
+        url,
+        width: fullWidth,
+        blurhash,
+      } = resource
 
-    width = fullWidth!
-    height = fullHeight!
-    alt = altFromResource
+      setWidth(fullWidth!)
+      setHeight(fullHeight!)
+      setAlt(altFromResource || '')
+      setSrc(`${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${url}`)
+      setBlurhash(blurhash || undefined)
+    }
+  }, [resource])
 
-    src = `${process.env.NEXT_PUBLIC_SERVER_URL}${url}`
-  }
+  useEffect(() => {
+    if (src) {
+      setIsLoading(false)
+    }
+  }, [src])
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
   const sizes = sizeFromProps
@@ -54,6 +80,8 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     : Object.entries(breakpoints)
         .map(([, value]) => `(max-width: ${value}px) ${value}px`)
         .join(', ')
+
+  if (!src) return <Skeleton className="w-full h-full rounded-none" />
 
   return (
     <NextImage
@@ -69,10 +97,18 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         }
       }}
       priority={priority}
-      quality={90}
+      quality={quality}
       sizes={sizes}
       src={src}
       width={!fill ? width : undefined}
+      placeholder={blurhash ? 'blur' : 'empty'}
+      blurDataURL={blurhash || undefined}
+      style={{
+        objectPosition:
+          typeof resource === 'object' && resource.focalX && resource.focalY
+            ? `${resource.focalX}% ${resource.focalY}%`
+            : 'center',
+      }}
     />
   )
 }

@@ -1,13 +1,30 @@
 import type { Block, Field } from 'payload'
 
 import {
+  AlignFeature,
+  BlocksFeature,
   FixedToolbarFeature,
   HeadingFeature,
+  IndentFeature,
   InlineToolbarFeature,
   lexicalEditor,
+  OrderedListFeature,
+  TreeViewFeature,
+  UnorderedListFeature,
 } from '@payloadcms/richtext-lexical'
-
 import { link } from '@/fields/link'
+import { StylesField } from '@/fields/Styles'
+import { FormBlock } from '../Form/config'
+import { BackgroundColorField } from '@/fields/Color/Background'
+import { SubtitleLexicalBlock } from '../Lexical/Subtitle/config'
+import { CarouselLexicalBlock } from '../Lexical/Carousel/config'
+import { ColorField } from '@/fields/Color'
+import { BRAND_COLORS } from '@/utilities/constants'
+import { TextColorFeature } from '@/components/RichText/Color/features/textColor/feature.server'
+import { CheckmarkListLexicalBlock } from '../Lexical/CheckmarkList/config'
+import { AdvancedFields } from '@/fields/Advanced'
+import { SpacerLexicalBlock } from '../Lexical/Spacer/config'
+import { MediaGridLexicalBlock } from '../Lexical/MediaGrid/config'
 
 const columnFields: Field[] = [
   {
@@ -31,7 +48,7 @@ const columnFields: Field[] = [
   {
     name: 'size',
     type: 'select',
-    defaultValue: 'oneThird',
+    defaultValue: 'half',
     options: [
       {
         label: 'One Third',
@@ -51,9 +68,77 @@ const columnFields: Field[] = [
       },
     ],
   },
+  BackgroundColorField({
+    adminOverrides: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'media' ? false : true
+      },
+    },
+  }),
+  {
+    name: 'backgroundImage',
+    type: 'upload',
+    relationTo: 'media',
+    admin: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'media' ? false : true
+      },
+    },
+  },
+  {
+    name: 'enableSubtitle',
+    type: 'checkbox',
+    admin: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'media' ? false : true
+      },
+    },
+  },
+  {
+    name: 'subtitle',
+    type: 'text',
+    admin: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'text' && siblingData.enableSubtitle === true ? true : false
+      },
+    },
+  },
+  {
+    name: 'subtitleAlign',
+    type: 'select',
+    defaultValue: 'left',
+    options: [
+      {
+        label: 'Left',
+        value: 'left',
+      },
+      {
+        label: 'Center',
+        value: 'center',
+      },
+      {
+        label: 'Right',
+        value: 'right',
+      },
+    ],
+    admin: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'text' && siblingData.enableSubtitle
+      },
+    },
+  },
+  ColorField({
+    name: 'subtitleColor',
+    adminOverrides: {
+      condition: (_, siblingData) => {
+        return siblingData.type === 'text' && siblingData.enableSubtitle
+      },
+    },
+  }),
   {
     name: 'richText',
     type: 'richText',
+
     editor: lexicalEditor({
       features: ({ rootFeatures }) => {
         return [
@@ -61,6 +146,32 @@ const columnFields: Field[] = [
           HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
           FixedToolbarFeature(),
           InlineToolbarFeature(),
+          AlignFeature(),
+          UnorderedListFeature(),
+          OrderedListFeature(),
+
+          IndentFeature(),
+          BlocksFeature({
+            blocks: [
+              FormBlock,
+              CarouselLexicalBlock,
+              CheckmarkListLexicalBlock,
+              SpacerLexicalBlock,
+              MediaGridLexicalBlock,
+              SubtitleLexicalBlock,
+            ],
+          }),
+          TextColorFeature({
+            colors: [
+              ...BRAND_COLORS.map((color) => {
+                return {
+                  type: 'button' as 'button' | 'palette',
+                  label: color.label,
+                  color: color.value,
+                }
+              }),
+            ],
+          }),
         ]
       },
     }),
@@ -72,7 +183,7 @@ const columnFields: Field[] = [
     label: false,
   },
   {
-    name: 'enableLink',
+    name: 'enableLinks',
     type: 'checkbox',
     admin: {
       condition: (_, siblingData) => {
@@ -80,19 +191,25 @@ const columnFields: Field[] = [
       },
     },
   },
-  link({
-    appearanceEnumName: 'pb_columns_block_content_columns_link_appearance',
-    overrides: {
-      admin: {
-        condition: (_, { enableLink, type }) => {
-          if (Boolean(enableLink) && type === 'text') {
-            return true
-          }
-          return false
-        },
+  {
+    name: 'links',
+    type: 'array',
+    fields: [
+      link({
+        appearanceEnumName: 'pb_columns_block_content_columns_links_link_appearance',
+      }),
+    ],
+    admin: {
+      condition: (_, { enableLinks, type }) => {
+        if (Boolean(enableLinks) && type === 'text') {
+          return true
+        }
+        return false
       },
     },
-  }),
+    maxRows: 2,
+  },
+
   {
     name: 'media',
     type: 'upload',
@@ -145,6 +262,26 @@ const columnFields: Field[] = [
       },
     },
   },
+  {
+    type: 'group',
+    name: 'styles',
+    fields: [
+      {
+        type: 'checkbox',
+        name: 'enableTopBorder',
+        label: 'Enable Top Border',
+        defaultValue: false,
+      },
+      ColorField({
+        name: 'borderColor',
+        adminOverrides: {
+          condition: (_, siblingData) => {
+            return siblingData.enableTopBorder
+          },
+        },
+      }),
+    ],
+  },
 ]
 
 export const ColumnsBlock: Block = {
@@ -155,141 +292,49 @@ export const ColumnsBlock: Block = {
       name: 'columns',
       type: 'array',
       fields: columnFields,
+      maxRows: 3,
     },
 
-    {
-      type: 'collapsible',
-      label: 'Styles',
-      admin: {
-        initCollapsed: true,
-      },
-      fields: [
+    StylesField({
+      globalFields: [
         {
-          label: 'Desktop',
-          type: 'collapsible',
-          admin: {
-            initCollapsed: true,
-          },
-          fields: [
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'paddingVerticalDesktopValue', // required
-                  label: 'Vertical Padding',
-                  type: 'number', // required
-                },
-                {
-                  name: 'paddingVerticalDesktopUnit',
-                  enumName: 'pb_columns_block_style_group_pad_vert_desktop_unit',
-                  label: 'Unit',
-                  type: 'select',
-                  defaultValue: 'rem',
-                  options: [
-                    {
-                      value: 'rem',
-                      label: 'rem',
-                    },
-                    {
-                      value: 'px',
-                      label: 'px',
-                    },
-                    {
-                      value: '%',
-                      label: '%',
-                    },
-                  ],
-                },
-              ],
-            },
+          name: 'width',
+          type: 'select',
+          defaultValue: 'boxed',
+          options: [
+            { label: 'Full Width', value: 'full' },
+            { label: 'Boxed', value: 'boxed' },
           ],
         },
+
+        BackgroundColorField(),
         {
-          label: 'Tablet',
-          type: 'collapsible',
-          admin: {
-            initCollapsed: true,
-          },
-          fields: [
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'paddingVerticalTabletValue', // required
-                  label: 'Vertical Padding',
-                  type: 'number', // required
-                },
-                {
-                  name: 'paddingVerticalTabletUnit',
-                  enumName: 'pb_columns_block_style_group_pad_vert_tablet_unit',
-                  label: 'Unit',
-                  type: 'select',
-                  defaultValue: 'rem',
-                  options: [
-                    {
-                      value: 'rem',
-                      label: 'rem',
-                    },
-                    {
-                      value: 'px',
-                      label: 'px',
-                    },
-                    {
-                      value: '%',
-                      label: '%',
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
+          type: 'checkbox',
+          name: 'enableDivider',
+          label: 'Enable Column Divider',
+          defaultValue: false,
         },
-        {
-          label: 'Mobile',
-          type: 'collapsible',
-          admin: {
-            initCollapsed: true,
+        ColorField({
+          name: 'dividerColor',
+          adminOverrides: {
+            condition: (_, siblingData) => {
+              return siblingData.enableDivider
+            },
           },
-          fields: [
-            {
-              name: 'reverseWrap', // required
-              label: 'Reverse Wrap',
-              type: 'checkbox', // required
-            },
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'paddingVerticalMobileValue', // required
-                  label: 'Vertical Padding',
-                  type: 'number', // required
-                },
-                {
-                  name: 'paddingVerticalMobileUnit',
-                  enumName: 'pb_columns_block_style_group_pad_vert_mobile_unit',
-                  label: 'Unit',
-                  type: 'select',
-                  defaultValue: 'rem',
-                  options: [
-                    {
-                      value: 'rem',
-                      label: 'rem',
-                    },
-                    {
-                      value: 'px',
-                      label: 'px',
-                    },
-                    {
-                      value: '%',
-                      label: '%',
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
+        }),
+      ],
+      // desktopFields: [DesktopHorizontalPaddingField, DesktopVerticalPaddingField],
+      // tabletFields: [TabletHorizontalPaddingField, TabletVerticalPaddingField],
+      mobileFields: [
+        // MobileHorizontalPaddingField,
+        // MobileVerticalPaddingField,
+        {
+          name: 'reverseWrap',
+          label: 'Reverse Wrap',
+          type: 'checkbox',
         },
       ],
-    },
+    }),
+    AdvancedFields,
   ],
 }

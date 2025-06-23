@@ -8,6 +8,24 @@ const NavItemField: Field = {
   type: 'group',
   fields: [
     {
+      name: 'side',
+      type: 'radio',
+      defaultValue: 'right',
+      options: [
+        {
+          label: 'Left',
+          value: 'left',
+        },
+        {
+          label: 'Right',
+          value: 'right',
+        },
+      ],
+      admin: {
+        description: 'Where the nav item should be displayed on desktop',
+      },
+    },
+    {
       name: 'type',
       type: 'radio',
       options: [
@@ -57,6 +75,17 @@ const NavItemField: Field = {
       },
     }),
     {
+      name: 'parentLinkMobileLabel',
+      type: 'text',
+      admin: {
+        condition: (_, { enableParentLink, type }) => {
+          return enableParentLink && type === 'parent'
+        },
+        description:
+          'Label for the parent link in the mobile menu dropdown. (i.e. All, Overview, etc.)',
+      },
+    },
+    {
       name: 'childrenLinks',
       type: 'array',
       labels: {
@@ -79,6 +108,11 @@ export const Header: GlobalConfig = {
   fields: [
     {
       name: 'logo',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
+      name: 'logoAlt',
       type: 'upload',
       relationTo: 'media',
     },

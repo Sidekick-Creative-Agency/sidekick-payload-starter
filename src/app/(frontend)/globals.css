@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @layer base {
   h1,
   h2,
@@ -67,10 +66,18 @@
 
     --radius: 0.2rem;
 
-    --brand-red: 3 75% 53%;
-    --brand-blue: 207 54% 51%;
-    --brand-grey: 240 2% 86%;
-    --brand-lightGrey: 210 4% 95%;
+    --brand-navy: 196 66% 13%;
+    --brand-off-white: 36 38% 95%;
+    --brand-tan: 25 27% 73%;
+    --brand-blue: 195 23% 73%;
+    --brand-brown: 23 14% 44%;
+    --brand-green: 69 19% 47%;
+    --brand-gray-00: 240 5% 96%;
+    --brand-gray-01: 0 0% 87%;
+    --brand-gray-02: 0 0% 75%;
+    --brand-gray-03: 0 0% 58%;
+    --brand-gray-04: 0 0% 46%;
+    --brand-gray-06: 0 0% 16%;
 
     --success: 196 52% 74%;
     --warning: 34 89% 85%;
@@ -112,13 +119,11 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+* {
+  @apply border-border;
+}
+body {
+  @apply bg-background text-foreground;
 }
 
 html {
@@ -129,3 +134,27 @@ html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
 }
+
+*,
+html,
+body {
+  font-family: 'basic-sans', sans-serif;
+  scroll-behavior: smooth;
+}
+
+.mapboxgl-popup-content {
+  padding: 0 !important;
+  background-color: transparent !important;
+  border-radius: 0.5rem !important;
+  min-width: 15rem !important;
+}
+/* .mapboxgl-popup-close-button {
+  top: 0.5rem !important;
+  right: 0.5rem !important;
+  font-size: 1rem !important;
+  color: #ffffff !important;
+  border-radius: 0 !important;
+  width: 1.25rem;
+  height: 1.25rem;
+  line-height: 0;
+} */

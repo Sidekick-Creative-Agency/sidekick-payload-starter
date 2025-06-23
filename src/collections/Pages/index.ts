@@ -2,13 +2,10 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { Archive } from '../../blocks/ArchiveBlock/config'
-import { CallToAction } from '../../blocks/CallToAction/config'
-import { Content } from '../../blocks/Content/config'
+import { ArchiveBlock } from '../../blocks/ArchiveBlock/config'
 import { FormBlock } from '../../blocks/Form/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { hero } from '@/heros/config'
-import { slugField } from '@/fields/slug'
+import { slugField } from '@/fields/Slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidatePage } from './hooks/revalidatePage'
@@ -22,6 +19,16 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { FAQBlock } from '@/blocks/FAQBlock/config'
 import { ColumnsBlock } from '@/blocks/ColumnsBlock/config'
+import { NumberCountersBlock } from '@/blocks/NumberCounterBlock/config'
+import { ExpertiseBlock } from '@/blocks/ExpertiseBlock/config'
+import { TimelineBlock } from '@/blocks/TimelineBlock/config'
+import { ReviewsBlock } from '@/blocks/ReviewsBlock/config'
+import { JobListingsBlock } from '@/blocks/JobListingsBlock/config'
+import { SocialProofCarouselBlock } from '@/blocks/SocialProofCarouselBlock/config'
+import { MediaCarouselBlock } from '@/blocks/MediaCarouselBlock/config'
+import { CardGridBlock } from '@/blocks/CardGridBlock/config'
+import { FeaturedListingsBlock } from '@/blocks/FeaturedListingsBlock/config'
+import { SearchBarBlock } from '@/blocks/SearchBarBlock/config'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
@@ -39,7 +46,7 @@ export const Pages: CollectionConfig = {
           collection: 'pages',
         })
 
-        return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`
+        return `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
       },
     },
     preview: (data) => {
@@ -48,7 +55,7 @@ export const Pages: CollectionConfig = {
         collection: 'pages',
       })
 
-      return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`
+      return `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
     },
     useAsTitle: 'title',
   },
@@ -71,13 +78,20 @@ export const Pages: CollectionConfig = {
               name: 'layout',
               type: 'blocks',
               blocks: [
-                CallToAction,
-                Content,
-                MediaBlock,
-                Archive,
+                ArchiveBlock,
                 FormBlock,
                 ColumnsBlock,
                 FAQBlock,
+                NumberCountersBlock,
+                ExpertiseBlock,
+                TimelineBlock,
+                ReviewsBlock,
+                JobListingsBlock,
+                SocialProofCarouselBlock,
+                MediaCarouselBlock,
+                CardGridBlock,
+                FeaturedListingsBlock,
+                SearchBarBlock,
               ],
               required: true,
             },
@@ -118,6 +132,22 @@ export const Pages: CollectionConfig = {
       type: 'date',
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'url',
+      label: 'URL',
+      type: 'text',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+      },
+      hooks: {
+        beforeChange: [
+          ({ data }) => {
+            return data?.breadcrumbs[data?.breadcrumbs?.length - 1]?.url || ''
+          },
+        ],
       },
     },
     ...slugField(),

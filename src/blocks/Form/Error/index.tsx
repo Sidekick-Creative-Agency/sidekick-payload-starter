@@ -24,7 +24,7 @@ export const Error: React.FC<ErrorProps> = ({ error }) => {
     }
   }, [error])
   return (
-    <div className="text-red-500 text-sm absolute left-0 top-[calc(100%+.25rem)]">
+    <div className="text-destructive text-sm font-light absolute left-0 top-[calc(100%+.5rem)]">
       {errorMessage}
     </div>
   )

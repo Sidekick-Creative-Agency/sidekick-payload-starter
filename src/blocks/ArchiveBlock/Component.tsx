@@ -1,12 +1,11 @@
-import type { Post, ArchiveBlock as ArchiveBlockProps } from '@/payload-types'
-
+import type { Post, ArchiveBlock as ArchiveBlockProps, TeamMember, Listing } from '@/payload-types'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { DataFromCollectionSlug, getPayload } from 'payload'
 import React from 'react'
-import RichText from '@/components/RichText'
-
-import { CollectionArchiveGrid } from '@/components/CollectionArchive/GridArchive'
-import { CollectionArchiveCarousel } from '@/components/CollectionArchive/CarouselArchive'
+import { TeamMemberArchiveGrid } from '@/components/Archive/TeamMemberArchive'
+import { ListingArchiveGrid } from '@/components/Archive/ListingArchive'
+import { PostArchiveCarousel } from '@/components/Archive/PostArchive/Carousel'
+import { PostArchiveGrid } from '@/components/Archive/PostArchive/Grid'
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
@@ -15,64 +14,200 @@ export const ArchiveBlock: React.FC<
 > = async (props) => {
   const {
     id,
+    selectionType,
+    manualSelection,
     categories,
-    introContent,
     limit: limitFromProps,
-    populateBy,
-    selectedDocs,
+    headingAlign = 'left',
+    relationTo,
+    heading,
+    subtitle,
+    enablePropertyCategoryFilters,
+    defaultCategoryFilter,
+    elementId,
+    propertyTypes,
     layout,
-    navigationType,
+    buttonColor,
+    enablePostCategoryFilter,
+    enableExcerpt,
+    enableDate,
+    enableGutter,
+    enableCategoryBanner
   } = props
 
   const limit = limitFromProps || 3
 
-  let posts: Post[] = []
+  const alignClasses = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
+  }
 
-  if (populateBy === 'collection') {
-    const payload = await getPayload({ config: configPromise })
+  const flexJustifyClasses = {
+    left: 'md:justify-between',
+    center: 'md:justify-center',
+    right: 'md:justify-between',
+  }
 
-    const flattenedCategories = categories?.map((category) => {
-      if (typeof category === 'object') return category.id
-      else return category
-    })
+  const flexDirectionClasses = {
+    left: 'md:flex-row md:items-end',
+    center: 'md:flex-col md:items-center',
+    right: 'md:flex-row-reverse md:items-end',
+  }
+  let archive: DataFromCollectionSlug<'posts' | 'team-members' | 'listings'>[] = []
+  const taxonomySlug =
+    relationTo === 'posts'
+      ? 'categories'
+      : relationTo === 'listings'
+        ? 'property-types'
+        : 'undefined'
+  const payload = await getPayload({ config: configPromise })
+  const flattenedTaxonomies =
+    taxonomySlug === 'categories'
+      ? categories?.map((category) => {
+        if (typeof category === 'object') return category.id
+        else return category
+      })
+      : undefined
 
-    const fetchedPosts = await payload.find({
-      collection: 'posts',
-      depth: 1,
-      limit,
-      ...(flattenedCategories && flattenedCategories.length > 0
+  const fetchedDocs = await payload.find({
+    collection: relationTo || 'posts',
+    depth: 1,
+    limit: limit || 10,
+    ...(relationTo === 'team-members'
+      ? {
+        sort: ['lastName', 'title'],
+      }
+      : {}),
+    where: {
+      ...((flattenedTaxonomies && flattenedTaxonomies.length > 0 && relationTo === 'posts')
         ? {
-            where: {
-              categories: {
-                in: flattenedCategories,
+          category: {
+            in: flattenedTaxonomies,
+          },
+        }
+        : {}),
+      ...(relationTo === 'listings'
+        ? {
+          availability: {
+            in: ['available', 'active'],
+          },
+        }
+        : {}),
+      ...(relationTo === 'listings' && propertyTypes
+        ? {
+          category: {
+            equals: defaultCategoryFilter,
+          },
+        }
+        : {}),
+      ...(relationTo === 'listings' && enablePropertyCategoryFilters
+        ? {
+          category: {
+            equals: defaultCategoryFilter,
+          },
+        }
+        : {}),
+      ...((relationTo === 'listings' && defaultCategoryFilter === 'residential') && {
+        'MLS.ListOfficeName': {
+          equals: process.env.NEXT_PUBLIC_RETS_LIST_OFFICE_NAME || ''
+        }
+      }),
+      ...(relationTo === 'listings' || relationTo === 'posts'
+        ? {
+          or: [
+            {
+              _status: {
+                exists: false,
               },
             },
-          }
+            {
+              _status: {
+                equals: 'published',
+              },
+            },
+          ],
+        }
         : {}),
-    })
+      ...((relationTo === 'posts' && selectionType === 'manual' && manualSelection)
+        ? {
+          id: {
+            in: manualSelection?.map((post) => (post as Post).id),
+          },
+        }
+        : {}),
+    },
+  })
 
-    posts = fetchedPosts.docs
-  } else {
-    if (selectedDocs?.length) {
-      const filteredSelectedPosts = selectedDocs.map((post) => {
-        if (typeof post.value === 'object') return post.value
-      }) as Post[]
-
-      posts = filteredSelectedPosts
+  archive = fetchedDocs.docs
+  const renderArchive = () => {
+    switch (relationTo) {
+      case 'team-members':
+        return <TeamMemberArchiveGrid data={archive as TeamMember[]} />
+      case 'listings':
+        return (
+          <ListingArchiveGrid
+            data={archive as Listing[]}
+            enableCategoryFilters={enablePropertyCategoryFilters}
+            defaultCategoryFilter={defaultCategoryFilter}
+            limit={limit}
+          />
+        )
+      case 'posts':
+        return layout === 'grid' ? (
+          <PostArchiveGrid
+            data={archive as Post[]}
+            limit={limit}
+            hasNextPage={fetchedDocs.hasNextPage}
+            buttonColor={buttonColor}
+            enableFilter={enablePostCategoryFilter}
+            enableExcerpt={enableExcerpt}
+            enableDate={enableDate}
+            enableGutter={enableGutter}
+            enableBanner={enableCategoryBanner}
+          />
+        ) : (
+          <PostArchiveCarousel
+            data={archive as Post[]}
+            buttonColor={buttonColor}
+            enableExcerpt={enableExcerpt}
+            enableDate={enableDate}
+            enableGutter={enableGutter}
+          />
+        )
+      default:
+        return null
     }
+  }
+  if (!archive || archive.length === 0) {
+    return
   }
 
   return (
-    <div className="my-16" id={`block-${id}`}>
-      {introContent && (
-        <div className="container mb-16">
-          <RichText className="ml-0 max-w-[48rem]" content={introContent} enableGutter={false} />
+    <div
+      className={`archive-block-${id} overflow-hidden py-20 md:py-32`}
+      {...(elementId ? { id: elementId } : {})}
+    >
+      <div className="container flex flex-col gap-16 md:gap-20">
+        <div
+          className={`flex flex-col gap-4 md:gap-4 ${headingAlign && flexJustifyClasses[headingAlign]} ${headingAlign && flexDirectionClasses[headingAlign]}`}
+        >
+          <h2
+            className={`text-[2.5rem] font-bold text-brand-gray-06 flex-1 ${headingAlign && alignClasses[headingAlign]}`}
+          >
+            {heading}
+          </h2>
+          {!enablePropertyCategoryFilters && (
+            <p
+              className={`max-w-[30rem] text-brand-gray-04 font-light flex-1 ${headingAlign && headingAlign !== 'right' && alignClasses[headingAlign]}`}
+            >
+              {subtitle}
+            </p>
+          )}
+          {enablePostCategoryFilter && <div className="flex-grow hidden md:block"></div>}
         </div>
-      )}
-      {layout && layout === 'grid' && <CollectionArchiveGrid posts={posts} />}
-      {layout && layout === 'carousel' && (
-        <CollectionArchiveCarousel posts={posts} navigationType={navigationType || 'none'} />
-      )}
+        {renderArchive()}
+      </div>
     </div>
   )
 }

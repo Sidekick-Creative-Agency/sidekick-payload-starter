@@ -1,7 +1,5 @@
-// storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
 
-import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
@@ -23,7 +21,7 @@ import { Block, buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
 import Categories from './collections/Categories'
-import { Media } from './collections/Media'
+import { Media } from './collections/Media/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import Users from './collections/Users'
@@ -31,7 +29,7 @@ import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { revalidateRedirects } from './hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
-import { Page, Post } from 'src/payload-types'
+import { Listing, Page, Post, TeamMember } from 'src/payload-types'
 
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
@@ -43,26 +41,70 @@ import { EmailField } from './blocks/Form/Email/Field/input'
 import { NumberField } from './blocks/Form/Number/Field/input'
 import { StateField } from './blocks/Form/State/Field/input'
 import { TextAreaField } from './blocks/Form/Textarea/Field/input'
+import { Listings } from './collections/Listings'
+import { Attachments } from './collections/Attachments'
+import { PropertyTypes } from './collections/PropertyTypes'
+import { Reviews } from './collections/Reviews'
+import { TeamMembers } from './collections/TeamMembers'
+import { JobListings } from './collections/JobListings'
+import { s3Storage } from '@payloadcms/storage-s3'
+import { resendAdapter } from '@payloadcms/email-resend'
+
+import { PageTitle } from './blocks/Form/PageTitle/Field/input'
+import { TeamMemberEmail } from './blocks/Form/TeamMemberEmail/Field/input'
+import { generateContactFormSubmitterEmail } from './emails/Contact/Submitter'
+import { generateContactFormRecipientEmail } from './emails/Contact/Recipient'
+import { CookieBanner } from './CookieBanner/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
+const generateTitle: GenerateTitle<Post | Page | Listing | TeamMember> = ({ doc }) => {
+  return doc?.title ? `${doc.title} | Onward Real Estate Team` : 'Onward Real Estate Team'
 }
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
   return doc?.slug
-    ? `${process.env.NEXT_PUBLIC_SERVER_URL!}/${doc.slug}`
-    : process.env.NEXT_PUBLIC_SERVER_URL!
+    ? `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/${doc.slug}`
+    : `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}`
 }
 
 export default buildConfig({
   admin: {
+    ...(process.env.NODE_ENV === 'development'
+      ? {
+          autoLogin: {
+            email: 'aron@sidekick.agency',
+            password: 'sidekick',
+          },
+        }
+      : {}),
+    meta: {
+      title: 'Admin',
+      titleSuffix: '- Onward Real Estate Team',
+      icons: [
+        {
+          rel: 'icon',
+          type: 'image/svg+xml',
+          url: '/favicon.svg',
+        },
+      ],
+    },
     components: {
       graphics: {
         Logo: '@/components/LoginLogo',
         Icon: '@/components/AdminLogo',
+      },
+      actions: ['@/components/Admin/Actions#Actions'],
+      views: {
+        importListingsView: {
+          Component: '/views/Listings/Import#ImportView',
+          path: '/import/listings',
+        },
+        importPostsView: {
+          Component: '/views/Posts/Import#ImportView',
+          path: '/import/posts',
+        },
       },
     },
     importMap: {
@@ -92,6 +134,12 @@ export default buildConfig({
       ],
     },
   },
+  email: resendAdapter({
+    defaultFromAddress:
+      process.env.RESEND_DEFAULT_FROM_ADDRESS || 'noreply@onwardrealestateteam.com',
+    defaultFromName: 'Onward Real Estate Team',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
   // This config helps us configure global or default features that the other editors can inherit
   editor: lexicalEditor({
     features: () => {
@@ -101,7 +149,7 @@ export default buildConfig({
         BoldFeature(),
         ItalicFeature(),
         LinkFeature({
-          enabledCollections: ['pages', 'posts'],
+          enabledCollections: ['pages', 'posts', 'team-members'],
           fields: ({ defaultFields }) => {
             const defaultFieldsWithoutUrl = defaultFields.filter((field) => {
               if ('name' in field && field.name === 'url') return false
@@ -130,12 +178,24 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
-  cors: [process.env.NEXT_PUBLIC_SERVER_URL || ''].filter(Boolean),
-  globals: [Header, Footer],
+  collections: [
+    Pages,
+    Posts,
+    Media,
+    Categories,
+    Users,
+    Listings,
+    Attachments,
+    PropertyTypes,
+    Reviews,
+    TeamMembers,
+    JobListings,
+  ],
+  cors: [process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'].filter(Boolean),
+  globals: [Header, Footer, CookieBanner],
   plugins: [
     redirectsPlugin({
-      collections: ['pages', 'posts'],
+      collections: ['pages', 'posts', 'listings'],
       overrides: {
         // @ts-expect-error
         fields: ({ defaultFields }) => {
@@ -157,13 +217,28 @@ export default buildConfig({
       },
     }),
     nestedDocsPlugin({
-      collections: ['categories'],
+      collections: ['categories', 'pages'],
+      generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
     }),
     seoPlugin({
       generateTitle,
       generateURL,
     }),
     formBuilderPlugin({
+      beforeEmail: (emails, { data }) => {
+        if (data.submissionData) {
+          if (emails[0]) {
+            const recipientEmail = generateContactFormRecipientEmail(data.submissionData)
+            emails[0].html = recipientEmail
+          }
+          if (emails[1]) {
+            const submitterEmail = generateContactFormSubmitterEmail(data.submissionData)
+            emails[1].html = submitterEmail
+          }
+        }
+        return emails
+      },
+      defaultToEmail: 'noreply@onwardrealestateteam.com',
       fields: {
         payment: false,
         phoneNumber: PhoneNumber,
@@ -174,6 +249,8 @@ export default buildConfig({
         number: NumberField,
         state: StateField,
         textarea: TextAreaField,
+        pageTitle: PageTitle,
+        teamMemberEmail: TeamMemberEmail,
       },
       formOverrides: {
         fields: ({ defaultFields }) => {
@@ -208,7 +285,26 @@ export default buildConfig({
         },
       },
     }),
-    payloadCloudPlugin(), // storage-adapter-placeholder
+    s3Storage({
+      collections: {
+        media: {
+          prefix: 'media',
+        },
+        attachments: {
+          prefix: 'attachments',
+        },
+      },
+      bucket: process.env.S3_BUCKET || '',
+      config: {
+        forcePathStyle: true,
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        },
+        endpoint: process.env.S3_ENDPOINT || '',
+        region: process.env.S3_REGION,
+      },
+    }),
   ],
   secret: process.env.PAYLOAD_SECRET,
   sharp,

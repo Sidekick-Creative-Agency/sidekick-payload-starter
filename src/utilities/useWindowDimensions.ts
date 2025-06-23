@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import canUseDOM from './canUseDOM'
 
 function getWindowDimensions() {
-  if (!canUseDOM) {
+  if (typeof window === 'undefined') {
     return {
       width: undefined,
       height: undefined,
@@ -20,14 +19,19 @@ export default function useWindowDimensions() {
     width: number | undefined
     height: number | undefined
   }>({ width: undefined, height: undefined })
-
+  function handleResize() {
+    setWindowDimensions(getWindowDimensions())
+  }
   useEffect(() => {
-    function handleResize() {
-      setWindowDimensions(getWindowDimensions())
+    if (typeof window !== 'undefined') {
+      handleResize()
+      window.addEventListener('resize', handleResize)
     }
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', handleResize)
+      }
+    }
   }, [])
 
   return windowDimensions

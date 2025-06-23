@@ -7,13 +7,13 @@ import {
   HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
+  LinkFeature,
+  OrderedListFeature,
+  UnorderedListFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { Banner } from '../../blocks/Banner/config'
-import { Code } from '../../blocks/Code/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidatePost } from './hooks/revalidatePost'
@@ -25,7 +25,12 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
-import { slugField } from '@/fields/slug'
+import { slugField } from '@/fields/Slug'
+import { ColumnsBlock } from '@/blocks/ColumnsBlock/config'
+import { MediaCarouselBlock } from '@/blocks/MediaCarouselBlock/config'
+import { MediaGridLexicalBlock } from '@/blocks/Lexical/MediaGrid/config'
+import { SpacerLexicalBlock } from '@/blocks/Lexical/Spacer/config'
+import { CheckmarkListLexicalBlock } from '@/blocks/Lexical/CheckmarkList/config'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -44,7 +49,7 @@ export const Posts: CollectionConfig = {
           collection: 'posts',
         })
 
-        return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`
+        return `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
       },
     },
     preview: (data) => {
@@ -53,8 +58,11 @@ export const Posts: CollectionConfig = {
         collection: 'posts',
       })
 
-      return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`
+      return `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${path}`
     },
+    // components: {
+    //   beforeList: ['/components/Admin/LinkToImportView#LinkToImportView'],
+    // },
     useAsTitle: 'title',
   },
   fields: [
@@ -76,15 +84,35 @@ export const Posts: CollectionConfig = {
                   return [
                     ...rootFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),
+                    UnorderedListFeature(),
+                    OrderedListFeature(),
+                    LinkFeature(),
+                    BlocksFeature({
+                      blocks: [
+                        ColumnsBlock,
+                        MediaCarouselBlock,
+                        MediaGridLexicalBlock,
+                        SpacerLexicalBlock,
+                        CheckmarkListLexicalBlock,
+                      ],
+                    }),
                   ]
                 },
               }),
               label: false,
               required: true,
+            },
+            {
+              name: 'featuredImage',
+              type: 'upload',
+              relationTo: 'media',
+            },
+            {
+              name: 'excerpt',
+              type: 'textarea',
             },
           ],
           label: 'Content',
@@ -92,28 +120,12 @@ export const Posts: CollectionConfig = {
         {
           fields: [
             {
-              name: 'relatedPosts',
+              name: 'category',
               type: 'relationship',
               admin: {
                 position: 'sidebar',
               },
-              filterOptions: ({ id }) => {
-                return {
-                  id: {
-                    not_in: [id],
-                  },
-                }
-              },
-              hasMany: true,
-              relationTo: 'posts',
-            },
-            {
-              name: 'categories',
-              type: 'relationship',
-              admin: {
-                position: 'sidebar',
-              },
-              hasMany: true,
+              hasMany: false,
               relationTo: 'categories',
             },
           ],

@@ -3,6 +3,8 @@ import React from 'react'
 
 import { serializeLexical } from './serialize'
 
+import { JSXConverters } from 'payloadcms-lexical-ext/'
+
 type Props = {
   className?: string
   content: Record<string, any>
@@ -26,8 +28,9 @@ const RichText: React.FC<Props> = ({
         {
           'container ': enableGutter,
           'max-w-none': !enableGutter,
-          'mx-auto prose dark:prose-invert ': enableProse,
+          'prose dark:prose-invert ': enableProse,
         },
+        'w-full',
         className,
       )}
     >

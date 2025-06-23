@@ -5,6 +5,10 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion'
 import { ChevronDown } from 'lucide-react'
 
 import { cn } from 'src/utilities/cn'
+import { faMinus, faPlus } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { JSX } from 'react'
+import { IconDefinition } from '@awesome.me/kit-a7a0dd333d/icons'
 
 const Accordion = AccordionPrimitive.Root
 
@@ -17,20 +21,37 @@ const AccordionItem = React.forwardRef<
 AccordionItem.displayName = 'AccordionItem'
 
 const AccordionTrigger = React.forwardRef<
-  React.ElementRef<typeof AccordionPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
+  React.ElementRef<typeof AccordionPrimitive.Trigger> & {
+    iconClassName?: string
+  } & {
+    closedIcon?: IconDefinition
+  } & { openIcon?: IconDefinition },
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> & {
+    iconClassName?: string
+  } & {
+    closedIcon?: IconDefinition
+  } & { openIcon?: IconDefinition }
+>(({ className, children, iconClassName, closedIcon, openIcon, ...props }, ref) => (
   <AccordionPrimitive.Header className="flex">
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        'flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180',
+        'flex flex-1 items-center justify-between py-6 font-medium transition-all hover:underline [&[data-state=open]>.open-icon]:hidden [&[data-state=open]>.close-icon]:block',
         className,
       )}
       {...props}
     >
       {children}
-      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+      <React.Fragment>
+        <FontAwesomeIcon
+          icon={closedIcon || faPlus}
+          className={`${iconClassName ? iconClassName : 'w-6 h-6 text-brand-tan'} open-icon `}
+        />
+        <FontAwesomeIcon
+          icon={openIcon || faMinus}
+          className={`${iconClassName ? iconClassName : 'w-6 h-6 text-brand-tan'} close-icon hidden `}
+        />
+      </React.Fragment>
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ))

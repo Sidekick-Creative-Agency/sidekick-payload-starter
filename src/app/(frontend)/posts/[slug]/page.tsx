@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 
-import { RelatedPosts } from '@/blocks/RelatedPosts/Component'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
@@ -8,11 +7,13 @@ import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 import RichText from '@/components/RichText'
 
-import type { Post } from '@/payload-types'
+import type { Category, Post } from '@/payload-types'
 
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
+import { notFound, redirect } from 'next/navigation'
+import { PostArchiveCarousel } from '@/components/Archive/PostArchive/Carousel'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -40,11 +41,31 @@ export default async function Post({ params: paramsPromise }: Args) {
   const { slug = '' } = await paramsPromise
   const url = '/posts/' + slug
   const post = await queryPostBySlug({ slug })
+  const payload = await getPayload({ config: configPromise })
+  const relatedPostsResult = await payload.find({
+    collection: 'posts',
+    where: {
+      _status: {
+        equals: 'published',
+      },
+      slug: {
+        not_equals: slug,
+      },
+      ...(post?.category
+        ? {
+            'category.id': {
+              equals: (post?.category as Category)?.id,
+            },
+          }
+        : {}),
+    },
+  })
+  const relatedPosts = relatedPostsResult.docs
 
   if (!post) return <PayloadRedirects url={url} />
 
   return (
-    <article className="pt-16 pb-16">
+    <article>
       <PageClient />
 
       {/* Allows redirects for valid pages too */}
@@ -52,20 +73,23 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       <PostHero post={post} />
 
-      <div className="flex flex-col items-center gap-4 pt-8">
-        <div className="container lg:mx-0 lg:grid lg:grid-cols-[1fr_48rem_1fr] grid-rows-[1fr]">
+      <div className="flex flex-col items-center gap-4 py-20">
+        <div className="container max-w-6xl">
           <RichText
-            className="lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[1fr]"
+            className="max-w-none p-0 [&_h2]:text-2xl [&_h2]:mb-2 [&_h2]:mt-8 [&_h3]:text-xl [&_h3]:mb-2 [&_h3]:mt-6"
             content={post.content}
             enableGutter={false}
           />
         </div>
-
-        {post.relatedPosts && post.relatedPosts.length > 0 && (
-          <RelatedPosts
-            className="mt-12"
-            docs={post.relatedPosts.filter((post) => typeof post === 'object')}
-          />
+        {relatedPosts && relatedPosts.length > 0 && (
+          <div className="py-20 w-full">
+            <div className="container w-full max-w-6xl flex flex-col gap-10">
+              <div>
+                <h2 className="font-bold">Related Posts</h2>
+              </div>
+              <PostArchiveCarousel data={relatedPosts} />
+            </div>
+          </div>
         )}
       </div>
     </article>
