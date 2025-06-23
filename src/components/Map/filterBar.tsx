@@ -662,7 +662,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                               {...field}
                               className="h-full text-lg font-light text-brand-navy"
                               onChange={(event) => {
-                                console.log(event.currentTarget.value)
                                 field.onChange(event)
                                 handlePriceChange(
                                   form.getValues().minPrice,

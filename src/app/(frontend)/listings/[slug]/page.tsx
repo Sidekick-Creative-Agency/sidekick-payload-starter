@@ -58,16 +58,26 @@ import { FormBlock } from '@/blocks/Form/Component'
 import Image from 'next/image'
 import Link from 'next/link'
 
+export const revalidate = 3600
+export const dynamicParams = true
+
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const listings = await payload.find({
     collection: 'listings',
     draft: false,
-    pagination: false,
+    limit: 1000,
     overrideAccess: false,
+    select: {
+      slug: true
+    },
+    where: {
+      _status: {
+        equals: 'published'
+      }
+    }
   })
-
-  const params = listings.docs.map(({ slug, title }, index) => {
+  const params = listings.docs.map(({ slug }) => {
     return { slug: String(slug) }
   })
   return params
@@ -260,8 +270,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                         </CarouselItem>
                       )
                     })}
-                    {(!listing.imageGallery || listing.imageGallery.length === 0) && listing.MLS?.ImageGalleryUrls && listing.MLS?.ImageGalleryUrls.length > 0 && listing.MLS?.ImageGalleryUrls.map((item, index) => {
-                      console.log(item)
+                    {(!listing.imageGallery || listing.imageGallery.length === 0) && listing.MLS?.ImageGalleryUrls && listing.MLS?.ImageGalleryUrls.length > 0 && listing.MLS?.ImageGalleryUrls.map((item) => {
                       return (
                         <CarouselItem key={item.id} className=" pl-0 basis-full rounded-lg">
                           <div className="w-full overflow-hidden aspect-video relative">

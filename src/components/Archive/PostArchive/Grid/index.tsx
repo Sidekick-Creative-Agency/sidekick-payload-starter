@@ -82,7 +82,6 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
     setActiveCategory(categories?.find((category) => category.title === categoryTitle))
     setPosts([])
     try {
-      console.log(categoryTitle)
       const response = await fetch(
         `/api/posts?limit=${limit}${categoryTitle !== 'all' ? `&where[category.title][equals]=${categoryTitle}` : ''}`,
       )
