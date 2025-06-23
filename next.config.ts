@@ -19,6 +19,7 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
+  staticPageGenerationTimeout: 120,
   redirects,
 }
 

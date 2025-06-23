@@ -485,7 +485,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             speed: 0.5,
           })
           const cardIndex = activeListings.findIndex((listing) => listing.slug === feature.properties?.slug)
-          console.log(cardIndex)
           if (cardIndex !== -1 && cardRefs[cardIndex].current) {
             cardRefs[cardIndex].current?.scrollIntoView({
               behavior: 'smooth',
@@ -574,9 +573,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           if (error) throw error;
           if (image) mapRef.current?.addImage('onward-marker', image);
         })
-      mapRef.current?.on('moveend', () => {
-        console.log(mapRef.current?.getBounds())
-      })
+      // mapRef.current?.on('moveend', () => {
+      //   console.log(mapRef.current?.getBounds())
+      // })
     })
 
     // FETCH PROPERTIES ON FIRST RENDER

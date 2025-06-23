@@ -12,7 +12,6 @@ import type { Category, Post } from '@/payload-types'
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
-import { notFound, redirect } from 'next/navigation'
 import { PostArchiveCarousel } from '@/components/Archive/PostArchive/Carousel'
 
 export async function generateStaticParams() {
@@ -22,6 +21,14 @@ export async function generateStaticParams() {
     draft: false,
     limit: 1000,
     overrideAccess: false,
+    select: {
+      slug: true
+    },
+    where: {
+      _status: {
+        equals: 'published'
+      }
+    }
   })
 
   const params = posts.docs.map(({ slug }) => {
@@ -53,10 +60,10 @@ export default async function Post({ params: paramsPromise }: Args) {
       },
       ...(post?.category
         ? {
-            'category.id': {
-              equals: (post?.category as Category)?.id,
-            },
-          }
+          'category.id': {
+            equals: (post?.category as Category)?.id,
+          },
+        }
         : {}),
     },
   })

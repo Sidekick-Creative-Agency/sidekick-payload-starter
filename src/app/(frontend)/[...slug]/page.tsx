@@ -20,6 +20,14 @@ export async function generateStaticParams() {
     draft: false,
     limit: 1000,
     overrideAccess: false,
+    select: {
+      slug: true
+    },
+    where: {
+      _status: {
+        equals: 'published'
+      }
+    }
   })
 
   const params = pages.docs
