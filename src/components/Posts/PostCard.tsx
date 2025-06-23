@@ -45,7 +45,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         <div className="flex flex-col gap-4">
           {enableDate && (
             <span className="font-light text-brand-gray-03">
-              {new Date(post.updatedAt || post.publishedAt || '').toLocaleDateString('en-US', {
+              {new Date(post.publishedAt || post.updatedAt || '').toLocaleDateString('en-US', {
                 month: 'long',
                 day: '2-digit',
                 year: 'numeric',
