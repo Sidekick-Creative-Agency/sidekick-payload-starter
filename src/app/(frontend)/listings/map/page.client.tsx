@@ -724,6 +724,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       <FilterBar
         handleFilter={handleFetchListings}
         handleReset={handleReset}
+        sort={sortData?.value}
         form={form}
         isLoading={isLoading}
       />
