@@ -58,20 +58,30 @@ import { FormBlock } from '@/blocks/Form/Component'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const listings = await payload.find({
-    collection: 'listings',
-    draft: false,
-    pagination: false,
-    overrideAccess: false,
-  })
+export const revalidate = 3600
+export const dynamicParams = true
 
-  const params = listings.docs.map(({ slug, title }, index) => {
-    return { slug: String(slug) }
-  })
-  return params
-}
+// export async function generateStaticParams() {
+//   const payload = await getPayload({ config: configPromise })
+//   const listings = await payload.find({
+//     collection: 'listings',
+//     draft: false,
+//     limit: 1000,
+//     overrideAccess: false,
+//     select: {
+//       slug: true
+//     },
+//     where: {
+//       _status: {
+//         equals: 'published'
+//       }
+//     }
+//   })
+//   const params = listings.docs.map(({ slug }) => {
+//     return { slug: String(slug) }
+//   })
+//   return params
+// }
 
 type Args = {
   params: Promise<{
@@ -95,8 +105,6 @@ export default async function Listing({ params: paramsPromise }: Args) {
   })
 
   if (!listing) return <PayloadRedirects url={url} />
-  // if (!listing) notFound()
-  // if (!listing) redirect('/listings')
 
   return (
     <article>
@@ -260,8 +268,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                         </CarouselItem>
                       )
                     })}
-                    {(!listing.imageGallery || listing.imageGallery.length === 0) && listing.MLS?.ImageGalleryUrls && listing.MLS?.ImageGalleryUrls.length > 0 && listing.MLS?.ImageGalleryUrls.map((item, index) => {
-                      console.log(item)
+                    {(!listing.imageGallery || listing.imageGallery.length === 0) && listing.MLS?.ImageGalleryUrls && listing.MLS?.ImageGalleryUrls.length > 0 && listing.MLS?.ImageGalleryUrls.map((item) => {
                       return (
                         <CarouselItem key={item.id} className=" pl-0 basis-full rounded-lg">
                           <div className="w-full overflow-hidden aspect-video relative">
@@ -335,23 +342,6 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 </div>
               </div>
               <Accordion type="multiple" defaultValue={['Overview', 'Resources']}>
-                <AccordionItem value="Overview">
-                  <AccordionTrigger
-                    className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
-                    iconClassName="border border-brand-gray-01 w-4 h-4 text-brand-navy fill-brand-navy p-1"
-                    closedIcon={faChevronDown}
-                    openIcon={faChevronUp}
-                  >
-                    Property Overview
-                  </AccordionTrigger>
-
-                  <AccordionContent className="pb-10">
-                    <RichText
-                      content={listing.description || {}}
-                      className="p-0 text-brand-gray-04 max-w-none *:text-brand-gray-04 font-light [&>p>strong]:text-brand-gray-04"
-                    />
-                  </AccordionContent>
-                </AccordionItem>
                 {listing.attachments && listing.attachments.length > 0 && (
                   <AccordionItem value="Resources">
                     <AccordionTrigger
@@ -392,6 +382,23 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     </AccordionContent>
                   </AccordionItem>
                 )}
+                <AccordionItem value="Overview">
+                  <AccordionTrigger
+                    className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
+                    iconClassName="border border-brand-gray-01 w-4 h-4 text-brand-navy fill-brand-navy p-1"
+                    closedIcon={faChevronDown}
+                    openIcon={faChevronUp}
+                  >
+                    Property Overview
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-10">
+                    <RichText
+                      content={listing.description || {}}
+                      className="p-0 text-brand-gray-04 max-w-none *:text-brand-gray-04 font-light [&>p>strong]:text-brand-gray-04"
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+
               </Accordion>
             </div>
             <div className="col-span-1 p-4 py-10 sm:p-10 bg-white border-t-[10px] border-brand-navy flex flex-col h-fit sticky top-24">

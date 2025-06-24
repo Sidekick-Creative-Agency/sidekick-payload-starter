@@ -168,55 +168,27 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   })
 
   const debouncedFocusedListing = useDebounce(focusedListing, 500)
-  const debouncedBounds = useDebounce(bounds, 500)
+  const debouncedBounds = useDebounce(bounds, 750)
 
-  // useEffect(() => {
-  //   if (debouncedFocusedListing) {
-  //     clearPopups()
-  //     const listing = activeCardListings.find((_listing) => _listing.id === debouncedFocusedListing.id)
-  //     if (!listing) return
-  //     if (mapRef.current) {
-  //       mapRef.current.flyTo({
-  //         center: [listing.coordinates[0], listing.coordinates[1]],
-  //         speed: 0.75,
-  //         zoom: 20
-  //       })
-  //       new mapboxgl.Popup({ offset: 25, focusAfterOpen: false })
-  //         .setLngLat(listing.coordinates)
-  //         .setHTML(
-  //           `
-  //             <div class="marker-popup rounded-lg overflow-hidden">
-  //               <div class="marker-popup_image-container relative aspect-video bg-white">
-  //               <div class="animate-pulse absolute inset-0 bg-brand-gray-01"></div>
-  //                 <img src="${(listing?.featuredImage as MediaType)?.sizes?.medium?.url || null}" alt="${(listing?.featuredImage as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
-  //               </div>
-  //               <div class="p-6 bg-white flex flex-col">
-  //               <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06"> ${listing.price
-  //             ? `${formatPrice(listing.price)}${listing.textAfterPrice
-  //               ? `<span class="text-sm ml-2 font-normal">${listing.textAfterPrice}</span>`
-  //               : ''
-  //             }`
-  //             : 'Contact for price'
-  //           }</span>
-  //                 <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${listing.streetAddress}</h3>
-  //                 <a href="/listings/${listing.slug}" class="p-2 w-fit text-sm rounded-sm transition-colors hover:bg-brand-gray-00 focus-visible:bg-brand-gray-00 focus-visible:outline-none font-light flex items-center gap-1 text-brand-gray-04"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-2 h-auto fill-brand-gray-04"><!--!Font Awesome Pro 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2025 Fonticons, Inc.--><path d="M240 64l0-16-32 0 0 16 0 176L32 240l-16 0 0 32 16 0 176 0 0 176 0 16 32 0 0-16 0-176 176 0 16 0 0-32-16 0-176 0 0-176z"/></svg>Learn More</a>
-  //               </div>
-  //             </div>
-  //             `,
-  //         ).addTo(mapRef.current)
-  //       mapRef.current?.flyTo({
-  //         center: listing.coordinates,
-  //         speed: 0.5,
-  //       })
-  //     }
-  //   }
-  // }, [debouncedFocusedListing, activeCardListings])
+  const centerMap = (coordinates: LngLatLike[]) => {
+    if (!coordinates || !mapRef.current) return;
+    const boundsToFit = coordinates.reduce(function (boundsArr, coord) {
+      return boundsArr.extend(coord);
+    }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+    mapRef.current.fitBounds(boundsToFit, {
+      padding: 60
+    });
+  }
 
   const handleFetchListings = async (
     filterData?: MapFilters,
     page?: number | null,
     sort?: string | null,
-    excludeMap?: boolean,
+    options?: {
+      excludeMap?: boolean,
+      centerMap?: boolean,
+      ignoreBounds?: boolean
+    }
   ) => {
     setIsLoading(true)
     // const newSearchParams = new URLSearchParams(searchParams)
@@ -293,21 +265,29 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       // newSearchParams.delete('size_type')
     }
 
+    let cardListingResponse;
+    let mapListingResponse;
 
-
-    const cardListingResponse = fetchCardListings(filterData, page, sort).then(() => {
+    cardListingResponse = fetchCardListings(filterData, (!options?.excludeMap && !isFirstRender) ? 1 : page, sort, { ignoreBounds: options?.ignoreBounds || false }).then((res) => {
       setIsLoading(false)
-      console.log(page)
-      console.log(newSearchParams)
+
+      if (res.page) {
+        newSearchParams.set('page', String(res.page))
+      }
       if (newSearchParams.size > 0) {
         router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
       } else {
         router.replace(pathname)
       }
     })
-    if (!excludeMap) {
-      const mapListingResponse = await fetchMapListings(filterData)
+    if (!options?.excludeMap || options?.centerMap) {
+      mapListingResponse = await fetchMapListings(filterData, { ignoreBounds: options?.ignoreBounds || false })
+      if (options?.centerMap) {
+        const coordinates = mapListingResponse.docs.map((doc) => doc.coordinates) as LngLatLike[]
+        centerMap(coordinates)
+      }
     }
+
 
   }
 
@@ -315,15 +295,18 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     filterData?: MapFilters,
     page?: number | null,
     sort?: string | null,
+    options?: {
+      ignoreBounds: boolean
+    }
   ) => {
     setActiveCardListings([])
     const response = await getCardListings({
       filters: filterData,
       page: page,
       sort: sort,
+      bounds: !options?.ignoreBounds ? debouncedBounds : undefined
     })
 
-    setCurrentPage(response.page)
     setHasPrevPage(response.hasPrevPage)
     setHasNextPage(response.hasNextPage)
     setActiveCardListings(response.docs)
@@ -335,10 +318,13 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   }
   const fetchMapListings = async (
     filterData?: MapFilters,
+    options?: {
+      ignoreBounds: boolean
+    }
   ) => {
     const response = await getMapListings({
       filters: filterData,
-      bounds: debouncedBounds
+      bounds: !options?.ignoreBounds ? debouncedBounds : undefined
     }).catch((error: any) => {
       console.log("Error: " + error)
       return undefined
@@ -356,7 +342,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   }
 
   useEffect(() => {
-
     if (activeMapListings && activeMapListings.length > 0) {
       const geoJson = {
         type: 'FeatureCollection',
@@ -383,7 +368,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             },
             geometry: {
               type: 'Point',
-              coordinates: [listing.coordinates[0], listing.coordinates[1]],
+              coordinates: [listing.coordinates[0], listing.coordinates[1]] as LngLatLike,
             },
           }
         }),
@@ -398,6 +383,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           clusterRadius: 40
         });
 
+        // MAP LAYERS
         mapRef.current.addLayer({
           id: 'clusters',
           type: 'circle',
@@ -440,6 +426,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             'circle-sort-key': 2
           }
         });
+
         mapRef.current.addLayer({
           id: 'clusters-outer',
           type: 'circle',
@@ -467,7 +454,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           }
         });
 
-
         mapRef.current.addLayer({
           id: 'cluster-count',
           type: 'symbol',
@@ -488,7 +474,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             ]
           }
         });
-
 
         mapRef.current.addLayer({
           id: 'unclustered-point',
@@ -554,17 +539,10 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             )
             // @ts-expect-error
             .addTo(mapRef.current);
-          mapRef.current?.flyTo({
+          mapRef.current?.jumpTo({
             center: coordinates,
-            speed: 0.5,
+            // speed: 0.5,
           })
-          // const cardIndex = activeCardListings.findIndex((listing) => listing.slug === feature.properties?.slug)
-          // if (cardIndex !== -1 && cardRefs[cardIndex].current) {
-          // cardRefs[cardIndex].current?.scrollIntoView({
-          // behavior: 'smooth',
-          // block: 'center'
-          // })
-          // }
         });
 
         mapRef.current.on('mouseenter', 'clusters', () => {
@@ -621,6 +599,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     }
   }, [activeMapListings, isFirstRender])
 
+  // FIRST RENDER
   useEffect(() => {
     setHeaderTheme('filled')
     setIsFirstRender(false)
@@ -651,10 +630,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     mapRef.current?.on('dragend', function () {
       setBounds(calculateBounds(mapRef.current?.getBounds()))
     })
-    // mapRef.current?.on('zoomend', function () {
-    //   setBounds(calculateBounds(mapRef.current?.getBounds()))
-    //   // handleFetchListings(filterData, currentPage, sort)
-    // })
+    mapRef.current?.on('zoomend', function () {
+      setBounds(calculateBounds(mapRef.current?.getBounds()))
+    })
 
     // FETCH PROPERTIES ON FIRST RENDER
     const filterData = {
@@ -675,7 +653,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     }
     const page = searchParams.get('page') ? Number(searchParams.get('page')) : undefined
     const sort = searchParams.get('sort') || undefined
-
     form.setValue('search', filterData.search || '')
     form.setValue('category', filterData.category || '')
     form.setValue('propertyType', filterData.propertyType || '')
@@ -686,7 +663,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     form.setValue('maxSize', filterData.maxSize || '')
     form.setValue('availability', filterData.availability || '')
     form.setValue('transactionType', filterData.transactionType || '')
-    handleFetchListings(filterData, page, sort)
+    handleFetchListings(filterData, page, sort, { centerMap: true })
     return () => {
       mapRef.current?.off('load', function () {
         mapRef.current?.loadImage(
@@ -713,12 +690,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     }
   }, [])
 
-
-
-  // useEffect(() => {
-  //   centerMap()
-  // }, [boundingBox])
-
   const handleReset = async () => {
     try {
       setIsLoading(true)
@@ -733,7 +704,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       form.setValue('availability', '')
       form.setValue('transactionType', '')
       setFilters(undefined)
-      handleFetchListings()
+
+      handleFetchListings(undefined, undefined, undefined, { excludeMap: false, centerMap: true, ignoreBounds: true })
     } catch (error: any) {
       console.log(error.message)
     } finally {
@@ -742,8 +714,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   }
 
   useEffect(() => {
-    console.log('Debounced Bounds: ' + debouncedBounds)
-    handleFetchListings(filters, currentPage, sortData ? sortData.value : undefined)
+    if (!isFirstRender) {
+      handleFetchListings(filters, currentPage, sortData ? sortData.value : undefined)
+    }
   }, [debouncedBounds])
 
   return (
@@ -974,7 +947,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                 variant="ghost"
                 onClick={() => {
                   if (hasPrevPage && prevPage) {
-                    handleFetchListings(filters, 1, sortData?.value, true)
+                    handleFetchListings(filters, 1, sortData?.value, { excludeMap: true })
                     window.scrollTo({ top: 0 })
                   }
                 }}
@@ -986,7 +959,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                 variant="ghost"
                 onClick={() => {
                   if (hasPrevPage && prevPage) {
-                    handleFetchListings(filters, prevPage, sortData?.value, true)
+                    handleFetchListings(filters, prevPage, sortData?.value, { excludeMap: true })
                     window.scrollTo({ top: 0 })
                   }
                 }}
@@ -1003,7 +976,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                 variant="ghost"
                 onClick={() => {
                   if (hasNextPage && nextPage) {
-                    handleFetchListings(filters, nextPage, sortData?.value, true)
+                    handleFetchListings(filters, nextPage, sortData?.value, { excludeMap: true })
                     window.scrollTo({ top: 0 })
                   }
                 }}
@@ -1015,7 +988,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                 variant="ghost"
                 onClick={() => {
                   if (hasNextPage && totalPages) {
-                    handleFetchListings(filters, totalPages, sortData?.value, true)
+                    handleFetchListings(filters, totalPages, sortData?.value, { excludeMap: true })
                     window.scrollTo({ top: 0 })
                   }
                 }}

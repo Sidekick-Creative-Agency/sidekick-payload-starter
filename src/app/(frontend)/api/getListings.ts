@@ -23,12 +23,13 @@ export const getCardListings = async (data: {
   filters?: Filterfilters
   page?: number | null | undefined
   sort?: string | null | undefined
+  bounds?: [number, number][]
 }) => {
   try {
     const payload = await getPayload({ config: configPromise })
     let listings: PaginatedDocs<Listing> | undefined = undefined
 
-    const { filters, page, sort } = data
+    const { filters, page, sort, bounds } = data
 
     const whereQuery: Where = {
       and: [
@@ -182,6 +183,19 @@ export const getCardListings = async (data: {
               }
             : {}),
         },
+        // BOUNDS
+        {
+          ...(bounds
+            ? {
+                coordinates: {
+                  within: {
+                    type: 'Polygon',
+                    coordinates: [bounds],
+                  },
+                },
+              }
+            : {}),
+        },
       ],
     }
 
@@ -215,7 +229,6 @@ export const getMapListings = async (data: {
   try {
     const payload = await getPayload({ config: configPromise })
     const { filters, bounds } = data
-    console.log(bounds)
 
     const whereQuery: Where = {
       and: [
