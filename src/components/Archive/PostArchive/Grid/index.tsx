@@ -69,14 +69,12 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
         {
           limit: limit,
           page: currentPage + 1,
-          sort: '-publishedAt',
           where: query,
         },
         { addQueryPrefix: true },
       )
-      console.log(stringifiedQuery)
       const response = await fetch(
-        `/api/posts${stringifiedQuery}`,
+        `/api/posts${stringifiedQuery}&sort=-publishedAt,-updatedAt`,
       )
       if (response.ok) {
         const newData = await response.json()
@@ -99,7 +97,6 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
     setIsLoading(true)
     const category = categories?.find((category) => category.title === categoryTitle)
     setActiveCategory(category)
-    console.log(category)
     setPosts([])
     try {
       const query: Where = {
@@ -119,13 +116,12 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
       const stringifiedQuery = stringify(
         {
           limit: limit,
-          sort: '-publishedAt',
           where: query,
         },
         { addQueryPrefix: true },
       )
       const response = await fetch(
-        `/api/posts${stringifiedQuery}`,
+        `/api/posts${stringifiedQuery}&sort=-publishedAt,-updatedAt`,
       )
       if (response.ok) {
         const newData = await response.json()
