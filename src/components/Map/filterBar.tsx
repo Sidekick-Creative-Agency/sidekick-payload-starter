@@ -29,8 +29,16 @@ import { Label } from '../ui/label'
 import { faXmark } from '@awesome.me/kit-a7a0dd333d/icons/sharp/light'
 
 interface FilterBarProps {
-  handleFilter: (filterData?: MapFilters, page?: number) => Promise<void>
+  handleFilter: (filterData?: MapFilters,
+    page?: number | null,
+    sort?: string | null,
+    options?: {
+      excludeMap?: boolean,
+      centerMap?: boolean,
+      ignoreBounds?: boolean
+    }) => Promise<void>
   handleReset: () => Promise<void>
+  sort: string | undefined
   form: UseFormReturn<z.infer<typeof FormSchema>>
   isLoading: boolean
 }
@@ -38,6 +46,7 @@ interface FilterBarProps {
 export const FilterBar: React.FC<FilterBarProps> = ({
   handleFilter,
   handleReset,
+  sort,
   form,
   isLoading,
 }) => {
@@ -67,7 +76,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       availability: data.availability,
       transactionType: data.transactionType as 'for-sale' | 'for-lease' | null | undefined,
     }
-    handleFilter(filterData)
+    handleFilter(filterData, 1, sort, { centerMap: true, ignoreBounds: true })
 
     setIsOpen(false)
   }

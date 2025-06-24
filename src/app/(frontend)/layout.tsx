@@ -40,7 +40,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </Providers>
         <Toaster />
       </body>
-      <GoogleAnalytics gaId={process.env.GOOGLE_ANALYTICS_ID || ''} />
+      {process.env.NODE_ENV === 'production' && <GoogleAnalytics gaId={process.env.GOOGLE_ANALYTICS_ID || ''} />}
+
     </html>
   )
 }

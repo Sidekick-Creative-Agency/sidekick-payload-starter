@@ -2,7 +2,7 @@
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { Listing, Media as MediaType } from '@/payload-types'
 import { createRef, RefObject, useEffect, useRef, useState } from 'react'
-import mapboxgl, { LngLatBoundsLike, LngLatLike, Map, Marker } from 'mapbox-gl'
+import mapboxgl, { LngLatBounds, LngLatBoundsLike, LngLatLike, Map, Marker } from 'mapbox-gl'
 import { Card } from '../../../../components/ui/card'
 import { Media } from '../../../../components/Media'
 import { Button } from '../../../../components/ui/button'
@@ -26,7 +26,7 @@ import { formatPrice } from '@/utilities/formatPrice'
 import { FilterBar } from '@/components/Map/filterBar'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { getMapListings } from '../../api/getMapListings'
+import { getCardListings, getMapListings } from '../../api/getListings'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -45,10 +45,29 @@ import { MAP_PAGINATION_LIMIT } from '@/utilities/constants'
 import { faXmark } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import './styles.scss'
 import { useDebounce } from '@/utilities/useDebounce'
+import { Point } from 'lexical'
 
 interface MapPageClientProps {
   listingsCount?: number
 }
+
+interface MapListing {
+  id: number
+  coordinates: [number, number]
+  title: string
+  featuredImage: number | MediaType
+  textAfterPrice?: string | null | undefined;
+  transactionType?: ("for-sale" | "for-lease") | null | undefined;
+  streetAddress: string;
+  category?: ("commercial" | "residential") | null | undefined;
+  price?: number | null | undefined;
+  MLS?: {
+    ListOfficeName?: string | null
+  }
+  slug?: string | null | undefined
+}
+
+
 
 export interface MapFilters {
   search: string | null | undefined
@@ -103,177 +122,217 @@ const sortOptions = [
   },
 ]
 
+const calculateBounds = (bounds: LngLatBounds | null | undefined) => {
+  if (!bounds) {
+    console.log('Error: no bounds found')
+    return
+  }
+  const ne = [bounds._ne.lng, bounds._ne.lat]
+  const sw = [bounds._sw.lng, bounds._sw.lat]
+  const nw = [ne[0], sw[1]]
+  const se = [sw[0], ne[1]]
+  return [sw, nw, ne, se, sw] as [number, number][]
+}
+
 export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   const mapContainerRef = useRef<any>(null)
   const mapRef = useRef<Map>(null)
+  const searchParams = useSearchParams()
   const { width } = useWindowDimensions()
-  const [activeListings, setActiveListings] = useState<Listing[]>([])
+  const [activeCardListings, setActiveCardListings] = useState<Listing[]>([])
+  const [activeMapListings, setActiveMapListings] = useState<MapListing[]>([])
   const [totalListings, setTotalListings] = useState<number | undefined>(listingsCount)
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('map')
   const [filters, setFilters] = useState<MapFilters | undefined>(undefined)
   const [hasNextPage, setHasNextPage] = useState<boolean | null | undefined>(undefined)
   const [hasPrevPage, setHasPrevPage] = useState<boolean | null | undefined>(undefined)
-  const [currentPage, setCurrentPage] = useState<number | null | undefined>(1)
-  // const [totalPages, setTotalPages] = useState<number | null | undefined>(undefined)
-  // const [nextPage, setNextPage] = useState<number | null | undefined>(undefined)
-  // const [prevPage, setPrevPage] = useState<number | null | undefined>(undefined)
+  const [currentPage, setCurrentPage] = useState<number | null | undefined>(parseInt(searchParams.get('page') || '1'))
+  const [totalPages, setTotalPages] = useState<number | null | undefined>(undefined)
+  const [nextPage, setNextPage] = useState<number | null | undefined>(undefined)
+  const [prevPage, setPrevPage] = useState<number | null | undefined>(undefined)
   const [isSortOpen, setIsSortOpen] = useState(false)
   const [focusedListing, setFocusedListing] = useState<Listing | null>(null)
+  const [bounds, setBounds] = useState<[number, number][] | undefined>(undefined)
   const [cardRefs, setCardRefs] = useState<RefObject<HTMLDivElement | null>[]>([])
   const { setHeaderTheme } = useHeaderTheme()
   const router = useRouter()
-  const searchParams = useSearchParams()
+
   const pathname = usePathname()
   const [isFirstRender, setIsFirstRender] = useState(true)
   const [sortData, setSortData] = useState<{ value: string; label: string } | undefined>(undefined)
-  const [limit] = useState(MAP_PAGINATION_LIMIT || 10)
+  const [limit, setLimit] = useState(MAP_PAGINATION_LIMIT || 10)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
 
   const debouncedFocusedListing = useDebounce(focusedListing, 500)
+  const debouncedBounds = useDebounce(bounds, 750)
 
-  useEffect(() => {
-    if (debouncedFocusedListing) {
-      clearPopups()
-      const listing = activeListings.find((_listing) => _listing.id === debouncedFocusedListing.id)
-      if (!listing) return
-      if (mapRef.current) {
-        mapRef.current.flyTo({
-          center: [listing.coordinates[0], listing.coordinates[1]],
-          speed: 0.75,
-          zoom: 20
-        })
-        new mapboxgl.Popup({ offset: 25, focusAfterOpen: false })
-          .setLngLat(listing.coordinates)
-          .setHTML(
-            `
-              <div class="marker-popup rounded-lg overflow-hidden">
-                <div class="marker-popup_image-container relative aspect-video bg-white">
-                <div class="animate-pulse absolute inset-0 bg-brand-gray-01"></div>
-                  <img src="${(listing?.featuredImage as MediaType)?.sizes?.medium?.url || null}" alt="${(listing?.featuredImage as MediaType)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
-                </div>
-                <div class="p-6 bg-white flex flex-col">
-                <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06"> ${listing.price
-              ? `${formatPrice(listing.price)}${listing.textAfterPrice
-                ? `<span class="text-sm ml-2 font-normal">${listing.textAfterPrice}</span>`
-                : ''
-              }`
-              : 'Contact for price'
-            }</span>
-                  <h3 class="marker-title font-basic-sans text-brand-gray-04 text-base font-light">${listing.streetAddress}</h3>
-                  <a href="/listings/${listing.slug}" class="p-2 w-fit text-sm rounded-sm transition-colors hover:bg-brand-gray-00 focus-visible:bg-brand-gray-00 focus-visible:outline-none font-light flex items-center gap-1 text-brand-gray-04"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-2 h-auto fill-brand-gray-04"><!--!Font Awesome Pro 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2025 Fonticons, Inc.--><path d="M240 64l0-16-32 0 0 16 0 176L32 240l-16 0 0 32 16 0 176 0 0 176 0 16 32 0 0-16 0-176 176 0 16 0 0-32-16 0-176 0 0-176z"/></svg>Learn More</a>
-                </div>
-              </div>
-              `,
-          ).addTo(mapRef.current)
-        mapRef.current?.flyTo({
-          center: listing.coordinates,
-          speed: 0.5,
-        })
-      }
-    }
-  }, [debouncedFocusedListing, activeListings])
+  const centerMap = (coordinates: LngLatLike[]) => {
+    if (!coordinates || !mapRef.current) return;
+    const boundsToFit = coordinates.reduce(function (boundsArr, coord) {
+      return boundsArr.extend(coord);
+    }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+    mapRef.current.fitBounds(boundsToFit, {
+      padding: 60
+    });
+  }
 
   const handleFetchListings = async (
     filterData?: MapFilters,
-    page?: number,
+    page?: number | null,
     sort?: string | null,
+    options?: {
+      excludeMap?: boolean,
+      centerMap?: boolean,
+      ignoreBounds?: boolean
+    }
   ) => {
     setIsLoading(true)
-    setActiveListings([])
-    setCardRefs([])
-    if (filterData || page || sort) {
-      filterData && setFilters(filterData)
-      sort
-        ? setSortData(sortOptions.find((option) => option.value === sort))
-        : searchParams.get('sort')
-          ? setSortData(sortOptions.find((option) => option.value === searchParams.get('sort')))
-          : setSortData(undefined)
-      const newSearchParams = new URLSearchParams(searchParams)
-      if (filterData?.search) {
-        newSearchParams.set('search', filterData.search)
-      } else {
-        newSearchParams.delete('search')
-      }
-      if (filterData?.category) {
-        newSearchParams.set('category', filterData.category)
-      } else {
-        newSearchParams.delete('category')
-      }
-      if (filterData?.propertyType) {
-        newSearchParams.set('property_type', filterData.propertyType)
-      } else {
-        newSearchParams.delete('property_type')
-      }
-      if (filterData?.minPrice) {
-        newSearchParams.set('min_price', filterData.minPrice.toString())
-      } else {
-        newSearchParams.delete('min_price')
-      }
-      if (filterData?.maxPrice) {
-        newSearchParams.set('max_price', filterData.maxPrice.toString())
-      } else {
-        newSearchParams.delete('max_price')
-      }
-      if (filterData?.minSize) {
-        newSearchParams.set('min_size', filterData.minSize.toString())
-      } else {
-        newSearchParams.delete('min_size')
-      }
-      if (filterData?.maxSize) {
-        newSearchParams.set('max_size', filterData.maxSize.toString())
-      } else {
-        newSearchParams.delete('max_size')
-      }
-      if (filterData?.availability) {
-        newSearchParams.set('availability', filterData.availability.toString())
-      } else {
-        newSearchParams.delete('availability')
-      }
-      if (filterData?.transactionType) {
-        newSearchParams.set('transaction_type', filterData.transactionType.toString())
-      } else {
-        newSearchParams.delete('transaction_type')
-      }
-      if (filterData?.sizeType) {
-        newSearchParams.set('size_type', filterData.sizeType.toString())
-      } else {
-        newSearchParams.delete('size_type')
-      }
-      if (page) {
-        newSearchParams.set('page', page.toString())
-      } else {
-        newSearchParams.delete('page')
-      }
-      if (sort) {
-        newSearchParams.set('sort', sort)
-      } else {
-        searchParams.get('sort')
-          ? newSearchParams.set('sort', searchParams.get('sort')!)
-          : newSearchParams.delete('sort')
-      }
-      router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
+    // const newSearchParams = new URLSearchParams(searchParams)
+    const newSearchParams = new URLSearchParams()
+
+    if (filterData) {
+      setFilters(filterData)
     }
-    const response = await getMapListings({
-      filters: filterData || undefined,
-      page: page || undefined,
-      sort: sort || searchParams.get('sort') || undefined,
+    if (sort) {
+      setSortData(sortOptions.find((option) => option.value === sort))
+      newSearchParams.set('sort', sort)
+    } else {
+      setSortData(undefined)
+      // searchParams.get('sort')
+      //   ? setSortData(sortOptions.find((option) => option.value === searchParams.get('sort')))
+      //   : setSortData(undefined)
+      // searchParams.get('sort')
+      //     ? newSearchParams.set('sort', searchParams.get('sort')!)
+      //     : newSearchParams.delete('sort')
+    }
+    if (page) {
+      newSearchParams.set('page', page.toString())
+    } else {
+      // newSearchParams.delete('page')
+    }
+    if (filterData?.search) {
+      newSearchParams.set('search', filterData.search)
+    } else {
+      // newSearchParams.delete('search')
+    }
+    if (filterData?.category) {
+      newSearchParams.set('category', filterData.category)
+    } else {
+      // newSearchParams.delete('category')
+    }
+    if (filterData?.propertyType) {
+      newSearchParams.set('property_type', filterData.propertyType)
+    } else {
+      // newSearchParams.delete('property_type')
+    }
+    if (filterData?.minPrice) {
+      newSearchParams.set('min_price', filterData.minPrice.toString())
+    } else {
+      // newSearchParams.delete('min_price')
+    }
+    if (filterData?.maxPrice) {
+      newSearchParams.set('max_price', filterData.maxPrice.toString())
+    } else {
+      // newSearchParams.delete('max_price')
+    }
+    if (filterData?.minSize) {
+      newSearchParams.set('min_size', filterData.minSize.toString())
+    } else {
+      // newSearchParams.delete('min_size')
+    }
+    if (filterData?.maxSize) {
+      newSearchParams.set('max_size', filterData.maxSize.toString())
+    } else {
+      // newSearchParams.delete('max_size')
+    }
+    if (filterData?.availability) {
+      newSearchParams.set('availability', filterData.availability.toString())
+    } else {
+      // newSearchParams.delete('availability')
+    }
+    if (filterData?.transactionType) {
+      newSearchParams.set('transaction_type', filterData.transactionType.toString())
+    } else {
+      // newSearchParams.delete('transaction_type')
+    }
+    if (filterData?.sizeType) {
+      newSearchParams.set('size_type', filterData.sizeType.toString())
+    } else {
+      // newSearchParams.delete('size_type')
+    }
+
+    let cardListingResponse;
+    let mapListingResponse;
+
+    cardListingResponse = fetchCardListings(filterData, (!options?.excludeMap && !isFirstRender) ? 1 : page, sort, { ignoreBounds: options?.ignoreBounds || false }).then((res) => {
+      setIsLoading(false)
+
+      if (res.page) {
+        newSearchParams.set('page', String(res.page))
+      }
+      if (newSearchParams.size > 0) {
+        router.replace(pathname + '?' + newSearchParams.toString(), { scroll: false })
+      } else {
+        router.replace(pathname)
+      }
+    })
+    if (!options?.excludeMap || options?.centerMap) {
+      mapListingResponse = await fetchMapListings(filterData, { ignoreBounds: options?.ignoreBounds || false })
+      if (options?.centerMap) {
+        const coordinates = mapListingResponse.docs.map((doc) => doc.coordinates) as LngLatLike[]
+        centerMap(coordinates)
+      }
+    }
+
+
+  }
+
+  const fetchCardListings = async (
+    filterData?: MapFilters,
+    page?: number | null,
+    sort?: string | null,
+    options?: {
+      ignoreBounds: boolean
+    }
+  ) => {
+    setActiveCardListings([])
+    const response = await getCardListings({
+      filters: filterData,
+      page: page,
+      sort: sort,
+      bounds: !options?.ignoreBounds ? debouncedBounds : undefined
     })
 
-    setCurrentPage(response.page)
-    // setTotalPages(response.totalPages)
-    // setPrevPage(response.prevPage)
     setHasPrevPage(response.hasPrevPage)
-    // setNextPage(response.nextPage)
     setHasNextPage(response.hasNextPage)
-    setActiveListings(response.docs)
-    setTotalListings(response.totalDocs)
-    setIsLoading(false)
-    const newCardRefs = response.docs.map(() => createRef<HTMLDivElement>())
-    setCardRefs(newCardRefs)
+    setActiveCardListings(response.docs)
+    setPrevPage(response.prevPage)
+    setNextPage(response.nextPage)
+    setTotalPages(response.totalPages)
+    setCurrentPage(page)
+    return response
+  }
+  const fetchMapListings = async (
+    filterData?: MapFilters,
+    options?: {
+      ignoreBounds: boolean
+    }
+  ) => {
+    const response = await getMapListings({
+      filters: filterData,
+      bounds: !options?.ignoreBounds ? debouncedBounds : undefined
+    }).catch((error: any) => {
+      console.log("Error: " + error)
+      return undefined
+
+    })
+    setActiveMapListings(response?.docs || [])
+    setTotalListings(response?.totalDocs)
+    return response
   }
 
   const clearPopups = () => {
@@ -283,11 +342,10 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
   }
 
   useEffect(() => {
-
-    if (activeListings && activeListings.length > 0) {
+    if (activeMapListings && activeMapListings.length > 0) {
       const geoJson = {
         type: 'FeatureCollection',
-        features: activeListings.map((listing) => {
+        features: activeMapListings.map((listing) => {
           return {
             type: 'Feature',
             properties: {
@@ -300,7 +358,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                   : '',
               textAfterPrice: listing.textAfterPrice || '',
               transactionType: listing.transactionType,
-              image: listing.featuredImage,
+              imageSrc: (listing.featuredImage as MediaType).thumbnailURL,
+              imageAlt: (listing.featuredImage as MediaType).alt,
               lat: listing.coordinates[1],
               lon: listing.coordinates[0],
               iconSize: 32,
@@ -309,7 +368,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             },
             geometry: {
               type: 'Point',
-              coordinates: [listing.coordinates[0], listing.coordinates[1]],
+              coordinates: [listing.coordinates[0], listing.coordinates[1]] as LngLatLike,
             },
           }
         }),
@@ -324,6 +383,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           clusterRadius: 40
         });
 
+        // MAP LAYERS
         mapRef.current.addLayer({
           id: 'clusters',
           type: 'circle',
@@ -366,6 +426,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             'circle-sort-key': 2
           }
         });
+
         mapRef.current.addLayer({
           id: 'clusters-outer',
           type: 'circle',
@@ -393,7 +454,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           }
         });
 
-
         mapRef.current.addLayer({
           id: 'cluster-count',
           type: 'symbol',
@@ -414,7 +474,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             ]
           }
         });
-
 
         mapRef.current.addLayer({
           id: 'unclustered-point',
@@ -462,7 +521,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
               <div class="marker-popup rounded-lg overflow-hidden">
                 <div class="marker-popup_image-container relative aspect-video bg-white">
                 <div class="animate-pulse absolute inset-0 bg-brand-gray-01"></div>
-                  <img src="${JSON.parse(feature.properties?.image)?.sizes?.medium?.url || null}" alt="${JSON.parse(feature?.properties?.image)?.alt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
+                  <img src="${feature.properties?.imageSrc || null}" alt="${feature?.properties?.imageAlt || ''}" class="marker-popup_image w-full absolute top-0 left-0 h-full object-cover" />
                 </div>
                 <div class="p-6 bg-white flex flex-col">
                 <span class="marker-description text-2xl font-basic-sans font-bold text-brand-gray-06">${feature.properties?.price
@@ -480,17 +539,10 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             )
             // @ts-expect-error
             .addTo(mapRef.current);
-          mapRef.current?.flyTo({
+          mapRef.current?.jumpTo({
             center: coordinates,
-            speed: 0.5,
+            // speed: 0.5,
           })
-          const cardIndex = activeListings.findIndex((listing) => listing.slug === feature.properties?.slug)
-          if (cardIndex !== -1 && cardRefs[cardIndex].current) {
-            cardRefs[cardIndex].current?.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center'
-            })
-          }
         });
 
         mapRef.current.on('mouseenter', 'clusters', () => {
@@ -545,8 +597,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
         mapRef.current?.removeSource('listings')
       }
     }
-  }, [activeListings, isFirstRender])
+  }, [activeMapListings, isFirstRender])
 
+  // FIRST RENDER
   useEffect(() => {
     setHeaderTheme('filled')
     setIsFirstRender(false)
@@ -560,7 +613,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       maxZoom: 20
     })
     mapRef.current.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-left')
-    mapRef.current.on('load', () => {
+    mapRef.current.on('load', function () {
       mapRef.current?.loadImage(
         '/map/map-marker.png',
         (error, image) => {
@@ -573,9 +626,12 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           if (error) throw error;
           if (image) mapRef.current?.addImage('onward-marker', image);
         })
-      // mapRef.current?.on('moveend', () => {
-      //   console.log(mapRef.current?.getBounds())
-      // })
+    })
+    mapRef.current?.on('dragend', function () {
+      setBounds(calculateBounds(mapRef.current?.getBounds()))
+    })
+    mapRef.current?.on('zoomend', function () {
+      setBounds(calculateBounds(mapRef.current?.getBounds()))
     })
 
     // FETCH PROPERTIES ON FIRST RENDER
@@ -597,8 +653,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     }
     const page = searchParams.get('page') ? Number(searchParams.get('page')) : undefined
     const sort = searchParams.get('sort') || undefined
-
-
     form.setValue('search', filterData.search || '')
     form.setValue('category', filterData.category || '')
     form.setValue('propertyType', filterData.propertyType || '')
@@ -609,23 +663,36 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
     form.setValue('maxSize', filterData.maxSize || '')
     form.setValue('availability', filterData.availability || '')
     form.setValue('transactionType', filterData.transactionType || '')
-
-    handleFetchListings(filterData, page, sort)
+    handleFetchListings(filterData, page, sort, { centerMap: true })
     return () => {
+      mapRef.current?.off('load', function () {
+        mapRef.current?.loadImage(
+          '/map/map-marker.png',
+          (error, image) => {
+            if (error) throw error;
+            if (image) mapRef.current?.addImage('default-marker', image);
+          })
+        mapRef.current?.loadImage(
+          '/map/onward-map-marker.png',
+          (error, image) => {
+            if (error) throw error;
+            if (image) mapRef.current?.addImage('onward-marker', image);
+          })
+      })
+      mapRef.current?.off('dragend', function () {
+        setBounds(calculateBounds(mapRef.current?.getBounds()))
+      })
+      // mapRef.current?.off('zoomend', function () {
+      //   setBounds(calculateBounds(mapRef.current?.getBounds()))
+      // })
       mapRef.current?.remove()
+
     }
   }, [])
-
-
-
-  // useEffect(() => {
-  //   centerMap()
-  // }, [boundingBox])
 
   const handleReset = async () => {
     try {
       setIsLoading(true)
-      router.replace(pathname, { scroll: false })
       form.setValue('search', '')
       form.setValue('category', '')
       form.setValue('propertyType', '')
@@ -637,19 +704,27 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
       form.setValue('availability', '')
       form.setValue('transactionType', '')
       setFilters(undefined)
-      handleFetchListings()
+
+      handleFetchListings(undefined, undefined, undefined, { excludeMap: false, centerMap: true, ignoreBounds: true })
     } catch (error: any) {
       console.log(error.message)
-      router.push(pathname)
     } finally {
+      router.replace(pathname, { scroll: false })
     }
   }
+
+  useEffect(() => {
+    if (!isFirstRender) {
+      handleFetchListings(filters, currentPage, sortData ? sortData.value : undefined)
+    }
+  }, [debouncedBounds])
 
   return (
     <div>
       <FilterBar
         handleFilter={handleFetchListings}
         handleReset={handleReset}
+        sort={sortData?.value}
         form={form}
         isLoading={isLoading}
       />
@@ -761,9 +836,9 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                 )
               })}
 
-            {activeListings &&
-              activeListings.length > 0 &&
-              activeListings.map((listing, index) => {
+            {activeCardListings &&
+              activeCardListings.length > 0 &&
+              activeCardListings.map((listing, index) => {
                 return (
                   <Card
                     key={listing.id}
@@ -780,7 +855,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                     onBlur={() => {
                       setFocusedListing(null)
                     }}
-                    ref={cardRefs[index]}
+                  // ref={cardRefs[index]}
                   >
                     <Link href={`/listings/${listing.slug}`} className="h-full block">
                       <div className="relative pb-[66.66%] overflow-hidden w-full">
@@ -867,95 +942,68 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
                   </Card>
                 )
               })}
-            {/* {!isFirstRender && activeListings && activeListings.length > 0 && ( */}
-            {/* <div className="col-span-full flex justify-center gap-2 items-center">
-                 <Button
-                    className="p-2 text-brand-gray-04"
-                    variant="ghost"
-                    onClick={() => {
-                      if (hasPrevPage && prevPage) {
-                        handleFetchListings(filters, 1)
-                        window.scrollTo({ top: 0 })
-                      }
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faChevronDoubleLeft} className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    className="p-2 text-brand-gray-04"
-                    variant="ghost"
-                    onClick={() => {
-                      if (hasPrevPage && prevPage) {
-                        handleFetchListings(filters, prevPage)
-                        window.scrollTo({ top: 0 })
-                      }
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
-                  </Button>
+            <div className="col-span-full flex justify-center gap-2 items-center">
+              <Button
+                className="p-2 text-brand-gray-04"
+                variant="ghost"
+                onClick={() => {
+                  if (hasPrevPage && prevPage) {
+                    handleFetchListings(filters, 1, sortData?.value, { excludeMap: true })
+                    window.scrollTo({ top: 0 })
+                  }
+                }}
+              >
+                <FontAwesomeIcon icon={faChevronDoubleLeft} className="w-4 h-4" />
+              </Button>
+              <Button
+                className="p-2 text-brand-gray-04"
+                variant="ghost"
+                onClick={() => {
+                  if (hasPrevPage && prevPage) {
+                    handleFetchListings(filters, prevPage, sortData?.value, { excludeMap: true })
+                    window.scrollTo({ top: 0 })
+                  }
+                }}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
+              </Button>
 
-                  <span className="font-light leading-none text-brand-gray-04">
-                    {currentPage} of {totalPages}
-                  </span>
+              <span className="font-light leading-none text-brand-gray-04">
+                {currentPage} {totalPages && `of ${totalPages}`}
+              </span>
 
-                  <Button
-                    className="p-2 text-brand-gray-04"
-                    variant="ghost"
-                    onClick={() => {
-                      if (hasNextPage && nextPage) {
-                        handleFetchListings(filters, nextPage)
-                        window.scrollTo({ top: 0 })
-                      }
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    className="p-2 text-brand-gray-04"
-                    variant="ghost"
-                    onClick={() => {
-                      if (hasNextPage && totalPages) {
-                        handleFetchListings(filters, totalPages)
-                        window.scrollTo({ top: 0 })
-                      }
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faChevronDoubleRight} className="w-4 h-4" />
-                  </Button>
+              <Button
+                className="p-2 text-brand-gray-04"
+                variant="ghost"
+                onClick={() => {
+                  if (hasNextPage && nextPage) {
+                    handleFetchListings(filters, nextPage, sortData?.value, { excludeMap: true })
+                    window.scrollTo({ top: 0 })
+                  }
+                }}
+              >
+                <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
+              </Button>
+              <Button
+                className="p-2 text-brand-gray-04"
+                variant="ghost"
+                onClick={() => {
+                  if (hasNextPage && totalPages) {
+                    handleFetchListings(filters, totalPages, sortData?.value, { excludeMap: true })
+                    window.scrollTo({ top: 0 })
+                  }
+                }}
+              >
+                <FontAwesomeIcon icon={faChevronDoubleRight} className="w-4 h-4" />
+              </Button>
 
-                   <Button
-                    variant="outline"
-                    className="p-0 w-8 h-8"
-                    disabled={!hasPrevPage}
-                    onClick={() => {
-                      if (hasPrevPage && prevPage) {
-                        handleFetchListings(filters, prevPage)
-                        window.scrollTo({ top: 0 })
-                      }
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faChevronLeft} />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="p-0 w-8 h-8"
-                    disabled={!hasNextPage}
-                    onClick={() => {
-                      if (hasNextPage && nextPage) {
-                        handleFetchListings(filters, nextPage)
-                        window.scrollTo({ top: 0 })
-                      }
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faChevronRight} />
-                  </Button>
-                </div> */}
-            {/* )} */}
+
+            </div>
 
             {!isFirstRender &&
               !isLoading &&
-              (!activeListings ||
-                (activeListings.length === 0 && (
+              (!activeCardListings ||
+                (activeCardListings.length === 0 && (
                   <div className="p-5 text-center flex flex-col gap-4">
                     <span>No listings found</span>
                     <Button
