@@ -1,15 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 
-import { DataFromCollectionSlug } from 'payload'
+import { DataFromCollectionSlug, Where } from 'payload'
 import { PostCard } from '@/components/Posts/PostCard'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
 import { Button } from '@/components/ui/button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
@@ -22,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { stringify } from 'qs-esm'
 
 interface PostArchiveGridProps {
   data: DataFromCollectionSlug<'posts'>[]
@@ -57,8 +51,30 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
     setIsLoading(true)
     if (!hasNextPage) return
     try {
+      const query: Where = {
+        and: [
+          activeCategory?.title ? {
+            'category.title': {
+              equals: activeCategory?.title
+            }
+          } : {},
+          {
+            _status: {
+              equals: 'published'
+            }
+          }
+        ]
+      }
+      const stringifiedQuery = stringify(
+        {
+          limit: limit,
+          page: currentPage + 1,
+          where: query,
+        },
+        { addQueryPrefix: true },
+      )
       const response = await fetch(
-        `/api/posts?limit=${limit}&page=${currentPage + 1}${activeCategory ? `&where[category.title][equals]=${activeCategory?.title}` : ''}`,
+        `/api/posts${stringifiedQuery}&sort=-publishedAt,-updatedAt`,
       )
       if (response.ok) {
         const newData = await response.json()
@@ -79,11 +95,33 @@ export const PostArchiveGrid: React.FC<PostArchiveGridProps> = ({
 
   const filterPosts = async (categoryTitle: string) => {
     setIsLoading(true)
-    setActiveCategory(categories?.find((category) => category.title === categoryTitle))
+    const category = categories?.find((category) => category.title === categoryTitle)
+    setActiveCategory(category)
     setPosts([])
     try {
+      const query: Where = {
+        and: [
+          category?.title ? {
+            'category.title': {
+              equals: category?.title
+            }
+          } : {},
+          {
+            _status: {
+              equals: 'published'
+            }
+          }
+        ]
+      }
+      const stringifiedQuery = stringify(
+        {
+          limit: limit,
+          where: query,
+        },
+        { addQueryPrefix: true },
+      )
       const response = await fetch(
-        `/api/posts?limit=${limit}${categoryTitle !== 'all' ? `&where[category.title][equals]=${categoryTitle}` : ''}`,
+        `/api/posts${stringifiedQuery}&sort=-publishedAt,-updatedAt`,
       )
       if (response.ok) {
         const newData = await response.json()

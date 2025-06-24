@@ -485,7 +485,6 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
             speed: 0.5,
           })
           const cardIndex = activeListings.findIndex((listing) => listing.slug === feature.properties?.slug)
-
           if (cardIndex !== -1 && cardRefs[cardIndex].current) {
             cardRefs[cardIndex].current?.scrollIntoView({
               behavior: 'smooth',

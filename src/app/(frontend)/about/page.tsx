@@ -1,8 +1,5 @@
-import { notFound, redirect } from 'next/navigation'
 import { RenderHero } from '@/heros/RenderHero'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
-
-import { queryPageBySlug } from '@/utilities/queryPageBySlug'
 import { queryPageByUrl } from '@/utilities/queryPageByUrl'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { Metadata } from 'next'
