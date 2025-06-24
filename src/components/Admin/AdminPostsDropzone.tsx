@@ -96,7 +96,7 @@ export const AdminPostsDropzone: React.FC<AdminPostsDropzoneProps> = ({ collecti
               globalCategory.title === item.categories.toLowerCase().replaceAll(' ', '-'),
           )?.id
           const content = item.content || {}
-          const metaDescription = item.meta_description ? item.meta_description : undefined
+          // const metaDescription = item.meta_description ? item.meta_description : undefined
 
           // FEATURED IMAGE UPLOAD
           if (featuredImageUrl) {
@@ -154,10 +154,10 @@ export const AdminPostsDropzone: React.FC<AdminPostsDropzoneProps> = ({ collecti
             featuredImage: featuredImageId,
             content: formattedContent,
             category: category,
-            excerpt: metaDescription,
+            // excerpt: metaDescription,
             meta: {
               title,
-              description: metaDescription,
+              // description: metaDescription,
               image: featuredImageId,
             },
           }

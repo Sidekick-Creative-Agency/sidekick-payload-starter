@@ -105,8 +105,6 @@ export default async function Listing({ params: paramsPromise }: Args) {
   })
 
   if (!listing) return <PayloadRedirects url={url} />
-  // if (!listing) notFound()
-  // if (!listing) redirect('/listings')
 
   return (
     <article>
@@ -344,23 +342,6 @@ export default async function Listing({ params: paramsPromise }: Args) {
                 </div>
               </div>
               <Accordion type="multiple" defaultValue={['Overview', 'Resources']}>
-                <AccordionItem value="Overview">
-                  <AccordionTrigger
-                    className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
-                    iconClassName="border border-brand-gray-01 w-4 h-4 text-brand-navy fill-brand-navy p-1"
-                    closedIcon={faChevronDown}
-                    openIcon={faChevronUp}
-                  >
-                    Property Overview
-                  </AccordionTrigger>
-
-                  <AccordionContent className="pb-10">
-                    <RichText
-                      content={listing.description || {}}
-                      className="p-0 text-brand-gray-04 max-w-none *:text-brand-gray-04 font-light [&>p>strong]:text-brand-gray-04"
-                    />
-                  </AccordionContent>
-                </AccordionItem>
                 {listing.attachments && listing.attachments.length > 0 && (
                   <AccordionItem value="Resources">
                     <AccordionTrigger
@@ -401,6 +382,23 @@ export default async function Listing({ params: paramsPromise }: Args) {
                     </AccordionContent>
                   </AccordionItem>
                 )}
+                <AccordionItem value="Overview">
+                  <AccordionTrigger
+                    className="text-2xl font-bold text-brand-navy hover:no-underline py-10"
+                    iconClassName="border border-brand-gray-01 w-4 h-4 text-brand-navy fill-brand-navy p-1"
+                    closedIcon={faChevronDown}
+                    openIcon={faChevronUp}
+                  >
+                    Property Overview
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-10">
+                    <RichText
+                      content={listing.description || {}}
+                      className="p-0 text-brand-gray-04 max-w-none *:text-brand-gray-04 font-light [&>p>strong]:text-brand-gray-04"
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+
               </Accordion>
             </div>
             <div className="col-span-1 p-4 py-10 sm:p-10 bg-white border-t-[10px] border-brand-navy flex flex-col h-fit sticky top-24">
