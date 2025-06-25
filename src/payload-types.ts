@@ -561,6 +561,7 @@ export interface TeamMember {
     isLeadership?: boolean | null;
     isRealtor?: boolean | null;
     company?: ('onward' | 'alliance') | null;
+    emailSignatureHeadshot?: (number | null) | Media;
   };
   meta?: {
     title?: string | null;
@@ -2406,6 +2407,7 @@ export interface TeamMembersSelect<T extends boolean = true> {
         isLeadership?: T;
         isRealtor?: T;
         company?: T;
+        emailSignatureHeadshot?: T;
       };
   meta?:
     | T
