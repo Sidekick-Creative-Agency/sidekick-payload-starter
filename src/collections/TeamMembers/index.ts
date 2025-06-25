@@ -198,6 +198,11 @@ export const TeamMembers: CollectionConfig = {
                 { label: 'Alliance', value: 'alliance' },
               ],
             },
+            {
+              name: 'emailSignatureHeadshot',
+              type: 'upload',
+              relationTo: 'media',
+            },
           ],
         },
         {
