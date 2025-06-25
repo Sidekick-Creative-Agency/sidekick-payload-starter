@@ -35,7 +35,7 @@ export default async function Page() {
           browser-based email suite.<br /><br />
           A video walkthrough of how to install your email signature can be found {' '}
           <a
-            href="https://www.loom.com/share/b9d9f754ce8b4d80a5d2a30dbd3739ca?sid=37826d24-05c1-42ea-8bd1-b4006cc57665"
+            href="https://www.loom.com/share/6cbf9791551d4745aaea84c63f0f15cd?sid=d7e1ef2e-9ecc-4a51-b4f8-aef5cc600b20"
             target="_blank"
             rel="noreferrer noopener"
             className="underline text-brand-navy"
