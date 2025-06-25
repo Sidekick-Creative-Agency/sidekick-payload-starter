@@ -35,7 +35,7 @@ export const TeamMemberSignature: React.FC<{ teamMember: TeamMember }> = ({ team
     }
 
     return (
-        <div className='flex flex-col items-start gap-10'>
+        <div className='flex flex-col items-start gap-10 scroll-m-36' id={`email-signature-${teamMember.slug}`}>
             <table style={{ margin: 0, padding: 0, border: "0px solid transparent", lineHeight: 1 }} ref={teamMemberRef}>
                 <tbody style={{ margin: 0, padding: 0, border: "0px solid transparent", lineHeight: 1 }}>
                     <tr style={{ margin: 0, padding: 0, border: "0px solid transparent", lineHeight: 1 }}>
@@ -499,7 +499,8 @@ export const TeamMemberSignature: React.FC<{ teamMember: TeamMember }> = ({ team
                                                                                     lineHeight: 1,
                                                                                     color: "#ffffff",
                                                                                 }}
-                                                                            >REALTOR<sup>®</sup></span>
+                                                                            >REALTOR<sup>®</sup>{teamMember.details.designations && `, ${teamMember.details.designations}`}
+                                                                            </span>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
