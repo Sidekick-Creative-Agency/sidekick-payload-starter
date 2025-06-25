@@ -12,7 +12,8 @@ export default async function Page() {
   const payload = await getPayload({ config: configPromise })
   const teamMembersResponse = await payload.find({
     collection: 'team-members',
-    pagination: false
+    pagination: false,
+    sort: 'lastName'
   })
   const teamMembers = teamMembersResponse.docs
 

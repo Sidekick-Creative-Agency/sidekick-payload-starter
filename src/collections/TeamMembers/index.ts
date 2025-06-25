@@ -21,6 +21,7 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { populateLastName } from './hooks/populateLastName'
 import { revalidateTeamPage } from './hooks/revalidateTeamPage'
+import { revalidateSignaturesPage } from './hooks/revalidateSignaturesPage'
 
 export const TeamMembers: CollectionConfig = {
   slug: 'team-members',
@@ -241,6 +242,6 @@ export const TeamMembers: CollectionConfig = {
     ...slugField(),
   ],
   hooks: {
-    afterChange: [revalidateTeamMember, revalidateTeamPage],
+    afterChange: [revalidateTeamMember, revalidateTeamPage, revalidateSignaturesPage],
   },
 }
