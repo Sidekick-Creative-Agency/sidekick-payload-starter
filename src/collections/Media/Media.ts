@@ -11,6 +11,7 @@ export const Media: CollectionConfig = {
     read: anyone,
     update: authenticated,
   },
+
   fields: [
     {
       name: 'alt',

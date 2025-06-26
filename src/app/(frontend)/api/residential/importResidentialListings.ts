@@ -48,6 +48,8 @@ type RETSListing = {
   BathroomsTotalInteger: number | undefined
 }
 
+const LIMIT = 10
+
 const fetchRETSListings = async () => {
   const searchParams = new URLSearchParams()
   searchParams.append('searchType', 'Property')
@@ -58,6 +60,9 @@ const fetchRETSListings = async () => {
     'select',
     'ListingKeyNumeric,City,Latitude,ListAgentFullName,ListAgentKeyNumeric,ListOfficeKeyNumeric,ListOfficeName,ListPrice,LivingArea,Longitude,ModificationTimestamp,PhotosChangeTimestamp,PhotosCount,PostalCode,PropertySubType,PropertyType,PublicRemarks,StateOrProvince,StreetName,StreetNumber,StreetSuffix,LotSizeAcres,LotSizeArea,LotSizeSquareFeet,LotSizeUnits,BedroomsTotal,BathroomsTotalInteger',
   )
+  if (LIMIT) {
+    searchParams.append('limit', String(LIMIT))
+  }
 
   const client = new DigestClient(process.env.RETS_USERNAME, process.env.RETS_PASSWORD, {
     algorithm: 'MD5',
@@ -68,6 +73,11 @@ const fetchRETSListings = async () => {
       res.text().then((text) => {
         const parser = new XMLParser()
         const parsedObj = parser.parse(text) as RETSSearchResponse
+        if (!parsedObj.RETS.COLUMNS) {
+          console.log('ERROR: Columns not found')
+          return
+        }
+
         const columns = parsedObj.RETS.COLUMNS.split('\t')
         const data = parsedObj.RETS.DATA
         return data.map((listingString, i) => {
@@ -135,7 +145,9 @@ const fetchRETSListings = async () => {
         })
       }),
     )
-  console.log(`Fetched ${listings.length} listings from RETS`)
+  if (listings && listings.length > 0) {
+    console.log(`Fetched ${listings.length} listings from RETS`)
+  }
   return listings
 }
 
@@ -167,6 +179,7 @@ const fetchRETSPhotos = async (listingKeyNumeric: number, photosCount: number | 
               return url
             }),
           )
+        console.log('URL:', url)
         return url || undefined
       }
     }),
@@ -182,6 +195,7 @@ function getFirstTwoSentences(text) {
 export const importResidentialListings = async () => {
   const payload = await getPayload({ config: configPromise })
   const listings = await fetchRETSListings()
+  if (!listings) return
   const createdListings = await Promise.all(
     listings.map(async (listing, index) => {
       console.log(index)

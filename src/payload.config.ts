@@ -97,10 +97,6 @@ export default buildConfig({
       },
       actions: ['@/components/Admin/Actions#Actions'],
       views: {
-        importListingsView: {
-          Component: '/views/Listings/Import#ImportView',
-          path: '/import/listings',
-        },
         importPostsView: {
           Component: '/views/Posts/Import#ImportView',
           path: '/import/posts',
