@@ -195,6 +195,7 @@ function getFirstTwoSentences(text) {
 export const importResidentialListings = async () => {
   const payload = await getPayload({ config: configPromise })
   const listings = await fetchRETSListings()
+  if (!listings) return
   const createdListings = await Promise.all(
     listings.map(async (listing, index) => {
       console.log(index)

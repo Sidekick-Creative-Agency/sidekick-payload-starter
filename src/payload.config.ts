@@ -97,10 +97,6 @@ export default buildConfig({
       },
       actions: ['@/components/Admin/Actions#Actions'],
       views: {
-        importListingsView: {
-          Component: '/views/Listings/Import#ImportView',
-          path: '/import/listings',
-        },
         importPostsView: {
           Component: '/views/Posts/Import#ImportView',
           path: '/import/posts',
@@ -285,26 +281,26 @@ export default buildConfig({
         },
       },
     }),
-    // s3Storage({
-    //   collections: {
-    //     media: {
-    //       prefix: 'media',
-    //     },
-    //     attachments: {
-    //       prefix: 'attachments',
-    //     },
-    //   },
-    //   bucket: process.env.S3_BUCKET || '',
-    //   config: {
-    //     forcePathStyle: true,
-    //     credentials: {
-    //       accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
-    //       secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
-    //     },
-    //     endpoint: process.env.S3_ENDPOINT || '',
-    //     region: process.env.S3_REGION,
-    //   },
-    // }),
+    s3Storage({
+      collections: {
+        media: {
+          prefix: 'media',
+        },
+        attachments: {
+          prefix: 'attachments',
+        },
+      },
+      bucket: process.env.S3_BUCKET || '',
+      config: {
+        forcePathStyle: true,
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        },
+        endpoint: process.env.S3_ENDPOINT || '',
+        region: process.env.S3_REGION,
+      },
+    }),
   ],
   secret: process.env.PAYLOAD_SECRET,
   sharp,
