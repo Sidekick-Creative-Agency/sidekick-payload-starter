@@ -5,7 +5,14 @@ import React from 'react'
 import { getPayload } from 'payload'
 import PageClient from './page.client'
 import './styles.scss'
+import { Metadata } from 'next'
 
+
+export const metadata: Metadata = {
+  robots: {
+    index: false
+  }
+}
 
 export default async function Page() {
 
