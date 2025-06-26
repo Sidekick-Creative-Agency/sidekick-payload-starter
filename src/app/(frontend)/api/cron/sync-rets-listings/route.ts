@@ -8,6 +8,8 @@ import { Listing } from '@/payload-types'
 import { checkNeedsUpdate } from './functions/checkNeedsUpdate'
 import { NextRequest } from 'next/server'
 
+export const maxDuration = 180
+
 export async function GET(request: NextRequest) {
   try {
     const headers = request.headers
