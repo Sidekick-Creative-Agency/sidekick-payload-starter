@@ -286,6 +286,7 @@ export interface Media {
     totalDocs?: number;
   };
   blurhash?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -469,6 +470,7 @@ export interface Attachment {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -2149,6 +2151,7 @@ export interface MediaSelect<T extends boolean = true> {
   relatedListingFeaturedImage?: T;
   relatedListingImageGallery?: T;
   blurhash?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -2332,6 +2335,7 @@ export interface ListingsSelect<T extends boolean = true> {
 export interface AttachmentsSelect<T extends boolean = true> {
   title?: T;
   relatedListings?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

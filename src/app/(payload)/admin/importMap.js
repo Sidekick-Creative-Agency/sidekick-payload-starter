@@ -32,7 +32,7 @@ import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from 
 import { default as default_aa0a2d19d38a4839dbd373417e210b89 } from '@/components/AdminLogo'
 import { default as default_23cade6f0f915ee2a7bd9bceb0c04941 } from '@/components/LoginLogo'
 import { Actions as Actions_8a2900ac8f5913205117ba0684c31e0c } from '@/components/Admin/Actions'
-import { ImportView as ImportView_62e6c67a6b8c11d9572ce4c5307a39fa } from '../../../views/Listings/Import'
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { ImportView as ImportView_24bdc7c68b1ec1593b048688d4d42f3b } from '../../../views/Posts/Import'
 
 export const importMap = {
@@ -70,6 +70,6 @@ export const importMap = {
   "@/components/AdminLogo#default": default_aa0a2d19d38a4839dbd373417e210b89,
   "@/components/LoginLogo#default": default_23cade6f0f915ee2a7bd9bceb0c04941,
   "@/components/Admin/Actions#Actions": Actions_8a2900ac8f5913205117ba0684c31e0c,
-  "/views/Listings/Import#ImportView": ImportView_62e6c67a6b8c11d9572ce4c5307a39fa,
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "/views/Posts/Import#ImportView": ImportView_24bdc7c68b1ec1593b048688d4d42f3b
 }
