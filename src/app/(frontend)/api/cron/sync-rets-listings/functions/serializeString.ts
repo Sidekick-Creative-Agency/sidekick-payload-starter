@@ -5,7 +5,6 @@ import { JSDOM } from 'jsdom'
 
 export const serializeString = (input: string | undefined) => {
   if (!input) return undefined
-  let formattedDescription: SerializedEditorState | undefined = undefined
   const editorNodes = []
   const editor = createHeadlessEditor({ nodes: editorNodes })
   editor.update(

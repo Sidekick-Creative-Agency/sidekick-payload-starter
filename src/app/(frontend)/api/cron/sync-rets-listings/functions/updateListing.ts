@@ -16,12 +16,10 @@ export const updateListing = async (
   retsListing: RETSListing,
   existingMedia: Media[],
 ) => {
-  console.log(`UPDATING LISTING: ${listing.title}\n\n`)
-
   if (retsListing.ListingKeyNumeric) {
     const urls = await fetchRETSPhotos(retsListing.ListingKeyNumeric, retsListing.PhotosCount)
     if (!urls || urls.length === 0) {
-      console.log(`NO PHOTOS FOUND FOR LISTING: ${listing.title}`)
+      console.log(`NO PHOTOS FOUND FOR LISTING: ${listing.title}. RETURNING.`)
       return
     }
     const payload = await getPayload({ config: configPromise })
@@ -30,21 +28,19 @@ export const updateListing = async (
     const formattedDescription = serializeString(retsListing.PublicRemarks)
     const matchingAgent = await findAgentByName(retsListing.ListAgentFullName)
     let featuredImageId: number | undefined = undefined
-    const filename = `${listing.title.replaceAll(' ', '_').replaceAll(',', '')}_featured`
+    const filename = `${listing.title.replaceAll(/[,#]/g, '').replaceAll(' ', '_')}_featured`
     const matchingMedia = findMediaByFilename(filename, existingMedia)
     if (matchingMedia) {
       // MEDIA EXISTS
-      console.log('EXISTING MEDIA FOUND WITH FILENAME: ' + filename)
       featuredImageId = matchingMedia.id
     } else {
       // MEDIA DOES NOT EXIST. CREATE NEW MEDIA
-      console.log(`CREATING MEDIA WITH FILENAME: ${filename}`)
       const createdMedia = await createMedia(urls[0], filename)
 
       if (!createdMedia) {
         return
       } else {
-        console.log(`SUCCESSFULLY CREATED MEDIA WITH FILENAME: ${filename}`)
+        console.log(`CREATED MEDIA WITH FILENAME: ${filename}`)
         if (createdMedia?.id) {
           featuredImageId = createdMedia.id
         }

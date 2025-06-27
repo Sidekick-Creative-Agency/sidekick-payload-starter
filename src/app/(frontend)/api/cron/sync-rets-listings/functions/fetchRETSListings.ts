@@ -110,8 +110,5 @@ export const fetchRETSListings = async (limit: string, offset: string) => {
         })
       }),
     )
-  if (listings && listings.length > 0) {
-    console.log(`Fetched ${listings.length} listings from RETS`)
-  }
   return listings
 }

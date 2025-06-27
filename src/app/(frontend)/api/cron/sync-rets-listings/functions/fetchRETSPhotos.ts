@@ -34,7 +34,5 @@ export const fetchRETSPhotos = async (
       urls.push(url)
     }
   }
-  console.log('URLS FOR LISTING: ' + listingKeyNumeric)
-  console.log(urls)
   return urls.filter((url) => url !== undefined)
 }

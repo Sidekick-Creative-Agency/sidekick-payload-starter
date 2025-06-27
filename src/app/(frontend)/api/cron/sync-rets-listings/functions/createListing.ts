@@ -12,11 +12,10 @@ import { getFirstTwoSentences } from './getFirstTwoSentences'
 import { headers as getHeaders } from 'next/headers'
 
 export const createListing = async (listing: RETSListing, existingMedia: Media[]) => {
-  console.log('CREATING NEW LISTING: ' + formatAddress(listing))
   if (listing.ListingKeyNumeric) {
     const urls = await fetchRETSPhotos(listing.ListingKeyNumeric, listing.PhotosCount)
     if (!urls || urls.length === 0) {
-      console.log(`NO PHOTOS FOUND FOR LISTING: ${formatAddress(listing)}`)
+      console.log(`NO PHOTOS FOUND FOR LISTING: ${formatAddress(listing)}. RETURNING.`)
       return
     }
     const payload = await getPayload({ config: configPromise })
@@ -26,21 +25,17 @@ export const createListing = async (listing: RETSListing, existingMedia: Media[]
     const formattedDescription = serializeString(listing.PublicRemarks)
     const matchingAgent = await findAgentByName(listing.ListAgentFullName)
     let featuredImageId: number | undefined = undefined
-    const filename = `${formatAddress(listing).replace(/[,#]/g, '').replaceAll(' ', '_')}_featured`
+    const filename = `${formatAddress(listing).replaceAll(/[,#]/g, '').replaceAll(' ', '_')}_featured`
     const matchingMedia = findMediaByFilename(filename, existingMedia)
     if (matchingMedia) {
       // MEDIA EXISTS
-      console.log('EXISTING MEDIA FOUND WITH FILENAME: ' + filename)
       featuredImageId = matchingMedia.id
     } else {
       // MEDIA DOES NOT EXIST. CREATE NEW MEDIA
-      console.log(`CREATING MEDIA WITH FILENAME: ${filename}`)
       const createdMedia = await createMedia(urls[0], filename)
-
       if (!createdMedia) {
         return
       } else {
-        console.log(`SUCCESSFULLY CREATED MEDIA WITH FILENAME: ${filename}`)
         if (createdMedia?.id) {
           featuredImageId = createdMedia.id
         }

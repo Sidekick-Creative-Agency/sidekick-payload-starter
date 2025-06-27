@@ -1,9 +1,6 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 export const findAgentByName = async (name: string | undefined) => {
-  if (!name) {
-    console.log('NO AGENT NAME PROVIDED')
-  }
   const payload = await getPayload({ config: configPromise })
   const agent = await payload.find({
     collection: 'team-members',
