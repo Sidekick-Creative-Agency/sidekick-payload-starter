@@ -8,7 +8,7 @@ import { Listing } from '@/payload-types'
 import { checkNeedsUpdate } from './functions/checkNeedsUpdate'
 import { NextRequest } from 'next/server'
 
-export const maxDuration = 180
+export const maxDuration = 300
 
 export async function GET(request: NextRequest) {
   try {
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       .then((res) => res.docs)
     const retsListings = await fetchRETSListings(limit, offset)
     if (!retsListings) return
-    const BATCH_SIZE = 10
+    const BATCH_SIZE = 100
     const createdOrUpdatedListings: Listing[] = []
     const batchedListings = retsListings.filter((retsListing) => {
       const existingListing = findExistingListing(retsListing.ListingKeyNumeric, existingListings)
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
                 }
                 resolve(createdListing)
               }
-            }, offsetMs)
+            }, 5000)
           })
         })
       await Promise.all(retsListingPromises)
