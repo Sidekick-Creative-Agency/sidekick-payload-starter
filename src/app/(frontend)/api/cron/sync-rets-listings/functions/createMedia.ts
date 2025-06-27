@@ -11,6 +11,9 @@ export const createMedia = async (url: string | undefined, filename: string | un
     method: 'POST',
     body: formData,
     credentials: 'include',
+    headers: {
+      Authorization: `Bearer ${process.env.PAYLOAD_SECRET}`,
+    },
   })
     .then((response) => response.json().then((json) => json))
     .catch((error) => {

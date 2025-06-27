@@ -9,6 +9,7 @@ import { createMedia } from './createMedia'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getFirstTwoSentences } from './getFirstTwoSentences'
+import { headers as getHeaders } from 'next/headers'
 
 export const createListing = async (listing: RETSListing, existingMedia: Media[]) => {
   console.log('CREATING NEW LISTING: ' + formatAddress(listing))
@@ -19,10 +20,13 @@ export const createListing = async (listing: RETSListing, existingMedia: Media[]
       return
     }
     const payload = await getPayload({ config: configPromise })
+    const headers = await getHeaders()
+    await payload.auth({ headers })
+
     const formattedDescription = serializeString(listing.PublicRemarks)
     const matchingAgent = await findAgentByName(listing.ListAgentFullName)
     let featuredImageId: number | undefined = undefined
-    const filename = `${formatAddress(listing).replaceAll(' ', '_').replaceAll(',', '')}_featured`
+    const filename = `${formatAddress(listing).replace(/[,#]/g, '').replaceAll(' ', '_')}_featured`
     const matchingMedia = findMediaByFilename(filename, existingMedia)
     if (matchingMedia) {
       // MEDIA EXISTS

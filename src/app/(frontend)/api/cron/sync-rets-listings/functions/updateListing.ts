@@ -9,6 +9,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getFirstTwoSentences } from './getFirstTwoSentences'
 import { findMediaByFilename } from './findMediaByFilename'
+import { headers as getHeaders } from 'next/headers'
 
 export const updateListing = async (
   listing: Listing,
@@ -24,6 +25,8 @@ export const updateListing = async (
       return
     }
     const payload = await getPayload({ config: configPromise })
+    const headers = await getHeaders()
+    await payload.auth({ headers })
     const formattedDescription = serializeString(retsListing.PublicRemarks)
     const matchingAgent = await findAgentByName(retsListing.ListAgentFullName)
     let featuredImageId: number | undefined = undefined
