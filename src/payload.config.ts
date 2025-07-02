@@ -17,7 +17,7 @@ import {
 import sharp from 'sharp' // editor-import
 import { UnderlineFeature } from '@payloadcms/richtext-lexical'
 import path from 'path'
-import { Block, buildConfig } from 'payload'
+import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
 import Categories from './collections/Categories'
@@ -33,7 +33,7 @@ import { Listing, Page, Post, TeamMember } from 'src/payload-types'
 
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
-import { PhoneNumber, PhoneNumberField } from './blocks/Form/PhoneNumber/Field'
+import { PhoneNumber } from './blocks/Form/PhoneNumber/Field'
 import { TextField } from './blocks/Form/Text/Field/input'
 import { CheckboxField } from './blocks/Form/Checkbox/Field/input'
 import { CountryField } from './blocks/Form/Country/Field/input'
@@ -55,6 +55,7 @@ import { TeamMemberEmail } from './blocks/Form/TeamMemberEmail/Field/input'
 import { generateContactFormSubmitterEmail } from './emails/Contact/Submitter'
 import { generateContactFormRecipientEmail } from './emails/Contact/Recipient'
 import { CookieBanner } from './CookieBanner/config'
+import { authenticated } from './access/authenticated'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -291,6 +292,7 @@ export default buildConfig({
           prefix: 'attachments',
         },
       },
+      clientUploads: true,
       bucket: process.env.S3_BUCKET || '',
       config: {
         forcePathStyle: true,
