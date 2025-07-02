@@ -433,7 +433,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
           className="w-full min-h-full aspect-[5/4] relative px-5 sm:px-10 lg:px-20"
           imgClassName="object-cover"
           fill
-          resource={listing.featuredImage}
+          resource={listing.contactFormImage || listing.featuredImage}
         />
         <div className="relative w-full px-5 py-20 sm:px-10 sm:py-32 lg:px-20 border-t-[.625rem] border-brand-blue flex flex-col justify-center items-stretch sm:items-start bg-brand-offWhite">
           <Image

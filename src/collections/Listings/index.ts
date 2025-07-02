@@ -116,6 +116,14 @@ export const Listings: CollectionConfig = {
               },
             },
             {
+              name: 'contactFormImage',
+              type: 'upload',
+              relationTo: 'media',
+              admin: {
+                description: 'Image displayed in the contact form section of the listing page',
+              },
+            },
+            {
               name: 'photosChangeTimestamp',
               type: 'text',
               admin: {
