@@ -1,7 +1,4 @@
 'use client'
-
-import { validateRecaptcha } from '@/app/(frontend)/api/validateRecaptcha'
-import { Recaptcha } from '@/blocks/Form/Recaptcha'
 import RichText from '@/components/RichText'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,7 +6,6 @@ import { Form } from '@/payload-types'
 import { faCircleNotch } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useRouter } from 'next/navigation'
-import Script from 'next/script'
 import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -32,7 +28,6 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({ form }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [hasSubmitted, setHasSubmitted] = useState<boolean>()
   const [error, setError] = useState<{ message: string; status?: string } | undefined>()
-  const [recaptchaToken, setRecaptchaToken] = useState('');
   const router = useRouter()
   const onSubmit = (data: { email: string }) => {
     if (!form) return
@@ -46,10 +41,6 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({ form }) => {
       }))
 
       try {
-        const recaptchaResponse = await validateRecaptcha(recaptchaToken);
-        if (!recaptchaResponse.recaptcha_valid) {
-          throw new Error('Recaptcha failed')
-        }
         const req = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/api/form-submissions`,
           {
@@ -111,7 +102,6 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({ form }) => {
               }
             }}
           >
-            <Recaptcha action='form_submit' setToken={setRecaptchaToken} />
             <Input
               className="border-none p-0 bg-transparent text-white font-light focus-visible:ring-0 focus-visible:border-none leading-none focus-visible:ring-offset-0 h-auto placeholder:text-brand-gray-02"
               // @ts-ignore

@@ -15,9 +15,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@awesome.me/kit-a7a0dd333d/icons/sharp/regular'
 import { PageTitleField } from './PageTitle/Field/input'
 import { TeamMemberEmailField } from './TeamMemberEmail/Field/input'
-import { Recaptcha } from './Recaptcha'
-import { validateRecaptcha } from '@/app/(frontend)/api/validateRecaptcha'
-import Script from 'next/script'
 export type Value = unknown
 
 export interface Property {
@@ -131,7 +128,6 @@ export const FormBlock: React.FC<
   const [isLoading, setIsLoading] = useState(false)
   const [hasSubmitted, setHasSubmitted] = useState<boolean>()
   const [error, setError] = useState<{ message: string; status?: string } | undefined>()
-  const [recaptchaToken, setRecaptchaToken] = useState('');
   const router = useRouter()
 
   const onSubmit = useCallback(
@@ -146,11 +142,6 @@ export const FormBlock: React.FC<
         }))
 
         try {
-          console.log('TOKEN: ' + recaptchaToken)
-          const recaptchaResponse = await validateRecaptcha(recaptchaToken);
-          if (!recaptchaResponse.recaptcha_valid) {
-            throw new Error('Recaptcha failed')
-          }
 
           const req = await fetch(
             `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/api/form-submissions`,
@@ -203,11 +194,6 @@ export const FormBlock: React.FC<
     [router, formID, redirect, confirmationType],
   )
 
-  useEffect(() => {
-    console.log('TOKEN: ' + recaptchaToken)
-  }, [recaptchaToken])
-
-
 
   return (
     <>
@@ -236,7 +222,6 @@ export const FormBlock: React.FC<
 
           {!hasSubmitted && (
             <form id={formID} onSubmit={handleSubmit(onSubmit)}>
-              <Recaptcha action='form_submit' setToken={setRecaptchaToken} />
               <div className={`mb-4 flex flex-wrap ${theme === 'default' ? 'gap-4' : 'gap-10'}`}>
                 {formFromProps &&
                   formFromProps.fields &&
