@@ -80,20 +80,23 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const posts = await payload.find({
-    collection: 'posts',
-    depth: 0,
-    limit: 10,
-    draft: false,
-    overrideAccess: false,
-  })
+  if (process.env.ENV !== 'development') {
+    const payload = await getPayload({ config: configPromise })
+    const posts = await payload.find({
+      collection: 'posts',
+      depth: 0,
+      limit: 10,
+      draft: false,
+      overrideAccess: false,
+    })
 
-  const pages: { pageNumber: string }[] = []
+    const pages: { pageNumber: string }[] = []
 
-  for (let i = 1; i <= posts.totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
+    for (let i = 1; i <= posts.totalPages; i++) {
+      pages.push({ pageNumber: String(i) })
+    }
+
+    return pages
   }
-
-  return pages
+  return []
 }

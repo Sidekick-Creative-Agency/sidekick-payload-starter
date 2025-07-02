@@ -292,9 +292,7 @@ export default buildConfig({
           prefix: 'attachments',
         },
       },
-      clientUploads: {
-        access: authenticated,
-      },
+      clientUploads: true,
       bucket: process.env.S3_BUCKET || '',
       config: {
         forcePathStyle: true,

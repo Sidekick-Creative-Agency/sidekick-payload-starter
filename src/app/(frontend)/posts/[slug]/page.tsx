@@ -15,27 +15,31 @@ import PageClient from './page.client'
 import { PostArchiveCarousel } from '@/components/Archive/PostArchive/Carousel'
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const posts = await payload.find({
-    collection: 'posts',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    select: {
-      slug: true
-    },
-    where: {
-      _status: {
-        equals: 'published'
+
+  if (process.env.ENV !== 'development') {
+    const payload = await getPayload({ config: configPromise })
+    const posts = await payload.find({
+      collection: 'posts',
+      draft: false,
+      limit: 1000,
+      overrideAccess: false,
+      select: {
+        slug: true
+      },
+      where: {
+        _status: {
+          equals: 'published'
+        }
       }
-    }
-  })
+    })
 
-  const params = posts.docs.map(({ slug }) => {
-    return { slug }
-  })
+    const params = posts.docs.map(({ slug }) => {
+      return { slug }
+    })
 
-  return params
+    return params
+  }
+  return []
 }
 
 type Args = {
