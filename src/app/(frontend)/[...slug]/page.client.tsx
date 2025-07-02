@@ -10,7 +10,7 @@ const PageClient: React.FC = () => {
   useEffect(() => {
     setHeaderTheme('transparent')
   }, [setHeaderTheme])
-  return <React.Fragment />
+  return <></>
 }
 
 export default PageClient

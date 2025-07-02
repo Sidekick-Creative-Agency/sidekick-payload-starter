@@ -46,9 +46,10 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "redirects.js",
-    "next.config.ts"
-, "src/saveAllMedia.js"  ],
+    "next.config.ts",
+    "src/saveAllMedia.js"
+  ],
   "exclude": [
-    "node_modules"
+    "node_modules/*"
   ]
 }

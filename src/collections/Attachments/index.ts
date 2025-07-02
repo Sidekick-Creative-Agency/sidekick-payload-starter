@@ -4,12 +4,14 @@ import { fileURLToPath } from 'url'
 import { authenticated } from '@/access/authenticated'
 import { anyone } from '@/access/anyone'
 import { beforeChangeHook } from './hooks/beforeChangeHook'
+import { beforeOperationHook } from './hooks/beforeOperationHook'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export const Attachments: CollectionConfig = {
   slug: 'attachments',
+
   access: {
     create: authenticated,
     delete: authenticated,
@@ -44,5 +46,6 @@ export const Attachments: CollectionConfig = {
   },
   hooks: {
     beforeChange: [beforeChangeHook],
+    beforeOperation: [beforeOperationHook],
   },
 }

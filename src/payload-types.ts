@@ -347,6 +347,10 @@ export interface Listing {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Image displayed in the contact form section of the listing page
+   */
+  contactFormImage?: (number | null) | Media;
   photosChangeTimestamp?: string | null;
   majorChangeTimestamp?: string | null;
   priceChangeTimestamp?: string | null;
@@ -561,6 +565,7 @@ export interface TeamMember {
     isLeadership?: boolean | null;
     isRealtor?: boolean | null;
     company?: ('onward' | 'alliance') | null;
+    emailSignatureHeadshot?: (number | null) | Media;
   };
   meta?: {
     title?: string | null;
@@ -2254,6 +2259,7 @@ export interface ListingsSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
+  contactFormImage?: T;
   photosChangeTimestamp?: T;
   majorChangeTimestamp?: T;
   priceChangeTimestamp?: T;
@@ -2406,6 +2412,7 @@ export interface TeamMembersSelect<T extends boolean = true> {
         isLeadership?: T;
         isRealtor?: T;
         company?: T;
+        emailSignatureHeadshot?: T;
       };
   meta?:
     | T

@@ -57,21 +57,33 @@ import { notFound, redirect } from 'next/navigation'
 import { FormBlock } from '@/blocks/Form/Component'
 import Image from 'next/image'
 import Link from 'next/link'
+import AutoHeight from 'embla-carousel-auto-height'
+import { ImageGallery } from '@/components/Listings/ImageGallery'
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const listings = await payload.find({
-    collection: 'listings',
-    draft: false,
-    pagination: false,
-    overrideAccess: false,
-  })
+export const revalidate = 3600
+export const dynamicParams = true
 
-  const params = listings.docs.map(({ slug, title }, index) => {
-    return { slug: String(slug) }
-  })
-  return params
-}
+// export async function generateStaticParams() {
+//   const payload = await getPayload({ config: configPromise })
+//   const listings = await payload.find({
+//     collection: 'listings',
+//     draft: false,
+//     limit: 1000,
+//     overrideAccess: false,
+//     select: {
+//       slug: true
+//     },
+//     where: {
+//       _status: {
+//         equals: 'published'
+//       }
+//     }
+//   })
+//   const params = listings.docs.map(({ slug }) => {
+//     return { slug: String(slug) }
+//   })
+//   return params
+// }
 
 type Args = {
   params: Promise<{
@@ -183,10 +195,10 @@ export default async function Listing({ params: paramsPromise }: Args) {
               />
             </div>
           </div>
-          <div className="grid grid-cols-4 grid-rows-2 gap-4 relative">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 relative h-fit">
             <Media
               resource={listing.featuredImage}
-              className={`${(!listing.imageGallery || listing.imageGallery.length === 0) && (!listing.MLS?.ImageGalleryUrls || listing.MLS?.ImageGalleryUrls.length === 0) ? 'col-span-full' : 'col-span-4 sm:col-span-3'} row-span-1 sm:row-span-2 relative aspect-video`}
+              className={`${(!listing.imageGallery || listing.imageGallery.length === 0) && (!listing.MLS?.ImageGalleryUrls || listing.MLS?.ImageGalleryUrls.length === 0) ? 'col-span-full' : 'col-span-2 sm:col-span-2'} row-span-1 sm:row-span-2 relative aspect-[3/2] `}
               imgClassName="absolute top-0 left-0 w-full h-full object-cover"
               priority
             />
@@ -194,14 +206,14 @@ export default async function Listing({ params: paramsPromise }: Args) {
               <>
                 <Media
                   resource={listing?.imageGallery[0]?.image as MediaType | number | undefined}
-                  className={`col-span-2 sm:col-span-1 ${listing.imageGallery.length > 1 ? 'row-span-1' : 'row-span-2'} relative`}
+                  className={`col-span-1 aspect-[3/2] sm:aspect-auto ${listing.imageGallery.length > 1 ? 'row-span-1' : 'row-span-2'} relative`}
                   imgClassName="absolute top-0 left-0 w-full h-full object-cover"
                   priority
                 />
                 {listing.imageGallery.length > 1 && (
                   <Media
                     resource={listing.imageGallery[1].image as MediaType | number | undefined}
-                    className="col-span-2 sm:col-span-1 row-span-1 relative"
+                    className="col-span-1 row-span-1 relative aspect-[3/2] sm:aspect-auto"
                     imgClassName="absolute top-0 left-0 w-full h-full object-cover"
                     priority
                   />
@@ -211,11 +223,11 @@ export default async function Listing({ params: paramsPromise }: Args) {
             )}
             {(!listing.imageGallery || listing.imageGallery.length === 0) && listing.MLS?.ImageGalleryUrls && listing.MLS?.ImageGalleryUrls.length > 0 && (
               <>
-                <div className={`col-span-2 sm:col-span-1 ${listing.MLS.ImageGalleryUrls.length > 1 ? 'row-span-1' : 'row-span-2'} relative`}>
+                <div className={`col-span-1 aspect-[3/2] sm:aspect-auto ${listing.MLS.ImageGalleryUrls.length > 1 ? 'row-span-1' : 'row-span-2'} relative`}>
                   <Image src={listing.MLS?.ImageGalleryUrls[0].url || ''} alt="" fill className='object-cover' />
                 </div>
                 {listing.MLS.ImageGalleryUrls.length > 1 && (
-                  <div className='col-span-2 sm:col-span-1 row-span-1 relative'>
+                  <div className='col-span-1 row-span-1 relative aspect-[3/2] sm:aspect-auto'>
                     <Image src={listing.MLS?.ImageGalleryUrls[1].url || ''} alt="" fill className='object-cover' />
                   </div>
                 )}
@@ -236,14 +248,20 @@ export default async function Listing({ params: paramsPromise }: Args) {
               </DialogTrigger>
               <DialogContent className="w-[80rem] max-w-[calc(100vw-2.5rem)] md:max-w-[calc(100vw-5rem)] max-h-[calc(100vh-2.5rem)] p-0 bg-transparent justify-stretch h-auto">
                 <DialogTitle hidden>Image Gallery</DialogTitle>
-                <Carousel className="[&>div]:rounded-md sm:[&>div]:rounded-lg [&>div]:w-full">
-                  <CarouselContent className="ml-0 max-h-[calc(100vh-2.5rem)]">
+                {listing.imageGallery && listing.imageGallery.length !== 0 ? (
+                  <ImageGallery imageGallery={[listing.featuredImage, ...listing.imageGallery.map((item) => item.image) as (MediaType | number)[]]} />
+                ) : (
+                  <ImageGallery imageGallery={[listing.featuredImage, ...listing.MLS?.ImageGalleryUrls?.map((item) => item.url) as string[]]} />
+                )}
+
+
+                {/* <Carousel className="[&>div]:rounded-md sm:[&>div]:rounded-lg [&>div]:w-full" >
+                  <CarouselContent className="ml-0 max-h-[calc(100vh-2.5rem)] transition-[height] items-start">
                     <CarouselItem className="pl-0 basis-full">
                       <Media
                         resource={listing.featuredImage}
-                        className="w-full overflow-hidden aspect-video relative"
-                        imgClassName="w-full object-cover"
-                        fill
+                        className="w-full overflow-hidden relative"
+                        imgClassName="w-full object-cover h-auto"
                       />
                     </CarouselItem>
                     {listing.imageGallery && listing.imageGallery.length > 0 && listing.imageGallery.map((image, index) => {
@@ -251,14 +269,13 @@ export default async function Listing({ params: paramsPromise }: Args) {
                         <CarouselItem key={image.id} className=" pl-0 basis-full rounded-lg">
                           <Media
                             resource={image.image as MediaType | number | undefined}
-                            className="w-full overflow-hidden aspect-video relative"
-                            imgClassName="w-full object-cover"
-                            fill
+                            className="w-full overflow-hidden relative"
+                            imgClassName="w-full object-cover h-auto"
                           />
                         </CarouselItem>
                       )
                     })}
-                    {(!listing.imageGallery || listing.imageGallery.length === 0) && listing.MLS?.ImageGalleryUrls && listing.MLS?.ImageGalleryUrls.length > 0 && listing.MLS?.ImageGalleryUrls.map((item, index) => {
+                    {(!listing.imageGallery || listing.imageGallery.length === 0) && listing.MLS?.ImageGalleryUrls && listing.MLS?.ImageGalleryUrls.length > 0 && listing.MLS?.ImageGalleryUrls.map((item) => {
                       return (
                         <CarouselItem key={item.id} className=" pl-0 basis-full rounded-lg">
                           <div className="w-full overflow-hidden aspect-video relative">
@@ -270,7 +287,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
                   </CarouselContent>
                   <CarouselPrevious className="top-[calc(100%+.5rem)] left-auto right-10 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:left-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
                   <CarouselNext className="top-[calc(100%+.5rem)] left-auto right-0 translate-y-0 sm:-translate-y-1/2 sm:top-1/2 sm:right-2 p-2 bg-brand-gray-06 text-white border-none hover:text-white hover:bg-brand-gray-06/75 focus-visible:bg-brand-gray-06/75 rounded-sm [&_svg]:w-3" />
-                </Carousel>
+                </Carousel> */}
               </DialogContent>
             </Dialog>
           </div>
@@ -416,7 +433,7 @@ export default async function Listing({ params: paramsPromise }: Args) {
           className="w-full min-h-full aspect-[5/4] relative px-5 sm:px-10 lg:px-20"
           imgClassName="object-cover"
           fill
-          resource={listing.featuredImage}
+          resource={listing.contactFormImage || listing.featuredImage}
         />
         <div className="relative w-full px-5 py-20 sm:px-10 sm:py-32 lg:px-20 border-t-[.625rem] border-brand-blue flex flex-col justify-center items-stretch sm:items-start bg-brand-offWhite">
           <Image

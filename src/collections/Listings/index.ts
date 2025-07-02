@@ -28,6 +28,7 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/Slug'
 import { anyone } from '@/access/anyone'
+import { deleteRelatedMedia } from './hooks/deleteRelatedMedia'
 
 export const Listings: CollectionConfig = {
   slug: 'listings',
@@ -112,6 +113,14 @@ export const Listings: CollectionConfig = {
                     return value
                   },
                 ],
+              },
+            },
+            {
+              name: 'contactFormImage',
+              type: 'upload',
+              relationTo: 'media',
+              admin: {
+                description: 'Image displayed in the contact form section of the listing page',
               },
             },
             {

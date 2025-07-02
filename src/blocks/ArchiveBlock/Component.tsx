@@ -79,6 +79,11 @@ export const ArchiveBlock: React.FC<
         sort: ['lastName', 'title'],
       }
       : {}),
+    ...(relationTo === 'posts'
+      ? {
+        sort: ['-publishedAt', '-updatedAt'],
+      }
+      : {}),
     where: {
       ...((flattenedTaxonomies && flattenedTaxonomies.length > 0 && relationTo === 'posts')
         ? {

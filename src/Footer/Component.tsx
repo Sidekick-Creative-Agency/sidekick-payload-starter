@@ -36,6 +36,7 @@ export async function Footer() {
   const footerNewsletterForm = await payload.findByID({
     collection: 'forms',
     id: '2',
+    disableErrors: true
   })
   return (
     <footer className="bg-brand-navy text-white px-[1.25rem] md:px-10 2xl:px-20 pt-20 pb-10">

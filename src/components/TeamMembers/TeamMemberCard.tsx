@@ -54,7 +54,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ teamMember }) =>
           </div>
         </div>
         <span className="text-gray-600 text-base font-light leading-tight">
-          {teamMember.details.jobTitle}
+          {teamMember.details.jobTitle} {teamMember.details.company === 'alliance' && '(Alliance Property Management)'}
         </span>
         <Button
           variant={'link'}
