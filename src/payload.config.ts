@@ -55,6 +55,7 @@ import { TeamMemberEmail } from './blocks/Form/TeamMemberEmail/Field/input'
 import { generateContactFormSubmitterEmail } from './emails/Contact/Submitter'
 import { generateContactFormRecipientEmail } from './emails/Contact/Recipient'
 import { CookieBanner } from './CookieBanner/config'
+import { authenticated } from './access/authenticated'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -291,7 +292,9 @@ export default buildConfig({
           prefix: 'attachments',
         },
       },
-      clientUploads: true,
+      clientUploads: {
+        access: authenticated,
+      },
       bucket: process.env.S3_BUCKET || '',
       config: {
         forcePathStyle: true,
