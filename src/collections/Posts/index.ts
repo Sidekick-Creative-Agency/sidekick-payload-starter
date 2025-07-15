@@ -31,6 +31,7 @@ import { MediaCarouselBlock } from '@/blocks/MediaCarouselBlock/config'
 import { MediaGridLexicalBlock } from '@/blocks/Lexical/MediaGrid/config'
 import { SpacerLexicalBlock } from '@/blocks/Lexical/Spacer/config'
 import { CheckmarkListLexicalBlock } from '@/blocks/Lexical/CheckmarkList/config'
+import { updatePublishedAt } from './hooks/updatePublishedAt'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -169,16 +170,16 @@ export const Posts: CollectionConfig = {
         },
         position: 'sidebar',
       },
-      hooks: {
-        beforeChange: [
-          ({ siblingData, value }) => {
-            if (siblingData._status === 'published' && !value) {
-              return new Date()
-            }
-            return value
-          },
-        ],
-      },
+      // hooks: {
+      //   beforeChange: [
+      //     ({ siblingData, value }) => {
+      //       if (siblingData._status === 'published' && !value) {
+      //         return new Date()
+      //       }
+      //       return value
+      //     },
+      //   ],
+      // },
     },
     {
       name: 'authors',
@@ -216,6 +217,7 @@ export const Posts: CollectionConfig = {
     ...slugField(),
   ],
   hooks: {
+    beforeChange: [updatePublishedAt],
     afterChange: [revalidatePost],
     afterRead: [populateAuthors],
   },
@@ -223,6 +225,9 @@ export const Posts: CollectionConfig = {
     drafts: {
       autosave: {
         interval: 100, // We set this interval for optimal live preview
+      },
+      schedulePublish: {
+        timeIntervals: 60,
       },
     },
     maxPerDoc: 50,
