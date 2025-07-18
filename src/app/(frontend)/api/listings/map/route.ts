@@ -138,6 +138,9 @@ export async function GET(req: NextRequest) {
       select: {
         coordinates: true,
         id: true,
+        MLS: {
+          ListOfficeName: true,
+        },
       },
     })
     return NextResponse.json({ ok: true, listings: listings, error: null }, { status: 200 })

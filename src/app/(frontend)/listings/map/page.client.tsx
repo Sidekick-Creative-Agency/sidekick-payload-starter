@@ -56,11 +56,11 @@ interface MapListing {
   // textAfterPrice?: string | null | undefined;
   // transactionType?: ("for-sale" | "for-lease") | null | undefined;
   // streetAddress: string;
-  // category?: ("commercial" | "residential") | null | undefined;
+  category?: ("commercial" | "residential") | null | undefined;
   // price?: number | null | undefined;
-  // MLS?: {
-  //   ListOfficeName?: string | null
-  // }
+  MLS?: {
+    ListOfficeName?: string | null
+  }
   // slug?: string | null | undefined
 }
 
@@ -371,6 +371,7 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
 
   const updateMapListings = (mapListings: MapListing[]) => {
     if (mapListings && mapListings.length > 0) {
+      console.log(mapListings)
       const geoJson = {
         type: 'FeatureCollection',
         features: mapListings.map((listing) => {
@@ -390,10 +391,10 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
               // imageAlt: (listing.featuredImage as MediaType).alt,
               lat: listing.coordinates[1],
               lon: listing.coordinates[0],
-              id: listing.id
+              id: listing.id,
               // iconSize: 32,
-              // category: listing.category,
-              // listOfficeName: listing.MLS?.ListOfficeName,
+              category: listing.category,
+              listOfficeName: listing.MLS?.ListOfficeName || '',
             },
             geometry: {
               type: 'Point',
@@ -510,8 +511,8 @@ export const PageClient: React.FC<MapPageClientProps> = ({ listingsCount }) => {
           source: 'listings',
           filter: ["all", ['!', ['has', 'point_count']],],
           layout: {
-            'icon-image': ["case", ["all", ["==", ["get", "category"], 'residential'], ["!=", ["get", "listOfficeName"], process.env.NEXT_PUBLIC_RETS_LIST_OFFICE_NAME]], 'default-marker', 'onward-marker'],
-            'icon-size': ["case", ["all", ["==", ["get", "category"], 'residential'], ["!=", ["get", "listOfficeName"], process.env.NEXT_PUBLIC_RETS_LIST_OFFICE_NAME]], .07, .225],
+            'icon-image': ["case", ["all", ["!=", ["get", "listOfficeName"], ''], ["!=", ["get", "listOfficeName"], process.env.NEXT_PUBLIC_RETS_LIST_OFFICE_NAME]], 'default-marker', 'onward-marker'],
+            'icon-size': ["case", ["all", ["!=", ["get", "listOfficeName"], ''], ["!=", ["get", "listOfficeName"], process.env.NEXT_PUBLIC_RETS_LIST_OFFICE_NAME]], .07, .225],
           }
         });
 
