@@ -1,7 +1,53 @@
 {
   "functions": {
     "app/api/**/*": {
-      "maxDuration": 60
+      "maxDuration": 180
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/sync-rets-listings?limit=500&offset=0",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/sync-rets-listings?limit=500&offset=501",
+      "schedule": "10 0 * * *"
+    },
+    {
+      "path": "/api/cron/sync-rets-listings?limit=500&offset=1001",
+      "schedule": "20 0 * * *"
+    },
+    {
+      "path": "/api/cron/sync-rets-listings?limit=500&offset=1501",
+      "schedule": "30 0 * * *"
+    },
+    {
+      "path": "/api/cron/sync-rets-listings?limit=500&offset=2001",
+      "schedule": "40 0 * * *"
+    },
+    {
+      "path": "/api/cron/sync-rets-listings?limit=500&offset=2501",
+      "schedule": "50 0 * * *"
+    },
+    {
+      "path": "/api/cron/sync-rets-listings?limit=500&offset=3001",
+      "schedule": "0 1 * * *"
+    },
+    {
+      "path": "/api/cron/sync-rets-listings?limit=500&offset=3501",
+      "schedule": "10 1 * * *"
+    },
+    {
+      "path": "/api/cron/sync-rets-listings?limit=500&offset=4001",
+      "schedule": "20 1 * * *"
+    },
+    {
+      "path": "/api/cron/sync-rets-listings?limit=500&offset=4501",
+      "schedule": "30 1 * * *"
+    },
+    {
+      "path": "/api/payload-jobs/run",
+      "schedule": "0 * * * *"
+    }
+  ]
 }

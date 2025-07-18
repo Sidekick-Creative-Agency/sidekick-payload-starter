@@ -12,23 +12,34 @@ import type { Category, Post } from '@/payload-types'
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
-import { notFound, redirect } from 'next/navigation'
 import { PostArchiveCarousel } from '@/components/Archive/PostArchive/Carousel'
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const posts = await payload.find({
-    collection: 'posts',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-  })
 
-  const params = posts.docs.map(({ slug }) => {
-    return { slug }
-  })
+  if (process.env.ENV !== 'development') {
+    const payload = await getPayload({ config: configPromise })
+    const posts = await payload.find({
+      collection: 'posts',
+      draft: false,
+      limit: 1000,
+      overrideAccess: false,
+      select: {
+        slug: true
+      },
+      where: {
+        _status: {
+          equals: 'published'
+        }
+      }
+    })
 
-  return params
+    const params = posts.docs.map(({ slug }) => {
+      return { slug }
+    })
+
+    return params
+  }
+  return []
 }
 
 type Args = {
@@ -53,10 +64,10 @@ export default async function Post({ params: paramsPromise }: Args) {
       },
       ...(post?.category
         ? {
-            'category.id': {
-              equals: (post?.category as Category)?.id,
-            },
-          }
+          'category.id': {
+            equals: (post?.category as Category)?.id,
+          },
+        }
         : {}),
     },
   })

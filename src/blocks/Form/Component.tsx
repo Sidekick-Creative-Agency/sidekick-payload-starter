@@ -142,6 +142,7 @@ export const FormBlock: React.FC<
         }))
 
         try {
+
           const req = await fetch(
             `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/api/form-submissions`,
             {
@@ -193,13 +194,12 @@ export const FormBlock: React.FC<
     [router, formID, redirect, confirmationType],
   )
 
+
   return (
     <>
       <style>
         {`.form-block-${formID} {
         padding: ${pyMobile} ${pxMobile};
-
-
        @media screen and (min-width: ${defaultTheme.screens.md}) {
        padding: ${pyTablet} ${pxTablet};
           @media screen and (min-width: ${defaultTheme.screens.lg}) {
@@ -207,6 +207,7 @@ export const FormBlock: React.FC<
        }
       }`}
       </style>
+
       <div
         className={`container ${widthClasses[width]} form-block-${formID}`}
         {...(elementId ? { id: elementId } : {})}
@@ -218,7 +219,7 @@ export const FormBlock: React.FC<
           {!isLoading && hasSubmitted && confirmationType === 'message' && (
             <RichText content={confirmationMessage} enableGutter={false} />
           )}
-          {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
+
           {!hasSubmitted && (
             <form id={formID} onSubmit={handleSubmit(onSubmit)}>
               <div className={`mb-4 flex flex-wrap ${theme === 'default' ? 'gap-4' : 'gap-10'}`}>
@@ -238,8 +239,8 @@ export const FormBlock: React.FC<
                           className={`inline-block w-full ${'width' in field ? (theme === 'default' ? fieldWidthClassesDefault[field.width || 'full'] : fieldWidthClassesThin[field.width || 'full']) : ''} ${'name' in field && field.name && !errors[field.name] ? 'mb-0' : 'mb-6'} relative transition-[margin] duration-300
 
                             ${
-                              // @ts-ignore
-                              field.hidden ? 'hidden' : ''
+                            // @ts-ignore
+                            field.hidden ? 'hidden' : ''
                             } `}
                           fieldClassName={`font-light rounded-none ${theme === 'thin' ? 'border-t-0 border-r-0 border-l-0 border-b text-lg focus-visible:border-b-brand-navy focus-visible:ring-0' : 'text-base'} `}
                           setValue={setValue}
@@ -265,6 +266,7 @@ export const FormBlock: React.FC<
               </Button>
             </form>
           )}
+          {error && <div className='mt-6'>{`${error.status || '500'}: ${error.message || ''}`}</div>}
         </FormProvider>
       </div>
     </>

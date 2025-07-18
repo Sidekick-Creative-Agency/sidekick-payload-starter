@@ -1,6 +1,5 @@
 'use client'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
-import { usePathname } from 'next/navigation'
 import React, { useEffect } from 'react'
 
 const PageClient: React.FC = () => {
@@ -10,7 +9,7 @@ const PageClient: React.FC = () => {
   useEffect(() => {
     setHeaderTheme('transparent')
   }, [setHeaderTheme])
-  return <React.Fragment />
+  return <></>
 }
 
 export default PageClient

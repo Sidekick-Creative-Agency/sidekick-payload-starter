@@ -17,7 +17,7 @@ import {
 import sharp from 'sharp' // editor-import
 import { UnderlineFeature } from '@payloadcms/richtext-lexical'
 import path from 'path'
-import { Block, buildConfig } from 'payload'
+import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import Categories from './collections/Categories'
@@ -33,7 +33,7 @@ import { Listing, Page, Post, TeamMember } from 'src/payload-types'
 
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
-import { PhoneNumber, PhoneNumberField } from './blocks/Form/PhoneNumber/Field'
+import { PhoneNumber } from './blocks/Form/PhoneNumber/Field'
 import { TextField } from './blocks/Form/Text/Field/input'
 import { CheckboxField } from './blocks/Form/Checkbox/Field/input'
 import { CountryField } from './blocks/Form/Country/Field/input'
@@ -55,6 +55,7 @@ import { TeamMemberEmail } from './blocks/Form/TeamMemberEmail/Field/input'
 import { generateContactFormSubmitterEmail } from './emails/Contact/Submitter'
 import { generateContactFormRecipientEmail } from './emails/Contact/Recipient'
 import { CookieBanner } from './CookieBanner/config'
+import { authenticated } from './access/authenticated'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -70,6 +71,7 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 }
 
 export default buildConfig({
+  csrf: ['https://localhost:3000', process.env.NEXT_PUBLIC_SERVER_URL],
   admin: {
     ...(process.env.NODE_ENV === 'development'
       ? {
@@ -97,10 +99,6 @@ export default buildConfig({
       },
       actions: ['@/components/Admin/Actions#Actions'],
       views: {
-        importListingsView: {
-          Component: '/views/Listings/Import#ImportView',
-          path: '/import/listings',
-        },
         importPostsView: {
           Component: '/views/Posts/Import#ImportView',
           path: '/import/posts',
@@ -192,6 +190,21 @@ export default buildConfig({
     JobListings,
   ],
   cors: [process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'].filter(Boolean),
+  jobs: {
+    access: {
+      run: ({ req }: { req: PayloadRequest }): boolean => {
+        // Allow logged in users to execute this endpoint (default)
+        if (req.user) return true
+
+        // If there is no logged in user, then check
+        // for the Vercel Cron secret to be present as an
+        // Authorization header:
+        const authHeader = req.headers.get('authorization')
+        return authHeader === `Bearer ${process.env.CRON_SECRET}`
+      },
+    },
+    tasks: [],
+  },
   globals: [Header, Footer, CookieBanner],
   plugins: [
     redirectsPlugin({
@@ -294,6 +307,7 @@ export default buildConfig({
           prefix: 'attachments',
         },
       },
+      clientUploads: true,
       bucket: process.env.S3_BUCKET || '',
       config: {
         forcePathStyle: true,
